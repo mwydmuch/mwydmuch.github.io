@@ -1,20 +1,104 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
 
-    <title>Marek Wydmuch</title>
-    <meta name="description" content="">
-    <meta name="author" content="Marek Wydmuch">
+  <!-- Basic Meta -->
+  <meta charset="utf-8">
+  <title>Marek Wydmuch</title>
+  <meta name="description" content="Marek's awesome personal website!">
+  <meta name="author" content="Marek Wydmuch">
 
-    <link rel="stylesheet" href="css/styles.css">
+  <!-- Mobile Specific -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  <!-- FONT -->
+  <link href="http://fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png">
+  
 </head>
-
 <body>
-    
-    <!--<script src="js/scripts.js"></script>-->
-</body>
 
+  <!-- Primary Page Layout -->
+  <div id="container">
+
+    <div id="me">
+
+      <div id="work-in-progress">
+        <i class="fa fa-code" aria-hidden="true"></i> This site is under construction, it will be more awesome soon!
+      </div>
+
+      <div id="photo" class="section">
+        <img src="https://avatars3.githubusercontent.com/u/8513199"/>
+      </div>
+
+      <div id="name" class="section">
+        <h1 class="inline-h">Hi! </h1><h3 class="inline-h"> I'm Marek Wydmuch</h3>
+      </div>
+
+      <div id="about" class="section">
+        <p><i class="fa fa-area-chart" aria-hidden="true"></i> Machine Learning Student and <i class="fa fa-cube" aria-hidden="true"></i> 3D Graphics enthusiast.</p>
+        <p>You can get in touch with me and my work here:</p>
+      </div>
+
+      <div id="get-in-touch" class="section">
+
+        <a href="https://github.com/mwydmuch" class="icon github">
+          <span class="fa-stack"><i class="fa fa-circle-thin fa-stack-2x"></i><i class="fa fa-github-alt fa-stack-1x"></i></span></a>
+        <a href="https://www.linkedin.com/in/marek-wydmuch-241aa212a/" class="icon linkedin">
+          <span class="fa-stack"><i class="fa fa-circle-thin fa-stack-2x"></i><i class="fa fa-linkedin fa-stack-1x"></i></span></a>
+        <a href="https://www.facebook.com/marek.wydmuch" class="icon facebook">
+          <span class="fa-stack"><i class="fa fa-circle-thin fa-stack-2x"></i><i class="fa fa-facebook fa-stack-1x"></i></span></a>
+        <a href="mailto:marek@wydmuch.poznan.pl" class="icon mail">
+          <span class="fa-stack"><i class="fa fa-circle-thin fa-stack-2x"></i><i class="fa fa-envelope fa-stack-1x"></i></span></a>
+
+      </div>
+    </div>
+
+  </div>
+
+  
+  <!-- Scripts -->
+  <script id="trisVertexShader" type="x-shader/x-vertex">
+    precision mediump float;
+    precision mediump int;
+
+    uniform mat4 modelViewMatrix; // optional
+    uniform mat4 projectionMatrix; // optional
+
+    attribute vec3 position;
+    attribute vec4 color;
+
+    varying vec3 vPosition;
+    varying vec4 vColor;
+
+    void main()	{
+        vPosition = position;
+        vColor = color;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+	}
+  </script>
+
+  <script id="trisFragmentShader" type="x-shader/x-fragment">
+    precision mediump float;
+    precision mediump int;
+
+    uniform float time;
+
+    varying vec3 vPosition;
+    varying vec4 vColor;
+
+    void main()	{
+        vec4 color = vec4( vColor );
+        gl_FragColor = color;
+    }
+  </script>
+
+  <script src="bundle.js"></script>
+
+</body>
 </html>

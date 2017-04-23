@@ -1,0 +1,25 @@
+{
+  "name": "application-name",
+  "version": "0.0.1",
+  "homepage": "http://fontawesome.io",
+  "dependencies": {},
+  "devDependencies": {
+    "jquery": "latest",
+    "underscore": "latest",
+    "three": "0.84.0",
+    "skeleton-less": "latest",
+    "font-awesome": "latest",
+    "grunt": "latest",
+    "grunt-contrib-less": "latest",
+    "grunt-contrib-watch": "latest",
+    "grunt-contrib-uglify": "latest",
+    "grunt-contrib-cssmin": "latest",
+    "grunt-contrib-copy": "latest",
+    "grunt-contrib-jshint": "latest",
+    "grunt-contrib-clean": "latest",
+    "grunt-browserify": "latest",
+    "browserify": "latest",
+    "jshint-stylish": "latest",
+    "jit-grunt": "latest"
+  }
+}
