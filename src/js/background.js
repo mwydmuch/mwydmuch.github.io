@@ -12,8 +12,8 @@ require('../../node_modules/three/examples/js/shaders/CopyShader.js');
 require('../../node_modules/three/examples/js/shaders/BokehShader.js');
 require('../../node_modules/three/examples/js/shaders/FXAAShader.js');
 require('../../node_modules/three/examples/js/shaders/SMAAShader.js');
-require('../../node_modules/three/examples/js/shaders/ConvolutionShader.js');
-require('../../node_modules/three/examples/js/shaders/LuminosityHighPassShader.js');
+require('../../node_modules/three/examples/js/shaders/ConvolutionShader.js'); // required by UnrealBloomPass
+require('../../node_modules/three/examples/js/shaders/LuminosityHighPassShader.js'); // required by UnrealBloomPass
 
 require('../../node_modules/three/examples/js/postprocessing/EffectComposer.js');
 require('../../node_modules/three/examples/js/postprocessing/RenderPass.js');
@@ -24,16 +24,22 @@ require('../../node_modules/three/examples/js/postprocessing/SMAAPass.js');
 require('../../node_modules/three/examples/js/postprocessing/UnrealBloomPass.js');
 
 
+
+
 // Some globals
 // ---------------------------------------------------------------------------------------------------------------------
 
 // Colors
+var clearColor = 0x280765;
+
 var colorPalete = [
-    0x05CDE5,
-    0xFFB803,
-    0xFF035B,
-    0x3D3E3E,
-    0xABD647
+    0xAAE96E,
+    0xF7861F,
+    0x42EAF7,
+    0x91196B,
+    0xD13142,
+    0x2CABB8,
+    0xEB9578
 ];
 
 // General
@@ -48,7 +54,7 @@ var particleCount = maxParticles;
 
 var r = 960;
 var rHalf = r / 2;
-var maxV = 0.5;
+var maxV = 0.25;
 var helperMesh;
 
 // Particles
@@ -69,21 +75,22 @@ var trisMesh;
 var trisPositions;
 var trisColors;
 
+//TODO: Clean up
 var controller = {
     showHelper: false,
     showParticles: true,
     showLines: true,
     showTris: true,
-    minDistance: 256,
+    minDistance: 216,
     limitConnections: false,
-    maxConnections: 32,
+    maxConnections: 6,
     particleCount: 128,
     projection: 'normal',
     background: false,
     exposure: 1.0,
     bloomStrength: 1.5,
     bloomThreshold: 0.75,
-    bloomRadius: 0.75,
+    bloomRadius: 0.75
 };
 
 
@@ -194,10 +201,10 @@ function init() {
         particlesPositions[i * 3 + 1] = HELPERS.randomRange(-rHalf, rHalf); // y
         particlesPositions[i * 3 + 2] = HELPERS.randomRange(-rHalf, rHalf); // z
 
-        particlesData.push( {
+        particlesData.push({
             velocity: new THREE.Vector3(HELPERS.randomRange(-maxV, maxV), HELPERS.randomRange(-maxV, maxV), HELPERS.randomRange(-maxV, maxV)),
             connectionCount: 0
-        } );
+        });
 
         var color = new THREE.Color(HELPERS.randomElement(colorPalete));
         particlesColors[i * 3] = color.r;
@@ -226,7 +233,8 @@ function init() {
     material = new THREE.LineBasicMaterial({
         vertexColors: THREE.VertexColors,
         blending: THREE.AdditiveBlending,
-        transparent: true
+        transparent: true,
+        depthTest: false
     });
     linesMesh = new THREE.LineSegments(geometry, material);
     group.add(linesMesh);
@@ -235,6 +243,8 @@ function init() {
     // Init connections - triangles
     trisPositions = new Float32Array(maxTris * 3 * 3);
     trisColors = new Float32Array(maxTris * 3 * 4);
+
+    var red = new THREE.Color(0xFF0000);
 
     geometry = new THREE.BufferGeometry();
     geometry.addAttribute('position', new THREE.BufferAttribute(trisPositions, 3).setDynamic(true));
@@ -248,15 +258,19 @@ function init() {
         vertexShader: document.getElementById( 'trisVertexShader' ).textContent,
         fragmentShader: document.getElementById( 'trisFragmentShader' ).textContent,
         side: THREE.DoubleSide,
+        color: red,
         blending: THREE.AdditiveBlending,
-        transparent: true
+        transparent: true,
+        depthTest: false
     });
     trisMesh = new THREE.Mesh( geometry, material );
     group.add( trisMesh );
 
+
     renderer = new THREE.WebGLRenderer({ antialias: false });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(clearColor, 1.0 );
     renderer.gammaInput = true;
     renderer.gammaOutput = true;
     renderer.domElement.id = "background";
@@ -264,15 +278,17 @@ function init() {
 
 
     renderScene = new THREE.RenderPass(scene, camera);
-    // renderScene.clear = true;
+    renderScene.clear = true;
+
+    // TODO: Check performance of AA
     //aaPass = new THREE.ShaderPass(THREE.FXAAShader);
     //aaPass.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight );
-    aaPass = new THREE.SMAAPass( window.innerWidth, window.innerHeight );
-    aaPass.renderToScreen = true;
+    //aaPass = new THREE.SMAAPass( window.innerWidth, window.innerHeight );
+    //aaPass.renderToScreen = true;
 
     var copyShader = new THREE.ShaderPass(THREE.CopyShader);
     copyShader.renderToScreen = true;
-    bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.75, 0.75);
+    bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.3, 0.85, 0.85);
     composer = new THREE.EffectComposer(renderer);
     composer.setSize(window.innerWidth, window.innerHeight);
     composer.addPass(renderScene);
@@ -287,6 +303,7 @@ function init() {
         container.appendChild(stats.dom);
     }
 
+    // TODO: Mouse control
     // document.addEventListener('mousemove', onDocumentMouseMove, false);
     // document.addEventListener('touchstart', onDocumentTouchStart, false);
     // document.addEventListener('touchmove', onDocumentTouchMove, false);
@@ -303,8 +320,6 @@ function animate() {
     var trisVertexPos = 0;
     var trisColorPos = 0;
     var triCount = 0;
-
-    // var frustum = getFrustum();
 
     for (var i = 0; i < controller.particleCount; ++i) {
         // Get the particle
@@ -333,6 +348,13 @@ function animate() {
         var i3 = i * 3;
 
         // Update connections
+
+        var particlePosition = new THREE.Vector3(particlesPositions[i3], particlesPositions[i3 + 1], particlesPositions[i3 + 2]);
+        particlePosition.multiply(group.matrixWorld);
+
+        if (particlePosition.z > 160)
+            continue;
+
         if (controller.limitConnections && particleData.connectionCount >= controller.maxConnections)
             continue;
 
@@ -343,10 +365,8 @@ function animate() {
             if ( controller.limitConnections && particleDataB.connectionCount >= controller.maxConnections)
                 continue;
 
-            // if(!particleInFrustum(frustum, i) || !particleInFrustum(frustum, j))
-            //     continue;
-
             var distAB = HELPERS.arrayDist3D(particlesPositions, i3, particlesPositions, j3);
+
             if (lineCount < maxLines && distAB < controller.minDistance) {
                 ++particleData.connectionCount;
                 ++particleDataB.connectionCount;
@@ -359,15 +379,11 @@ function animate() {
                 linesVertexPos+=3;
                 HELPERS.arraySet(linesColors, linesColorPos, alpha, 6);
                 linesColorPos+=6;
-                // linesColorPos+=3;
-                // linesColors[linesColorPos++] = alpha;
-                // linesColorPos+=3;
-                // linesColors[linesColorPos++] = alpha;
 
                 ++lineCount;
 
                 if (triCount >= maxTris)
-                   continue;
+                    continue;
 
                 for (var k = j + 1; k < controller.particleCount; ++k) {
                     var particleDataC = particlesData[k];
@@ -376,13 +392,12 @@ function animate() {
                     if ( controller.limitConnections && particleDataC.connectionCount >= controller.maxConnections)
                         continue;
 
-                    // if(!particleInFrustum(frustum, k))
-                    //     continue;
-
                     var distAC = HELPERS.arrayDist3D(particlesPositions, i3, particlesPositions, k3);
                     var distBC = HELPERS.arrayDist3D(particlesPositions, j3, particlesPositions, k3);
 
                     if (distAC < controller.minDistance && distBC < controller.minDistance) {
+
+                        ++particleDataC.connectionCount;
 
                         HELPERS.arrayCopy(trisPositions, trisVertexPos, particlesPositions, i3, 3);
                         trisVertexPos+=3;
@@ -428,8 +443,9 @@ function animate() {
 
 function render() {
 
-    // camera.position.x += (mouseX - camera.position.x) * 0.001;
-    // camera.position.y += (-mouseY - camera.position.y) * 0.001;
+    // TODO: Mouse control
+    // camera.position.x += (mouseX - camera.position.x) * 0.0005;
+    // camera.position.y += (-mouseY - camera.position.y) * 0.0005;
     // camera.lookAt(scene.position);
 
     //renderer.render( scene, camera );

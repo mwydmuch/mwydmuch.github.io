@@ -1,14 +1,14 @@
 {
-  "name": "application-name",
+  "name": "mwydmuch.github.io",
   "version": "0.0.1",
-  "homepage": "http://fontawesome.io",
-  "dependencies": {},
-  "devDependencies": {
+  "homepage": "mwydmuch.github.io",
+  "dependencies": {
     "jquery": "latest",
     "underscore": "latest",
     "three": "0.84.0",
-    "skeleton-less": "latest",
-    "font-awesome": "latest",
+    "font-awesome": "latest"
+  },
+  "devDependencies": {
     "grunt": "latest",
     "grunt-contrib-less": "latest",
     "grunt-contrib-watch": "latest",

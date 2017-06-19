@@ -5,7 +5,7 @@ module.exports = {
     },
 
     randomElement: function(arr) {
-        return arr[Math.floor(Math.random() * (arr.length + 1))];
+        return arr[Math.floor(Math.random() * arr.length)];
     },
 
     // Function to linearly interpolate between v1 and v2
