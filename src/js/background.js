@@ -139,7 +139,7 @@ function onWindowResize() {
 // Dev GUI
 // ---------------------------------------------------------------------------------------------------------------------
 
-var devGUI = false;
+var devGUI = true;
 
 function initGUI() {
     var gui = new dat.GUI();
@@ -244,8 +244,6 @@ function init() {
     trisPositions = new Float32Array(maxTris * 3 * 3);
     trisColors = new Float32Array(maxTris * 3 * 4);
 
-    var red = new THREE.Color(0xFF0000);
-
     geometry = new THREE.BufferGeometry();
     geometry.addAttribute('position', new THREE.BufferAttribute(trisPositions, 3).setDynamic(true));
     geometry.addAttribute('color', new THREE.BufferAttribute(trisColors, 4).setDynamic( true ));
@@ -258,7 +256,6 @@ function init() {
         vertexShader: document.getElementById( 'trisVertexShader' ).textContent,
         fragmentShader: document.getElementById( 'trisFragmentShader' ).textContent,
         side: THREE.DoubleSide,
-        color: red,
         blending: THREE.AdditiveBlending,
         transparent: true,
         depthTest: false
@@ -274,6 +271,7 @@ function init() {
     renderer.gammaInput = true;
     renderer.gammaOutput = true;
     renderer.domElement.id = "background";
+    renderer.domElement.setAttribute("style", "animation-name: opacity-animation; animation-duration: 5s; animation-timing-function: ease;");
     container.appendChild(renderer.domElement);
 
 
@@ -313,6 +311,7 @@ function init() {
 }
 
 function animate() {
+
     var linesVertexPos = 0;
     var linesColorPos = 0;
     var lineCount = 0;

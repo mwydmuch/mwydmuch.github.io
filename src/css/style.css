@@ -2391,14 +2391,32 @@ h6 {
 p {
   margin: 0.25rem;
 }
-.inline-h {
+.inline {
   display: inline;
 }
 .reverse {
   background: #FFFFFF;
   color: #280765;
   padding: 0.15rem 0.5rem;
-  margin: 0rem 0.25rem;
+  margin: 0 0.25rem;
+}
+@keyframes opacity-animation {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fill-animation {
+  from {
+    width: 0;
+    height: 0;
+  }
+  to {
+    width: 100%;
+    height: 100%;
+  }
 }
 #container {
   margin: 0;
@@ -2421,16 +2439,6 @@ p {
   text-align: center;
   color: #FFFFFF;
 }
-@keyframes circle-animation {
-  from {
-    width: 0;
-    height: 0;
-  }
-  to {
-    width: 100%;
-    height: 100%;
-  }
-}
 #container #me .circle-container {
   position: absolute;
   top: 0;
@@ -2438,7 +2446,7 @@ p {
   z-index: 10;
 }
 #container #me .circle-container .circle {
-  animation-name: circle-animation;
+  animation-name: fill-animation;
   animation-duration: 3s;
   animation-timing-function: ease;
   opacity: 0.5;
@@ -2451,6 +2459,14 @@ p {
   left: 0;
   bottom: 0;
   right: 0;
+}
+#container #me #cc-0 {
+  height: 34rem;
+  width: 34rem;
+  transform: translate(-12rem, -3rem);
+}
+#container #me #cc-0 .circle {
+  background: #360962;
 }
 #container #me #cc-1 {
   height: 44rem;
@@ -2511,7 +2527,7 @@ p {
 #container #me #cc-8 {
   height: 32rem;
   width: 32rem;
-  transform: translate(-12rem, -3rem);
+  transform: translate(-13rem, 8rem);
 }
 #container #me #cc-8 .circle {
   background: #360962;
@@ -2542,7 +2558,7 @@ p {
   color: #FFFFFF;
   background: none;
   transition: all;
-  transition-duration: 1s;
+  transition-duration: 0.5s;
   transition-timing-function: ease;
   width: 3.5rem;
   height: 3.5rem;

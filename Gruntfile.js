@@ -1,4 +1,4 @@
-bannerTemplate = '/*\n mwydmuch.github.io\n <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %>\n*/\n';
+bannerTemplate = '/*\n mwydmuch.pl / mwydmuch.github.io\n <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %>\n*/\n';
 srcJs = 'src/js/*.js';
 srcLess = 'src/less/*.less';
 srcCss = 'src/css/*.css';
@@ -84,5 +84,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-clean');
 
-    grunt.registerTask('default', ['clean', 'copy', 'less', 'cssmin', 'jshint', 'browserify']);
+    grunt.registerTask('default', ['clean', 'copy', 'less', 'cssmin', 'jshint', 'uglify', 'browserify']);
 };

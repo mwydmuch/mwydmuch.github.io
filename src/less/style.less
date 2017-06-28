@@ -57,7 +57,7 @@ p {
   margin: 0.25rem;
 }
 
-.inline-h{
+.inline{
   display: inline;
 }
 
@@ -65,14 +65,36 @@ p {
   background: @light;
   color: @background;
   padding: 0.15rem 0.5rem;
-  margin: 0rem 0.25rem;
+  margin: 0 0.25rem;
+}
+
+
+// Animations
+// ---------------------------------------------------------------------------------------------------------------------
+
+@keyframes opacity-animation {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fill-animation {
+  from {
+    width: 0;
+    height: 0;
+  }
+  to {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 
 // Layout
 // ---------------------------------------------------------------------------------------------------------------------
-
-
 
 #container{
   margin: 0;
@@ -97,16 +119,7 @@ p {
     color: #FFFFFF;
 
     // Circles
-    @keyframes circle-animation {
-      from {
-        width: 0;
-        height: 0;
-      }
-      to {
-        width: 100%;
-        height: 100%;
-      }
-    }
+
 
     @circle-base-size: 40rem;
     .circle-container{
@@ -117,7 +130,7 @@ p {
       z-index: 10;
 
       .circle {
-        animation-name: circle-animation;
+        animation-name: fill-animation;
         animation-duration: 3s;
         animation-timing-function: ease;
         opacity: 0.5;
@@ -130,6 +143,17 @@ p {
         left: 0;
         bottom: 0;
         right: 0;
+      }
+    }
+
+    #cc-0{
+      height: 34rem;
+      width: 34rem;
+
+      transform: translate(-12rem, -3rem);
+
+      .circle {
+        background: @dark4;
       }
     }
 
@@ -214,7 +238,7 @@ p {
       height: 32rem;
       width: 32rem;
 
-      transform: translate(-12rem, -3rem);
+      transform: translate(-13rem, 8rem);
 
       .circle {
         background: @dark4;
@@ -253,7 +277,7 @@ p {
         color: @light;
         background: none;
         transition: all;
-        transition-duration: 1s;
+        transition-duration: 0.5s;
         transition-timing-function: ease;
         width: 3.5rem;
         height: 3.5rem;
