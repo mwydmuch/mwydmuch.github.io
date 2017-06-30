@@ -139,7 +139,7 @@ function onWindowResize() {
 // Dev GUI
 // ---------------------------------------------------------------------------------------------------------------------
 
-var devGUI = true;
+var devGUI = false;
 
 function initGUI() {
     var gui = new dat.GUI();

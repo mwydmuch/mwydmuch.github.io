@@ -12,7 +12,7 @@ module.exports = function(grunt) {
         browserify: {
             build: {
                 src: 'src/js/main.js',
-                dest: 'bundle.js'
+                dest: 'src/js/bundle.js'
             }
         },
 
@@ -84,5 +84,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-clean');
 
-    grunt.registerTask('default', ['clean', 'copy', 'less', 'cssmin', 'jshint', 'uglify', 'browserify']);
+    grunt.registerTask('default', ['clean', 'copy', 'less', 'cssmin', 'jshint', 'browserify', 'uglify']);
 };
