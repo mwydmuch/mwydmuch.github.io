@@ -100,6 +100,7 @@ var controller = {
 var mouseX = 0;
 var mouseY = 0;
 
+var devicePixelRatio = window.devicePixelRatio ? window.devicePixelRatio : 1;
 var windowHalfX = window.innerWidth / 2;
 var windowHalfY = window.innerHeight / 2;
 
@@ -187,7 +188,7 @@ function init() {
     // Init particles
     var material = new THREE.PointsMaterial( {
         vertexColors: THREE.VertexColors,
-        size: 8,
+        size: 8/devicePixelRatio,
         blending: THREE.AdditiveBlending,
         transparent: true,
         sizeAttenuation: false
@@ -265,7 +266,7 @@ function init() {
 
 
     renderer = new THREE.WebGLRenderer({ antialias: false });
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(clearColor, 1.0 );
     renderer.gammaInput = true;

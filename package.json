@@ -5,7 +5,7 @@
   "dependencies": {
     "jquery": "latest",
     "underscore": "latest",
-    "three": "0.84.0",
+    "three": "0.88.0",
     "font-awesome": "latest"
   },
   "devDependencies": {
