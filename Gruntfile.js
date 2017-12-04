@@ -70,7 +70,7 @@ module.exports = function(grunt) {
             },
             scripts: {
                 files: srcJs,
-                tasks: ['jshint', 'uglify']
+                tasks: ['clean', 'jshint', 'browserify', 'uglify']
             }
         }
     });
