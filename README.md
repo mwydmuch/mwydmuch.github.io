@@ -1,1 +1,1 @@
-# mwydmuch.pl / mwydmuch.github.io
+# mwydmuch.github.io
