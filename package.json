@@ -3,23 +3,23 @@
   "version": "0.0.1",
   "homepage": "mwydmuch.github.io",
   "dependencies": {
+    "font-awesome": "latest",
     "jquery": "latest",
-    "underscore": "latest",
     "three": "0.88.0",
-    "font-awesome": "latest"
+    "underscore": "latest"
   },
   "devDependencies": {
-    "grunt": "latest",
-    "grunt-contrib-less": "latest",
-    "grunt-contrib-watch": "latest",
-    "grunt-contrib-uglify": "latest",
-    "grunt-contrib-cssmin": "latest",
-    "grunt-contrib-copy": "latest",
-    "grunt-contrib-jshint": "latest",
-    "grunt-contrib-clean": "latest",
-    "grunt-browserify": "latest",
     "browserify": "latest",
-    "jshint-stylish": "latest",
-    "jit-grunt": "latest"
+    "grunt": "^1.4.0",
+    "grunt-browserify": "latest",
+    "grunt-contrib-clean": "latest",
+    "grunt-contrib-copy": "latest",
+    "grunt-contrib-cssmin": "latest",
+    "grunt-contrib-jshint": "latest",
+    "grunt-contrib-less": "latest",
+    "grunt-contrib-uglify": "latest",
+    "grunt-contrib-watch": "latest",
+    "jit-grunt": "latest",
+    "jshint-stylish": "latest"
   }
 }

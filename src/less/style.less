@@ -2,14 +2,20 @@
 @import "node_modules/font-awesome/less/font-awesome.less";
 @fa-font-path: "fonts";
 
-// Color palete
+// Old color palete
 @background: #280765;
-@light: #FFFFFF;
-@light-grey: #E1E1E1;
+@main: #FFFFFF;
+@main-grey: #E1E1E1;
 @dark1: #770E5A;
 @dark2: #5A0E5E;
 @dark3: #360E5D;
 @dark4: #360962;
+
+// Color palete
+@background: #FFFFFF;
+@main-text: #252525;
+@main: #43696B;
+@main-light: #43696B;
 
 @font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
@@ -19,21 +25,18 @@
 // Base Styles
 // ---------------------------------------------------------------------------------------------------------------------
 
-// NOTE
-// html is set to 62.5% so that all the REM measurements are based on 10px sizing. So basically 1.5rem = 15px
-
-html {
-  font-size: 62.5%;
-}
-
 body {
   margin: 0;
-  font-size: 1.5em; /* currently ems cause chrome bug misinterpreting rems on body element */
   line-height: 1.6;
   font-weight: 400;
   font-family: @font-family;
-  color: @light;
+  color: @main-text;
   background: @background;
+}
+
+a:link, a:visited, a:hover, a:active {
+  color: @main-light;
+  font-weight: 700;
 }
 
 
@@ -46,13 +49,6 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 400;
 }
 
-h1 { font-size: 4.0rem; line-height: 1.2;  letter-spacing: -.1rem;  }
-h2 { font-size: 3.6rem; line-height: 1.25; letter-spacing: -.1rem;  }
-h3 { font-size: 3.0rem; line-height: 1.3;  letter-spacing: -.1rem;  }
-h4 { font-size: 2.4rem; line-height: 1.35; letter-spacing: -.08rem; }
-h5 { font-size: 1.8rem; line-height: 1.5;  letter-spacing: -.05rem; }
-h6 { font-size: 1.5rem; line-height: 1.6;  letter-spacing: 0;       }
-
 p {
   margin: 0.25rem;
 }
@@ -62,261 +58,92 @@ p {
 }
 
 .reverse {
-  background: @light;
+  background: @main;
   color: @background;
-  padding: 0.15rem 0.5rem;
-  margin: 0 0.25rem;
-}
+  padding: 0.05rem 0.25rem;
+  margin: 0 0.05rem;
+  white-space: nowrap;
 
-
-// Animations
-// ---------------------------------------------------------------------------------------------------------------------
-
-@keyframes opacity-animation {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
+  a:link, a:visited, a:hover, a:active {
+    color: @background;
   }
 }
-
-@keyframes fill-animation {
-  from {
-    width: 0;
-    height: 0;
-  }
-  to {
-    width: 100%;
-    height: 100%;
-  }
-}
-
 
 // Layout
 // ---------------------------------------------------------------------------------------------------------------------
 
-#container{
-  margin: 0;
+#background{
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+#me{
+  text-align: center;
+
+  .section{
+    margin-bottom: 1rem;
+    z-index: 100;
+    position: relative;
+  }
+
+  #photo{
+    height: 10rem;
+    margin: 1rem;
+
+    img {
+      box-sizing: border-box;
+      border-radius: 100%;
+      border: @global-border-width solid @main;
+      height: 100%;
+    }
+  }
+
+  #name{
+    display: inline-block;
+  }
+
+  #about {
+    font-weight: 700;
+  }
+
+  #profiles{
+    font-weight: 700;
+
+    .profile-link{
+      padding: .15rem .5rem;
+      border: 2px solid @main;
+      color: @main;
+      background: none;
+      transition: all;
+      transition-duration: 0.5s;
+      transition-timing-function: ease;
+      display: inline-block;
+      box-sizing: border-box;
+      margin: 0 0.25rem;
+
+      &:hover{
+        background: @main;
+        color: @background;
+      }
+    }
+  }
+}
+
+#background {
   width: 100%;
   height: 100%;
+}
+
+footer {
   position: absolute;
+  bottom: 0;
+  text-align: center;
+  width: 100%;
 
-  #background{
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -1;
-  }
-
-  #me{
-    position: relative;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1;
-    text-align: center;
-    color: #FFFFFF;
-
-
-    #shapes{
-      transform: translate(-2rem, 4rem);
-    }
-
-    // Circles
-    @circle-base-size: 40rem;
-    .circle-container{
-
-      position: absolute;
-      top: 0;
-      left: 50%;
-      z-index: 10;
-
-      .circle {
-        animation-name: fill-animation;
-        animation-duration: 3s;
-        animation-timing-function: ease;
-        opacity: 0.5;
-        border-radius: 100%;
-        width: 100%;
-        height: 100%;
-        margin: auto;
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-      }
-    }
-
-    #cc-0{
-      height: 34rem;
-      width: 34rem;
-
-      transform: translate(-12rem, -3rem);
-
-      .circle {
-        background: @dark4;
-      }
-    }
-
-    #cc-1{
-      height: 44rem;
-      width: 44rem;
-
-      transform: translate(-20rem, -10rem);
-
-      .circle {
-        background: @dark1;
-      }
-    }
-
-    #cc-2{
-      height: 36rem;
-      width: 36rem;
-
-      transform: translate(-22rem, 3rem);
-
-      .circle {
-        background: @dark2;
-      }
-    }
-
-    #cc-3{
-      height: 35rem;
-      width: 35rem;
-
-      transform: translate(-5rem, 2rem);
-
-      .circle {
-        background: @dark3;
-      }
-    }
-
-    #cc-4{
-      height: 33rem;
-      width: 33rem;
-
-      transform: translate(-25rem, -10rem);
-
-      .circle {
-        background: @dark4;
-      }
-    }
-
-    #cc-5{
-      height: 30rem;
-      width: 30rem;
-
-      transform: translate(-4rem,-13rem);
-
-      .circle {
-        background: @dark1;
-      }
-    }
-
-    #cc-6{
-      height: 27rem;
-      width: 27rem;
-
-      transform: translate(-5rem,-15rem);
-
-      .circle {
-        background: @dark2;
-      }
-    }
-
-    #cc-7 {
-      height: 25rem;
-      width: 25rem;
-
-      transform: translate(-12rem, -3rem);
-
-      .circle {
-        background: @dark3;
-      }
-    }
-
-    #cc-8{
-      height: 32rem;
-      width: 32rem;
-
-      transform: translate(-13rem, 8rem);
-
-      .circle {
-        background: @dark4;
-      }
-    }
-
-    .section{
-      margin-bottom: 2rem;
-      z-index: 100;
-      position: relative;
-    }
-
-    #photo{
-      height: 16rem;
-
-      img {
-        box-sizing: border-box;
-        border-radius: 100%;
-        border: @global-border-width solid @light;
-        height: 100%;
-      }
-    }
-
-    #name{
-      display: inline-block;
-    }
-
-    #about {
-      font-weight: 700;
-    }
-
-    #get-in-touch{
-      .icon{
-        border-radius: 100%;
-        border: 2px solid @light;
-        color: @light;
-        background: none;
-        transition: all;
-        transition-duration: 0.5s;
-        transition-timing-function: ease;
-        width: 3.5rem;
-        height: 3.5rem;
-        display: inline-block;
-        box-sizing: border-box;
-        font-size: 2rem;
-        margin: 0 0.5rem;
-
-        &:hover{
-          border-radius: 0;
-          background: @light;
-          color: @background;
-        }
-
-        .fa{
-          margin: 0 1px;
-          width: 100%;
-        }
-      }
-    }
-  }
-
-  #background {
-    width: 100%;
-    height: 100%;
-  }
-
-  footer {
-    position: absolute;
-    bottom: 0;
-    text-align: center;
-    width: 100%;
-
-    #work-in-progress{
-      display: inline-block;
-      margin: 0.5rem;
-    }
+  #work-in-progress{
+    display: inline-block;
+    margin: 0.5rem;
   }
 }
