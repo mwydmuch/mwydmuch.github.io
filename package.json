@@ -1,24 +1,18 @@
 {
-  "name": "mwydmuch.github.io",
-  "version": "0.0.1",
-  "homepage": "mwydmuch.github.io",
-  "dependencies": {
-    "font-awesome": "latest",
-    "jquery": "latest",
-    "three": "0.88.0",
-    "underscore": "latest"
-  },
+  "name": "mwydmuch.pl",
+  "version": "0.0.2",
+  "homepage": "mwydmuch.pl",
+  "author": "Marek Wydmuch",
   "devDependencies": {
+    "browser-sync": "latest",
     "browserify": "latest",
-    "grunt": "^1.4.0",
-    "grunt-browserify": "latest",
-    "grunt-contrib-clean": "latest",
-    "grunt-contrib-copy": "latest",
-    "grunt-contrib-cssmin": "latest",
-    "grunt-contrib-jshint": "latest",
-    "grunt-contrib-less": "latest",
-    "grunt-contrib-uglify": "latest",
-    "grunt-contrib-watch": "latest",
+    "gulp": "latest",
+    "gulp-clean-css": "latest",
+    "gulp-header": "latest",
+    "gulp-less": "latest",
+    "gulp-rename": "latest",
+    "gulp-uglify": "latest",
+    "gulp-util": "latest",
     "jit-grunt": "latest",
     "jshint-stylish": "latest"
   }
