@@ -24,6 +24,7 @@ var colors = [ // Grey
     "#AAAAAA"
 ]
 
+
 class GameOfLife {
     constructor (ctx, cellSize)
     {
@@ -73,12 +74,22 @@ class GameOfLife {
         for (let y = 0; y < this.gridHeight; ++y) {
             for (let x = 0; x < this.gridWidth; ++x) {
                 let cellVal = this.grid[this.getCord(x, y)];
-                let cellPadding = 1 - Math.min(0, cellVal);
+                //let cellPadding = 1 - Math.min(0, cellVal);
+                let cellPadding = 1
                 let fillStyle = null;
                 if(cellVal >= 0 ) fillStyle = colors[0];
-                else if(cellVal == -1) fillStyle = colors[1];
-                else if(cellVal == -2) fillStyle = colors[2];
-                else if(cellVal == -3) fillStyle = colors[3];
+                else if(cellVal >= -2){
+                    fillStyle = colors[1];
+                    cellPadding += 1
+                }
+                else if(cellVal >= -4){
+                    fillStyle = colors[2];
+                    cellPadding += 2
+                }
+                else if(cellVal >= -16){
+                    fillStyle = colors[3];
+                    cellPadding += 3
+                }
                 if(fillStyle) {
                     this.ctx.fillStyle = fillStyle;
                     this.ctx.fillRect(x * this.cellSize + cellPadding,

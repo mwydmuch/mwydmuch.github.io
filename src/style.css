@@ -52,7 +52,7 @@ p {
   top: 0;
   left: 0;
   z-index: -1;
-  opacity: 15%;
+  opacity: 10%;
   overflow: hidden;
 }
 #me {
@@ -97,14 +97,4 @@ p {
 #me #profiles .profile-link:hover {
   background: #43696B;
   color: #FFFFFF;
-}
-footer {
-  position: absolute;
-  bottom: 0;
-  text-align: center;
-  width: 100%;
-}
-footer #work-in-progress {
-  display: inline-block;
-  margin: 0.5rem;
 }
