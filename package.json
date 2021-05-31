@@ -1,12 +1,14 @@
 {
   "name": "mwydmuch.pl",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "homepage": "mwydmuch.pl",
   "author": "Marek Wydmuch",
   "devDependencies": {
     "browser-sync": "latest",
     "browserify": "latest",
+    "css-element-queries": "latest",
     "gulp": "latest",
+    "gulp-browserify": "latest",
     "gulp-clean-css": "latest",
     "gulp-header": "latest",
     "gulp-less": "latest",
@@ -14,6 +16,7 @@
     "gulp-uglify": "latest",
     "gulp-util": "latest",
     "jit-grunt": "latest",
-    "jshint-stylish": "latest"
+    "jshint-stylish": "latest",
+    "vinyl-source-stream": "latest"
   }
 }
