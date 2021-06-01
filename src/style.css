@@ -92,6 +92,82 @@ p {
   background: #43696B;
   color: #FFFFFF;
 }
+@keyframes "fade-to-0-animation" {
+  from {
+    opacity: 100%;
+    filter: grayscale(0%);
+  }
+  to {
+    opacity: 0%;
+    filter: grayscale(100%);
+  }
+}
+@keyframes "show-from-0-animation" {
+  from {
+    opacity: 0%;
+    filter: grayscale(100%);
+  }
+  to {
+    opacity: 100%;
+    filter: grayscale(0%);
+  }
+}
+.faded-0 {
+  opacity: 0%;
+  filter: grayscale(100%);
+}
+.fade-to-0 {
+  animation: "fade-to-0-animation";
+  animation-duration: 0.5s;
+  animation-timing-function: ease;
+  opacity: 0%;
+  filter: grayscale(100%);
+}
+.show-from-0 {
+  animation: "show-from-0-animation";
+  animation-duration: 0.5s;
+  animation-timing-function: ease;
+  opacity: 100%;
+  filter: grayscale(0%);
+}
+@keyframes "fade-to-7-animation" {
+  from {
+    opacity: 100%;
+    filter: grayscale(0%);
+  }
+  to {
+    opacity: 7%;
+    filter: grayscale(100%);
+  }
+}
+@keyframes "show-from-7-animation" {
+  from {
+    opacity: 7%;
+    filter: grayscale(100%);
+  }
+  to {
+    opacity: 100%;
+    filter: grayscale(0%);
+  }
+}
+.faded-7 {
+  opacity: 7%;
+  filter: grayscale(100%);
+}
+.fade-to-7 {
+  animation: "fade-to-7-animation";
+  animation-duration: 0.5s;
+  animation-timing-function: ease;
+  opacity: 7%;
+  filter: grayscale(100%);
+}
+.show-from-7 {
+  animation: "show-from-7-animation";
+  animation-duration: 0.5s;
+  animation-timing-function: ease;
+  opacity: 100%;
+  filter: grayscale(0%);
+}
 @keyframes hue-animation {
   0% {
     filter: hue-rotate(0deg);
@@ -109,83 +185,11 @@ p {
     filter: hue-rotate(0deg);
   }
 }
-@keyframes fade0-animation {
-  from {
-    opacity: 100%;
-    filter: grayscale(0%);
-  }
-  to {
-    opacity: 0%;
-    filter: grayscale(100%);
-  }
-}
-@keyframes fade10-animation {
-  from {
-    opacity: 100%;
-    filter: grayscale(0%);
-  }
-  to {
-    opacity: 10%;
-    filter: grayscale(100%);
-  }
-}
-@keyframes show10-animation {
-  from {
-    opacity: 10%;
-    filter: grayscale(100%);
-  }
-  to {
-    opacity: 100%;
-    filter: grayscale(0%);
-  }
-}
-@keyframes show0-animation {
-  from {
-    opacity: 0%;
-    filter: grayscale(100%);
-  }
-  to {
-    opacity: 100%;
-    filter: grayscale(0%);
-  }
-}
 .hue-change {
   animation: hue-animation;
   animation-duration: 5s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
-}
-.faded-10 {
-  opacity: 10%;
-  filter: grayscale(100%);
-}
-.fade-to-0 {
-  animation: fade0-animation;
-  animation-duration: 0.5s;
-  animation-timing-function: ease;
-  opacity: 0%;
-  filter: grayscale(100%);
-}
-.fade-to-10 {
-  animation: fade10-animation;
-  animation-duration: 0.5s;
-  animation-timing-function: ease;
-  opacity: 10%;
-  filter: grayscale(100%);
-}
-.show-from-0 {
-  animation: show0-animation;
-  animation-duration: 0.5s;
-  animation-timing-function: ease;
-  opacity: 100%;
-  filter: grayscale(0%);
-}
-.show-from-10 {
-  animation: show10-animation;
-  animation-duration: 0.5s;
-  animation-timing-function: ease;
-  opacity: 100%;
-  filter: grayscale(0%);
 }
 #footer {
   text-align: center;

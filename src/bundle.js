@@ -160,16 +160,16 @@ backgroundName.innerHTML += animation.getName();
 backgroundName.addEventListener("mouseover", function(){
     content.classList.remove("show-from-0");
     content.classList.add("fade-to-0");
-    canvas.classList.remove("faded-10");
-    canvas.classList.remove("fade-to-10");
+    canvas.classList.remove("faded-7");
+    canvas.classList.remove("fade-to-7");
     //canvas.classList.remove("hue-change");
-    canvas.classList.add("show-from-10");
+    canvas.classList.add("show-from-7");
 });
 backgroundName.addEventListener("mouseout", function(){
     content.classList.remove("fade-to-0");
     content.classList.add("show-from-0");
-    canvas.classList.remove("show-from-10");
-    canvas.classList.add("fade-to-10");
+    canvas.classList.remove("show-from-7");
+    canvas.classList.add("fade-to-7");
     //canvas.classList.add("hue-change");
 });
 

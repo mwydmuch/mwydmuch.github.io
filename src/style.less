@@ -133,6 +133,47 @@ p {
   }
 }
 
+.keyframes(@name, @rules) {
+  @keyframes @name {
+    @rules();
+  }
+}
+
+@fade-show-values: 0, 7;
+each(@fade-show-values, {
+
+  .keyframes(%("fade-to-%s-animation", @value), {
+    from {opacity: 100%; filter: grayscale(0%);}
+    to {opacity: percentage(@value / 100); filter: grayscale(100%);}
+  });
+
+  .keyframes(%("show-from-%s-animation", @value), {
+    from {opacity: percentage(@value / 100); filter: grayscale(100%);}
+    to {opacity: 100%; filter: grayscale(0%);}
+  });
+
+  .faded-@{value} {
+    opacity: percentage(@value / 100);
+    filter: grayscale(100%);
+  }
+
+  .fade-to-@{value} {
+    animation: %("fade-to-%s-animation", @value);
+    animation-duration: 0.5s;
+    animation-timing-function: ease;
+    opacity: percentage(@value / 100);
+    filter: grayscale(100%);
+  }
+
+  .show-from-@{value}{
+    animation: %("show-from-%s-animation", @value);
+    animation-duration: 0.5s;
+    animation-timing-function: ease;
+    opacity: 100%;
+    filter: grayscale(0%);
+  }
+});
+
 @keyframes hue-animation {
   0% {filter: hue-rotate(0deg);}
   25% {filter: hue-rotate(30deg);}
@@ -141,68 +182,11 @@ p {
   100% {filter: hue-rotate(0deg);}
 }
 
-@keyframes fade0-animation {
-  from {opacity: 100%; filter: grayscale(0%);}
-  to {opacity: 0%; filter: grayscale(100%);}
-}
-
-@keyframes fade10-animation {
-  from {opacity: 100%; filter: grayscale(0%);}
-  to {opacity: 10%; filter: grayscale(100%);}
-}
-
-@keyframes show-from-10-animation {
-  from {opacity: 10%; filter: grayscale(100%);}
-  to {opacity: 100%; filter: grayscale(0%);}
-}
-
-@keyframes show-from-0-animation {
-  from {opacity: 0%; filter: grayscale(100%);}
-  to {opacity: 100%; filter: grayscale(0%);}
-}
-
 .hue-change{
   animation: hue-animation;
   animation-duration: 5s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
-}
-
-.faded-10{
-  opacity: 10%;
-  filter: grayscale(100%);
-}
-
-.fade-to-0{
-  animation: fade0-animation;
-  animation-duration: 0.5s;
-  animation-timing-function: ease;
-  opacity: 0%;
-  filter: grayscale(100%);
-}
-
-.fade-to-10{
-  animation: fade10-animation;
-  animation-duration: 0.5s;
-  animation-timing-function: ease;
-  opacity: 10%;
-  filter: grayscale(100%);
-}
-
-.show-from-0{
-  animation: show0-animation;
-  animation-duration: 0.5s;
-  animation-timing-function: ease;
-  opacity: 100%;
-  filter: grayscale(0%);
-}
-
-.show-from-10{
-  animation: show10-animation;
-  animation-duration: 0.5s;
-  animation-timing-function: ease;
-  opacity: 100%;
-  filter: grayscale(0%);
 }
 
 #footer{
