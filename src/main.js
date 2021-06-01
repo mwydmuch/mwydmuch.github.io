@@ -10,8 +10,8 @@ const PerlinNoise = require("./perlinnoise");
 // Globals
 // ---------------------------------------------------------------------------------------------------------------------
 
-var canvas = document.getElementById("background");
-var container = document.getElementById("container");
+const canvas = document.getElementById("background");
+const container = document.getElementById("container");
 var lastWidth = 0;
 var lastHeight = 0;
 var needResize = false;
@@ -20,32 +20,52 @@ var fps = 15; // Due to performance concerns, run all the animations at 15 frame
 var fpsInterval = 1000 / fps;
 var then = Date.now();
 
-// var colors = [ // Green
-//     "#678786",
-//     "#92ABA1",
-//     "#A5BFBC",
-//     "#C5D1D2"
-// ]
-
-var colors = [ // Grey
-    "#777777",
-    "#888888",
-    "#999999",
-    "#AAAAAA"
+const colors = [ // Green
+    "#639598",
+    "#678786",
+    "#92ABA1",
+    "#A5BFBC",
+    "#C5D1D2"
 ]
+
+// const colors = [ // Grey
+//     "#777777",
+//     "#888888",
+//     "#999999",
+//     "#AAAAAA"
+// ]
 
 
 // Create animation and init animation loop
 // ---------------------------------------------------------------------------------------------------------------------
 
-var animations = [
+const animations = [
     GameOfLife,
     PerlinNoise
 ]
 
 //var animation = new GameOfLife(canvas, colors);
 //var animation = new PerlinNoise(canvas, colors);
-var animation = new animations[Math.floor(Math.random() * animations.length)](canvas, colors);
+
+const animation = new animations[Math.floor(Math.random() * animations.length)](canvas, colors);
+const content = document.getElementById("content");
+const backgroundName = document.getElementById("background-name");
+backgroundName.innerHTML += animation.getName();
+backgroundName.addEventListener("mouseover", function(){
+    content.classList.remove("show-from-0");
+    content.classList.add("fade-to-0");
+    canvas.classList.remove("faded-10");
+    canvas.classList.remove("fade-to-10");
+    //canvas.classList.remove("hue-change");
+    canvas.classList.add("show-from-10");
+});
+backgroundName.addEventListener("mouseout", function(){
+    content.classList.remove("fade-to-0");
+    content.classList.add("show-from-0");
+    canvas.classList.remove("show-from-10");
+    canvas.classList.add("fade-to-10");
+    //canvas.classList.add("hue-change");
+});
 
 function render() {
     requestAnimationFrame(render);

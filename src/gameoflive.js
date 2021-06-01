@@ -12,6 +12,10 @@ class GameOfLife {
         this.resize();
     }
 
+    getName(){
+        return "Conway's Game of Life"
+    }
+
     getCord(x, y) {
         return x + y * this.gridWidth;
     }
