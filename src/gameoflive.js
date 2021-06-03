@@ -12,6 +12,10 @@ class GameOfLife {
         this.resize();
     }
 
+    getFPS(){
+        return 10;
+    }
+
     getName(){
         return "Conway's Game of Life"
     }

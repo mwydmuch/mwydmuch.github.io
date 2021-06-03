@@ -5,6 +5,7 @@
 
 const GameOfLife = require("./gameoflive");
 const PerlinNoise = require("./perlinnoise");
+const SpinningShapes = require("./spinningshapes");
 
 
 // Globals
@@ -15,10 +16,6 @@ const container = document.getElementById("container");
 var lastWidth = 0;
 var lastHeight = 0;
 var needResize = false;
-
-var fps = 15; // Due to performance concerns, run all the animations at 15 frames per second
-var fpsInterval = 1000 / fps;
-var then = Date.now();
 
 const colors = [ // Green
     "#639598",
@@ -41,32 +38,41 @@ const colors = [ // Green
 
 const animations = [
     GameOfLife,
-    PerlinNoise
+    PerlinNoise,
+    SpinningShapes
 ]
 
-//var animation = new GameOfLife(canvas, colors);
-//var animation = new PerlinNoise(canvas, colors);
-
+//const animation = new GameOfLife(canvas, colors);
+//const animation = new PerlinNoise(canvas, colors);
+//const animation = new SpinningShapes(canvas, colors);
 const animation = new animations[Math.floor(Math.random() * animations.length)](canvas, colors);
+
+// Due to performance concerns, run all the animations at max 20 frames per second
+var fps = Math.max(20, animation.getFPS());
+var fpsInterval = 1000 / fps;
+var then = Date.now();
+
+
 const content = document.getElementById("content");
 const backgroundName = document.getElementById("background-name");
 backgroundName.innerHTML += animation.getName();
 backgroundName.addEventListener("mouseover", function(){
     content.classList.remove("show-from-0");
     content.classList.add("fade-to-0");
-    canvas.classList.remove("faded-7");
-    canvas.classList.remove("fade-to-7");
-    //canvas.classList.remove("hue-change");
-    canvas.classList.add("show-from-7");
+    canvas.classList.remove("faded-8");
+    canvas.classList.remove("fade-to-8");
+    canvas.classList.add("hue-change");
+    canvas.classList.add("show-from-8");
 });
 backgroundName.addEventListener("mouseout", function(){
     content.classList.remove("fade-to-0");
     content.classList.add("show-from-0");
-    canvas.classList.remove("show-from-7");
-    canvas.classList.add("fade-to-7");
-    //canvas.classList.add("hue-change");
+    canvas.classList.remove("show-from-8");
+    canvas.classList.add("fade-to-8");
+    canvas.classList.remove("hue-change");
 });
 
+// Start animation
 function render() {
     requestAnimationFrame(render);
 

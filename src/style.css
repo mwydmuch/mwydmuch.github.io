@@ -130,19 +130,19 @@ p {
   opacity: 100%;
   filter: grayscale(0%);
 }
-@keyframes "fade-to-7-animation" {
+@keyframes "fade-to-8-animation" {
   from {
     opacity: 100%;
     filter: grayscale(0%);
   }
   to {
-    opacity: 7%;
+    opacity: 8%;
     filter: grayscale(100%);
   }
 }
-@keyframes "show-from-7-animation" {
+@keyframes "show-from-8-animation" {
   from {
-    opacity: 7%;
+    opacity: 8%;
     filter: grayscale(100%);
   }
   to {
@@ -150,19 +150,19 @@ p {
     filter: grayscale(0%);
   }
 }
-.faded-7 {
-  opacity: 7%;
+.faded-8 {
+  opacity: 8%;
   filter: grayscale(100%);
 }
-.fade-to-7 {
-  animation: "fade-to-7-animation";
+.fade-to-8 {
+  animation: "fade-to-8-animation";
   animation-duration: 0.5s;
   animation-timing-function: ease;
-  opacity: 7%;
+  opacity: 8%;
   filter: grayscale(100%);
 }
-.show-from-7 {
-  animation: "show-from-7-animation";
+.show-from-8 {
+  animation: "show-from-8-animation";
   animation-duration: 0.5s;
   animation-timing-function: ease;
   opacity: 100%;

@@ -1,5 +1,6 @@
 'use strict';
 
+// Perlin noise
 class PerlinNoise {
     constructor(canvas, colors, particlePer100PixSq = 4, noiseScale = 1200) {
         this.ctx = canvas.getContext("2d", { alpha: false });
@@ -11,10 +12,15 @@ class PerlinNoise {
         this.imageData = null;
 
         // To make it more efficient use "memory" of gradients and values already calculated for Perlin Noise
+        // Based on: https://github.com/joeiddon/perlin
         this.noiseScale = noiseScale;
         this.noiseGradients = {};
         this.noiseMemory = {};
         this.resize();
+    }
+
+    getFPS(){
+        return 20;
     }
 
     getName(){
@@ -79,7 +85,7 @@ class PerlinNoise {
         this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     }
 
-    spanParticles(x, y, width, height) {
+    spawnParticles(x, y, width, height) {
         let newParticles = width / 100 * height / 100 * this.particlePer100PixSq;
 
         // Create new particles
@@ -103,9 +109,9 @@ class PerlinNoise {
         let divWidth = this.ctx.canvas.width - this.width;
         let divHeight = this.ctx.canvas.height - this.height;
 
-        if(divWidth > 0) this.spanParticles(this.width, 0, divWidth, this.height);
-        if(divHeight > 0) this.spanParticles(0, this.height, this.width, divHeight);
-        if(divWidth > 0 || divHeight > 0) this.spanParticles(this.width, this.height, divWidth, divHeight);
+        if(divWidth > 0) this.spawnParticles(this.width, 0, divWidth, this.height);
+        if(divHeight > 0) this.spawnParticles(0, this.height, this.width, divHeight);
+        if(divWidth > 0 || divHeight > 0) this.spawnParticles(this.width, this.height, divWidth, divHeight);
 
         this.width = Math.max(this.ctx.canvas.width, this.width);
         this.height = Math.max(this.ctx.canvas.height, this.height);
