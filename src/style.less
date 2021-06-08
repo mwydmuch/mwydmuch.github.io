@@ -1,4 +1,4 @@
-// Old color palete
+// Old color palette
 @background: #280765;
 @main: #FFFFFF;
 @main-grey: #E1E1E1;
@@ -7,17 +7,21 @@
 @dark3: #360E5D;
 @dark4: #360962;
 
-// Color palete
+// Color palette
 @background: #FFFFFF;
 @main-text: #252525;
 @main: #43696B;
 @main-light: #43696B;
 @main-dark: #38575A;
 
-@font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+// Other colors
+@mlinpl-red: #E52C2C;
 
+// Others
+@font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
 @global-radius: 4px;
 @global-border-width: 4px;
+
 
 // Base Styles
 // ---------------------------------------------------------------------------------------------------------------------
@@ -54,8 +58,7 @@ p {
   display: inline;
 }
 
-.reverse {
-  background: @main;
+.reverse, .reverse-red {
   color: @background;
   padding: 0.05rem 0.25rem;
   margin: 0 0.05rem;
@@ -64,6 +67,14 @@ p {
   a:link, a:visited, a:hover, a:active {
     color: @background;
   }
+}
+
+.reverse{
+  background: @main;
+}
+
+.reverse-red{
+  background: @mlinpl-red;
 }
 
 // Layout

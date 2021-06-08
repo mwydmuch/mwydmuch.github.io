@@ -29,18 +29,28 @@ p {
 .inline {
   display: inline;
 }
-.reverse {
-  background: #43696B;
+.reverse,
+.reverse-red {
   color: #FFFFFF;
   padding: 0.05rem 0.25rem;
   margin: 0 0.05rem;
   white-space: nowrap;
 }
 .reverse a:link,
+.reverse-red a:link,
 .reverse a:visited,
+.reverse-red a:visited,
 .reverse a:hover,
-.reverse a:active {
+.reverse-red a:hover,
+.reverse a:active,
+.reverse-red a:active {
   color: #FFFFFF;
+}
+.reverse {
+  background: #43696B;
+}
+.reverse-red {
+  background: #E52C2C;
 }
 #background {
   position: absolute;
