@@ -1,19 +1,16 @@
 'use strict';
 
-class GameOfLife {
+const Animation = require("./animation");
+
+class GameOfLife extends Animation {
     constructor (canvas, colors, cellSize = 10) {
-        this.ctx = canvas.getContext("2d", { alpha: false });
+        super(canvas, colors);
         this.cellSize = cellSize;
-        this.colors = colors;
         this.gridWidth = 0;
         this.gridHeight = 0;
         this.grid = null;
         this.gridNextState = null;
         this.resize();
-    }
-
-    getFPS(){
-        return 10;
     }
 
     getName(){
@@ -104,4 +101,4 @@ class GameOfLife {
     }
 }
 
-module.exports = GameOfLife
+module.exports = GameOfLife;

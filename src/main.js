@@ -3,9 +3,10 @@
 // Require
 // ---------------------------------------------------------------------------------------------------------------------
 
-const GameOfLife = require("./gameoflive");
-const PerlinNoise = require("./perlinnoise");
-const SpinningShapes = require("./spinningshapes");
+const GameOfLife = require("./game-of-live");
+const PerlinNoiseParticles = require("./perlin-noise-particles");
+const SpinningShapes = require("./spinning-shapes");
+const NeuralNetwork = require("./neural-network");
 
 
 // Globals
@@ -18,11 +19,13 @@ var lastHeight = 0;
 var needResize = false;
 
 const colors = [ // Green
+    "#54ABA4",
     "#639598",
     "#678786",
     "#92ABA1",
     "#A5BFBC",
-    "#C5D1D2"
+//    "#C5D1D2",
+//    "#CCEDAE"
 ]
 
 // const colors = [ // Grey
@@ -38,17 +41,19 @@ const colors = [ // Green
 
 const animations = [
     GameOfLife,
-    PerlinNoise,
-    SpinningShapes
+    PerlinNoiseParticles,
+    SpinningShapes,
+    //NeuralNetwork
 ]
 
 //const animation = new GameOfLife(canvas, colors);
-//const animation = new PerlinNoise(canvas, colors);
+//const animation = new PerlinNoiseParticles(canvas, colors);
 //const animation = new SpinningShapes(canvas, colors);
+//const animation = new NeuralNetwork(canvas, colors);
 const animation = new animations[Math.floor(Math.random() * animations.length)](canvas, colors);
 
-// Due to performance concerns, run all the animations at max 20 frames per second
-var fps = Math.max(20, animation.getFPS());
+// Due to performance concerns, run all the animations at max 25 frames per second
+var fps = animation.getFPS();
 var fpsInterval = 1000 / fps;
 var then = Date.now();
 

@@ -1,20 +1,37 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
-class GameOfLife {
-    constructor (canvas, colors, cellSize = 10) {
+class Animation {
+    constructor(canvas, colors) {
         this.ctx = canvas.getContext("2d", { alpha: false });
-        this.cellSize = cellSize;
         this.colors = colors;
+    }
+
+    getFPS(){
+        return 25;
+    }
+
+    getName(){
+        return "unamed animation";
+    }
+}
+
+module.exports = Animation;
+
+},{}],2:[function(require,module,exports){
+'use strict';
+
+const Animation = require("./animation");
+
+class GameOfLife extends Animation {
+    constructor (canvas, colors, cellSize = 10) {
+        super(canvas, colors);
+        this.cellSize = cellSize;
         this.gridWidth = 0;
         this.gridHeight = 0;
         this.grid = null;
         this.gridNextState = null;
         this.resize();
-    }
-
-    getFPS(){
-        return 10;
     }
 
     getName(){
@@ -105,17 +122,18 @@ class GameOfLife {
     }
 }
 
-module.exports = GameOfLife
+module.exports = GameOfLife;
 
-},{}],2:[function(require,module,exports){
+},{"./animation":1}],3:[function(require,module,exports){
 'use strict';
 
 // Require
 // ---------------------------------------------------------------------------------------------------------------------
 
-const GameOfLife = require("./gameoflive");
-const PerlinNoise = require("./perlinnoise");
-const SpinningShapes = require("./spinningshapes");
+const GameOfLife = require("./game-of-live");
+const PerlinNoiseParticles = require("./perlin-noise-particles");
+const SpinningShapes = require("./spinning-shapes");
+const NeuralNetwork = require("./neural-network");
 
 
 // Globals
@@ -128,11 +146,13 @@ var lastHeight = 0;
 var needResize = false;
 
 const colors = [ // Green
+    "#54ABA4",
     "#639598",
     "#678786",
     "#92ABA1",
     "#A5BFBC",
-    "#C5D1D2"
+//    "#C5D1D2",
+//    "#CCEDAE"
 ]
 
 // const colors = [ // Grey
@@ -148,17 +168,19 @@ const colors = [ // Green
 
 const animations = [
     GameOfLife,
-    PerlinNoise,
-    SpinningShapes
+    PerlinNoiseParticles,
+    SpinningShapes,
+    NeuralNetwork
 ]
 
 //const animation = new GameOfLife(canvas, colors);
-//const animation = new PerlinNoise(canvas, colors);
+//const animation = new PerlinNoiseParticles(canvas, colors);
 //const animation = new SpinningShapes(canvas, colors);
+//const animation = new NeuralNetwork(canvas, colors);
 const animation = new animations[Math.floor(Math.random() * animations.length)](canvas, colors);
 
-// Due to performance concerns, run all the animations at max 20 frames per second
-var fps = Math.max(20, animation.getFPS());
+// Due to performance concerns, run all the animations at max 25 frames per second
+var fps = animation.getFPS();
 var fpsInterval = 1000 / fps;
 var then = Date.now();
 
@@ -211,91 +233,161 @@ function render() {
 
 render();
 
-},{"./gameoflive":1,"./perlinnoise":3,"./spinningshapes":4}],3:[function(require,module,exports){
+},{"./game-of-live":2,"./neural-network":4,"./perlin-noise-particles":5,"./spinning-shapes":7}],4:[function(require,module,exports){
 'use strict';
 
-// Perlin noise
-class PerlinNoise {
+const Animation = require("./animation");
+const Utils = require("./utils");
+
+class NeuralNetwork extends Animation {
+    constructor(canvas, colors) {
+        super(canvas, colors);
+        this.network = [];
+        this.nLayers = 0;
+        this.resize();
+
+        this.baseNodeSize = 3;
+        this.baseLineSize = 1;
+    }
+
+    getFPS(){
+        return 2;
+    }
+
+    getName(){
+        return "visualization of simple neural network"
+    }
+
+    update(elapsed){
+        // Update network values
+
+        // Randomly
+        // for (let l of this.network) {
+        //     for (let n of l) n.v = Math.random();
+        // }
+
+        // Calculate values based on weights
+        if(this.network.length == 0) return;
+        for (let n of this.network[0]) n.v = Math.random();
+        for (let i = 1; i < this.nLayers; i++) {
+            for (let n of this.network[i]) {
+                n.v = 0;
+                for (let j = 0; j < this.network[i - 1].length; ++j) {
+                    n.v += this.network[i - 1][j].v * n.w[j];
+                }
+                n.v = 1 / (1 + Math.exp(-n.v));
+            }
+        }
+    }
+
+    draw() {
+        Utils.clear(this.ctx, "#FFFFFF");
+
+        // Draw connections
+        for (let i = 0; i < this.nLayers - 1; i++) {
+            let l1 = this.network[i];
+            let l2 = this.network[i + 1];
+            for (let n1 of l1) {
+                for (let n2 of l2) {
+                    let color = this.colors[this.colors.length - 1 - Math.floor(  n1.v * this.colors.length)];
+                    this.ctx.globalAlpha = n1.v;
+                    this.ctx.lineWidth = 1 + n1.v;
+                    this.ctx.strokeStyle = color;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(n1.x, n1.y);
+                    this.ctx.lineTo(n2.x, n2.y);
+                    this.ctx.stroke();
+                }
+            }
+        }
+
+        // Draw nodes
+        this.ctx.globalAlpha = 1.0;
+        for (let l of this.network) {
+            for (let n of l) {
+                let color = this.colors[this.colors.length - 1 - Math.floor(  n.v * this.colors.length)];
+                let nSize = this.baseNodeSize + n.v * 2;
+                Utils.fillCircle(this.ctx, color, n.x, n.y, nSize);
+                this.ctx.font = '12px sans-serif';
+                this.ctx.fillText(n.v.toFixed(2), n.x - 11, n.y - 2 * this.baseNodeSize);
+            }
+        }
+    }
+
+    resize() {
+        Utils.clear(this.ctx, "#FFFFFF");
+
+        // Create new network that will nicely fit to the entire page
+        this.network = [];
+        this.nLayers = 5;
+        let x = 150;
+        let width = this.ctx.canvas.width;
+        let height = this.ctx.canvas.height;
+        let interLayer = width / this.nLayers;
+        let interNode = height / 17;
+        for (let i = 0; i < this.nLayers; i++) {
+            let layer = [];
+            let layerNodes = 0;
+            if(i == 0 || i == this.nLayers - 1) layerNodes = Math.floor(Utils.randomRange(4, 16));
+            else layerNodes = Utils.randomChoice([8, 12, 16]);
+            let y = height / 2 - Math.floor(layerNodes / 2) * interNode;
+            if (layerNodes % 2 == 0) {
+                y += interNode/2;
+            }
+
+            for (let j = 0; j < layerNodes; j++) {
+                let n = {x: x, y: y, v: 0, w: null};
+                if(i > 0) n.w = Utils.randomArray(this.network[i - 1].length, -1, 1);
+                layer.push(n);
+                y += interNode;
+            }
+            this.network.push(layer);
+            x += interLayer;
+        }
+    }
+}
+
+module.exports = NeuralNetwork;
+
+
+},{"./animation":1,"./utils":8}],5:[function(require,module,exports){
+'use strict';
+
+const Animation = require("./animation");
+const PerlinNoise = require("./perlin-noise");
+const Utils = require("./utils");
+
+class PerlinNoiseParticles extends Animation {
     constructor(canvas, colors, particlePer100PixSq = 4, noiseScale = 1200) {
-        this.ctx = canvas.getContext("2d", { alpha: false });
+        super(canvas, colors);
+        this.particlePer100PixSq = particlePer100PixSq;
+        this.noiseScale = noiseScale;
+        this.noise = new PerlinNoise();
         this.width = 0;
         this.height = 0;
-        this.particlePer100PixSq = particlePer100PixSq;
-        this.colors = colors;
         this.particles = [];
         this.imageData = null;
-
-        // To make it more efficient use "memory" of gradients and values already calculated for Perlin Noise
-        // Based on: https://github.com/joeiddon/perlin
-        this.noiseScale = noiseScale;
-        this.noiseGradients = {};
-        this.noiseMemory = {};
         this.resize();
     }
 
     getFPS(){
-        return 20;
+        return 25;
     }
 
     getName(){
         return "particles moving through Perlin noise"
     }
 
-    dotNoiseGrid(x, y, vx, vy){
-        let dVec = {x: x - vx, y: y - vy};
-        let gVec;
-        if (this.noiseGradients[[vx, vy]]){
-            gVec = this.noiseGradients[[vx, vy]];
-        } else {
-            let theta = Math.random() * 2 * Math.PI;
-            gVec = {x: Math.cos(theta), y: Math.sin(theta)};
-            this.noiseGradients[[vx, vy]] = gVec;
-        }
-        return dVec.x * gVec.x + dVec.y * gVec.y;
-    }
-
-    interpolate(x, a, b){
-        //return a + x * (b - a);
-        return a + (6 * x**5 - 15 * x**4 + 10 * x**3) * (b - a);
-    }
-
-    getNoise(x, y) {
-        // Get from memory if already calculated
-        if (this.noiseMemory.hasOwnProperty([x, y]))
-            return this.noiseMemory[[x, y]];
-
-        let xf = Math.floor(x);
-        let yf = Math.floor(y);
-
-        // Interpolate
-        let tl = this.dotNoiseGrid(x, y, xf, yf);
-        let tr = this.dotNoiseGrid(x, y, xf + 1, yf);
-        let bl = this.dotNoiseGrid(x, y, xf, yf + 1);
-        let br = this.dotNoiseGrid(x, y, xf + 1, yf + 1);
-        let xt = this.interpolate(x - xf, tl, tr);
-        let xb = this.interpolate(x - xf, bl, br);
-        let v = this.interpolate(y - yf, xt, xb);
-
-        this.noiseMemory[[x, y]] = v;
-        return v;
-    }
-
     update(elapsed) {
-        for(let i = 0; i < this.particles.length; i++){
-            let angle = this.getNoise(this.particles[i].x / this.noiseScale, this.particles[i].y / this.noiseScale) * 2 * Math.PI * this.noiseScale;
-            this.particles[i].x += Math.cos(angle) * this.particles[i].speed;
-            this.particles[i].y += Math.sin(angle) * this.particles[i].speed;
+        for(let p of this.particles){
+            let angle = this.noise.get(p.x / this.noiseScale, p.y / this.noiseScale) * 2 * Math.PI * this.noiseScale;
+            p.x += Math.cos(angle) * p.speed;
+            p.y += Math.sin(angle) * p.speed;
         }
     }
 
     draw() {
-        for(let i = 0; i < this.particles.length; i++) {
-            this.ctx.fillStyle = this.particles[i].color;
-            this.ctx.beginPath();
-            this.ctx.arc(this.particles[i].x, this.particles[i].y, this.particles[i].radius, 0, 2 * Math.PI, false);
-            this.ctx.fill();
-        }
-
+        for(let p of this.particles) Utils.fillCircle(this.ctx, p.color, p.x, p.y, p.radius);
         this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     }
 
@@ -315,8 +407,7 @@ class PerlinNoise {
     }
 
     resize() {
-        this.ctx.fillStyle = "#FFFFFF";
-        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        Utils.clear(this.ctx, "#FFFFFF");
         if(this.imageData != null) this.ctx.putImageData(this.imageData, 0, 0);
 
         // Add particles to new parts of the image
@@ -337,7 +428,7 @@ class PerlinNoise {
         // const numPixels = gridWidth / this.ctx.canvas.width * pixelSize;
         // for (let y = 0; y < gridHeight; y += numPixels){
         //     for (let x = 0; x < gridWidth; x += numPixels){
-        //         let v = parseInt(this.getNoise(x, y) * 250);
+        //         let v = parseInt(this.noise.get(x, y) * 250);
         //         this.ctx.fillStyle = 'hsl(' + v + ',50%,50%)';
         //         this.ctx.fillRect(x / gridWidth * this.ctx.canvas.width, y / gridHeight * this.ctx.canvas.height, pixelSize, pixelSize);
         //     }
@@ -345,31 +436,82 @@ class PerlinNoise {
     }
 }
 
-module.exports = PerlinNoise
+module.exports = PerlinNoiseParticles;
 
-},{}],4:[function(require,module,exports){
+},{"./animation":1,"./perlin-noise":6,"./utils":8}],6:[function(require,module,exports){
 'use strict';
 
+// Based on: https://github.com/joeiddon/perlin
+class PerlinNoise {
+    constructor() {
+        // It uses "memory" of gradients and values already calculated for Perlin noise
+        this.noiseGradients = {};
+        this.noiseMemory = {};
+    }
+
+    dotNoiseGrid(x, y, vx, vy){
+        let dVec = {x: x - vx, y: y - vy};
+        let gVec;
+        if (this.noiseGradients[[vx, vy]]){
+            gVec = this.noiseGradients[[vx, vy]];
+        } else {
+            let theta = Math.random() * 2 * Math.PI;
+            gVec = {x: Math.cos(theta), y: Math.sin(theta)};
+            this.noiseGradients[[vx, vy]] = gVec;
+        }
+        return dVec.x * gVec.x + dVec.y * gVec.y;
+    }
+
+    interpolate(x, a, b){
+        //return a + x * (b - a);
+        return a + (6 * x**5 - 15 * x**4 + 10 * x**3) * (b - a);
+    }
+
+    get(x, y) {
+        // Get from memory if already calculated
+        if (this.noiseMemory.hasOwnProperty([x, y]))
+            return this.noiseMemory[[x, y]];
+
+        let xf = Math.floor(x);
+        let yf = Math.floor(y);
+
+        // Interpolate
+        let tl = this.dotNoiseGrid(x, y, xf, yf);
+        let tr = this.dotNoiseGrid(x, y, xf + 1, yf);
+        let bl = this.dotNoiseGrid(x, y, xf, yf + 1);
+        let br = this.dotNoiseGrid(x, y, xf + 1, yf + 1);
+        let xt = this.interpolate(x - xf, tl, tr);
+        let xb = this.interpolate(x - xf, bl, br);
+        let v = this.interpolate(y - yf, xt, xb);
+
+        this.noiseMemory[[x, y]] = v;
+        return v;
+    }
+}
+
+module.exports = PerlinNoise;
+
+},{}],7:[function(require,module,exports){
+'use strict';
+
+const Animation = require("./animation");
+
 // Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
-class SpinningShapes {
+class SpinningShapes extends Animation {
     constructor (canvas, colors, shapes = 500) {
-        this.ctx = canvas.getContext("2d", { alpha: false });
+        super(canvas, colors);
         this.shapes = shapes;
-        this.colors = colors;
         this.time = 0;
         this.scale = 0;
         this.centerX = 0;
         this.centerY = 0;
-        this.resize();
 
         this.dist_base = 0.6;
         this.dist_var = 0.2;
         this.size_base = 0.2;
         this.size_var = 0.12;
-    }
 
-    getFPS(){
-        return 30;
+        this.resize();
     }
 
     getName(){
@@ -420,4 +562,52 @@ class SpinningShapes {
 
 module.exports = SpinningShapes
 
-},{}]},{},[2])
+},{"./animation":1}],8:[function(require,module,exports){
+module.exports = {
+
+    randomRange: function(min, max) {
+        return Math.random() * (max - min) + min;
+    },
+
+    randomChoice: function(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+    },
+
+    randomBoxMuller: function() {
+        return Math.sqrt(-2.0 * Math.log( 1 - Math.random())) * Math.cos(2.0 * Math.PI * Math.random());
+    },
+
+    randomArray: function(length, min, max){
+        return Array(length).fill().map(() => this.randomRange(min, max))
+    },
+
+    // Function to linearly interpolate between v1 and v2
+    lerp: function(v1, v2, t) {
+        return (1.0 - t) * v1 + t * v2;
+    },
+
+    clear(ctx, color){
+        ctx.fillStyle = color;
+        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    },
+
+    fillRect(ctx, color, x, y, w, h){
+
+    },
+
+    fillCircle(ctx, color, x, y, radius){
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
+        ctx.fill();
+    },
+
+    strokeCircle(ctx, color, x, y, radius){
+        ctx.strokeStyle = color;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
+        ctx.stroke();
+    },
+};
+
+},{}]},{},[3])

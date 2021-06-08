@@ -1,25 +1,23 @@
 'use strict';
 
+const Animation = require("./animation");
+
 // Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
-class SpinningShapes {
+class SpinningShapes extends Animation {
     constructor (canvas, colors, shapes = 500) {
-        this.ctx = canvas.getContext("2d", { alpha: false });
+        super(canvas, colors);
         this.shapes = shapes;
-        this.colors = colors;
         this.time = 0;
         this.scale = 0;
         this.centerX = 0;
         this.centerY = 0;
-        this.resize();
 
         this.dist_base = 0.6;
         this.dist_var = 0.2;
         this.size_base = 0.2;
         this.size_var = 0.12;
-    }
 
-    getFPS(){
-        return 30;
+        this.resize();
     }
 
     getName(){
