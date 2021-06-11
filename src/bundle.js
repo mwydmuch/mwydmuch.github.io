@@ -268,14 +268,15 @@ class NeuralNetwork extends Animation {
 
         // Calculate values based on weights
         if(this.network.length == 0) return;
-        for (let n of this.network[0]) n.v = Math.random();
+        for (let n of this.network[0]) n.v = Utils.randomRange(-1, 1);
         for (let i = 1; i < this.nLayers; i++) {
             for (let n of this.network[i]) {
                 n.v = 0;
                 for (let j = 0; j < this.network[i - 1].length; ++j) {
                     n.v += this.network[i - 1][j].v * n.w[j];
                 }
-                n.v = 1 / (1 + Math.exp(-n.v));
+                if(i == this.nLayers - 1) n.v = 1 / (1 + Math.exp(-n.v)); // Sigmoid for last layer
+                else n.v = Math.max(0, n.v); // ReLU
             }
         }
     }
@@ -283,15 +284,24 @@ class NeuralNetwork extends Animation {
     draw() {
         Utils.clear(this.ctx, "#FFFFFF");
 
+        if (this.stateData != null) {
+            this.ctx.globalAlpha = 1 - this.time / this.stateTime;
+            if (this.prevStateData != null) this.ctx.putImageData(this.prevStateData, 0, 0);
+            this.ctx.globalAlpha = this.time / this.stateTime;
+            this.ctx.putImageData(this.stateData, 0, 0);
+            return
+        }
+
         // Draw connections
         for (let i = 0; i < this.nLayers - 1; i++) {
             let l1 = this.network[i];
             let l2 = this.network[i + 1];
             for (let n1 of l1) {
                 for (let n2 of l2) {
-                    let color = this.colors[this.colors.length - 1 - Math.floor(  n1.v * this.colors.length)];
-                    this.ctx.globalAlpha = n1.v;
-                    this.ctx.lineWidth = 1 + n1.v;
+                    let v = Utils.clip(n1.v, 0, 1);
+                    let color = this.colors[this.colors.length - 1 - Math.floor(v * this.colors.length)];
+                    this.ctx.globalAlpha = v;
+                    this.ctx.lineWidth = 1 + v;
                     this.ctx.strokeStyle = color;
                     this.ctx.beginPath();
                     this.ctx.moveTo(n1.x, n1.y);
@@ -305,14 +315,17 @@ class NeuralNetwork extends Animation {
         this.ctx.globalAlpha = 1.0;
         for (let l of this.network) {
             for (let n of l) {
-                let color = this.colors[this.colors.length - 1 - Math.floor(  n.v * this.colors.length)];
-                let nSize = this.baseNodeSize + n.v * 2;
+                let v = Utils.clip(n.v, 0, 1);
+                let v2 = Utils.clip(n.v * 2, 0, 4);
+                let color = this.colors[this.colors.length - 1 - Math.floor(v * this.colors.length)];
+                let nSize = this.baseNodeSize + v2;
                 Utils.fillCircle(this.ctx, color, n.x, n.y, nSize);
                 this.ctx.font = '12px sans-serif';
                 this.ctx.fillText(n.v.toFixed(2), n.x - 11, n.y - 2 * this.baseNodeSize);
             }
         }
     }
+
 
     resize() {
         Utils.clear(this.ctx, "#FFFFFF");
@@ -348,7 +361,6 @@ class NeuralNetwork extends Animation {
 }
 
 module.exports = NeuralNetwork;
-
 
 },{"./animation":1,"./utils":8}],5:[function(require,module,exports){
 'use strict';
@@ -579,6 +591,10 @@ module.exports = {
 
     randomArray: function(length, min, max){
         return Array(length).fill().map(() => this.randomRange(min, max))
+    },
+
+    clip: function(value, min, max){
+        return Math.max(min, Math.min(max, value));
     },
 
     // Function to linearly interpolate between v1 and v2

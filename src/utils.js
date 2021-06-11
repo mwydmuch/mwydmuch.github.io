@@ -16,6 +16,10 @@ module.exports = {
         return Array(length).fill().map(() => this.randomRange(min, max))
     },
 
+    clip: function(value, min, max){
+        return Math.max(min, Math.min(max, value));
+    },
+
     // Function to linearly interpolate between v1 and v2
     lerp: function(v1, v2, t) {
         return (1.0 - t) * v1 + t * v2;

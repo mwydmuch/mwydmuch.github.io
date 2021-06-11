@@ -43,7 +43,7 @@ const animations = [
     GameOfLife,
     PerlinNoiseParticles,
     SpinningShapes,
-    //NeuralNetwork
+    NeuralNetwork
 ]
 
 //const animation = new GameOfLife(canvas, colors);
