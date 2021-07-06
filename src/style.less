@@ -79,7 +79,10 @@ p {
 
 .accordion-body{
   margin-left: 0.4rem;
-  max-height: 100rem;
+}
+
+.accordion input:checked~.accordion-body, .accordion[open] .accordion-body{
+  max-height: 100rem !important;
 }
 
 ul{
