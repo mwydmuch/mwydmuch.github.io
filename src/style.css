@@ -52,6 +52,22 @@ p {
 .reverse-red {
   background: #E52C2C;
 }
+.accordion-body {
+  margin-left: 0.4rem;
+  max-height: 100rem;
+}
+ul {
+  list-style-position: outside;
+  list-style-type: square;
+  margin-left: 1rem;
+}
+.month-year-date-li {
+  text-indent: -3.6rem;
+  padding-left: 3.6rem;
+}
+.month-year-date-li i {
+  text-indent: 0;
+}
 #background {
   position: absolute;
   top: 0;
