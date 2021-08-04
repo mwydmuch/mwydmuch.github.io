@@ -1,6 +1,80 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
+const Animation = require("./animation");
+
+class ThreeNPlusOne extends Animation {
+    constructor (canvas, colors, length = 30, evenAngel = 8, oddAngel = -20) {
+        super(canvas, colors);
+        this.length = length;
+        this.evenAngel = evenAngel * Math.PI / 180;
+        this.oddAngel = oddAngel * Math.PI / 180;
+        this.seqences = []
+        this.frame = 0;
+        this.startX;
+        this.startY;
+        this.resize();
+    }
+
+    getName(){
+        return "3n + 1 visualization"
+    }
+
+    update(elapsed){
+        let n = this.seqences.length + 1;
+        let sequence = [n];
+        while(n != 1){
+            if(n % 2) n = 3 * n + 1;
+            else n /= 2;
+            sequence.push(n);
+        }
+        this.seqences.push(sequence);
+    }
+
+    drawSequence(sequence) {
+        let x = this.startX;
+        let y = this.startY;
+        let angle = 270 * Math.PI / 180;
+
+        this.ctx.strokeStyle = this.colors[this.frame % this.colors.length];
+        this.ctx.lineWidth = 2;
+
+        for(let i = sequence.length - 2; i >= 0; --i){
+            this.ctx.beginPath();
+            this.ctx.moveTo(x, y);
+
+            if(sequence[i] % 2) angle += this.oddAngel;
+            else angle += this.evenAngel;
+
+            x += this.length * Math.cos(angle);
+            y += this.length * Math.sin(angle);
+            this.ctx.lineTo(x, y);
+            this.ctx.stroke();
+        }
+    }
+
+    draw() {
+        while(this.frame < this.seqences.length){
+            this.drawSequence(this.seqences[this.frame]);
+            ++this.frame;
+        }
+    }
+
+    resize() {
+        this.startX = this.ctx.canvas.width / 2;
+        this.startY = this.ctx.canvas.height;
+
+        this.frame = 0;
+        this.ctx.fillStyle = "#FFFFFF";
+        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    }
+}
+
+module.exports = ThreeNPlusOne;
+
+},{"./animation":2}],2:[function(require,module,exports){
+'use strict';
+
 class Animation {
     constructor(canvas, colors) {
         this.ctx = canvas.getContext("2d", { alpha: false });
@@ -18,7 +92,7 @@ class Animation {
 
 module.exports = Animation;
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 'use strict';
 
 const Animation = require("./animation");
@@ -124,7 +198,7 @@ class GameOfLife extends Animation {
 
 module.exports = GameOfLife;
 
-},{"./animation":1}],3:[function(require,module,exports){
+},{"./animation":2}],4:[function(require,module,exports){
 'use strict';
 
 // Require
@@ -134,6 +208,7 @@ const GameOfLife = require("./game-of-live");
 const PerlinNoiseParticles = require("./perlin-noise-particles");
 const SpinningShapes = require("./spinning-shapes");
 const NeuralNetwork = require("./neural-network");
+const ThreeNPlusOne = require("./3n+1");
 
 
 // Globals
@@ -170,13 +245,10 @@ const animations = [
     GameOfLife,
     PerlinNoiseParticles,
     SpinningShapes,
-    NeuralNetwork
+    NeuralNetwork,
+    ThreeNPlusOne
 ]
 
-//const animation = new GameOfLife(canvas, colors);
-//const animation = new PerlinNoiseParticles(canvas, colors);
-//const animation = new SpinningShapes(canvas, colors);
-//const animation = new NeuralNetwork(canvas, colors);
 const animation = new animations[Math.floor(Math.random() * animations.length)](canvas, colors);
 
 // Due to performance concerns, run all the animations at max 25 frames per second
@@ -233,7 +305,7 @@ function render() {
 
 render();
 
-},{"./game-of-live":2,"./neural-network":4,"./perlin-noise-particles":5,"./spinning-shapes":7}],4:[function(require,module,exports){
+},{"./3n+1":1,"./game-of-live":3,"./neural-network":5,"./perlin-noise-particles":6,"./spinning-shapes":8}],5:[function(require,module,exports){
 'use strict';
 
 const Animation = require("./animation");
@@ -362,7 +434,7 @@ class NeuralNetwork extends Animation {
 
 module.exports = NeuralNetwork;
 
-},{"./animation":1,"./utils":8}],5:[function(require,module,exports){
+},{"./animation":2,"./utils":9}],6:[function(require,module,exports){
 'use strict';
 
 const Animation = require("./animation");
@@ -450,7 +522,7 @@ class PerlinNoiseParticles extends Animation {
 
 module.exports = PerlinNoiseParticles;
 
-},{"./animation":1,"./perlin-noise":6,"./utils":8}],6:[function(require,module,exports){
+},{"./animation":2,"./perlin-noise":7,"./utils":9}],7:[function(require,module,exports){
 'use strict';
 
 // Based on: https://github.com/joeiddon/perlin
@@ -503,7 +575,7 @@ class PerlinNoise {
 
 module.exports = PerlinNoise;
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 const Animation = require("./animation");
@@ -527,7 +599,7 @@ class SpinningShapes extends Animation {
     }
 
     getName(){
-        return "circles moving in circle"
+        return "circles moving in a circle"
     }
 
     update(elapsed){
@@ -574,7 +646,7 @@ class SpinningShapes extends Animation {
 
 module.exports = SpinningShapes
 
-},{"./animation":1}],8:[function(require,module,exports){
+},{"./animation":2}],9:[function(require,module,exports){
 module.exports = {
 
     randomRange: function(min, max) {
@@ -626,4 +698,4 @@ module.exports = {
     },
 };
 
-},{}]},{},[3])
+},{}]},{},[4])

@@ -7,6 +7,7 @@ const GameOfLife = require("./game-of-live");
 const PerlinNoiseParticles = require("./perlin-noise-particles");
 const SpinningShapes = require("./spinning-shapes");
 const NeuralNetwork = require("./neural-network");
+const ThreeNPlusOne = require("./3n+1");
 
 
 // Globals
@@ -43,13 +44,10 @@ const animations = [
     GameOfLife,
     PerlinNoiseParticles,
     SpinningShapes,
-    NeuralNetwork
+    NeuralNetwork,
+    ThreeNPlusOne
 ]
 
-//const animation = new GameOfLife(canvas, colors);
-//const animation = new PerlinNoiseParticles(canvas, colors);
-//const animation = new SpinningShapes(canvas, colors);
-//const animation = new NeuralNetwork(canvas, colors);
 const animation = new animations[Math.floor(Math.random() * animations.length)](canvas, colors);
 
 // Due to performance concerns, run all the animations at max 25 frames per second

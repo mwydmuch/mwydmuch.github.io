@@ -21,7 +21,7 @@ class SpinningShapes extends Animation {
     }
 
     getName(){
-        return "circles moving in circle"
+        return "circles moving in a circle"
     }
 
     update(elapsed){
