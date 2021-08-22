@@ -241,6 +241,13 @@ const colors = [ // Green
 // Create animation and init animation loop
 // ---------------------------------------------------------------------------------------------------------------------
 
+const content = document.getElementById("content");
+const backgroundControls = document.getElementById("background-controls");
+const backgroundName = document.getElementById("background-name");
+const backgroundPrev = document.getElementById("background-prev");
+const backgroundNext = document.getElementById("background-next");
+
+
 const animations = [
     GameOfLife,
     PerlinNoiseParticles,
@@ -249,41 +256,27 @@ const animations = [
     ThreeNPlusOne
 ]
 
-const animation = new animations[Math.floor(Math.random() * animations.length)](canvas, colors);
+let animationId = Math.floor(Math.random() * animations.length)
+let animation = new animations[animationId](canvas, colors);
 
-// Due to performance concerns, run all the animations at max 25 frames per second
-var fps = animation.getFPS();
-var fpsInterval = 1000 / fps;
-var then = Date.now();
+var framesInterval = 0;
+var then = 0;
+function updateAnimation(animation) {
+    let fps = animation.getFPS();
+    framesInterval = 1000 / fps;
+    then = Date.now();
+    backgroundName.innerHTML = animation.getName();
+}
+updateAnimation(animation);
 
 
-const content = document.getElementById("content");
-const backgroundName = document.getElementById("background-name");
-backgroundName.innerHTML += animation.getName();
-backgroundName.addEventListener("mouseover", function(){
-    content.classList.remove("show-from-0");
-    content.classList.add("fade-to-0");
-    canvas.classList.remove("faded-8");
-    canvas.classList.remove("fade-to-8");
-    canvas.classList.add("hue-change");
-    canvas.classList.add("show-from-8");
-});
-backgroundName.addEventListener("mouseout", function(){
-    content.classList.remove("fade-to-0");
-    content.classList.add("show-from-0");
-    canvas.classList.remove("show-from-8");
-    canvas.classList.add("fade-to-8");
-    canvas.classList.remove("hue-change");
-});
-
-// Start animation
 function render() {
     requestAnimationFrame(render);
 
     // Limit framerate
     let now = Date.now();
     let elapsed = now - then;
-    if (elapsed < fpsInterval) return;
+    if (elapsed < framesInterval) return;
     then = now;
 
     // Detect container size change
@@ -304,6 +297,39 @@ function render() {
 }
 
 render();
+
+
+// Add background controls
+// ---------------------------------------------------------------------------------------------------------------------
+
+backgroundControls.addEventListener("mouseover", function(){
+    content.classList.remove("show-from-0");
+    content.classList.add("fade-to-0");
+    canvas.classList.remove("faded-8");
+    canvas.classList.remove("fade-to-8");
+    canvas.classList.add("hue-change");
+    canvas.classList.add("show-from-8");
+});
+backgroundControls.addEventListener("mouseout", function(){
+    content.classList.remove("fade-to-0");
+    content.classList.add("show-from-0");
+    canvas.classList.remove("show-from-8");
+    canvas.classList.add("fade-to-8");
+    canvas.classList.remove("hue-change");
+});
+backgroundPrev.addEventListener("click", function(){
+    animationId = (animationId + animations.length - 1) % animations.length;
+    animation = new animations[animationId](canvas, colors);
+    updateAnimation(animation);
+});
+backgroundNext.addEventListener("click", function(){
+    animationId = (animationId + 1) % animations.length;
+    animation = new animations[animationId](canvas, colors);
+    updateAnimation(animation);
+});
+
+
+
 
 },{"./3n+1":1,"./game-of-live":3,"./neural-network":5,"./perlin-noise-particles":6,"./spinning-shapes":8}],5:[function(require,module,exports){
 'use strict';

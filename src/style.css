@@ -224,3 +224,8 @@ ul {
   text-align: center;
   margin: 1rem;
 }
+#footer #background-prev,
+#footer #background-next {
+  cursor: pointer;
+  padding: 0.25rem;
+}
