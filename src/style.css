@@ -50,7 +50,7 @@ p {
   background: #43696B;
 }
 .reverse-red {
-  background: #E52C2C;
+  background: #e52c2c;
 }
 .accordion-body {
   margin-left: 0.4rem;
@@ -223,6 +223,13 @@ ul {
 #footer {
   text-align: center;
   margin: 1rem;
+}
+#footer #background-controls {
+  color: #FFFFFF;
+  padding: 0 0.25rem;
+  margin: 0 0.05rem;
+  display: inline-block;
+  background: #43696B;
 }
 #footer #background-prev,
 #footer #background-next {

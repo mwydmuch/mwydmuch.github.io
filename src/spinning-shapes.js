@@ -4,18 +4,18 @@ const Animation = require("./animation");
 
 // Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
 class SpinningShapes extends Animation {
-    constructor (canvas, colors, shapes = 500) {
-        super(canvas, colors);
+    constructor (canvas, colors, colorsAlt, shapes = 500) {
+        super(canvas, colors, colorsAlt);
         this.shapes = shapes;
         this.time = 0;
         this.scale = 0;
         this.centerX = 0;
         this.centerY = 0;
 
-        this.dist_base = 0.6;
-        this.dist_var = 0.2;
-        this.size_base = 0.2;
-        this.size_var = 0.12;
+        this.distBase = 0.6;
+        this.distVar = 0.2;
+        this.sizeBase = 0.2;
+        this.sizeVar = 0.12;
 
         this.resize();
     }
@@ -29,12 +29,12 @@ class SpinningShapes extends Animation {
     }
 
     getCenterForTheta(theta, time, scale) {
-        let distance = (this.dist_base + this.dist_var * Math.cos(theta * 6 + Math.cos(theta * 8 + time / 2))) * scale;
+        let distance = (this.distBase + this.distVar * Math.cos(theta * 6 + Math.cos(theta * 8 + time / 2))) * scale;
         return {x: Math.cos(theta) * distance, y: Math.sin(theta) * distance}
     }
 
     getSizeForTheta(theta, time, scale) {
-        return (this.size_base + this.size_var * Math.cos(theta * 9 - time)) * scale;
+        return (this.sizeBase + this.sizeVar * Math.cos(theta * 9 - time)) * scale;
     }
 
     getColorForTheta(theta, time) {

@@ -46,6 +46,10 @@ class PerlinNoise {
         this.noiseMemory[[x, y]] = v;
         return v;
     }
+
+    perlin2(x, y) { // For compablity with josephg-noise
+        return this.get(x, y);
+    }
 }
 
 module.exports = PerlinNoise;

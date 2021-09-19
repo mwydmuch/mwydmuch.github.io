@@ -3,8 +3,8 @@
 const Animation = require("./animation");
 
 class ThreeNPlusOne extends Animation {
-    constructor (canvas, colors, length = 30, evenAngel = 8, oddAngel = -20) {
-        super(canvas, colors);
+    constructor (canvas, colors, colorsAlt, length = 30, evenAngel = 8, oddAngel = -20) {
+        super(canvas, colors, colorsAlt);
         this.length = length;
         this.evenAngel = evenAngel * Math.PI / 180;
         this.oddAngel = oddAngel * Math.PI / 180;

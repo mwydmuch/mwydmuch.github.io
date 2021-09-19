@@ -3,8 +3,8 @@
 const Animation = require("./animation");
 
 class GameOfLife extends Animation {
-    constructor (canvas, colors, cellSize = 10) {
-        super(canvas, colors);
+    constructor (canvas, colors, colorsAlt, cellSize = 10) {
+        super(canvas, colors, colorsAlt);
         this.cellSize = cellSize;
         this.gridWidth = 0;
         this.gridHeight = 0;

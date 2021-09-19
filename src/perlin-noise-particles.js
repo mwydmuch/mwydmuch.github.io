@@ -1,15 +1,17 @@
 'use strict';
 
 const Animation = require("./animation");
-const PerlinNoise = require("./perlin-noise");
+//const PerlinNoise = require("./perlin-noise"); // Original implementation of Perlin noise
+const JosephgNoise = require("./josephg-noise");
 const Utils = require("./utils");
 
 class PerlinNoiseParticles extends Animation {
-    constructor(canvas, colors, particlePer100PixSq = 4, noiseScale = 1200) {
-        super(canvas, colors);
+    constructor(canvas, colors, colorsAlt, particlePer100PixSq = 4, noiseScale = 1200) {
+        super(canvas, colors, colorsAlt);
         this.particlePer100PixSq = particlePer100PixSq;
         this.noiseScale = noiseScale;
-        this.noise = new PerlinNoise();
+        //this.noise = new PerlinNoise();
+        this.noise = JosephgNoise.noise;
         this.width = 0;
         this.height = 0;
         this.particles = [];
@@ -27,7 +29,7 @@ class PerlinNoiseParticles extends Animation {
 
     update(elapsed) {
         for(let p of this.particles){
-            let angle = this.noise.get(p.x / this.noiseScale, p.y / this.noiseScale) * 2 * Math.PI * this.noiseScale;
+            let angle = this.noise.perlin2(p.x / this.noiseScale, p.y / this.noiseScale) * 2 * Math.PI * this.noiseScale;
             p.x += Math.cos(angle) * p.speed;
             p.y += Math.sin(angle) * p.speed;
         }

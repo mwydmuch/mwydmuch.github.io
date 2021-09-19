@@ -1,9 +1,10 @@
 'use strict';
 
 class Animation {
-    constructor(canvas, colors) {
+    constructor(canvas, colors, colorsAlt) {
         this.ctx = canvas.getContext("2d", { alpha: false });
         this.colors = colors;
+        this.colorsAlt = colorsAlt;
     }
 
     getFPS(){

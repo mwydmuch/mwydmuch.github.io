@@ -15,7 +15,7 @@
 @main-dark: #38575A;
 
 // Other colors
-@mlinpl-red: #E52C2C;
+@mlinpl-red: #e52c2c;
 
 // Others
 @font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -227,6 +227,14 @@ each(@fade-show-values, {
 #footer{
   text-align: center;
   margin: 1rem;
+
+  #background-controls {
+    color: @background;
+    padding: 0 0.25rem;
+    margin: 0 0.05rem;
+    display: inline-block;
+    background: @main;
+  }
 
   #background-prev, #background-next{
     cursor: pointer;

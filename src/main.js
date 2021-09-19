@@ -8,6 +8,7 @@ const PerlinNoiseParticles = require("./perlin-noise-particles");
 const SpinningShapes = require("./spinning-shapes");
 const NeuralNetwork = require("./neural-network");
 const ThreeNPlusOne = require("./3n+1");
+const CircularWaves = require("./circular-waves");
 
 
 // Globals
@@ -19,7 +20,7 @@ var lastWidth = 0;
 var lastHeight = 0;
 var needResize = false;
 
-const colors = [ // Green
+const colors = [ // Green palette
     "#54ABA4",
     "#639598",
     "#678786",
@@ -29,12 +30,9 @@ const colors = [ // Green
 //    "#CCEDAE"
 ]
 
-// const colors = [ // Grey
-//     "#777777",
-//     "#888888",
-//     "#999999",
-//     "#AAAAAA"
-// ]
+const colorsAlt = [ // Alt red palette
+    "#CA3737",
+];
 
 
 // Create animation and init animation loop
@@ -52,11 +50,12 @@ const animations = [
     PerlinNoiseParticles,
     SpinningShapes,
     NeuralNetwork,
-    ThreeNPlusOne
-]
+    ThreeNPlusOne,
+    CircularWaves,
+];
 
-let animationId = Math.floor(Math.random() * animations.length)
-let animation = new animations[animationId](canvas, colors);
+let animationId = Math.floor(Math.random() * animations.length);
+let animation = new animations[animationId](canvas, colors, colorsAlt);
 
 var framesInterval = 0;
 var then = 0;
@@ -109,6 +108,7 @@ backgroundControls.addEventListener("mouseover", function(){
     canvas.classList.add("hue-change");
     canvas.classList.add("show-from-8");
 });
+
 backgroundControls.addEventListener("mouseout", function(){
     content.classList.remove("fade-to-0");
     content.classList.add("show-from-0");
@@ -116,16 +116,16 @@ backgroundControls.addEventListener("mouseout", function(){
     canvas.classList.add("fade-to-8");
     canvas.classList.remove("hue-change");
 });
+
 backgroundPrev.addEventListener("click", function(){
     animationId = (animationId + animations.length - 1) % animations.length;
-    animation = new animations[animationId](canvas, colors);
+    animation = new animations[animationId](canvas, colors, colorsAlt);
     updateAnimation(animation);
 });
+
 backgroundNext.addEventListener("click", function(){
     animationId = (animationId + 1) % animations.length;
-    animation = new animations[animationId](canvas, colors);
+    animation = new animations[animationId](canvas, colors, colorsAlt);
     updateAnimation(animation);
 });
-
-
 

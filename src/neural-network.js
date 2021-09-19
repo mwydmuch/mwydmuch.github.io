@@ -4,18 +4,19 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class NeuralNetwork extends Animation {
-    constructor(canvas, colors) {
-        super(canvas, colors);
+    constructor(canvas, colors, colorsAlt) {
+        super(canvas, colors, colorsAlt);
         this.network = [];
         this.nLayers = 0;
-        this.resize();
 
         this.baseNodeSize = 3;
         this.baseLineSize = 1;
+
+        this.resize();
     }
 
     getFPS(){
-        return 2;
+        return 1.5;
     }
 
     getName(){
@@ -95,13 +96,19 @@ class NeuralNetwork extends Animation {
         Utils.clear(this.ctx, "#FFFFFF");
 
         // Create new network that will nicely fit to the entire page
-        this.network = [];
-        this.nLayers = 5;
-        let x = 150;
         let width = this.ctx.canvas.width;
         let height = this.ctx.canvas.height;
-        let interLayer = width / this.nLayers;
+
+        this.network = [];
+
+        // Number of layers depends on screen width
+        this.nLayers = Utils.clip(Math.floor(width / 150), 3, 7);
+        let margin = 50 * width / 500;
+
+        let x = margin;
+        let interLayer = (width - 2 * margin) / (this.nLayers - 1);
         let interNode = height / 17;
+
         for (let i = 0; i < this.nLayers; i++) {
             let layer = [];
             let layerNodes = 0;
