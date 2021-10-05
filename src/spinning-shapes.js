@@ -1,68 +1,69 @@
-'use strict';
+/*
+ * 3n + 1 (Collatz Conjecture) visualization.
+ * With no external dependencies using only canvas API.
+ * Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
+ */
 
 const Animation = require("./animation");
+const Utils = require("./utils");
 
-// Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
 class SpinningShapes extends Animation {
-    constructor (canvas, colors, colorsAlt, shapes = 500) {
-        super(canvas, colors, colorsAlt);
+    constructor (canvas, colors, colorsAlt, shapes = 500, sides = [0], rotatePolygons = false) {
+        super(canvas, colors, colorsAlt, "", "spinning-shapes.js");
+
+        const shapeSides = [0, 3, 4, 5, 6, 8];
+        const shapeNames = ["circles", "triangles", "rectangles", "pentagons", "hexagons", "octagons"];
+        this.sides = Utils.randomChoice(sides);
+        this.rotatePolygons = rotatePolygons;
         this.shapes = shapes;
+        this.name = shapeNames[shapeSides.indexOf(this.sides)] + " moving in a circle";
+
         this.time = 0;
-        this.scale = 0;
-        this.centerX = 0;
-        this.centerY = 0;
 
         this.distBase = 0.6;
         this.distVar = 0.2;
         this.sizeBase = 0.2;
         this.sizeVar = 0.12;
-
-        this.resize();
     }
 
-    getName(){
-        return "circles moving in a circle"
-    }
-
-    update(elapsed){
-        this.time += elapsed / 1000;
+    update(timeElapsed){
+        this.time += timeElapsed / 1000;
     }
 
     getCenterForTheta(theta, time, scale) {
-        let distance = (this.distBase + this.distVar * Math.cos(theta * 6 + Math.cos(theta * 8 + time / 2))) * scale;
+
         return {x: Math.cos(theta) * distance, y: Math.sin(theta) * distance}
     }
 
     getSizeForTheta(theta, time, scale) {
-        return (this.sizeBase + this.sizeVar * Math.cos(theta * 9 - time)) * scale;
+        return
     }
 
     getColorForTheta(theta, time) {
-        return this.colors[Math.floor((Math.cos(theta * 9 - time) + 1) / 2 * this.colors.length)];
+        return
     }
 
     draw() {
-        this.ctx.fillStyle = "#FFFFFF";
-        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        Utils.clear(this.ctx, "#FFFFFF");
+
+        const centerX = this.ctx.canvas.width / 2,
+              centerY = this.ctx.canvas.height / 2,
+              scale = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3;
 
         for (let i = 0; i < this.shapes; ++i) {
-            let shapeTheta = i / this.shapes * 2 * Math.PI;
-            let shapeCenter = this.getCenterForTheta(shapeTheta, this.time, this.scale);
-            let shapeSize = this.getSizeForTheta(shapeTheta, this.time, this.scale);
-            this.ctx.strokeStyle = this.getColorForTheta(shapeTheta, this.time);
+            const theta = i / this.shapes * 2 * Math.PI,
+                  distance = (this.distBase + this.distVar * Math.cos(theta * 6 + Math.cos(theta * 8 + this.time / 2))) * scale,
+                  x = centerX + Math.cos(theta) * distance,
+                  y = centerY + Math.sin(theta) * distance,
+                  radius = (this.sizeBase + this.sizeVar * Math.cos(theta * 9 - this.time)) * scale;
+            this.ctx.strokeStyle = this.colors[Math.floor((Math.cos(theta * 9 - this.time) + 1) / 2 * this.colors.length)];
             this.ctx.lineWidth = 1;
 
-            // TODO: draw other types of polygons instead of circles
             this.ctx.beginPath();
-            this.ctx.arc(shapeCenter.x + this.centerX, shapeCenter.y + this.centerY, shapeSize, 0, 2 * Math.PI, false);
+            if(this.sides == 0) Utils.pathCircle(this.ctx, x, y, radius);
+            else Utils.pathPolygon(this.ctx, x, y, radius, this.sides, theta * this.rotatePolygons);
             this.ctx.stroke();
         }
-    }
-
-    resize() {
-        this.centerX = this.ctx.canvas.width / 2;
-        this.centerY = this.ctx.canvas.height / 2;
-        this.scale = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3;
     }
 }
 

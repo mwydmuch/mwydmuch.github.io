@@ -1,29 +1,27 @@
-'use strict';
+/*
+ * Visualization of simple fully connected neural network, with random weights
+ * ReLU activations on intermided layers and sigmoid output at the last layer.
+ * with no external dependencies, using only canvas API.
+ */
 
 const Animation = require("./animation");
 const Utils = require("./utils");
 
 class NeuralNetwork extends Animation {
     constructor(canvas, colors, colorsAlt) {
-        super(canvas, colors, colorsAlt);
+        super(canvas, colors, colorsAlt, "visualization of simple neural network", "neural-network.js");
         this.network = [];
         this.nLayers = 0;
 
         this.baseNodeSize = 3;
         this.baseLineSize = 1;
-
-        this.resize();
     }
 
     getFPS(){
-        return 1.5;
+        return 1.5; // Override default framerate
     }
 
-    getName(){
-        return "visualization of simple neural network"
-    }
-
-    update(elapsed){
+    update(timeElapsed){
         // Update network values
 
         // Randomly
@@ -49,29 +47,16 @@ class NeuralNetwork extends Animation {
     draw() {
         Utils.clear(this.ctx, "#FFFFFF");
 
-        if (this.stateData != null) {
-            this.ctx.globalAlpha = 1 - this.time / this.stateTime;
-            if (this.prevStateData != null) this.ctx.putImageData(this.prevStateData, 0, 0);
-            this.ctx.globalAlpha = this.time / this.stateTime;
-            this.ctx.putImageData(this.stateData, 0, 0);
-            return
-        }
-
         // Draw connections
         for (let i = 0; i < this.nLayers - 1; i++) {
             let l1 = this.network[i];
             let l2 = this.network[i + 1];
             for (let n1 of l1) {
                 for (let n2 of l2) {
-                    let v = Utils.clip(n1.v, 0, 1);
-                    let color = this.colors[this.colors.length - 1 - Math.floor(v * this.colors.length)];
+                    const v = Utils.clip(n1.v, 0, 1);
+                    const color = this.colors[this.colors.length - 1 - Math.floor(v * this.colors.length)];
                     this.ctx.globalAlpha = v;
-                    this.ctx.lineWidth = 1 + v;
-                    this.ctx.strokeStyle = color;
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(n1.x, n1.y);
-                    this.ctx.lineTo(n2.x, n2.y);
-                    this.ctx.stroke();
+                    Utils.drawLine(this.ctx, n1.x, n1.y, n2.x, n2.y, color, 1 + v);
                 }
             }
         }
@@ -91,33 +76,29 @@ class NeuralNetwork extends Animation {
         }
     }
 
-
     resize() {
         Utils.clear(this.ctx, "#FFFFFF");
 
         // Create new network that will nicely fit to the entire page
-        let width = this.ctx.canvas.width;
-        let height = this.ctx.canvas.height;
+        const width = this.ctx.canvas.width;
+        const height = this.ctx.canvas.height;
 
         this.network = [];
 
         // Number of layers depends on screen width
         this.nLayers = Utils.clip(Math.floor(width / 150), 3, 7);
-        let margin = 50 * width / 500;
+        const margin = 50 * width / 500;
+        const interLayer = (width - 2 * margin) / (this.nLayers - 1);
+        const interNode = height / 17;
 
         let x = margin;
-        let interLayer = (width - 2 * margin) / (this.nLayers - 1);
-        let interNode = height / 17;
-
         for (let i = 0; i < this.nLayers; i++) {
             let layer = [];
             let layerNodes = 0;
             if(i == 0 || i == this.nLayers - 1) layerNodes = Math.floor(Utils.randomRange(4, 16));
             else layerNodes = Utils.randomChoice([8, 12, 16]);
             let y = height / 2 - Math.floor(layerNodes / 2) * interNode;
-            if (layerNodes % 2 == 0) {
-                y += interNode/2;
-            }
+            if (layerNodes % 2 == 0) y += interNode/2;
 
             for (let j = 0; j < layerNodes; j++) {
                 let n = {x: x, y: y, v: 0, w: null};
@@ -128,6 +109,9 @@ class NeuralNetwork extends Animation {
             this.network.push(layer);
             x += interLayer;
         }
+
+        this.update(0);
+        this.draw();
     }
 }
 

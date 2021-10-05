@@ -1,42 +1,47 @@
-'use strict';
+/*
+ * Particles moving
+ * with no external dependencies, using only canvas API.
+ */
 
 const Animation = require("./animation");
-//const PerlinNoise = require("./perlin-noise"); // Original implementation of Perlin noise
-const JosephgNoise = require("./josephg-noise");
+const Noise = require("./noise");
 const Utils = require("./utils");
 
 class PerlinNoiseParticles extends Animation {
-    constructor(canvas, colors, colorsAlt, particlePer100PixSq = 4, noiseScale = 1200) {
-        super(canvas, colors, colorsAlt);
+    constructor(canvas, colors, colorsAlt,
+                particlePer100PixSq = 4,
+                noiseScale = 0.001,
+                drawNoise = false
+    ) {
+        super(canvas, colors, colorsAlt, "particles moving through Perlin noise", "perlin-noise-particles.js");
         this.particlePer100PixSq = particlePer100PixSq;
         this.noiseScale = noiseScale;
-        //this.noise = new PerlinNoise();
         this.noise = JosephgNoise.noise;
+        this.noise = Noise.noise;
+        this.noise.seed(Utils.randomRange(0, 1));
+
         this.width = 0;
         this.height = 0;
         this.particles = [];
         this.imageData = null;
-        this.resize();
     }
 
-    getFPS(){
-        return 25;
-    }
-
-    getName(){
-        return "particles moving through Perlin noise"
-    }
-
-    update(elapsed) {
+    update(timeElapsed) {
+        // TODO: Make it time dependent
         for(let p of this.particles){
-            let angle = this.noise.perlin2(p.x / this.noiseScale, p.y / this.noiseScale) * 2 * Math.PI * this.noiseScale;
+            const angle = this.noise.perlin2(p.x * this.noiseScale, p.y * this.noiseScale) * 2 * Math.PI / this.noiseScale;
+            p.prevX = p.x;
+            p.prevY = p.y;
             p.x += Math.cos(angle) * p.speed;
             p.y += Math.sin(angle) * p.speed;
         }
     }
 
     draw() {
-        for(let p of this.particles) Utils.fillCircle(this.ctx, p.color, p.x, p.y, p.radius);
+        for(let p of this.particles){
+            // Utils.fillCircle(this.ctx, p.color, p.x, p.y, p.radius);
+            Utils.drawLine(this.ctx, p.prevX, p.prevY, p.x, p.y, p.color, 2 * p.radius); // This results with better antialiasing
+        }
         this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     }
 
@@ -45,10 +50,14 @@ class PerlinNoiseParticles extends Animation {
 
         // Create new particles
         for(let i = 0; i < newParticles; i++){
+            const particleX = Math.random() * width + x,
+                  particleY = Math.random() * height + y;
             this.particles.push({
-                x: Math.random() * width + x,
-                y: Math.random() * height + y,
-                speed: Math.random() * 0.15 + 0.10,
+                x: particleX,
+                y: particleY,
+                prevX: particleX,
+                prevY: particleY,
+                speed: Math.random() * 0.20 + 0.10,
                 radius: Math.random() * 0.5 + 0.5,
                 color: this.colors[Math.floor(Math.random() * this.colors.length)]
             });
@@ -71,17 +80,20 @@ class PerlinNoiseParticles extends Animation {
         this.height = Math.max(this.ctx.canvas.height, this.height);
 
         // Visualize Perlin noise
-        // const gridWidth = this.ctx.canvas.width / this.moveScale;
-        // const gridHeight = this.ctx.canvas.height / this.moveScale;
-        // const pixelSize = 20;
-        // const numPixels = gridWidth / this.ctx.canvas.width * pixelSize;
-        // for (let y = 0; y < gridHeight; y += numPixels){
-        //     for (let x = 0; x < gridWidth; x += numPixels){
-        //         let v = parseInt(this.noise.get(x, y) * 250);
-        //         this.ctx.fillStyle = 'hsl(' + v + ',50%,50%)';
-        //         this.ctx.fillRect(x / gridWidth * this.ctx.canvas.width, y / gridHeight * this.ctx.canvas.height, pixelSize, pixelSize);
-        //     }
-        // }
+        if(this.drawNoise) {
+            const gridWidth = this.ctx.canvas.width * this.noiseScale,
+                  gridHeight = this.ctx.canvas.height * this.noiseScale,
+                  pixelSize = 10,
+                  numPixels = gridWidth / this.ctx.canvas.width * pixelSize;
+
+            for (let y = 0; y < gridHeight; y += numPixels) {
+                for (let x = 0; x < gridWidth; x += numPixels) {
+                    let v = parseInt(this.noise.perlin2(x, y) * 250);
+                    this.ctx.fillStyle = 'hsl(' + v + ',50%,50%)';
+                    this.ctx.fillRect(x / gridWidth * this.ctx.canvas.width, y / gridHeight * this.ctx.canvas.height, pixelSize, pixelSize);
+                }
+            }
+        }
     }
 }
 

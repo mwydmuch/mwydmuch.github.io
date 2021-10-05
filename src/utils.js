@@ -50,6 +50,33 @@ module.exports = {
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     },
 
+    pathLine(ctx, x1, y1, x2, y2){
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+    },
+
+    drawLine(ctx, x1, y1, x2, y2, color, width = 1){
+        ctx.lineWidth = width;
+        ctx.strokeStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+    },
+
+    pathPolygon(ctx, x, y, radius, sides, rotation = 0){
+        const angle = 2 * Math.PI / sides;
+        ctx.moveTo(x + radius * Math.cos(rotation), y + radius * Math.sin(rotation));
+        for (let i = 1; i <= sides; i++) {
+            ctx.lineTo(x + radius * Math.cos(rotation + i * angle), y + radius * Math.sin(rotation + i * angle));
+        }
+    },
+
+    pathCircle(ctx, x, y, radius){
+        ctx.moveTo(x + radius, y);
+        ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
+    },
+
     fillCircle(ctx, color, x, y, radius){
         ctx.fillStyle = color;
         ctx.beginPath();
@@ -63,4 +90,26 @@ module.exports = {
         ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
         ctx.stroke();
     },
+
+    blendColor(ctx, color, alpha = 1.0, globalCompositeOperation = 'source-over'){
+        ctx.save();
+        ctx.globalCompositeOperation = globalCompositeOperation;
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = color;
+        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.restore();
+    },
+
+    createVec(x, y){
+        return {x: x, y: y};
+    },
+
+    rotateVec(vec, r){
+        const cos = Math.cos(r), sin = Math.sin(r);
+        return {x: vec.x * cos - vec.y * sin, y: vec.x * sin + vec.y * cos};
+    },
+
+    isStrictMode(){
+        return ((eval("var __temp = null"), (typeof __temp === "undefined")) ? "strict":  "non-strict");
+    }
 };

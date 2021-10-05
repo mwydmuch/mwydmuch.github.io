@@ -9,6 +9,7 @@ const SpinningShapes = require("./spinning-shapes");
 const NeuralNetwork = require("./neural-network");
 const ThreeNPlusOne = require("./3n+1");
 const CircularWaves = require("./circular-waves");
+const ParticlesVortex = require("./particles-vortex");
 
 
 // Globals
@@ -21,6 +22,7 @@ var lastHeight = 0;
 var needResize = false;
 
 const colors = [ // Green palette
+    "#1ABFB2",
     "#54ABA4",
     "#639598",
     "#678786",
@@ -31,6 +33,7 @@ const colors = [ // Green palette
 ]
 
 const colorsAlt = [ // Alt red palette
+    "#FF5C5C",
     "#CA3737",
 ];
 
@@ -41,9 +44,8 @@ const colorsAlt = [ // Alt red palette
 const content = document.getElementById("content");
 const backgroundControls = document.getElementById("background-controls");
 const backgroundName = document.getElementById("background-name");
-const backgroundPrev = document.getElementById("background-prev");
 const backgroundNext = document.getElementById("background-next");
-
+const backgroundCode = document.getElementById("background-code");
 
 const animations = [
     GameOfLife,
@@ -52,6 +54,7 @@ const animations = [
     NeuralNetwork,
     ThreeNPlusOne,
     CircularWaves,
+    ParticlesVortex,
 ];
 
 let animationId = Math.floor(Math.random() * animations.length);
@@ -64,6 +67,8 @@ function updateAnimation(animation) {
     framesInterval = 1000 / fps;
     then = Date.now();
     backgroundName.innerHTML = animation.getName();
+    backgroundCode.href = animation.getCodeUrl();
+    animation.resize();
 }
 updateAnimation(animation);
 
@@ -72,14 +77,14 @@ function render() {
     requestAnimationFrame(render);
 
     // Limit framerate
-    let now = Date.now();
-    let elapsed = now - then;
-    if (elapsed < framesInterval) return;
+    const now = Date.now(),
+          timeElapsed = now - then;
+    if (timeElapsed < framesInterval) return;
     then = now;
 
     // Detect container size change
-    let width  = Math.max(container.offsetWidth, window.innerWidth);
-    let height = Math.max(container.offsetHeight, window.innerHeight);
+    const width  = Math.max(container.offsetWidth, window.innerWidth),
+          height = Math.max(container.offsetHeight, window.innerHeight);
     if(width != lastWidth || height != lastHeight) needResize = true;
     else if (needResize){
         canvas.width = width;
@@ -90,7 +95,7 @@ function render() {
     lastHeight = height;
     lastWidth = width;
 
-    animation.update(elapsed);
+    animation.update(timeElapsed);
     animation.draw();
 }
 
@@ -117,15 +122,8 @@ backgroundControls.addEventListener("mouseout", function(){
     canvas.classList.remove("hue-change");
 });
 
-backgroundPrev.addEventListener("click", function(){
-    animationId = (animationId + animations.length - 1) % animations.length;
-    animation = new animations[animationId](canvas, colors, colorsAlt);
-    updateAnimation(animation);
-});
-
 backgroundNext.addEventListener("click", function(){
     animationId = (animationId + 1) % animations.length;
     animation = new animations[animationId](canvas, colors, colorsAlt);
     updateAnimation(animation);
 });
-

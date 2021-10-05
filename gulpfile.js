@@ -22,7 +22,7 @@ var banner = ['/*!\n',
 gulpfile.task('less', function() {
     return gulpfile.src('./src/style.less')
         .pipe(less())
-        .pipe(gulpfile.dest('src'))
+        .pipe(gulpfile.dest('dist'))
         .pipe(browserSync.reload({
             stream: true
         }))
@@ -30,11 +30,11 @@ gulpfile.task('less', function() {
 
 // Minify compiled CSS
 gulpfile.task('minify-css', gulpfile.series('less', function() {
-    return gulpfile.src('./src/style.css')
+    return gulpfile.src('./dist/style.css')
         .pipe(cleanCSS({ compatibility: 'ie8' }))
         .pipe(rename({ suffix: '.min' }))
         .pipe(header(banner, { pkg: pkg }))
-        .pipe(gulpfile.dest('src'))
+        .pipe(gulpfile.dest('dist'))
         .pipe(browserSync.reload({
             stream: true
         }))
@@ -45,7 +45,7 @@ gulpfile.task('bundle-js', function() {
     return browserify('./src/main.js')
         .bundle()
         .pipe(source('bundle.js'))
-        .pipe(gulpfile.dest('src'))
+        .pipe(gulpfile.dest('dist'))
         .pipe(browserSync.reload({
             stream: true
         }))
@@ -53,11 +53,11 @@ gulpfile.task('bundle-js', function() {
 
 // Minify JS
 gulpfile.task('minify-js', function() {
-    return gulpfile.src('./src/bundle.js')
+    return gulpfile.src('./dist/bundle.js')
         .pipe(uglify().on('error', util.log))
         .pipe(header(banner, { pkg: pkg }))
         .pipe(rename({ suffix: '.min' }))
-        .pipe(gulpfile.dest('src'))
+        .pipe(gulpfile.dest('dist'))
         .pipe(browserSync.reload({
             stream: true
         }))
@@ -76,8 +76,7 @@ gulpfile.task('browserSync', function() {
 
 // Dev task with browserSync
 gulpfile.task('dev', gulpfile.series('browserSync', 'less', 'minify-css', 'bundle-js', 'minify-js', function() {
-    gulpfile.watch('src/*.less', ['less']);
-    gulpfile.watch('src/*.css', ['minify-css']);
+    gulpfile.watch('src/*.less', ['less', 'minify-css']);
     gulpfile.watch('src/*.js', ['bundle-js', 'minify-js']);
     // Reloads the browser whenever HTML or JS files change
     gulpfile.watch('*.html', browserSync.reload);

@@ -6,12 +6,14 @@ body {
   color: #252525;
   background: #FFFFFF;
 }
+a,
 a:link,
 a:visited,
 a:hover,
 a:active {
   color: #43696B;
   font-weight: 700;
+  cursor: pointer;
 }
 h1,
 h2,
@@ -36,6 +38,8 @@ p {
   margin: 0 0.05rem;
   white-space: nowrap;
 }
+.reverse a,
+.reverse-red a,
 .reverse a:link,
 .reverse-red a:link,
 .reverse a:visited,
@@ -80,6 +84,7 @@ ul {
 }
 #me {
   text-align: center;
+  margin: 1.4rem 0;
 }
 #me .section {
   margin-bottom: 1rem;
@@ -222,7 +227,8 @@ ul {
 }
 #footer {
   text-align: center;
-  margin: 1rem;
+  margin: 1.4rem 0;
+  font-size: 0.7rem;
 }
 #footer #background-controls {
   color: #FFFFFF;
@@ -231,8 +237,10 @@ ul {
   display: inline-block;
   background: #43696B;
 }
-#footer #background-prev,
-#footer #background-next {
-  cursor: pointer;
-  padding: 0.25rem;
+#footer #background-controls a,
+#footer #background-controls a:link,
+#footer #background-controls a:visited,
+#footer #background-controls a:hover,
+#footer #background-controls a:active {
+  color: #FFFFFF;
 }

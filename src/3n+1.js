@@ -1,25 +1,26 @@
-'use strict';
+/*
+ * 3n + 1 (Collatz Conjecture) visualization.
+ * Coded with no external dependencies, using only canvas API.
+ * Inspired by Veritasium video: https://www.youtube.com/watch?v=094y1Z2wpJg
+ */
 
 const Animation = require("./animation");
 
 class ThreeNPlusOne extends Animation {
-    constructor (canvas, colors, colorsAlt, length = 30, evenAngel = 8, oddAngel = -20) {
-        super(canvas, colors, colorsAlt);
+    constructor (canvas, colors, colorsAlt,
+                 length = 30,
+                 evenAngle = 8,
+                 oddAngle = -20
+    ) {
+        super(canvas, colors, colorsAlt, "3n + 1 (Collatz Conjecture) visualization", "3n+1.js");
         this.length = length;
-        this.evenAngel = evenAngel * Math.PI / 180;
-        this.oddAngel = oddAngel * Math.PI / 180;
+        this.evenAngle = evenAngle * Math.PI / 180;
+        this.oddAngle = oddAngle * Math.PI / 180;
         this.seqences = []
         this.frame = 0;
-        this.startX;
-        this.startY;
-        this.resize();
     }
 
-    getName(){
-        return "3n + 1 visualization"
-    }
-
-    update(elapsed){
+    update(timeElapsed){
         let n = this.seqences.length + 1;
         let sequence = [n];
         while(n != 1){
@@ -31,8 +32,8 @@ class ThreeNPlusOne extends Animation {
     }
 
     drawSequence(sequence) {
-        let x = this.startX;
-        let y = this.startY;
+        let x = this.ctx.canvas.width / 2;
+        let y = this.ctx.canvas.height;
         let angle = 270 * Math.PI / 180;
 
         this.ctx.strokeStyle = this.colors[this.frame % this.colors.length];
@@ -42,8 +43,8 @@ class ThreeNPlusOne extends Animation {
             this.ctx.beginPath();
             this.ctx.moveTo(x, y);
 
-            if(sequence[i] % 2) angle += this.oddAngel;
-            else angle += this.evenAngel;
+            if(sequence[i] % 2) angle += this.oddAngle;
+            else angle += this.evenAngle;
 
             x += this.length * Math.cos(angle);
             y += this.length * Math.sin(angle);
@@ -60,9 +61,6 @@ class ThreeNPlusOne extends Animation {
     }
 
     resize() {
-        this.startX = this.ctx.canvas.width / 2;
-        this.startY = this.ctx.canvas.height;
-
         this.frame = 0;
         this.ctx.fillStyle = "#FFFFFF";
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);

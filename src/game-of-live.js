@@ -1,20 +1,19 @@
-'use strict';
+/*
+ * Conway's Game of Life visualization
+ * with no external dependencies, using only canvas API.
+ */
 
 const Animation = require("./animation");
 
 class GameOfLife extends Animation {
     constructor (canvas, colors, colorsAlt, cellSize = 10) {
-        super(canvas, colors, colorsAlt);
+        super(canvas, colors, colorsAlt, "Conway's Game of Life", "game-of-live.js");
         this.cellSize = cellSize;
+
         this.gridWidth = 0;
         this.gridHeight = 0;
         this.grid = null;
         this.gridNextState = null;
-        this.resize();
-    }
-
-    getName(){
-        return "Conway's Game of Life"
     }
 
     getCord(x, y) {
@@ -22,11 +21,11 @@ class GameOfLife extends Animation {
     }
 
     isAlive(x, y) {
-        if (x < 0 || x >= this.gridWidth || y < 0 || y >= this.gridHeight) return false;
+        if (x < 0 || x >= this.gridWidth || y < 0 || y >= this.gridHeight) return 0;
         else return (this.grid[this.getCord(x, y)] == 1) ? 1 : 0;
     }
 
-    update(elapsed){
+    update(timeElapsed){
         for (let y = 0; y < this.gridHeight; ++y) {
             for (let x = 0; x < this.gridWidth; ++x) {
                 let numAlive = this.isAlive(x - 1, y - 1)
@@ -54,7 +53,6 @@ class GameOfLife extends Animation {
         for (let y = 0; y < this.gridHeight; ++y) {
             for (let x = 0; x < this.gridWidth; ++x) {
                 let cellVal = this.grid[this.getCord(x, y)];
-                //let cellPadding = 1 - Math.min(0, cellVal);
                 let cellPadding = 1
                 let fillStyle = null;
                 if(cellVal >= 0 ) fillStyle = this.colors[0];
@@ -82,8 +80,8 @@ class GameOfLife extends Animation {
     }
 
     resize() {
-        let newGridWidth = Math.ceil(this.ctx.canvas.width / this.cellSize);
-        let newGridHeight = Math.ceil(this.ctx.canvas.height / this.cellSize);
+        const newGridWidth = Math.ceil(this.ctx.canvas.width / this.cellSize),
+              newGridHeight = Math.ceil(this.ctx.canvas.height / this.cellSize);
         let newGrid = new Array(newGridWidth * newGridHeight);
 
         for (let y = 0; y < newGridHeight; y++) {
