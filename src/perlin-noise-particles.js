@@ -1,6 +1,7 @@
 /*
- * Particles moving
- * with no external dependencies, using only canvas API.
+ * Particles moving through Perlin noise.
+ *
+ * Coded with no external dependencies, using only canvas API.
  */
 
 const Animation = require("./animation");

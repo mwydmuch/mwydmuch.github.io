@@ -1,6 +1,7 @@
 /*
- * Conway's Game of Life visualization
- * with no external dependencies, using only canvas API.
+ * Conway's Game of Life visualization.
+ *
+ * Coded with no external dependencies, using only canvas API.
  */
 
 const Animation = require("./animation");

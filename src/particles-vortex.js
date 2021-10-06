@@ -1,4 +1,8 @@
-'use strict';
+/*
+ * Particles vortex with randomized speed and direction.
+ *
+ * Coded with no external dependencies, using only canvas API.
+ */
 
 const Animation = require("./animation");
 const Noise = require("./noise");

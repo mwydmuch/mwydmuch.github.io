@@ -1,8 +1,9 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /*
  * 3n + 1 (Collatz Conjecture) visualization.
- * Coded with no external dependencies, using only canvas API.
  * Inspired by Veritasium video: https://www.youtube.com/watch?v=094y1Z2wpJg
+ *
+ * Coded with no external dependencies, using only canvas API.
  */
 
 const Animation = require("./animation");
@@ -106,6 +107,7 @@ module.exports = Animation;
 },{}],3:[function(require,module,exports){
 /*
  * Conway's Game of Life visualization.
+ *
  * Coded with no external dependencies, using only canvas API.
  */
 
@@ -178,8 +180,9 @@ module.exports = CircularWaves;
 
 },{"./animation":2,"./noise":7,"./utils":11}],4:[function(require,module,exports){
 /*
- * Conway's Game of Life visualization
- * with no external dependencies, using only canvas API.
+ * Conway's Game of Life visualization.
+ *
+ * Coded with no external dependencies, using only canvas API.
  */
 
 const Animation = require("./animation");
@@ -413,9 +416,10 @@ backgroundNext.addEventListener("click", function(){
 
 },{"./3n+1":1,"./circular-waves":3,"./game-of-live":4,"./neural-network":6,"./particles-vortex":8,"./perlin-noise-particles":9,"./spinning-shapes":10}],6:[function(require,module,exports){
 /*
- * Visualization of simple fully connected neural network, with random weights
- * ReLU activations on intermided layers and sigmoid output at the last layer.
- * with no external dependencies, using only canvas API.
+ * Visualization of a simple, fully connected neural network, with random weights,
+ * ReLU activations on intermediate layers, and sigmoid output at the last layer.
+ *
+ * Coded with no external dependencies, using only canvas API.
  */
 
 const Animation = require("./animation");
@@ -843,7 +847,11 @@ module.exports = NeuralNetwork;
 })(this);
 
 },{}],8:[function(require,module,exports){
-'use strict';
+/*
+ * Particles vortex with randomized speed and direction.
+ *
+ * Coded with no external dependencies, using only canvas API.
+ */
 
 const Animation = require("./animation");
 const Noise = require("./noise");
@@ -911,8 +919,9 @@ module.exports = ParticlesVortex;
 
 },{"./animation":2,"./noise":7,"./utils":11}],9:[function(require,module,exports){
 /*
- * Particles moving
- * with no external dependencies, using only canvas API.
+ * Particles moving through Perlin noise.
+ *
+ * Coded with no external dependencies, using only canvas API.
  */
 
 const Animation = require("./animation");
@@ -1013,9 +1022,10 @@ module.exports = PerlinNoiseParticles;
 
 },{"./animation":2,"./noise":7,"./utils":11}],10:[function(require,module,exports){
 /*
- * 3n + 1 (Collatz Conjecture) visualization.
- * With no external dependencies using only canvas API.
+ * Shapes moving in a circle with
  * Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
+ *
+ * Coded with no external dependencies, using only canvas API.
  */
 
 const Animation = require("./animation");
@@ -1042,19 +1052,6 @@ class SpinningShapes extends Animation {
 
     update(timeElapsed){
         this.time += timeElapsed / 1000;
-    }
-
-    getCenterForTheta(theta, time, scale) {
-
-        return {x: Math.cos(theta) * distance, y: Math.sin(theta) * distance}
-    }
-
-    getSizeForTheta(theta, time, scale) {
-        return
-    }
-
-    getColorForTheta(theta, time) {
-        return
     }
 
     draw() {

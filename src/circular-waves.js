@@ -1,5 +1,6 @@
 /*
  * Conway's Game of Life visualization.
+ *
  * Coded with no external dependencies, using only canvas API.
  */
 

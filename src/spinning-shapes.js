@@ -1,7 +1,8 @@
 /*
- * 3n + 1 (Collatz Conjecture) visualization.
- * With no external dependencies using only canvas API.
+ * Shapes moving in a circle with
  * Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
+ *
+ * Coded with no external dependencies, using only canvas API.
  */
 
 const Animation = require("./animation");
@@ -28,19 +29,6 @@ class SpinningShapes extends Animation {
 
     update(timeElapsed){
         this.time += timeElapsed / 1000;
-    }
-
-    getCenterForTheta(theta, time, scale) {
-
-        return {x: Math.cos(theta) * distance, y: Math.sin(theta) * distance}
-    }
-
-    getSizeForTheta(theta, time, scale) {
-        return
-    }
-
-    getColorForTheta(theta, time) {
-        return
     }
 
     draw() {

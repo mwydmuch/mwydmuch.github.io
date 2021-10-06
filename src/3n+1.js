@@ -1,7 +1,8 @@
 /*
  * 3n + 1 (Collatz Conjecture) visualization.
- * Coded with no external dependencies, using only canvas API.
  * Inspired by Veritasium video: https://www.youtube.com/watch?v=094y1Z2wpJg
+ *
+ * Coded with no external dependencies, using only canvas API.
  */
 
 const Animation = require("./animation");

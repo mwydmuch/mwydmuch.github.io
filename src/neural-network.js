@@ -1,7 +1,8 @@
 /*
- * Visualization of simple fully connected neural network, with random weights
- * ReLU activations on intermided layers and sigmoid output at the last layer.
- * with no external dependencies, using only canvas API.
+ * Visualization of a simple, fully connected neural network, with random weights,
+ * ReLU activations on intermediate layers, and sigmoid output at the last layer.
+ *
+ * Coded with no external dependencies, using only canvas API.
  */
 
 const Animation = require("./animation");
