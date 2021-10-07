@@ -17,7 +17,6 @@ class PerlinNoiseParticles extends Animation {
         super(canvas, colors, colorsAlt, "particles moving through Perlin noise", "perlin-noise-particles.js");
         this.particlePer100PixSq = particlePer100PixSq;
         this.noiseScale = noiseScale;
-        this.noise = JosephgNoise.noise;
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
 

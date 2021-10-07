@@ -10,13 +10,13 @@ const Utils = require("./utils");
 
 class ParticlesVortex extends Animation {
     constructor (canvas, colors, colorsAlt,
-                 particles = 1500,
+                 particles = 1000,
                  radiusMin = 100,
                  radiusMax = 200,
                  speedMin = 25,
                  speedMax = 50,
                  rotationSpeedMin = 0.01,
-                 rotationSpeedMax = 0.03
+                 rotationSpeedMax = 0.02
     ){
         super(canvas, colors, colorsAlt);
 
