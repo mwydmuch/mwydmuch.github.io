@@ -10,7 +10,7 @@ const NeuralNetwork = require("./neural-network");
 const ThreeNPlusOne = require("./3n+1");
 const CircularWaves = require("./circular-waves");
 const ParticlesVortex = require("./particles-vortex");
-
+const ParticlesAndAttractors = require("./particles-and-attractors");
 
 // Globals
 // ---------------------------------------------------------------------------------------------------------------------
@@ -55,6 +55,7 @@ const animations = [
     ThreeNPlusOne,
     CircularWaves,
     ParticlesVortex,
+    ParticlesAndAttractors,
 ];
 
 let animationId = Math.floor(Math.random() * animations.length);

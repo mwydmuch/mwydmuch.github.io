@@ -9,6 +9,8 @@ class Animation {
         this.colorsAlt = colorsAlt;
         this.name = name;
         this.file = file;
+        this.time = 0;
+        this.frame = 0;
     }
 
     getFPS(){
@@ -21,6 +23,11 @@ class Animation {
 
     getCodeUrl(){
         return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/src/" + this.file;
+    }
+
+    update(elapsed){
+        this.time += elapsed / 1000;
+        ++this.frame;
     }
 
     resize(){

@@ -1,5 +1,5 @@
 /*
- * Conway's Game of Life visualization.
+ * Shapes
  *
  * Coded with no external dependencies, using only canvas API.
  */
@@ -13,7 +13,8 @@ class CircularWaves extends Animation {
                 degPerVertex = 2,
                 noiseScale = 0.5,
                 noiseMin = 0.4,
-                noiseMax = 1.2
+                noiseMax = 1.2,
+                fadeOut = true
     ) {
         super(canvas, colors, colorsAlt, "circular waves", "circular-waves.js");
         this.noise = Noise.noise;
@@ -23,8 +24,8 @@ class CircularWaves extends Animation {
         this.noiseScale = noiseScale;
         this.noiseMin = noiseMin;
         this.noiseMax = noiseMax;
+        this.fadeOut = fadeOut;
 
-        this.frame = 0;
         this.color1 = this.colors[0];
         this.color2 = this.colorsAlt[0];
 
@@ -32,12 +33,8 @@ class CircularWaves extends Animation {
         this.radiusMax = 0;
     }
 
-    update(timeElapsed){
-        ++this.frame;
-    }
-
     draw() {
-        if(this.frame % 10 == 0) Utils.blendColor(this.ctx, "#FFFFFF", 0.01, "lighter");
+        if(this.fadeOut && this.frame % 10 == 0) Utils.blendColor(this.ctx, "#FFFFFF", 0.01, "lighter");
 
         const zoff = this.frame * 0.005;
         this.ctx.strokeStyle = Utils.lerpColor(this.color1, this.color2, Math.abs(Math.sin(zoff * 5)));

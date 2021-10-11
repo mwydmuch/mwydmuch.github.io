@@ -19,6 +19,7 @@ class PerlinNoiseParticles extends Animation {
         this.noiseScale = noiseScale;
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
+        this.drawNoise = drawNoise;
 
         this.width = 0;
         this.height = 0;
@@ -88,7 +89,7 @@ class PerlinNoiseParticles extends Animation {
 
             for (let y = 0; y < gridHeight; y += numPixels) {
                 for (let x = 0; x < gridWidth; x += numPixels) {
-                    let v = parseInt(this.noise.perlin2(x, y) * 250);
+                    let v = Math.floor(this.noise.perlin2(x, y) * 250);
                     this.ctx.fillStyle = 'hsl(' + v + ',50%,50%)';
                     this.ctx.fillRect(x / gridWidth * this.ctx.canvas.width, y / gridHeight * this.ctx.canvas.height, pixelSize, pixelSize);
                 }

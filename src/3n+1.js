@@ -18,10 +18,9 @@ class ThreeNPlusOne extends Animation {
         this.evenAngle = evenAngle * Math.PI / 180;
         this.oddAngle = oddAngle * Math.PI / 180;
         this.seqences = []
-        this.frame = 0;
     }
 
-    update(timeElapsed){
+    update(elapsed){
         let n = this.seqences.length + 1;
         let sequence = [n];
         while(n != 1){

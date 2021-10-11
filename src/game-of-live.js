@@ -17,30 +17,34 @@ class GameOfLife extends Animation {
         this.gridNextState = null;
     }
 
-    getCord(x, y) {
+    getIdx(x, y) {
         return x + y * this.gridWidth;
+    }
+
+    getVal(x, y) {
+        return this.grid[this.getIdx(x, y)];
     }
 
     isAlive(x, y) {
         if (x < 0 || x >= this.gridWidth || y < 0 || y >= this.gridHeight) return 0;
-        else return (this.grid[this.getCord(x, y)] == 1) ? 1 : 0;
+        else return (this.getVal(x, y) == 1) ? 1 : 0;
     }
 
-    update(timeElapsed){
+    update(elapsed){
         for (let y = 0; y < this.gridHeight; ++y) {
             for (let x = 0; x < this.gridWidth; ++x) {
-                let numAlive = this.isAlive(x - 1, y - 1)
-                    + this.isAlive(x, y - 1)
-                    + this.isAlive(x + 1, y - 1)
-                    + this.isAlive(x - 1, y)
-                    + this.isAlive(x + 1, y)
-                    + this.isAlive(x - 1, y + 1)
-                    + this.isAlive(x, y + 1)
-                    + this.isAlive(x + 1, y + 1);
-                let cellCord = this.getCord(x, y);
-                if (numAlive == 2 && this.grid[cellCord] == 1) this.gridNextState[cellCord] = this.grid[cellCord];
-                else if (numAlive == 3) this.gridNextState[cellCord] = 1;
-                else this.gridNextState[cellCord] = this.grid[cellCord] - 1;
+                const numAlive = this.isAlive(x - 1, y - 1)
+                      + this.isAlive(x, y - 1)
+                      + this.isAlive(x + 1, y - 1)
+                      + this.isAlive(x - 1, y)
+                      + this.isAlive(x + 1, y)
+                      + this.isAlive(x - 1, y + 1)
+                      + this.isAlive(x, y + 1)
+                      + this.isAlive(x + 1, y + 1);
+                const cellIdx = this.getIdx(x, y);
+                if (numAlive == 2 && this.grid[cellIdx] == 1) this.gridNextState[cellIdx] = this.grid[cellIdx];
+                else if (numAlive == 3) this.gridNextState[cellIdx] = 1;
+                else this.gridNextState[cellIdx] = this.grid[cellIdx] - 1;
             }
         }
 
@@ -53,7 +57,7 @@ class GameOfLife extends Animation {
 
         for (let y = 0; y < this.gridHeight; ++y) {
             for (let x = 0; x < this.gridWidth; ++x) {
-                let cellVal = this.grid[this.getCord(x, y)];
+                let cellVal = this.getVal(x, y);
                 let cellPadding = 1
                 let fillStyle = null;
                 if(cellVal >= 0 ) fillStyle = this.colors[0];
@@ -88,7 +92,7 @@ class GameOfLife extends Animation {
         for (let y = 0; y < newGridHeight; y++) {
             for (let x = 0; x < newGridWidth; x++) {
                 let cellCord = x + y * newGridWidth;
-                if(x < this.gridWidth && y < this.gridHeight) newGrid[cellCord] = this.grid[this.getCord(x, y)];
+                if(x < this.gridWidth && y < this.gridHeight) newGrid[cellCord] = this.grid[this.getIdx(x, y)];
                 else newGrid[cellCord] = (Math.random() > 0.5) ? 1 : 0;
             }
         }

@@ -19,10 +19,9 @@ class ThreeNPlusOne extends Animation {
         this.evenAngle = evenAngle * Math.PI / 180;
         this.oddAngle = oddAngle * Math.PI / 180;
         this.seqences = []
-        this.frame = 0;
     }
 
-    update(timeElapsed){
+    update(elapsed){
         let n = this.seqences.length + 1;
         let sequence = [n];
         while(n != 1){
@@ -83,6 +82,8 @@ class Animation {
         this.colorsAlt = colorsAlt;
         this.name = name;
         this.file = file;
+        this.time = 0;
+        this.frame = 0;
     }
 
     getFPS(){
@@ -97,6 +98,11 @@ class Animation {
         return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/src/" + this.file;
     }
 
+    update(elapsed){
+        this.time += elapsed / 1000;
+        ++this.frame;
+    }
+
     resize(){
 
     }
@@ -106,7 +112,7 @@ module.exports = Animation;
 
 },{}],3:[function(require,module,exports){
 /*
- * Conway's Game of Life visualization.
+ * Shapes
  *
  * Coded with no external dependencies, using only canvas API.
  */
@@ -120,7 +126,8 @@ class CircularWaves extends Animation {
                 degPerVertex = 2,
                 noiseScale = 0.5,
                 noiseMin = 0.4,
-                noiseMax = 1.2
+                noiseMax = 1.2,
+                fadeOut = true
     ) {
         super(canvas, colors, colorsAlt, "circular waves", "circular-waves.js");
         this.noise = Noise.noise;
@@ -130,8 +137,8 @@ class CircularWaves extends Animation {
         this.noiseScale = noiseScale;
         this.noiseMin = noiseMin;
         this.noiseMax = noiseMax;
+        this.fadeOut = fadeOut;
 
-        this.frame = 0;
         this.color1 = this.colors[0];
         this.color2 = this.colorsAlt[0];
 
@@ -139,12 +146,8 @@ class CircularWaves extends Animation {
         this.radiusMax = 0;
     }
 
-    update(timeElapsed){
-        ++this.frame;
-    }
-
     draw() {
-        if(this.frame % 10 == 0) Utils.blendColor(this.ctx, "#FFFFFF", 0.01, "lighter");
+        if(this.fadeOut && this.frame % 10 == 0) Utils.blendColor(this.ctx, "#FFFFFF", 0.01, "lighter");
 
         const zoff = this.frame * 0.005;
         this.ctx.strokeStyle = Utils.lerpColor(this.color1, this.color2, Math.abs(Math.sin(zoff * 5)));
@@ -178,7 +181,7 @@ class CircularWaves extends Animation {
 
 module.exports = CircularWaves;
 
-},{"./animation":2,"./noise":7,"./utils":11}],4:[function(require,module,exports){
+},{"./animation":2,"./noise":7,"./utils":12}],4:[function(require,module,exports){
 /*
  * Conway's Game of Life visualization.
  *
@@ -198,30 +201,34 @@ class GameOfLife extends Animation {
         this.gridNextState = null;
     }
 
-    getCord(x, y) {
+    getIdx(x, y) {
         return x + y * this.gridWidth;
+    }
+
+    getVal(x, y) {
+        return this.grid[this.getIdx(x, y)];
     }
 
     isAlive(x, y) {
         if (x < 0 || x >= this.gridWidth || y < 0 || y >= this.gridHeight) return 0;
-        else return (this.grid[this.getCord(x, y)] == 1) ? 1 : 0;
+        else return (this.getVal(x, y) == 1) ? 1 : 0;
     }
 
-    update(timeElapsed){
+    update(elapsed){
         for (let y = 0; y < this.gridHeight; ++y) {
             for (let x = 0; x < this.gridWidth; ++x) {
-                let numAlive = this.isAlive(x - 1, y - 1)
-                    + this.isAlive(x, y - 1)
-                    + this.isAlive(x + 1, y - 1)
-                    + this.isAlive(x - 1, y)
-                    + this.isAlive(x + 1, y)
-                    + this.isAlive(x - 1, y + 1)
-                    + this.isAlive(x, y + 1)
-                    + this.isAlive(x + 1, y + 1);
-                let cellCord = this.getCord(x, y);
-                if (numAlive == 2 && this.grid[cellCord] == 1) this.gridNextState[cellCord] = this.grid[cellCord];
-                else if (numAlive == 3) this.gridNextState[cellCord] = 1;
-                else this.gridNextState[cellCord] = this.grid[cellCord] - 1;
+                const numAlive = this.isAlive(x - 1, y - 1)
+                      + this.isAlive(x, y - 1)
+                      + this.isAlive(x + 1, y - 1)
+                      + this.isAlive(x - 1, y)
+                      + this.isAlive(x + 1, y)
+                      + this.isAlive(x - 1, y + 1)
+                      + this.isAlive(x, y + 1)
+                      + this.isAlive(x + 1, y + 1);
+                const cellIdx = this.getIdx(x, y);
+                if (numAlive == 2 && this.grid[cellIdx] == 1) this.gridNextState[cellIdx] = this.grid[cellIdx];
+                else if (numAlive == 3) this.gridNextState[cellIdx] = 1;
+                else this.gridNextState[cellIdx] = this.grid[cellIdx] - 1;
             }
         }
 
@@ -234,7 +241,7 @@ class GameOfLife extends Animation {
 
         for (let y = 0; y < this.gridHeight; ++y) {
             for (let x = 0; x < this.gridWidth; ++x) {
-                let cellVal = this.grid[this.getCord(x, y)];
+                let cellVal = this.getVal(x, y);
                 let cellPadding = 1
                 let fillStyle = null;
                 if(cellVal >= 0 ) fillStyle = this.colors[0];
@@ -269,7 +276,7 @@ class GameOfLife extends Animation {
         for (let y = 0; y < newGridHeight; y++) {
             for (let x = 0; x < newGridWidth; x++) {
                 let cellCord = x + y * newGridWidth;
-                if(x < this.gridWidth && y < this.gridHeight) newGrid[cellCord] = this.grid[this.getCord(x, y)];
+                if(x < this.gridWidth && y < this.gridHeight) newGrid[cellCord] = this.grid[this.getIdx(x, y)];
                 else newGrid[cellCord] = (Math.random() > 0.5) ? 1 : 0;
             }
         }
@@ -296,7 +303,7 @@ const NeuralNetwork = require("./neural-network");
 const ThreeNPlusOne = require("./3n+1");
 const CircularWaves = require("./circular-waves");
 const ParticlesVortex = require("./particles-vortex");
-
+const ParticlesAndAttractors = require("./particles-and-attractors");
 
 // Globals
 // ---------------------------------------------------------------------------------------------------------------------
@@ -341,6 +348,7 @@ const animations = [
     ThreeNPlusOne,
     CircularWaves,
     ParticlesVortex,
+    ParticlesAndAttractors,
 ];
 
 let animationId = Math.floor(Math.random() * animations.length);
@@ -414,7 +422,7 @@ backgroundNext.addEventListener("click", function(){
     updateAnimation(animation);
 });
 
-},{"./3n+1":1,"./circular-waves":3,"./game-of-live":4,"./neural-network":6,"./particles-vortex":8,"./perlin-noise-particles":9,"./spinning-shapes":10}],6:[function(require,module,exports){
+},{"./3n+1":1,"./circular-waves":3,"./game-of-live":4,"./neural-network":6,"./particles-and-attractors":8,"./particles-vortex":9,"./perlin-noise-particles":10,"./spinning-shapes":11}],6:[function(require,module,exports){
 /*
  * Visualization of a simple, fully connected neural network, with random weights,
  * ReLU activations on intermediate layers, and sigmoid output at the last layer.
@@ -535,7 +543,7 @@ class NeuralNetwork extends Animation {
 
 module.exports = NeuralNetwork;
 
-},{"./animation":2,"./utils":11}],7:[function(require,module,exports){
+},{"./animation":2,"./utils":12}],7:[function(require,module,exports){
 /*
  * A speed-improved perlin and simplex noise algorithms for 2D.
  *
@@ -848,6 +856,80 @@ module.exports = NeuralNetwork;
 
 },{}],8:[function(require,module,exports){
 /*
+ * Very simple particles system with attractors.
+ * In this system distance and momentum are ignored.
+ * New velocity vector of a particle is calculated as sum of angles
+ * between particle and all attractors (see line 51+).
+ *
+ * Coded with no external dependencies, using only canvas API.
+ */
+
+const Animation = require("./animation");
+const Utils = require("./utils");
+
+class ParticlesAndAttractors extends Animation {
+    constructor (canvas, colors, colorsAlt,
+                 numParticles= 10000,
+                 numAttractors = 5,
+                 drawAttractors = false
+    ) {
+        super(canvas, colors, colorsAlt, "system of particles and attractors", "particles-and-attractors.js");
+        this.particles = []
+        this.particlesSpeed = Utils.randomRange(5, 15);
+
+        this.drawAttractors = drawAttractors;
+        this.numAttractors = numAttractors;
+        this.attractorsSystem = Utils.randomChoice(["circles", "eights"]);
+        this.attractorsSpeed = Utils.randomRange(0.05, 0.1) * Utils.randomChoice([-1, 1]);
+        this.timeBase = Utils.randomRange(0, 10);
+
+        for (let i = 0; i < numParticles; ++i)
+            this.particles.push(Utils.rotateVec(Utils.createVec(Utils.randomRange(1, 100), 0), i));
+    }
+
+    draw() {
+        Utils.blendColor(this.ctx, "#FFFFFF", 0.03, "lighter");
+
+        const centerX = this.ctx.canvas.width / 2,
+              centerY = this.ctx.canvas.height / 2,
+              t = (this.timeBase + this.time) * this.attractorsSpeed;
+
+        let attractors = [];
+        if(this.attractorsSystem == "circles") {
+            const s = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / (2 * (this.numAttractors - 1));
+            for (let i = 0; i < this.numAttractors; ++i)
+                attractors.push(Utils.rotateVec(Utils.createVec(i * s, 0), t * i));
+        } else if (this.attractorsSystem == "eights") {
+            const s = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / this.numAttractors;
+            for (let i = 0; i < this.numAttractors; ++i)
+                attractors.push(Utils.rotateVec(Utils.createVec(i * t * s, 0), t * i));
+        }
+
+        for (let p of this.particles) {
+            let d = 0
+            for (let a of attractors) d += Math.atan2(a.y - p.y, a.x - p.x);
+
+            const prevX = p.x, prevY = p.y;
+            p.x += Math.cos(d) * this.particlesSpeed;
+            p.y += Math.sin(d) * this.particlesSpeed;
+
+            Utils.drawLine(this.ctx, centerX + prevX, centerY + prevY, centerX + p.x, centerY + p.y, this.colors[0]);
+        }
+
+        if(this.drawAttractors)
+            for (let a of attractors)
+                Utils.fillCircle(this.ctx, this.colorsAlt[0], centerX + a.x, centerY + a.y, 5)
+    }
+
+    resize() {
+        Utils.clear(this.ctx, "#FFFFFF");
+    }
+}
+
+module.exports = ParticlesAndAttractors;
+
+},{"./animation":2,"./utils":12}],9:[function(require,module,exports){
+/*
  * Particles vortex with randomized speed and direction.
  *
  * Coded with no external dependencies, using only canvas API.
@@ -859,7 +941,7 @@ const Utils = require("./utils");
 
 class ParticlesVortex extends Animation {
     constructor (canvas, colors, colorsAlt,
-                 particles = 1000,
+                 particles = 1500,
                  radiusMin = 100,
                  radiusMax = 200,
                  speedMin = 25,
@@ -867,7 +949,7 @@ class ParticlesVortex extends Animation {
                  rotationSpeedMin = 0.01,
                  rotationSpeedMax = 0.02
     ){
-        super(canvas, colors, colorsAlt);
+        super(canvas, colors, colorsAlt, "vortex of particles", "particles-vortex.js");
 
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
@@ -878,18 +960,7 @@ class ParticlesVortex extends Animation {
         this.rotationSpeed = Utils.randomRange(rotationSpeedMin, rotationSpeedMax) * Utils.randomChoice([-1, 1]);
         this.dirX = Utils.randomRange(-0.75, 0.75);
         this.dirY = Utils.randomRange(-0.75, 0.75);
-
-        this.time = 0;
-        this.frame = 0;
         this.resize();
-    }
-
-    getName(){
-        return "vortex of particles";
-    }
-
-    update(elapsed){
-        this.time += elapsed / 1000;
     }
 
     draw() {
@@ -917,7 +988,7 @@ class ParticlesVortex extends Animation {
 
 module.exports = ParticlesVortex;
 
-},{"./animation":2,"./noise":7,"./utils":11}],9:[function(require,module,exports){
+},{"./animation":2,"./noise":7,"./utils":12}],10:[function(require,module,exports){
 /*
  * Particles moving through Perlin noise.
  *
@@ -939,6 +1010,7 @@ class PerlinNoiseParticles extends Animation {
         this.noiseScale = noiseScale;
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
+        this.drawNoise = drawNoise;
 
         this.width = 0;
         this.height = 0;
@@ -1008,7 +1080,7 @@ class PerlinNoiseParticles extends Animation {
 
             for (let y = 0; y < gridHeight; y += numPixels) {
                 for (let x = 0; x < gridWidth; x += numPixels) {
-                    let v = parseInt(this.noise.perlin2(x, y) * 250);
+                    let v = Math.floor(this.noise.perlin2(x, y) * 250);
                     this.ctx.fillStyle = 'hsl(' + v + ',50%,50%)';
                     this.ctx.fillRect(x / gridWidth * this.ctx.canvas.width, y / gridHeight * this.ctx.canvas.height, pixelSize, pixelSize);
                 }
@@ -1019,9 +1091,9 @@ class PerlinNoiseParticles extends Animation {
 
 module.exports = PerlinNoiseParticles;
 
-},{"./animation":2,"./noise":7,"./utils":11}],10:[function(require,module,exports){
+},{"./animation":2,"./noise":7,"./utils":12}],11:[function(require,module,exports){
 /*
- * Shapes moving in a circle with
+ * Shapes moving in a circle.
  * Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
  *
  * Coded with no external dependencies, using only canvas API.
@@ -1041,16 +1113,10 @@ class SpinningShapes extends Animation {
         this.shapes = shapes;
         this.name = shapeNames[shapeSides.indexOf(this.sides)] + " moving in a circle";
 
-        this.time = 0;
-
         this.distBase = 0.6;
         this.distVar = 0.2;
         this.sizeBase = 0.2;
         this.sizeVar = 0.12;
-    }
-
-    update(timeElapsed){
-        this.time += timeElapsed / 1000;
     }
 
     draw() {
@@ -1079,7 +1145,7 @@ class SpinningShapes extends Animation {
 
 module.exports = SpinningShapes
 
-},{"./animation":2,"./utils":11}],11:[function(require,module,exports){
+},{"./animation":2,"./utils":12}],12:[function(require,module,exports){
 module.exports = {
 
     randomRange(min, max) {

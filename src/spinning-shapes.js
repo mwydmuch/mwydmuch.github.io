@@ -1,5 +1,5 @@
 /*
- * Shapes moving in a circle with
+ * Shapes moving in a circle.
  * Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
  *
  * Coded with no external dependencies, using only canvas API.
@@ -19,16 +19,10 @@ class SpinningShapes extends Animation {
         this.shapes = shapes;
         this.name = shapeNames[shapeSides.indexOf(this.sides)] + " moving in a circle";
 
-        this.time = 0;
-
         this.distBase = 0.6;
         this.distVar = 0.2;
         this.sizeBase = 0.2;
         this.sizeVar = 0.12;
-    }
-
-    update(timeElapsed){
-        this.time += timeElapsed / 1000;
     }
 
     draw() {

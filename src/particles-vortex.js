@@ -10,7 +10,7 @@ const Utils = require("./utils");
 
 class ParticlesVortex extends Animation {
     constructor (canvas, colors, colorsAlt,
-                 particles = 1000,
+                 particles = 1500,
                  radiusMin = 100,
                  radiusMax = 200,
                  speedMin = 25,
@@ -18,7 +18,7 @@ class ParticlesVortex extends Animation {
                  rotationSpeedMin = 0.01,
                  rotationSpeedMax = 0.02
     ){
-        super(canvas, colors, colorsAlt);
+        super(canvas, colors, colorsAlt, "vortex of particles", "particles-vortex.js");
 
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
@@ -29,18 +29,7 @@ class ParticlesVortex extends Animation {
         this.rotationSpeed = Utils.randomRange(rotationSpeedMin, rotationSpeedMax) * Utils.randomChoice([-1, 1]);
         this.dirX = Utils.randomRange(-0.75, 0.75);
         this.dirY = Utils.randomRange(-0.75, 0.75);
-
-        this.time = 0;
-        this.frame = 0;
         this.resize();
-    }
-
-    getName(){
-        return "vortex of particles";
-    }
-
-    update(elapsed){
-        this.time += elapsed / 1000;
     }
 
     draw() {
