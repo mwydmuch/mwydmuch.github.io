@@ -1,8 +1,8 @@
 /*
  * Very simple particles system with attractors.
- * In this system distance and momentum are ignored.
- * New velocity vector of a particle is calculated as sum of angles
- * between particle and all attractors (see line 51+).
+ * In this system, distance and momentum are ignored.
+ * The new velocity vector of a particle is calculated as the sum of angles
+ * between the particle and all attractors (see line 51+).
  *
  * Coded with no external dependencies, using only canvas API.
  */
@@ -32,10 +32,9 @@ class ParticlesAndAttractors extends Animation {
 
     draw() {
         Utils.blendColor(this.ctx, "#FFFFFF", 0.03, "lighter");
+        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
 
-        const centerX = this.ctx.canvas.width / 2,
-              centerY = this.ctx.canvas.height / 2,
-              t = (this.timeBase + this.time) * this.attractorsSpeed;
+        const t = (this.timeBase + this.time) * this.attractorsSpeed;
 
         let attractors = [];
         if(this.attractorsSystem == "circles") {
@@ -56,12 +55,14 @@ class ParticlesAndAttractors extends Animation {
             p.x += Math.cos(d) * this.particlesSpeed;
             p.y += Math.sin(d) * this.particlesSpeed;
 
-            Utils.drawLine(this.ctx, centerX + prevX, centerY + prevY, centerX + p.x, centerY + p.y, this.colors[0]);
+            Utils.drawLine(this.ctx, prevX, prevY, p.x, p.y, this.colors[0]);
         }
 
         if(this.drawAttractors)
             for (let a of attractors)
-                Utils.fillCircle(this.ctx, this.colorsAlt[0], centerX + a.x, centerY + a.y, 5)
+                Utils.fillCircle(this.ctx, this.colorsAlt[0], a.x, a.y, 5)
+
+        this.ctx.resetTransform();
     }
 
     resize() {

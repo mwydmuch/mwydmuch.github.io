@@ -42,16 +42,20 @@ class ParticlesVortex extends Animation {
               centerY = this.ctx.canvas.height / 2 + this.dirY * offset,
               s = Math.round(this.time * this.speed) / 2;
 
+        this.ctx.translate(centerX, centerY);
+
         this.ctx.beginPath();
         for(let i = 1; i <= this.particles; i++){
             const r = this.radius + Math.pow(i / (this.particles / 1.5),2) * i / 2,
                   p = this.noise.perlin2(i * 0.1 + s, 0.1) * 100 + s * this.rotationSpeed,
-                  x = centerX + Math.cos(p) * r + Math.sqrt(i * this.radius) * this.dirX,
-                  y = centerY + Math.sin(p) * r + Math.sqrt(i * this.radius) * this.dirY;
+                  x = Math.cos(p) * r + Math.sqrt(i * this.radius) * this.dirX,
+                  y = Math.sin(p) * r + Math.sqrt(i * this.radius) * this.dirY;
 
             Utils.pathCircle(this.ctx, x, y, i * 0.01);
         }
         this.ctx.stroke();
+
+        this.ctx.resetTransform();
     }
 }
 

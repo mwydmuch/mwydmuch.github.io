@@ -26,6 +26,12 @@ module.exports = {
         return min2 + (val - min1) / range1 * range2;
     },
 
+    sum(arr){
+        let s = 0;
+        for(let e of arr) s += a;
+        return s;
+    },
+
     // Function to linearly interpolate between v1 and v2
     lerp(v1, v2, t) {
         return (1.0 - t) * v1 + t * v2;

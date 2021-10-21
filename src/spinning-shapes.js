@@ -28,15 +28,15 @@ class SpinningShapes extends Animation {
     draw() {
         Utils.clear(this.ctx, "#FFFFFF");
 
-        const centerX = this.ctx.canvas.width / 2,
-              centerY = this.ctx.canvas.height / 2,
-              scale = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3;
+        const scale = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3;
+
+        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
 
         for (let i = 0; i < this.shapes; ++i) {
             const theta = i / this.shapes * 2 * Math.PI,
                   distance = (this.distBase + this.distVar * Math.cos(theta * 6 + Math.cos(theta * 8 + this.time / 2))) * scale,
-                  x = centerX + Math.cos(theta) * distance,
-                  y = centerY + Math.sin(theta) * distance,
+                  x = Math.cos(theta) * distance,
+                  y = Math.sin(theta) * distance,
                   radius = (this.sizeBase + this.sizeVar * Math.cos(theta * 9 - this.time)) * scale;
             this.ctx.strokeStyle = this.colors[Math.floor((Math.cos(theta * 9 - this.time) + 1) / 2 * this.colors.length)];
             this.ctx.lineWidth = 1;
@@ -46,6 +46,8 @@ class SpinningShapes extends Animation {
             else Utils.pathPolygon(this.ctx, x, y, radius, this.sides, theta * this.rotatePolygons);
             this.ctx.stroke();
         }
+
+        this.ctx.resetTransform();
     }
 }
 

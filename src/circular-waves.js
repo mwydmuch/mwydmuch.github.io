@@ -39,8 +39,7 @@ class CircularWaves extends Animation {
         const zoff = this.frame * 0.005;
         this.ctx.strokeStyle = Utils.lerpColor(this.color1, this.color2, Math.abs(Math.sin(zoff * 5)));
 
-        const centerX = this.ctx.canvas.width / 2,
-              centerY = this.ctx.canvas.height / 2;
+        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
 
         this.ctx.beginPath();
         for (let a = 0; a <= 360; a += this.degPerVertex) {
@@ -50,13 +49,15 @@ class CircularWaves extends Animation {
 
                   n = this.noise.simplex3(xoff, yoff, zoff),
                   r = Utils.remap(n, -1, 1, this.radiusMin, this.radiusMax),
-                  x = centerX + r * Math.cos(aRad),
-                  y = centerY + r * Math.sin(aRad);
+                  x = r * Math.cos(aRad),
+                  y = r * Math.sin(aRad);
 
             if(a == 0) this.ctx.moveTo(x, y);
             else this.ctx.lineTo(x, y);
         }
         this.ctx.stroke();
+
+        this.ctx.resetTransform();
     }
 
     resize() {

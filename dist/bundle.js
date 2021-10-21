@@ -152,8 +152,7 @@ class CircularWaves extends Animation {
         const zoff = this.frame * 0.005;
         this.ctx.strokeStyle = Utils.lerpColor(this.color1, this.color2, Math.abs(Math.sin(zoff * 5)));
 
-        const centerX = this.ctx.canvas.width / 2,
-              centerY = this.ctx.canvas.height / 2;
+        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
 
         this.ctx.beginPath();
         for (let a = 0; a <= 360; a += this.degPerVertex) {
@@ -163,13 +162,15 @@ class CircularWaves extends Animation {
 
                   n = this.noise.simplex3(xoff, yoff, zoff),
                   r = Utils.remap(n, -1, 1, this.radiusMin, this.radiusMax),
-                  x = centerX + r * Math.cos(aRad),
-                  y = centerY + r * Math.sin(aRad);
+                  x = r * Math.cos(aRad),
+                  y = r * Math.sin(aRad);
 
             if(a == 0) this.ctx.moveTo(x, y);
             else this.ctx.lineTo(x, y);
         }
         this.ctx.stroke();
+
+        this.ctx.resetTransform();
     }
 
     resize() {
@@ -181,7 +182,7 @@ class CircularWaves extends Animation {
 
 module.exports = CircularWaves;
 
-},{"./animation":2,"./noise":7,"./utils":12}],4:[function(require,module,exports){
+},{"./animation":2,"./noise":8,"./utils":13}],4:[function(require,module,exports){
 /*
  * Conway's Game of Life visualization.
  *
@@ -291,6 +292,341 @@ class GameOfLife extends Animation {
 module.exports = GameOfLife;
 
 },{"./animation":2}],5:[function(require,module,exports){
+/*
+ * Visualization of
+ *
+ * Coded with no external dependencies, using only canvas API.
+ */
+
+const Animation = require("./animation");
+const Utils = require("./utils");
+
+
+class Optim {
+    constructor(w, name) {
+        this.w = [...w];
+        this.name = name;
+    }
+
+    update(grad){
+        return 0;
+    }
+
+    getW(){
+        return this.w;
+    }
+
+    getName(){
+        return this.name;
+    }
+}
+
+class SGD extends Optim {
+    constructor (w) {
+        super(w , "SGD");
+        this.eta = 0.001;
+    }
+
+    update(grad){
+        for(let i = 0; i < this.w.length; ++i){
+            this.w[i] -= this.eta * grad[i];
+        }
+    }
+}
+
+class Momentum extends Optim {
+    constructor (w) {
+        super(w, "Momentum");
+        this.eta = 0.01;
+        this.beta = 0.9;
+        this.m = new Array(w.length).fill(0);
+    }
+
+    update(grad){
+        for(let i = 0; i < this.w.length; ++i){
+            this.m[i] = this.beta * this.m[i] + (1 - this.beta) * grad[i];
+            this.w[i] -= this.eta * this.m[i];
+        }
+    }
+}
+
+class AdaGrad extends Optim {
+    constructor (w) {
+        super(w, "AdaGrad");
+        this.eta = 0.1;
+        this.v = new Array(w.length).fill(0);
+    }
+
+    update(grad){
+        for(let i = 0; i < this.w.length; ++i){
+            this.v[i] += grad[i] * grad[i];
+            this.w[i] -= this.eta / Math.sqrt(this.v[i] + 0.000001) * grad[i];
+        }
+    }
+}
+
+class RMSProp extends Optim {
+    constructor (w) {
+        super(w, "RMSProp");
+        this.eta = 0.01;
+        this.beta = 0.9;
+        this.v = new Array(w.length).fill(0);
+    }
+
+    update(grad){
+        for(let i = 0; i < this.w.length; ++i){
+            this.v[i] = this.beta * this.v[i] + (1 - this.beta) * grad[i] * grad[i];
+            this.w[i] -= this.eta / Math.sqrt(this.v[i] + 0.000001) * grad[i];
+        }
+    }
+}
+
+class Adam extends Optim {
+    constructor (w) {
+        super(w, "Adam");
+        this.eta = 0.01;
+        this.beta1 = 0.9;
+        this.beta2 = 0.999;
+        this.m = new Array(w.length).fill(0);
+        this.v = new Array(w.length).fill(0);
+    }
+
+    update(grad){
+        for(let i = 0; i < this.w.length; ++i){
+            this.m[i] = this.beta1 * this.m[i] + (1 - this.beta1) * grad[i];
+            this.v[i] = this.beta2 * this.v[i] + (1 - this.beta2) * grad[i] * grad[i];
+            this.w[i] -= this.eta / (Math.sqrt(this.v[i] / (1 - this.beta2)) + 0.000001) * this.m[i] / (1 - this.beta1);
+        }
+    }
+}
+
+class Nadam extends Optim {
+    constructor (w) {
+        super(w, "Nadam");
+        this.eta = 0.001;
+        this.beta1 = 0.9;
+        this.beta2 = 0.999;
+        this.m = new Array(w.length).fill(0);
+        this.v = new Array(w.length).fill(0);
+    }
+
+    update(grad){
+        for(let i = 0; i < this.w.length; ++i){
+            this.m[i] = this.beta1 * this.m[i] + (1 - this.beta1) * grad[i];
+            this.v[i] = this.beta2 * this.v[i] + (1 - this.beta2) * grad[i] * grad[i];
+            this.w[i] -= this.eta / (Math.sqrt(this.v[i] / (1 - this.beta2)) + 0.000001) * this.m[i] / (1 - this.beta1);
+        }
+    }
+}
+
+
+class Func {
+    constructor(name, globalMin, startPoint, range) {
+        this.name = name;
+        this.globalMin = globalMin;
+        this.startPoint = startPoint;
+        this.range = range;
+    }
+
+    hasGlobalMin(){
+        return this.globalMin != null;
+    }
+
+    getGlobalMin(){
+        return this.globalMin;
+    }
+
+    getRange(){
+        return this.range;
+    }
+
+    getStartPoint(){
+        return this.startPoint;
+    }
+
+    getName(){
+        return this.name;
+    }
+}
+
+
+class SaddlePointFunc extends Func {
+    constructor() {
+        super("f(x, y) = x^2 - y^2", null, [-1, 0.001], [-1, 1]);
+    }
+
+    val(w) {
+        const x = w[0], y = w[1];
+        return x * x - y * y;
+    }
+
+    grad(w){
+        const x = w[0], y = w[1];
+        return [
+            2 * x,
+            -2 * y
+        ]
+    }
+}
+
+class BEALEFunc extends Func{
+    constructor() {
+        super("Beale function", [3, 0.5], [-1, 1], [-3, 3]);
+    }
+
+    val(w) {
+        const x = w[0], y = w[1];
+        return Math.pow(1.5 - x + x * y, 2) + Math.pow(2.25 - x + x * y * y, 2) + Math.pow(2.625 - x + x * Math.pow(y, 3), 2);
+    }
+
+    grad(w){
+        const x = w[0], y = w[1],
+              y2 = y * y,
+              y3 = Math.pow(y, 3),
+              y4 = Math.pow(y, 4),
+              y5 = Math.pow(y, 5),
+              y6 = Math.pow(y, 6);
+        return [
+            2 * x * (y6 + y4 - 2 * y3 - y2 - 2 * y + 3) + 5.25 * y3 + 4.5 * y2 + 3 * y - 12.75,
+            6 * x * (x * (y5 + 2/3 * y3 - y2 - 1/3 * y - 1/3) + 2.625 * y2 + 1.5 * y + 0.5)
+        ]
+    }
+}
+
+
+class GradientDescent extends Animation {
+    constructor (canvas, colors, colorsAlt) {
+        super(canvas, colors, colorsAlt, "gradient descent", "gradient-descent.js");
+        this.func = new BEALEFunc();
+        //this.func = new SaddlePointFunc();
+
+        this.scale = 0;
+        this.optims = null;
+        this.imageData = null;
+    }
+
+    draw() {
+        //if(this.imageData != null) this.ctx.putImageData(this.imageData, 0, 0);
+
+        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+
+        for (let i = 0; i < this.optims.length; ++i) {
+            let x1, y1, x2, y2;
+            let o = this.optims[i];
+            [x1, y1] = o.getW();
+            o.update(this.func.grad(o.getW()));
+            [x2, y2] = o.getW();
+            Utils.drawLine(this.ctx, x1 * this.scale, -y1 * this.scale, x2 * this.scale, -y2 * this.scale, this.colorsAlt[i], 2);
+        }
+
+        this.ctx.resetTransform();
+
+        //this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+
+        // this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        //
+        // for (let i = 0; i < this.optims.length; ++i) {
+        //     let x1, y1;
+        //     let o = this.optims[i];
+        //     [x1, y1] = o.getW();
+        //
+        //     this.ctx.fillStyle = this.colorsAlt[i];
+        //     this.ctx.font = '12px sans-serif';
+        //     let v = this.func.val([x1, y1]);
+        //     this.ctx.fillText(o.constructor.name + ": " + v.toFixed(2), x1 * this.scale, -y1 * this.scale);
+        // }
+        //
+        // this.ctx.resetTransform();
+
+    }
+
+    resize() {
+        Utils.clear(this.ctx, "#FFFFFF");
+        this.imageData = null;
+
+        const width = this.ctx.canvas.width,
+              height = this.ctx.canvas.height,
+              centerX = width / 2,
+              centerY = height / 2,
+              range = this.func.getRange();
+        this.scale = Math.min(width, height) / (range[1] - range[0]);
+
+        // Add function name and text
+        this.ctx.fillStyle = this.colors[0];
+        this.ctx.font = '12px sans-serif';
+
+        this.ctx.fillText(this.func.getName(), 40, 22)
+        if(this.func.hasGlobalMin()) {
+            const globalMin = this.func.getGlobalMin()
+            this.ctx.fillText("f(x*) = " + this.func.val(globalMin) + ", at x* =  (" + globalMin[0] + ", " + globalMin[1] + ")", 40, 42);
+            Utils.fillCircle(this.ctx, this.colors[0], centerX + globalMin[0] * this.scale, centerY + -globalMin[1] * this.scale, 2);
+        }
+
+        // Very simple approach to draw isolines
+        let isobands = new Array(width * height);
+        let isolines = [0, 0.125];
+        let exp = 2;
+        let plusVal = 0;
+
+        for(let i = 0; i < width; ++i) {
+            for (let j = 0; j < height; ++j) {
+                const x = (i - centerX) / this.scale, y = -(j - centerY) / this.scale,
+                      val = this.func.val([x, y]),
+                      idx = i + j * width;
+
+                while(val > isolines[isolines.length - 1]) isolines.push(isolines[isolines.length - 1] * exp + plusVal);
+                for(let k = 1; k < isolines.length; ++k) {
+                    if(val < isolines[k]) {
+                        isobands[idx] = k - 1;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Calculate colors for isolines
+        let isolinesColors = []
+        for(let i = 0; i < isolines.length; ++i){
+            isolinesColors.push(Utils.lerpColor(this.colors[0], "#FFFFFF", (i + 1) / (isolines.length + 1)));
+        }
+
+        // TODO: use imageData instead of fillRect
+        this.ctx.fillStyle = "#000000";
+        for(let i = 0; i < width; ++i) {
+            for (let j = 0; j < height; ++j) {
+                const idx = i + j * width;
+                const sum = -3 * isobands[idx] + isobands[idx + 1] + isobands[idx + width] + isobands[idx + 1 + width];
+                this.ctx.fillStyle = isolinesColors[isobands[idx]];
+                if(sum != 0 && sum != 4) this.ctx.fillRect(i, j, 1, 1);
+            }
+        }
+
+        // Add X axis
+        for(let i = 0; i < centerX / this.scale; ++i){
+            this.ctx.fillText(i.toFixed(1), centerX + i * this.scale, height - 22);
+            if(i != 0) this.ctx.fillText((-i).toFixed(1), centerX - i * this.scale, height - 22);
+        }
+
+        // Add Y axis
+        for(let i = 0; i < centerY / this.scale; ++i){
+            this.ctx.fillText(i.toFixed(1), 10, centerY + i * this.scale);
+            if(i != 0) this.ctx.fillText((-i).toFixed(1), 10, centerY - i * this.scale);
+        }
+
+        const start = this.func.getStartPoint();
+        this.optims = [
+            new SGD(start),
+            new Momentum(start),
+            new AdaGrad(start),
+            new RMSProp(start),
+            new Adam(start)
+        ];
+    }
+}
+
+module.exports = GradientDescent;
+
+},{"./animation":2,"./utils":13}],6:[function(require,module,exports){
 'use strict';
 
 // Require
@@ -304,6 +640,7 @@ const ThreeNPlusOne = require("./3n+1");
 const CircularWaves = require("./circular-waves");
 const ParticlesVortex = require("./particles-vortex");
 const ParticlesAndAttractors = require("./particles-and-attractors");
+const GradientDescent = require("./gradient-descent");
 
 // Globals
 // ---------------------------------------------------------------------------------------------------------------------
@@ -327,7 +664,18 @@ const colors = [ // Green palette
 
 const colorsAlt = [ // Alt red palette
     "#FF5C5C",
-    "#CA3737",
+    "#d61111",
+    "#d67711",
+    "#d6ab11",
+    "#1142d6",
+    "#5d11d6",
+    "#ff905c",
+    "#ffe45c",
+    "#74ff5c",
+    "#5cb3ff",
+    "#5c72ff",
+    "#875cff",
+    "#ff5c5c",
 ];
 
 
@@ -335,10 +683,11 @@ const colorsAlt = [ // Alt red palette
 // ---------------------------------------------------------------------------------------------------------------------
 
 const content = document.getElementById("content");
-const backgroundControls = document.getElementById("background-controls");
+const backgroundShow = document.getElementById("background-show");
 const backgroundName = document.getElementById("background-name");
 const backgroundNext = document.getElementById("background-next");
 const backgroundCode = document.getElementById("background-code");
+const backgroundReset = document.getElementById("background-reset");
 
 const animations = [
     GameOfLife,
@@ -349,6 +698,7 @@ const animations = [
     CircularWaves,
     ParticlesVortex,
     ParticlesAndAttractors,
+    //GradientDescent
 ];
 
 let animationId = Math.floor(Math.random() * animations.length);
@@ -399,21 +749,23 @@ render();
 // Add background controls
 // ---------------------------------------------------------------------------------------------------------------------
 
-backgroundControls.addEventListener("mouseover", function(){
-    content.classList.remove("show-from-0");
-    content.classList.add("fade-to-0");
-    canvas.classList.remove("faded-8");
-    canvas.classList.remove("fade-to-8");
-    canvas.classList.add("hue-change");
-    canvas.classList.add("show-from-8");
-});
-
-backgroundControls.addEventListener("mouseout", function(){
-    content.classList.remove("fade-to-0");
-    content.classList.add("show-from-0");
-    canvas.classList.remove("show-from-8");
-    canvas.classList.add("fade-to-8");
-    canvas.classList.remove("hue-change");
+backgroundShow.addEventListener("click", function(){
+    if(backgroundShow.innerText == " show") {
+        content.classList.remove("show-from-0");
+        content.classList.add("fade-to-0");
+        canvas.classList.remove("faded-8");
+        canvas.classList.remove("fade-to-8");
+        canvas.classList.add("hue-change");
+        canvas.classList.add("show-from-8");
+        backgroundShow.innerHTML = "<i class=\"fas fa-eye-slash\"></i> hide";
+    } else {
+        content.classList.remove("fade-to-0");
+        content.classList.add("show-from-0");
+        canvas.classList.remove("show-from-8");
+        canvas.classList.add("fade-to-8");
+        canvas.classList.remove("hue-change");
+        backgroundShow.innerHTML = "<i class=\"fas fa-eye\"></i> show";
+    }
 });
 
 backgroundNext.addEventListener("click", function(){
@@ -422,7 +774,12 @@ backgroundNext.addEventListener("click", function(){
     updateAnimation(animation);
 });
 
-},{"./3n+1":1,"./circular-waves":3,"./game-of-live":4,"./neural-network":6,"./particles-and-attractors":8,"./particles-vortex":9,"./perlin-noise-particles":10,"./spinning-shapes":11}],6:[function(require,module,exports){
+backgroundReset.addEventListener("click", function(){
+    animation = new animations[animationId](canvas, colors, colorsAlt);
+    animation.resize();
+});
+
+},{"./3n+1":1,"./circular-waves":3,"./game-of-live":4,"./gradient-descent":5,"./neural-network":7,"./particles-and-attractors":9,"./particles-vortex":10,"./perlin-noise-particles":11,"./spinning-shapes":12}],7:[function(require,module,exports){
 /*
  * Visualization of a simple, fully connected neural network, with random weights,
  * ReLU activations on intermediate layers, and sigmoid output at the last layer.
@@ -543,7 +900,7 @@ class NeuralNetwork extends Animation {
 
 module.exports = NeuralNetwork;
 
-},{"./animation":2,"./utils":12}],7:[function(require,module,exports){
+},{"./animation":2,"./utils":13}],8:[function(require,module,exports){
 /*
  * A speed-improved perlin and simplex noise algorithms for 2D.
  *
@@ -854,12 +1211,12 @@ module.exports = NeuralNetwork;
 
 })(this);
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 /*
  * Very simple particles system with attractors.
- * In this system distance and momentum are ignored.
- * New velocity vector of a particle is calculated as sum of angles
- * between particle and all attractors (see line 51+).
+ * In this system, distance and momentum are ignored.
+ * The new velocity vector of a particle is calculated as the sum of angles
+ * between the particle and all attractors (see line 51+).
  *
  * Coded with no external dependencies, using only canvas API.
  */
@@ -889,10 +1246,9 @@ class ParticlesAndAttractors extends Animation {
 
     draw() {
         Utils.blendColor(this.ctx, "#FFFFFF", 0.03, "lighter");
+        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
 
-        const centerX = this.ctx.canvas.width / 2,
-              centerY = this.ctx.canvas.height / 2,
-              t = (this.timeBase + this.time) * this.attractorsSpeed;
+        const t = (this.timeBase + this.time) * this.attractorsSpeed;
 
         let attractors = [];
         if(this.attractorsSystem == "circles") {
@@ -913,12 +1269,14 @@ class ParticlesAndAttractors extends Animation {
             p.x += Math.cos(d) * this.particlesSpeed;
             p.y += Math.sin(d) * this.particlesSpeed;
 
-            Utils.drawLine(this.ctx, centerX + prevX, centerY + prevY, centerX + p.x, centerY + p.y, this.colors[0]);
+            Utils.drawLine(this.ctx, prevX, prevY, p.x, p.y, this.colors[0]);
         }
 
         if(this.drawAttractors)
             for (let a of attractors)
-                Utils.fillCircle(this.ctx, this.colorsAlt[0], centerX + a.x, centerY + a.y, 5)
+                Utils.fillCircle(this.ctx, this.colorsAlt[0], a.x, a.y, 5)
+
+        this.ctx.resetTransform();
     }
 
     resize() {
@@ -928,7 +1286,7 @@ class ParticlesAndAttractors extends Animation {
 
 module.exports = ParticlesAndAttractors;
 
-},{"./animation":2,"./utils":12}],9:[function(require,module,exports){
+},{"./animation":2,"./utils":13}],10:[function(require,module,exports){
 /*
  * Particles vortex with randomized speed and direction.
  *
@@ -973,22 +1331,26 @@ class ParticlesVortex extends Animation {
               centerY = this.ctx.canvas.height / 2 + this.dirY * offset,
               s = Math.round(this.time * this.speed) / 2;
 
+        this.ctx.translate(centerX, centerY);
+
         this.ctx.beginPath();
         for(let i = 1; i <= this.particles; i++){
             const r = this.radius + Math.pow(i / (this.particles / 1.5),2) * i / 2,
                   p = this.noise.perlin2(i * 0.1 + s, 0.1) * 100 + s * this.rotationSpeed,
-                  x = centerX + Math.cos(p) * r + Math.sqrt(i * this.radius) * this.dirX,
-                  y = centerY + Math.sin(p) * r + Math.sqrt(i * this.radius) * this.dirY;
+                  x = Math.cos(p) * r + Math.sqrt(i * this.radius) * this.dirX,
+                  y = Math.sin(p) * r + Math.sqrt(i * this.radius) * this.dirY;
 
             Utils.pathCircle(this.ctx, x, y, i * 0.01);
         }
         this.ctx.stroke();
+
+        this.ctx.resetTransform();
     }
 }
 
 module.exports = ParticlesVortex;
 
-},{"./animation":2,"./noise":7,"./utils":12}],10:[function(require,module,exports){
+},{"./animation":2,"./noise":8,"./utils":13}],11:[function(require,module,exports){
 /*
  * Particles moving through Perlin noise.
  *
@@ -1091,7 +1453,7 @@ class PerlinNoiseParticles extends Animation {
 
 module.exports = PerlinNoiseParticles;
 
-},{"./animation":2,"./noise":7,"./utils":12}],11:[function(require,module,exports){
+},{"./animation":2,"./noise":8,"./utils":13}],12:[function(require,module,exports){
 /*
  * Shapes moving in a circle.
  * Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
@@ -1122,15 +1484,15 @@ class SpinningShapes extends Animation {
     draw() {
         Utils.clear(this.ctx, "#FFFFFF");
 
-        const centerX = this.ctx.canvas.width / 2,
-              centerY = this.ctx.canvas.height / 2,
-              scale = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3;
+        const scale = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3;
+
+        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
 
         for (let i = 0; i < this.shapes; ++i) {
             const theta = i / this.shapes * 2 * Math.PI,
                   distance = (this.distBase + this.distVar * Math.cos(theta * 6 + Math.cos(theta * 8 + this.time / 2))) * scale,
-                  x = centerX + Math.cos(theta) * distance,
-                  y = centerY + Math.sin(theta) * distance,
+                  x = Math.cos(theta) * distance,
+                  y = Math.sin(theta) * distance,
                   radius = (this.sizeBase + this.sizeVar * Math.cos(theta * 9 - this.time)) * scale;
             this.ctx.strokeStyle = this.colors[Math.floor((Math.cos(theta * 9 - this.time) + 1) / 2 * this.colors.length)];
             this.ctx.lineWidth = 1;
@@ -1140,12 +1502,14 @@ class SpinningShapes extends Animation {
             else Utils.pathPolygon(this.ctx, x, y, radius, this.sides, theta * this.rotatePolygons);
             this.ctx.stroke();
         }
+
+        this.ctx.resetTransform();
     }
 }
 
 module.exports = SpinningShapes
 
-},{"./animation":2,"./utils":12}],12:[function(require,module,exports){
+},{"./animation":2,"./utils":13}],13:[function(require,module,exports){
 module.exports = {
 
     randomRange(min, max) {
@@ -1172,6 +1536,12 @@ module.exports = {
         const range1 = max1 - min1,
               range2 = max2 - min2;
         return min2 + (val - min1) / range1 * range2;
+    },
+
+    sum(arr){
+        let s = 0;
+        for(let e of arr) s += a;
+        return s;
     },
 
     // Function to linearly interpolate between v1 and v2
@@ -1262,4 +1632,4 @@ module.exports = {
     }
 };
 
-},{}]},{},[5])
+},{}]},{},[6])

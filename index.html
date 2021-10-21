@@ -70,7 +70,7 @@
         <div id="news" class="accordion">
           <input id="news-accordion" type="checkbox" name="accordion-checkbox" hidden>
           <label class="accordion-header c-hand" for="news-accordion"><i class="icon icon-arrow-right mr-1"></i><h4 class="inline">News & events</h4></label>
-          <div class="accordion-body">
+          <div class="accordion-body justify">
             <ul>
               <li class="month-year-date-li">04.2021 - Our short paper titled "Propensity-scored Probabilistic Label Trees" was accepted at SIGIR'21</li>
               <li class="month-year-date-li">03.2021 - Our paper titled "Efficient Set-Valued Prediction in Multi-Class Classification" was accepted for publication in Data Mining and Knowledge Discovery</li>
@@ -151,7 +151,7 @@
         <div id="software" class="accordion">
           <input id="software-accordion" type="checkbox" name="accordion-checkbox" hidden>
           <label class="accordion-header c-hand" for="software-accordion"><i class="icon icon-arrow-right mr-1"></i><h4 class="inline">Software</h4></label>
-          <div class="accordion-body">
+          <div class="accordion-body justify">
             <ul>
               <li>
                 <a href="http://vizdoom.cs.put.edu.pl">ViZDoom</a> - Doom-based AI Research Platform for Reinforcement Learning from Raw Visual Information.
@@ -167,23 +167,33 @@
         </div>
 
         <div id="mlinpl" class="accordion">
+          <input id="reviews-accordion" type="checkbox" name="accordion-checkbox" hidden>
+          <label class="accordion-header c-hand" for="reviews-accordion"><i class="icon icon-arrow-right mr-1"></i><h4 class="inline">Reviews</h4></label>
+          <div class="accordion-body justify">
+            I try to review at least a dozen of papers each year.
+            I serve as a reviewer at NeurIPS (Outstanding Reviewer Award in 2021), ICML, AISTATS, IJCAI and recently ICLR.
+          </div>
+        </div>
+
+        <div id="mlinpl" class="accordion">
           <input id="mlinpl-accordion" type="checkbox" name="accordion-checkbox" hidden>
           <label class="accordion-header c-hand" for="mlinpl-accordion"><i class="icon icon-arrow-right mr-1"></i><h4 class="inline">ML in PL</h4></label>
-          <div class="accordion-body">
+          <div class="accordion-body justify">
             I'm proud to be a member of <span class="reverse-red"><a href="https://mlinpl.org/">ML in PL Association</a></span>,
             a non-profit organization devoted to fostering the machine learning community in Poland and around the world.
           </div>
         </div>
       </div>
+
       <div id="footer">
         <div>
           <span id="background-controls">
             <div>Background: <span id="background-name"></span></div>
             <div>
-              [<i class="fas fa-eye"></i> see]
+              [<a id="background-show"><i class="fas fa-eye"></i> show</a>]
               [<a id="background-code"><i class="fas fa-file-code"></i> code</a>]
               [<a id="background-next"><i class="fas fa-step-forward"></i> change</a>]
-<!--              [<a id="background-reset"><i class="fas fa-redo"></i> reset</a>]-->
+              [<a id="background-reset"><i class="fas fa-redo"></i> reset</a>]
             </div>
           </span>
         </div>

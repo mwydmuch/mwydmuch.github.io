@@ -11,6 +11,7 @@ const ThreeNPlusOne = require("./3n+1");
 const CircularWaves = require("./circular-waves");
 const ParticlesVortex = require("./particles-vortex");
 const ParticlesAndAttractors = require("./particles-and-attractors");
+const GradientDescent = require("./gradient-descent");
 
 // Globals
 // ---------------------------------------------------------------------------------------------------------------------
@@ -34,7 +35,18 @@ const colors = [ // Green palette
 
 const colorsAlt = [ // Alt red palette
     "#FF5C5C",
-    "#CA3737",
+    "#d61111",
+    "#d67711",
+    "#d6ab11",
+    "#1142d6",
+    "#5d11d6",
+    "#ff905c",
+    "#ffe45c",
+    "#74ff5c",
+    "#5cb3ff",
+    "#5c72ff",
+    "#875cff",
+    "#ff5c5c",
 ];
 
 
@@ -42,10 +54,11 @@ const colorsAlt = [ // Alt red palette
 // ---------------------------------------------------------------------------------------------------------------------
 
 const content = document.getElementById("content");
-const backgroundControls = document.getElementById("background-controls");
+const backgroundShow = document.getElementById("background-show");
 const backgroundName = document.getElementById("background-name");
 const backgroundNext = document.getElementById("background-next");
 const backgroundCode = document.getElementById("background-code");
+const backgroundReset = document.getElementById("background-reset");
 
 const animations = [
     GameOfLife,
@@ -56,6 +69,7 @@ const animations = [
     CircularWaves,
     ParticlesVortex,
     ParticlesAndAttractors,
+    //GradientDescent
 ];
 
 let animationId = Math.floor(Math.random() * animations.length);
@@ -106,25 +120,32 @@ render();
 // Add background controls
 // ---------------------------------------------------------------------------------------------------------------------
 
-backgroundControls.addEventListener("mouseover", function(){
-    content.classList.remove("show-from-0");
-    content.classList.add("fade-to-0");
-    canvas.classList.remove("faded-8");
-    canvas.classList.remove("fade-to-8");
-    canvas.classList.add("hue-change");
-    canvas.classList.add("show-from-8");
-});
-
-backgroundControls.addEventListener("mouseout", function(){
-    content.classList.remove("fade-to-0");
-    content.classList.add("show-from-0");
-    canvas.classList.remove("show-from-8");
-    canvas.classList.add("fade-to-8");
-    canvas.classList.remove("hue-change");
+backgroundShow.addEventListener("click", function(){
+    if(backgroundShow.innerText == " show") {
+        content.classList.remove("show-from-0");
+        content.classList.add("fade-to-0");
+        canvas.classList.remove("faded-8");
+        canvas.classList.remove("fade-to-8");
+        canvas.classList.add("hue-change");
+        canvas.classList.add("show-from-8");
+        backgroundShow.innerHTML = "<i class=\"fas fa-eye-slash\"></i> hide";
+    } else {
+        content.classList.remove("fade-to-0");
+        content.classList.add("show-from-0");
+        canvas.classList.remove("show-from-8");
+        canvas.classList.add("fade-to-8");
+        canvas.classList.remove("hue-change");
+        backgroundShow.innerHTML = "<i class=\"fas fa-eye\"></i> show";
+    }
 });
 
 backgroundNext.addEventListener("click", function(){
     animationId = (animationId + 1) % animations.length;
     animation = new animations[animationId](canvas, colors, colorsAlt);
     updateAnimation(animation);
+});
+
+backgroundReset.addEventListener("click", function(){
+    animation = new animations[animationId](canvas, colors, colorsAlt);
+    animation.resize();
 });

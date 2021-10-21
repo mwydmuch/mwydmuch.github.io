@@ -31,6 +31,9 @@ p {
 .inline {
   display: inline;
 }
+.justify {
+  text-align: justify;
+}
 .reverse,
 .reverse-red {
   color: #FFFFFF;
@@ -227,7 +230,7 @@ ul {
 }
 #footer {
   text-align: center;
-  margin: 1.4rem 0;
+  margin: 1.6rem 0;
   font-size: 0.7rem;
 }
 #footer #background-controls {
