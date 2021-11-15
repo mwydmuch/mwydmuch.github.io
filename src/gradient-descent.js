@@ -1,5 +1,5 @@
 /*
- * Visualization of
+ * Visualization of gradient descent optimizations
  *
  * Coded with no external dependencies, using only canvas API.
  */
@@ -127,11 +127,21 @@ class Nadam extends Optim {
 
 
 class Func {
-    constructor(name, globalMin, startPoint, range) {
+    constructor(name, globalMin, startPoint, scale, steps= 500, shift=[0, 0]) {
         this.name = name;
         this.globalMin = globalMin;
         this.startPoint = startPoint;
-        this.range = range;
+        this.scale = scale;
+        this.steps = steps;
+        this.shift = shift;
+    }
+
+    val(w) {
+        return 0;
+    }
+
+    grad(w){
+        return w;
     }
 
     hasGlobalMin(){
@@ -139,15 +149,19 @@ class Func {
     }
 
     getGlobalMin(){
-        return this.globalMin;
-    }
-
-    getRange(){
-        return this.range;
+        return Utils.subArrays(this.globalMin, this.shift);
     }
 
     getStartPoint(){
-        return this.startPoint;
+        return Utils.subArrays(this.startPoint, this.shift);
+    }
+
+    getScale(){
+        return this.scale;
+    }
+
+    getSteps(){
+        return this.steps;
     }
 
     getName(){
@@ -158,16 +172,16 @@ class Func {
 
 class SaddlePointFunc extends Func {
     constructor() {
-        super("f(x, y) = x^2 - y^2", null, [-1, 0.001], [-1, 1]);
+        super("f(x, y) = x^2 - y^2", null, [-1, 0.001], 1.1);
     }
 
     val(w) {
-        const x = w[0], y = w[1];
+        const x = w[0] + this.shift[0], y = w[1] + this.shift[1];
         return x * x - y * y;
     }
 
     grad(w){
-        const x = w[0], y = w[1];
+        const x = w[0] + this.shift[0], y = w[1] + this.shift[1];
         return [
             2 * x,
             -2 * y
@@ -177,16 +191,16 @@ class SaddlePointFunc extends Func {
 
 class BEALEFunc extends Func{
     constructor() {
-        super("Beale function", [3, 0.5], [-1, 1], [-3, 3]);
+        super("Beale function", [3, 0.5], [0.2, 0.7], 2, 500, [2, 0]);
     }
 
     val(w) {
-        const x = w[0], y = w[1];
+        const x = w[0] + this.shift[0], y = w[1] + this.shift[1];
         return Math.pow(1.5 - x + x * y, 2) + Math.pow(2.25 - x + x * y * y, 2) + Math.pow(2.625 - x + x * Math.pow(y, 3), 2);
     }
 
     grad(w){
-        const x = w[0], y = w[1],
+        const x = w[0] + this.shift[0], y = w[1] + this.shift[1],
               y2 = y * y,
               y3 = Math.pow(y, 3),
               y4 = Math.pow(y, 4),
@@ -203,8 +217,8 @@ class BEALEFunc extends Func{
 class GradientDescent extends Animation {
     constructor (canvas, colors, colorsAlt) {
         super(canvas, colors, colorsAlt, "gradient descent", "gradient-descent.js");
-        this.func = new BEALEFunc();
-        //this.func = new SaddlePointFunc();
+        this.funcClass = Utils.randomChoice([SaddlePointFunc, BEALEFunc]);
+        this.func = new this.funcClass();
 
         this.scale = 0;
         this.optims = null;
@@ -212,8 +226,6 @@ class GradientDescent extends Animation {
     }
 
     draw() {
-        //if(this.imageData != null) this.ctx.putImageData(this.imageData, 0, 0);
-
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
 
         for (let i = 0; i < this.optims.length; ++i) {
@@ -227,62 +239,96 @@ class GradientDescent extends Animation {
 
         this.ctx.resetTransform();
 
-        //this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        if (this.frame >= this.func.getSteps()) this.resize();
+    }
 
-        // this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
-        //
-        // for (let i = 0; i < this.optims.length; ++i) {
-        //     let x1, y1;
-        //     let o = this.optims[i];
-        //     [x1, y1] = o.getW();
-        //
-        //     this.ctx.fillStyle = this.colorsAlt[i];
-        //     this.ctx.font = '12px sans-serif';
-        //     let v = this.func.val([x1, y1]);
-        //     this.ctx.fillText(o.constructor.name + ": " + v.toFixed(2), x1 * this.scale, -y1 * this.scale);
-        // }
-        //
-        // this.ctx.resetTransform();
+    reset() {
+        if(this.imageData == null){
+            this.resize();
+            return;
+        }
 
+        this.ctx.putImageData(this.imageData, 0, 0);
+
+        const start = this.func.getStartPoint();
+        this.optims = [
+            new SGD(start),
+            new Momentum(start),
+            new AdaGrad(start),
+            new RMSProp(start),
+            new Adam(start)
+        ];
     }
 
     resize() {
         Utils.clear(this.ctx, "#FFFFFF");
+        this.frame = 0;
         this.imageData = null;
 
         const width = this.ctx.canvas.width,
               height = this.ctx.canvas.height,
               centerX = width / 2,
-              centerY = height / 2,
-              range = this.func.getRange();
-        this.scale = Math.min(width, height) / (range[1] - range[0]);
+              centerY = height / 2;
+        this.scale = Math.min(width, height) / this.func.getScale() / 2;
 
         // Add function name and text
+        let textYOffset = 22;
+        const textXOffset = 50;
+        const lineHeight = 20;
         this.ctx.fillStyle = this.colors[0];
         this.ctx.font = '12px sans-serif';
 
-        this.ctx.fillText(this.func.getName(), 40, 22)
+        this.ctx.fillText(this.func.getName(), textXOffset, textYOffset)
         if(this.func.hasGlobalMin()) {
+            textYOffset += lineHeight;
             const globalMin = this.func.getGlobalMin()
-            this.ctx.fillText("f(x*) = " + this.func.val(globalMin) + ", at x* =  (" + globalMin[0] + ", " + globalMin[1] + ")", 40, 42);
+            this.ctx.fillText("f(x*) = " + this.func.val(globalMin) + ", at x* =  (" + globalMin[0] + ", " + globalMin[1] + ")", textXOffset, textYOffset);
             Utils.fillCircle(this.ctx, this.colors[0], centerX + globalMin[0] * this.scale, centerY + -globalMin[1] * this.scale, 2);
         }
 
-        // Very simple approach to draw isolines
-        let isobands = new Array(width * height);
-        let isolines = [0, 0.125];
-        let exp = 2;
-        let plusVal = 0;
+        textYOffset += 2 * lineHeight;
+        this.ctx.fillText("Optimizers:", textXOffset, textYOffset);
 
+        let isobands = new Array(width * height);
+        let isolines, exp, plusVal, shiftVal = 0;
+
+        // Decide on scale
+        if(this.func.hasGlobalMin()) {
+            shiftVal = this.func.val(this.func.getGlobalMin());
+            isolines = [0, 0.125];
+            exp = 2;
+            plusVal = 0;
+        } else {
+            shiftVal = 0;
+            const scale = this.func.getScale(),
+                  vals = [
+                    this.func.val([0, 0]),
+                    this.func.val([scale, 0]),
+                    this.func.val([0, scale]),
+                    this.func.val([-scale, 0]),
+                    this.func.val([0, -scale]),
+                    this.func.val([scale, scale]),
+                    this.func.val([-scale, -scale]),
+                    this.func.val([scale, -scale]),
+                    this.func.val([-scale, scale]),
+                  ],
+                  min = Math.min(...vals),
+                  max = Math.max(...vals);
+            isolines = [min];
+            exp = 1;
+            plusVal = (max - min) / 10;
+        }
+
+        // Very simple approach to draw isolines (my simplified version of the marching squares algorithm)
         for(let i = 0; i < width; ++i) {
             for (let j = 0; j < height; ++j) {
                 const x = (i - centerX) / this.scale, y = -(j - centerY) / this.scale,
                       val = this.func.val([x, y]),
                       idx = i + j * width;
 
-                while(val > isolines[isolines.length - 1]) isolines.push(isolines[isolines.length - 1] * exp + plusVal);
+                while(val > shiftVal + isolines[isolines.length - 1]) isolines.push(isolines[isolines.length - 1] * exp + plusVal);
                 for(let k = 1; k < isolines.length; ++k) {
-                    if(val < isolines[k]) {
+                    if(val < shiftVal + isolines[k]) {
                         isobands[idx] = k - 1;
                         break;
                     }
@@ -293,11 +339,10 @@ class GradientDescent extends Animation {
         // Calculate colors for isolines
         let isolinesColors = []
         for(let i = 0; i < isolines.length; ++i){
-            isolinesColors.push(Utils.lerpColor(this.colors[0], "#FFFFFF", (i + 1) / (isolines.length + 1)));
+            isolinesColors.push(Utils.lerpColor(this.colors[0], this.colors[this.colors.length - 1], (i + 1) / (isolines.length + 1)));
         }
 
         // TODO: use imageData instead of fillRect
-        this.ctx.fillStyle = "#000000";
         for(let i = 0; i < width; ++i) {
             for (let j = 0; j < height; ++j) {
                 const idx = i + j * width;
@@ -307,14 +352,13 @@ class GradientDescent extends Animation {
             }
         }
 
-        // Add X axis
-        for(let i = 0; i < centerX / this.scale; ++i){
+        // Add X and Y axis
+        this.ctx.fillStyle = this.colors[0];
+        for(let i = 0; i < centerX / this.scale; i += 0.5){
             this.ctx.fillText(i.toFixed(1), centerX + i * this.scale, height - 22);
             if(i != 0) this.ctx.fillText((-i).toFixed(1), centerX - i * this.scale, height - 22);
         }
-
-        // Add Y axis
-        for(let i = 0; i < centerY / this.scale; ++i){
+        for(let i = 0; i < centerY / this.scale; i += 0.5){
             this.ctx.fillText(i.toFixed(1), 10, centerY + i * this.scale);
             if(i != 0) this.ctx.fillText((-i).toFixed(1), 10, centerY - i * this.scale);
         }
@@ -327,6 +371,17 @@ class GradientDescent extends Animation {
             new RMSProp(start),
             new Adam(start)
         ];
+
+        // Draw legend
+        for(let i = 0; i < this.optims.length; ++i){
+            textYOffset += lineHeight;
+            this.ctx.fillStyle = this.colorsAlt[i];
+            this.ctx.font = '12px sans-serif';
+            this.ctx.fillText("    " + this.optims[i].getName(), textXOffset, textYOffset);
+            Utils.fillCircle(this.ctx, this.colorsAlt[i], textXOffset + 3, textYOffset - 4, 3);
+        }
+
+        this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     }
 }
 

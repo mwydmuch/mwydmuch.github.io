@@ -14,6 +14,7 @@ a:active {
   color: #43696B;
   font-weight: 700;
   cursor: pointer;
+  white-space: nowrap;
 }
 h1,
 h2,
@@ -35,7 +36,8 @@ p {
   text-align: justify;
 }
 .reverse,
-.reverse-red {
+.reverse-red,
+.reverse-purple {
   color: #FFFFFF;
   padding: 0.05rem 0.25rem;
   margin: 0 0.05rem;
@@ -43,21 +45,29 @@ p {
 }
 .reverse a,
 .reverse-red a,
+.reverse-purple a,
 .reverse a:link,
 .reverse-red a:link,
+.reverse-purple a:link,
 .reverse a:visited,
 .reverse-red a:visited,
+.reverse-purple a:visited,
 .reverse a:hover,
 .reverse-red a:hover,
+.reverse-purple a:hover,
 .reverse a:active,
-.reverse-red a:active {
+.reverse-red a:active,
+.reverse-purple a:active {
   color: #FFFFFF;
 }
 .reverse {
   background: #43696B;
 }
 .reverse-red {
-  background: #e52c2c;
+  background: #E52C2C;
+}
+.reverse-purple {
+  background: #7F4FB2;
 }
 .accordion-body {
   margin-left: 0.4rem;
@@ -227,6 +237,9 @@ ul {
   animation-duration: 5s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
+}
+.hide {
+  display: none;
 }
 #footer {
   text-align: center;

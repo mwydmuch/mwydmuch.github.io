@@ -15,7 +15,8 @@
 @main-dark: #38575A;
 
 // Other colors
-@mlinpl-red: #e52c2c;
+@mlinpl-red: #E52C2C;
+@mlinpl-purple: #7F4FB2;
 
 // Others
 @font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -39,6 +40,7 @@ a, a:link, a:visited, a:hover, a:active {
   color: @main-light;
   font-weight: 700;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 
@@ -63,7 +65,7 @@ p {
   text-align: justify;
 }
 
-.reverse, .reverse-red {
+.reverse, .reverse-red, .reverse-purple {
   color: @background;
   padding: 0.05rem 0.25rem;
   margin: 0 0.05rem;
@@ -80,6 +82,10 @@ p {
 
 .reverse-red{
   background: @mlinpl-red;
+}
+
+.reverse-purple{
+  background: @mlinpl-purple;
 }
 
 .accordion-body{
@@ -224,6 +230,10 @@ each(@fade-show-values, {
   animation-duration: 5s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
+}
+
+.hide{
+  display: none;
 }
 
 #footer{

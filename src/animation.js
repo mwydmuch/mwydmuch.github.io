@@ -5,6 +5,7 @@
 class Animation {
     constructor(canvas, colors, colorsAlt, name, file) {
         this.ctx = canvas.getContext("2d", { alpha: false });
+        this.bgColor = "#FFFFFF";
         this.colors = colors;
         this.colorsAlt = colorsAlt;
         this.name = name;
@@ -14,7 +15,7 @@ class Animation {
     }
 
     getFPS(){
-        return 25;
+        return 24;
     }
 
     getName(){

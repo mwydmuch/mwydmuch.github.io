@@ -21,36 +21,40 @@ const container = document.getElementById("container");
 var lastWidth = 0;
 var lastHeight = 0;
 var needResize = false;
+var framesInterval = 0;
+var then = 0;
+var stopped = false;
 
-const colors = [ // Green palette
+/*
+const colors = [ // Old color palette
     "#1ABFB2",
     "#54ABA4",
     "#639598",
     "#678786",
     "#92ABA1",
     "#A5BFBC",
-//    "#C5D1D2",
-//    "#CCEDAE"
+    "#C5D1D2",
+]
+ */
+
+const colors = [ // Green palette
+    "#349BA9",
+    "#41B8AD",
+    "#73D4AD",
+    "#AEEABF",
 ]
 
 const colorsAlt = [ // Alt red palette
-    "#FF5C5C",
-    "#d61111",
-    "#d67711",
-    "#d6ab11",
-    "#1142d6",
-    "#5d11d6",
-    "#ff905c",
-    "#ffe45c",
-    "#74ff5c",
-    "#5cb3ff",
-    "#5c72ff",
-    "#875cff",
-    "#ff5c5c",
+    "#4E2463",
+    "#B53C6B",
+    "#E36D5D",
+    "#ECAA7D",
+    "#1D5C86",
+    "#2B3875"
 ];
 
 
-// Create animation and init animation loop
+// Get controls
 // ---------------------------------------------------------------------------------------------------------------------
 
 const content = document.getElementById("content");
@@ -59,6 +63,11 @@ const backgroundName = document.getElementById("background-name");
 const backgroundNext = document.getElementById("background-next");
 const backgroundCode = document.getElementById("background-code");
 const backgroundReset = document.getElementById("background-reset");
+const backgroundStop = document.getElementById("background-stop");
+
+
+// Create animation and init animation loop
+// ---------------------------------------------------------------------------------------------------------------------
 
 const animations = [
     GameOfLife,
@@ -69,14 +78,12 @@ const animations = [
     CircularWaves,
     ParticlesVortex,
     ParticlesAndAttractors,
-    //GradientDescent
+    GradientDescent
 ];
 
 let animationId = Math.floor(Math.random() * animations.length);
 let animation = new animations[animationId](canvas, colors, colorsAlt);
 
-var framesInterval = 0;
-var then = 0;
 function updateAnimation(animation) {
     let fps = animation.getFPS();
     framesInterval = 1000 / fps;
@@ -85,15 +92,18 @@ function updateAnimation(animation) {
     backgroundCode.href = animation.getCodeUrl();
     animation.resize();
 }
+
 updateAnimation(animation);
 
 
 function render() {
-    requestAnimationFrame(render);
+    if(stopped) return;
 
-    // Limit framerate
     const now = Date.now(),
           timeElapsed = now - then;
+
+    // Limit framerate
+    requestAnimationFrame(render);
     if (timeElapsed < framesInterval) return;
     then = now;
 
@@ -112,13 +122,27 @@ function render() {
 
     animation.update(timeElapsed);
     animation.draw();
+
+    // Limit framerate (alt way)
+    /*
+    setTimeout(() => {
+        requestAnimationFrame(render);
+    }, framesInterval);
+     */
 }
 
 render();
 
 
-// Add background controls
+// Controls functions
 // ---------------------------------------------------------------------------------------------------------------------
+
+function play(){
+    backgroundStop.innerHTML = "<i class=\"fas fa-stop\"></i> stop";
+    stopped = false;
+    then = Date.now();
+    render();
+}
 
 backgroundShow.addEventListener("click", function(){
     if(backgroundShow.innerText == " show") {
@@ -143,9 +167,20 @@ backgroundNext.addEventListener("click", function(){
     animationId = (animationId + 1) % animations.length;
     animation = new animations[animationId](canvas, colors, colorsAlt);
     updateAnimation(animation);
+    play();
 });
 
 backgroundReset.addEventListener("click", function(){
     animation = new animations[animationId](canvas, colors, colorsAlt);
     animation.resize();
+    play();
+});
+
+backgroundStop.addEventListener("click", function(){
+    if(backgroundStop.innerText == " stop") {
+        stopped = true;
+        backgroundStop.innerHTML = "<i class=\"fas fa-play\"></i> play";
+    } else {
+        play();
+    }
 });

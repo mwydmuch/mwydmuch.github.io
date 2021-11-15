@@ -16,6 +16,18 @@ module.exports = {
         return Array(length).fill().map(() => this.randomRange(min, max))
     },
 
+    addArrays(a, b){
+        return a.map((e, i) => e + b[i]);
+    },
+
+    subArrays(a, b){
+        return a.map((e, i) => e - b[i]);
+    },
+
+    mulArrays(a, b){
+        return a.map((e, i) => e * b[i]);
+    },
+
     clip(value, min, max){
         return Math.max(min, Math.min(max, value));
     },
