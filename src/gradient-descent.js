@@ -8,6 +8,7 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 
+// Optimizers
 class Optim {
     constructor(w, name) {
         this.w = [...w];
@@ -106,10 +107,10 @@ class Adam extends Optim {
     }
 }
 
-class Nadam extends Optim {
+class AdaMax extends Optim {
     constructor (w) {
-        super(w, "Nadam");
-        this.eta = 0.001;
+        super(w, "AdaMax");
+        this.alpha = 0.001;
         this.beta1 = 0.9;
         this.beta2 = 0.999;
         this.m = new Array(w.length).fill(0);
@@ -119,18 +120,37 @@ class Nadam extends Optim {
     update(grad){
         for(let i = 0; i < this.w.length; ++i){
             this.m[i] = this.beta1 * this.m[i] + (1 - this.beta1) * grad[i];
-            this.v[i] = this.beta2 * this.v[i] + (1 - this.beta2) * grad[i] * grad[i];
-            this.w[i] -= this.eta / (Math.sqrt(this.v[i] / (1 - this.beta2)) + 0.000001) * this.m[i] / (1 - this.beta1);
+            this.v[i] = Math.max(this.beta2 * this.v[i], Math.abs(grad[i]));
+            this.w[i] -= this.alpha / (this.v[i] + 0.000001) * this.m[i] / (1 - this.beta1);
         }
     }
 }
 
+class AMSGrad extends Optim {
+    constructor (w) {
+        super(w, "AMSGrad");
+        this.alpha = 0.001;
+        this.beta1 = 0.9;
+        this.beta2 = 0.999;
+        this.m = new Array(w.length).fill(0);
+        this.v = new Array(w.length).fill(0);
+    }
 
+    update(grad){
+        for(let i = 0; i < this.w.length; ++i){
+            this.m[i] = this.beta1 * this.m[i] + (1 - this.beta1) * grad[i];
+            this.v[i] = Math.max(this.beta2 * this.v[i] + (1 - this.beta2) * grad[i] * grad[i], this.v[i]);
+            this.w[i] -= this.alpha / (Math.sqrt(this.v[i]) + 0.000001) * this.m[i];
+        }
+    }
+}
+
+// Benchmark functions
 class Func {
-    constructor(name, globalMin, startPoint, scale, steps= 500, shift=[0, 0]) {
+    constructor(name, globalMin, startPoints, scale, shift=[0, 0], steps= 400) {
         this.name = name;
         this.globalMin = globalMin;
-        this.startPoint = startPoint;
+        this.startPoints = startPoints;
         this.scale = scale;
         this.steps = steps;
         this.shift = shift;
@@ -153,7 +173,7 @@ class Func {
     }
 
     getStartPoint(){
-        return Utils.subArrays(this.startPoint, this.shift);
+        return Utils.subArrays(Utils.randomChoice(this.startPoints), this.shift);
     }
 
     getScale(){
@@ -172,7 +192,8 @@ class Func {
 
 class SaddlePointFunc extends Func {
     constructor() {
-        super("f(x, y) = x^2 - y^2", null, [-1, 0.001], 1.1);
+        super("Two-dimensional non-convex function with saddle point: f(x, y) = x^2 - y^2",
+            null, [[-1, 0.001], [-1, -0.0001], [1, 0.01], [1, -0.001]], 1.1);
     }
 
     val(w) {
@@ -189,9 +210,11 @@ class SaddlePointFunc extends Func {
     }
 }
 
-class BEALEFunc extends Func{
+
+class BealeFunc extends Func{
     constructor() {
-        super("Beale function", [3, 0.5], [0.2, 0.7], 2, 500, [2, 0]);
+        super("Two-dimensional non-Convex BEALE function",
+            [3, 0.5], [[0.2, 0.7], [2, 2], [-1, -1.3], [-1.4, -1.7], [4, -1.1]], 2.2, [2, 0]);
     }
 
     val(w) {
@@ -201,11 +224,11 @@ class BEALEFunc extends Func{
 
     grad(w){
         const x = w[0] + this.shift[0], y = w[1] + this.shift[1],
-              y2 = y * y,
-              y3 = Math.pow(y, 3),
-              y4 = Math.pow(y, 4),
-              y5 = Math.pow(y, 5),
-              y6 = Math.pow(y, 6);
+            y2 = y * y,
+            y3 = y2 * y,
+            y4 = y3 * y,
+            y5 = y4 * y,
+            y6 = y5 * y;
         return [
             2 * x * (y6 + y4 - 2 * y3 - y2 - 2 * y + 3) + 5.25 * y3 + 4.5 * y2 + 3 * y - 12.75,
             6 * x * (x * (y5 + 2/3 * y3 - y2 - 1/3 * y - 1/3) + 2.625 * y2 + 1.5 * y + 0.5)
@@ -214,10 +237,38 @@ class BEALEFunc extends Func{
 }
 
 
+class StyblinskiTangFunc extends Func{
+    constructor() {
+        super("Two variables non-convex Stybliski-Tang function",
+            [-2.903534, -2.903534], [[0, 5], [0, -5], [5, 0], [-5, 0], [-0.5, -5], [-5, -0.5]], 5.5);
+    }
+
+    val(w) {
+        const x = w[0] + this.shift[0], y = w[1] + this.shift[1],
+            x2 = x * x,
+            x4 = x2 * x2,
+            y2 = y * y,
+            y4 = y2 * y2;
+        return ((x4 - 16 * x2 + 5 * x) + (y4 - 16 * y2 + 5 * y)) / 2 + 78.33188;
+    }
+
+    grad(w){
+        const x = w[0] + this.shift[0], y = w[1] + this.shift[1],
+            x3 = Math.pow(x, 3),
+            y3 = Math.pow(y, 3);
+        return [
+            2 * x3 - 16 * x - 5 / 2,
+            2 * y3 - 16 * y - 5 / 2
+        ]
+    }
+}
+
+
 class GradientDescent extends Animation {
     constructor (canvas, colors, colorsAlt) {
-        super(canvas, colors, colorsAlt, "gradient descent", "gradient-descent.js");
-        this.funcClass = Utils.randomChoice([SaddlePointFunc, BEALEFunc]);
+        super(canvas, colors, colorsAlt, "visualization of gradient descent algorithms", "gradient-descent.js");
+        //this.funcClass = Utils.randomChoice([SaddlePointFunc, BealeFunc, StyblinskiTangFunc]);
+        this.funcClass = Utils.randomChoice([StyblinskiTangFunc]);
         this.func = new this.funcClass();
 
         this.scale = 0;
@@ -282,9 +333,13 @@ class GradientDescent extends Animation {
         if(this.func.hasGlobalMin()) {
             textYOffset += lineHeight;
             const globalMin = this.func.getGlobalMin()
-            this.ctx.fillText("f(x*) = " + this.func.val(globalMin) + ", at x* =  (" + globalMin[0] + ", " + globalMin[1] + ")", textXOffset, textYOffset);
+            this.ctx.fillText("Optimum: f(x*) = " + Math.round(this.func.val(globalMin) * 10000) / 10000 + ", at x* =  (" + globalMin[0] + ", " + globalMin[1] + ")", textXOffset, textYOffset);
             Utils.fillCircle(this.ctx, this.colors[0], centerX + globalMin[0] * this.scale, centerY + -globalMin[1] * this.scale, 2);
         }
+
+        const start = this.func.getStartPoint();
+        textYOffset += lineHeight;
+        this.ctx.fillText("Starting point: x0 = (" + start[0] + ", " + start[1] + ")", textXOffset, textYOffset);
 
         textYOffset += 2 * lineHeight;
         this.ctx.fillText("Optimizers:", textXOffset, textYOffset);
@@ -296,7 +351,7 @@ class GradientDescent extends Animation {
         if(this.func.hasGlobalMin()) {
             shiftVal = this.func.val(this.func.getGlobalMin());
             isolines = [0, 0.125];
-            exp = 2;
+            exp = 1.5;
             plusVal = 0;
         } else {
             shiftVal = 0;
@@ -316,7 +371,7 @@ class GradientDescent extends Animation {
                   max = Math.max(...vals);
             isolines = [min];
             exp = 1;
-            plusVal = (max - min) / 10;
+            plusVal = (max - min) / 15;
         }
 
         // Very simple approach to draw isolines (my simplified version of the marching squares algorithm)
@@ -354,22 +409,27 @@ class GradientDescent extends Animation {
 
         // Add X and Y axis
         this.ctx.fillStyle = this.colors[0];
-        for(let i = 0; i < centerX / this.scale; i += 0.5){
+
+        let labelsDist = 0.5;
+        if(this.scale > 3.0) labelsDist = 1.0;
+
+        for(let i = 0; i < centerX / this.scale; i += labelsDist){
             this.ctx.fillText(i.toFixed(1), centerX + i * this.scale, height - 22);
             if(i != 0) this.ctx.fillText((-i).toFixed(1), centerX - i * this.scale, height - 22);
         }
-        for(let i = 0; i < centerY / this.scale; i += 0.5){
+        for(let i = 0; i < centerY / this.scale; i += labelsDist){
             this.ctx.fillText(i.toFixed(1), 10, centerY + i * this.scale);
             if(i != 0) this.ctx.fillText((-i).toFixed(1), 10, centerY - i * this.scale);
         }
 
-        const start = this.func.getStartPoint();
         this.optims = [
             new SGD(start),
             new Momentum(start),
             new AdaGrad(start),
             new RMSProp(start),
-            new Adam(start)
+            new Adam(start),
+            new AdaMax(start),
+            new AMSGrad(start)
         ];
 
         // Draw legend

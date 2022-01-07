@@ -44,13 +44,24 @@ const colors = [ // Green palette
     "#AEEABF",
 ]
 
-const colorsAlt = [ // Alt red palette
-    "#4E2463",
-    "#B53C6B",
-    "#E36D5D",
-    "#ECAA7D",
-    "#1D5C86",
-    "#2B3875"
+// const colorsAlt = [ // Alt palette
+//     "#4E2463",
+//     "#B53C6B",
+//     "#E36D5D",
+//     "#ECAA7D",
+//     "#1D5C86",
+//     "#2B3875",
+//     "#362f73"
+// ];
+
+const colorsAlt = [ // Alt palette
+    "#602180",
+    "#b6245c",
+    "#e14f3b",
+    "#ec8c4d",
+    "#a4f540",
+    "#106aa6",
+    "#283b93",
 ];
 
 
@@ -123,7 +134,7 @@ function render() {
     animation.update(timeElapsed);
     animation.draw();
 
-    // Limit framerate (alt way)
+    // Limit framerate (alt. way)
     /*
     setTimeout(() => {
         requestAnimationFrame(render);

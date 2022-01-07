@@ -27,7 +27,7 @@ class CircularWaves extends Animation {
         this.fadeOut = fadeOut;
 
         this.color1 = this.colors[0];
-        this.color2 = this.colorsAlt[0];
+        this.color2 = Utils.randomChoice(this.colorsAlt);
 
         this.radiusMin = 0;
         this.radiusMax = 0;

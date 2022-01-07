@@ -37,7 +37,8 @@ p {
 }
 .reverse,
 .reverse-red,
-.reverse-purple {
+.reverse-purple,
+.reverse-blue {
   color: #FFFFFF;
   padding: 0.05rem 0.25rem;
   margin: 0 0.05rem;
@@ -46,18 +47,23 @@ p {
 .reverse a,
 .reverse-red a,
 .reverse-purple a,
+.reverse-blue a,
 .reverse a:link,
 .reverse-red a:link,
 .reverse-purple a:link,
+.reverse-blue a:link,
 .reverse a:visited,
 .reverse-red a:visited,
 .reverse-purple a:visited,
+.reverse-blue a:visited,
 .reverse a:hover,
 .reverse-red a:hover,
 .reverse-purple a:hover,
+.reverse-blue a:hover,
 .reverse a:active,
 .reverse-red a:active,
-.reverse-purple a:active {
+.reverse-purple a:active,
+.reverse-blue a:active {
   color: #FFFFFF;
 }
 .reverse {
@@ -68,6 +74,9 @@ p {
 }
 .reverse-purple {
   background: #7F4FB2;
+}
+.reverse-blue {
+  background: #006991;
 }
 .accordion-body {
   margin-left: 0.4rem;
