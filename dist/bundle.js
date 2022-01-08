@@ -508,7 +508,7 @@ class SaddlePointFunc extends Func {
 
 class BealeFunc extends Func{
     constructor() {
-        super("Two-dimensional non-Convex BEALE function",
+        super("Two-dimensional non-convex BEALE function",
             [3, 0.5], [[0.2, 0.7], [2, 2], [-1, -1.3], [-1.4, -1.7], [4, -1.1]], 2.2, [2, 0]);
     }
 
@@ -562,8 +562,7 @@ class StyblinskiTangFunc extends Func{
 class GradientDescent extends Animation {
     constructor (canvas, colors, colorsAlt) {
         super(canvas, colors, colorsAlt, "visualization of gradient descent algorithms", "gradient-descent.js");
-        //this.funcClass = Utils.randomChoice([SaddlePointFunc, BealeFunc, StyblinskiTangFunc]);
-        this.funcClass = Utils.randomChoice([StyblinskiTangFunc]);
+        this.funcClass = Utils.randomChoice([SaddlePointFunc, BealeFunc, StyblinskiTangFunc]);
         this.func = new this.funcClass();
 
         this.scale = 0;
