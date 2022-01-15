@@ -1,5 +1,6 @@
 module.exports = {
 
+    // Randomization helpers
     randomRange(min, max) {
         return Math.random() * (max - min) + min;
     },
@@ -16,6 +17,7 @@ module.exports = {
         return Array(length).fill().map(() => this.randomRange(min, max))
     },
 
+    // Array/math helpers
     addArrays(a, b){
         return a.map((e, i) => e + b[i]);
     },
@@ -44,7 +46,7 @@ module.exports = {
         return s;
     },
 
-    // Function to linearly interpolate between v1 and v2
+    // Functions to linearly interpolate between v1 and v2
     lerp(v1, v2, t) {
         return (1.0 - t) * v1 + t * v2;
     },
@@ -63,6 +65,56 @@ module.exports = {
         return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
     },
 
+    // Easing functions
+    easeInSine(x){
+        return 1 - Math.cos((x * Math.PI) / 2);
+    },
+
+    easeOutSine(x){
+        return Math.sin((x * Math.PI) / 2);
+    },
+
+    easeInOutSine(x) {
+        return -(Math.cos(Math.PI * x) - 1) / 2;
+    },
+
+    easeInQuad(x){
+        return x * x;
+    },
+
+    easeOutQuad(x){
+        return 1 - (1 - x) * (1 - x);
+    },
+
+    easeInOutQuad(x){
+        return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+    },
+
+    easeInCubic(x){
+        return x * x * x;
+    },
+
+    easeOutCubic(x){
+        return 1 - Math.pow(1 - x, 3);
+    },
+
+    easeInOutCubic(x){
+        return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+    },
+
+    easeInQuart(x){
+        return x * x * x * x;
+    },
+    
+    easeOutQuart(x){
+        return 1 - Math.pow(1 - x, 4);
+    },
+
+    easeInOutQuart(x){
+        return x < 0.5 ? 8 * x * x * x * x : 1 - Math.pow(-2 * x + 2, 4) / 2;
+    },
+
+    // Canvas helpers
     clear(ctx, color){
         ctx.fillStyle = color;
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -118,13 +170,17 @@ module.exports = {
         ctx.restore();
     },
 
-    createVec(x, y){
+    createVec2d(x, y){
         return {x: x, y: y};
     },
 
-    rotateVec(vec, r){
+    rotateVec2d(vec, r){
         const cos = Math.cos(r), sin = Math.sin(r);
         return {x: vec.x * cos - vec.y * sin, y: vec.x * sin + vec.y * cos};
+    },
+
+    rgbToHex(r, g, b) {
+        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     },
 
     isStrictMode(){
