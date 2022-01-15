@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Basic Meta -->
+  <meta charset="utf-8">
+  <title>Marek Wydmuch - Animations</title>
+  <meta name="description" content="Marek Wydmuch's animations">
+  <meta name="author" content="Marek Wydmuch">
+
+  <!-- Mobile Specific -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- FONT -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css">
+  <script src="https://kit.fontawesome.com/c14f3cd524.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="dist/style.min.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpg" href="assets/me.jpg">
+</head>
+
+<body>
+
+<!-- Animated background -->
+<canvas id="background" class="hue-change"> </canvas>
+<!--<canvas id="background"> </canvas>-->
+
+<!-- Primary Page Layout -->
+<div id="container" class="container">
+  <div id="footer">
+    <div>
+      <span id="background-controls">
+        <div>Animation: <span id="background-name"></span></div>
+        <div>
+          [<a href="index.html"><i class="fas fa-home"></i> home</a>]
+          [<a id="background-code"><i class="fas fa-file-code"></i> code</a>]
+          [<a id="background-stop"><i class="fas fa-stop"></i> stop</a>]
+          [<a id="background-next"><i class="fas fa-step-forward"></i> change</a>]
+          [<a id="background-reset"><i class="fas fa-redo"></i> reset</a>]
+        </div>
+      </span>
+    </div>
+  </div>
+</div>
+
+<script src="dist/bundle.js"></script>
+
+</body>
+</html>
