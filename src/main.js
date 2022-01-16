@@ -12,6 +12,7 @@ const CircularWaves = require("./circular-waves");
 const ParticlesVortex = require("./particles-vortex");
 const ParticlesAndAttractors = require("./particles-and-attractors");
 const GradientDescent = require("./gradient-descent");
+const Sorting = require("./sorting");
 
 // Globals
 // ---------------------------------------------------------------------------------------------------------------------
@@ -89,7 +90,8 @@ const animations = [
     CircularWaves,
     ParticlesVortex,
     ParticlesAndAttractors,
-    GradientDescent
+    GradientDescent,
+    Sorting
 ];
 
 let animationId = Math.floor(Math.random() * animations.length);
@@ -155,43 +157,54 @@ function play(){
     render();
 }
 
-backgroundShow.addEventListener("click", function(){
-    if(backgroundShow.innerText == " show") {
-        content.classList.remove("show-from-0");
-        content.classList.add("fade-to-0");
-        canvas.classList.remove("faded-8");
-        canvas.classList.remove("fade-to-8");
-        canvas.classList.add("hue-change");
-        canvas.classList.add("show-from-8");
-        backgroundShow.innerHTML = "<i class=\"fas fa-eye-slash\"></i> hide";
-    } else {
-        content.classList.remove("fade-to-0");
-        content.classList.add("show-from-0");
-        canvas.classList.remove("show-from-8");
-        canvas.classList.add("fade-to-8");
-        canvas.classList.remove("hue-change");
-        backgroundShow.innerHTML = "<i class=\"fas fa-eye\"></i> show";
-    }
-});
+if(backgroundShow && content) {
+    backgroundShow.addEventListener("click", function () {
+        if (backgroundShow.innerText == " show") {
+            content.classList.remove("show-from-0");
+            content.classList.add("fade-to-0");
+            canvas.classList.remove("faded-8");
+            canvas.classList.remove("fade-to-8");
+            canvas.classList.add("hue-change");
+            canvas.classList.add("show-from-8");
+            backgroundShow.innerHTML = "<i class=\"fas fa-eye-slash\"></i> hide";
+        } else {
+            content.classList.remove("fade-to-0");
+            content.classList.add("show-from-0");
+            canvas.classList.remove("show-from-8");
+            canvas.classList.add("fade-to-8");
+            canvas.classList.remove("hue-change");
+            backgroundShow.innerHTML = "<i class=\"fas fa-eye\"></i> show";
+        }
+    });
+}
 
-backgroundNext.addEventListener("click", function(){
-    animationId = (animationId + 1) % animations.length;
-    animation = new animations[animationId](canvas, colors, colorsAlt);
-    updateAnimation(animation);
-    play();
-});
-
-backgroundReset.addEventListener("click", function(){
-    animation = new animations[animationId](canvas, colors, colorsAlt);
-    animation.resize();
-    play();
-});
-
-backgroundStop.addEventListener("click", function(){
-    if(backgroundStop.innerText == " stop") {
-        stopped = true;
-        backgroundStop.innerHTML = "<i class=\"fas fa-play\"></i> play";
-    } else {
+if(backgroundNext) {
+    backgroundNext.addEventListener("click", function () {
+        //let nextAnimationId = Math.floor(Math.random() * animations.length);
+        //while(nextAnimationId == animationId) nextAnimationId = Math.floor(Math.random() * animations.length);
+        //animationId = nextAnimationId;
+        animationId = (animationId + 1) % animations.length;
+        animation = new animations[animationId](canvas, colors, colorsAlt);
+        updateAnimation(animation);
         play();
-    }
-});
+    });
+}
+
+if(backgroundReset) {
+    backgroundReset.addEventListener("click", function () {
+        animation = new animations[animationId](canvas, colors, colorsAlt);
+        updateAnimation(animation);
+        play();
+    });
+}
+
+if(backgroundStop) {
+    backgroundStop.addEventListener("click", function () {
+        if (backgroundStop.innerText == " stop") {
+            stopped = true;
+            backgroundStop.innerHTML = "<i class=\"fas fa-play\"></i> play";
+        } else {
+            play();
+        }
+    });
+}

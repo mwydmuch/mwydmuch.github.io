@@ -1,5 +1,5 @@
 /*
- * Shapes
+ * Circular waves animation.
  *
  * Coded with no external dependencies, using only canvas API.
  */

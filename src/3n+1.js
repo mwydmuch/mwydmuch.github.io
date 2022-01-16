@@ -18,6 +18,7 @@ class ThreeNPlusOne extends Animation {
         this.evenAngle = evenAngle * Math.PI / 180;
         this.oddAngle = oddAngle * Math.PI / 180;
         this.seqences = []
+        this.drawNumbers = (Math.random() > 0.5);
     }
 
     update(elapsed){
@@ -32,12 +33,15 @@ class ThreeNPlusOne extends Animation {
     }
 
     drawSequence(sequence) {
-        let x = this.ctx.canvas.width / 2;
-        let y = this.ctx.canvas.height;
-        let angle = 270 * Math.PI / 180;
+        let x = this.ctx.canvas.width / 2,
+            y = this.ctx.canvas.height,
+            angle = 270 * Math.PI / 180;
+        const color = this.colors[this.frame % this.colors.length];
 
-        this.ctx.strokeStyle = this.colors[this.frame % this.colors.length];
+        this.ctx.strokeStyle = color;
         this.ctx.lineWidth = 2;
+        this.ctx.font = '12px sans-serif';
+        this.ctx.fillStyle = color;
 
         for(let i = sequence.length - 2; i >= 0; --i){
             this.ctx.beginPath();
@@ -46,8 +50,18 @@ class ThreeNPlusOne extends Animation {
             if(sequence[i] % 2) angle += this.oddAngle;
             else angle += this.evenAngle;
 
-            x += this.length * Math.cos(angle);
-            y += this.length * Math.sin(angle);
+            if(this.drawNumbers){
+                const sin = Math.cos(angle),
+                      cos = Math.sin(angle);
+                x += this.length / 2 * sin;
+                y += this.length / 2 * cos;
+                this.ctx.fillText(sequence[i], x + 10, y);
+                x += this.length / 2 * sin;
+                y += this.length / 2 * cos;
+            } else {
+                x += this.length * Math.cos(angle);
+                y += this.length * Math.sin(angle);
+            }
             this.ctx.lineTo(x, y);
             this.ctx.stroke();
         }

@@ -27,7 +27,7 @@ class ParticlesAndAttractors extends Animation {
         this.timeBase = Utils.randomRange(0, 10);
 
         for (let i = 0; i < numParticles; ++i)
-            this.particles.push(Utils.rotateVec(Utils.createVec(Utils.randomRange(1, 100), 0), i));
+            this.particles.push(Utils.rotateVec2d(Utils.createVec2d(Utils.randomRange(1, 100), 0), i));
     }
 
     draw() {
@@ -40,11 +40,11 @@ class ParticlesAndAttractors extends Animation {
         if(this.attractorsSystem == "circles") {
             const s = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / (2 * (this.numAttractors - 1));
             for (let i = 0; i < this.numAttractors; ++i)
-                attractors.push(Utils.rotateVec(Utils.createVec(i * s, 0), t * i));
+                attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * s, 0), t * i));
         } else if (this.attractorsSystem == "eights") {
             const s = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / this.numAttractors;
             for (let i = 0; i < this.numAttractors; ++i)
-                attractors.push(Utils.rotateVec(Utils.createVec(i * t * s, 0), t * i));
+                attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * t * s, 0), t * i));
         }
 
         for (let p of this.particles) {

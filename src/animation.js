@@ -15,7 +15,7 @@ class Animation {
     }
 
     getFPS(){
-        return 24;
+        return 30;
     }
 
     getName(){

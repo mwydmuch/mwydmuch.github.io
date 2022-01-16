@@ -19,6 +19,7 @@ class ThreeNPlusOne extends Animation {
         this.evenAngle = evenAngle * Math.PI / 180;
         this.oddAngle = oddAngle * Math.PI / 180;
         this.seqences = []
+        this.drawNumbers = (Math.random() > 0.5);
     }
 
     update(elapsed){
@@ -33,12 +34,15 @@ class ThreeNPlusOne extends Animation {
     }
 
     drawSequence(sequence) {
-        let x = this.ctx.canvas.width / 2;
-        let y = this.ctx.canvas.height;
-        let angle = 270 * Math.PI / 180;
+        let x = this.ctx.canvas.width / 2,
+            y = this.ctx.canvas.height,
+            angle = 270 * Math.PI / 180;
+        const color = this.colors[this.frame % this.colors.length];
 
-        this.ctx.strokeStyle = this.colors[this.frame % this.colors.length];
+        this.ctx.strokeStyle = color;
         this.ctx.lineWidth = 2;
+        this.ctx.font = '12px sans-serif';
+        this.ctx.fillStyle = color;
 
         for(let i = sequence.length - 2; i >= 0; --i){
             this.ctx.beginPath();
@@ -47,8 +51,18 @@ class ThreeNPlusOne extends Animation {
             if(sequence[i] % 2) angle += this.oddAngle;
             else angle += this.evenAngle;
 
-            x += this.length * Math.cos(angle);
-            y += this.length * Math.sin(angle);
+            if(this.drawNumbers){
+                const sin = Math.cos(angle),
+                      cos = Math.sin(angle);
+                x += this.length / 2 * sin;
+                y += this.length / 2 * cos;
+                this.ctx.fillText(sequence[i], x + 10, y);
+                x += this.length / 2 * sin;
+                y += this.length / 2 * cos;
+            } else {
+                x += this.length * Math.cos(angle);
+                y += this.length * Math.sin(angle);
+            }
             this.ctx.lineTo(x, y);
             this.ctx.stroke();
         }
@@ -88,7 +102,7 @@ class Animation {
     }
 
     getFPS(){
-        return 24;
+        return 30;
     }
 
     getName(){
@@ -113,7 +127,7 @@ module.exports = Animation;
 
 },{}],3:[function(require,module,exports){
 /*
- * Shapes
+ * Circular waves animation.
  *
  * Coded with no external dependencies, using only canvas API.
  */
@@ -183,9 +197,11 @@ class CircularWaves extends Animation {
 
 module.exports = CircularWaves;
 
-},{"./animation":2,"./noise":8,"./utils":13}],4:[function(require,module,exports){
+},{"./animation":2,"./noise":8,"./utils":14}],4:[function(require,module,exports){
 /*
  * Conway's Game of Life visualization.
+ * Cells that "died" in the previous step keep their color to achieve a stable image
+ * (flickering is not good for a background image).
  *
  * Coded with no external dependencies, using only canvas API.
  */
@@ -294,7 +310,7 @@ module.exports = GameOfLife;
 
 },{"./animation":2}],5:[function(require,module,exports){
 /*
- * Visualization of gradient descent optimizations
+ * Visualization of gradient descent-based optimizers.
  *
  * Coded with no external dependencies, using only canvas API.
  */
@@ -587,24 +603,6 @@ class GradientDescent extends Animation {
         if (this.frame >= this.func.getSteps()) this.resize();
     }
 
-    reset() {
-        if(this.imageData == null){
-            this.resize();
-            return;
-        }
-
-        this.ctx.putImageData(this.imageData, 0, 0);
-
-        const start = this.func.getStartPoint();
-        this.optims = [
-            new SGD(start),
-            new Momentum(start),
-            new AdaGrad(start),
-            new RMSProp(start),
-            new Adam(start)
-        ];
-    }
-
     resize() {
         Utils.clear(this.ctx, "#FFFFFF");
         this.frame = 0;
@@ -615,33 +613,14 @@ class GradientDescent extends Animation {
               centerX = width / 2,
               centerY = height / 2;
         this.scale = Math.min(width, height) / this.func.getScale() / 2;
-
-        // Add function name and text
-        let textYOffset = 22;
-        const textXOffset = 50;
-        const lineHeight = 20;
         this.ctx.fillStyle = this.colors[0];
         this.ctx.font = '12px sans-serif';
 
-        this.ctx.fillText(this.func.getName(), textXOffset, textYOffset)
-        if(this.func.hasGlobalMin()) {
-            textYOffset += lineHeight;
-            const globalMin = this.func.getGlobalMin()
-            this.ctx.fillText("Optimum: f(x*) = " + Math.round(this.func.val(globalMin) * 10000) / 10000 + ", at x* =  (" + globalMin[0] + ", " + globalMin[1] + ")", textXOffset, textYOffset);
-            Utils.fillCircle(this.ctx, this.colors[0], centerX + globalMin[0] * this.scale, centerY + -globalMin[1] * this.scale, 2);
-        }
-
-        const start = this.func.getStartPoint();
-        textYOffset += lineHeight;
-        this.ctx.fillText("Starting point: x0 = (" + start[0] + ", " + start[1] + ")", textXOffset, textYOffset);
-
-        textYOffset += 2 * lineHeight;
-        this.ctx.fillText("Optimizers:", textXOffset, textYOffset);
-
+        // Create visualization of the function
         let isobands = new Array(width * height);
         let isolines, exp, plusVal, shiftVal = 0;
 
-        // Decide on scale
+        // Decide on a scale
         if(this.func.hasGlobalMin()) {
             shiftVal = this.func.val(this.func.getGlobalMin());
             isolines = [0, 0.125];
@@ -668,7 +647,7 @@ class GradientDescent extends Animation {
             plusVal = (max - min) / 15;
         }
 
-        // Very simple approach to draw isolines (my simplified version of the marching squares algorithm)
+        // Very simple approach to draw the isolines (my simplified version of the marching squares algorithm)
         for(let i = 0; i < width; ++i) {
             for (let j = 0; j < height; ++j) {
                 const x = (i - centerX) / this.scale, y = -(j - centerY) / this.scale,
@@ -685,7 +664,7 @@ class GradientDescent extends Animation {
             }
         }
 
-        // Calculate colors for isolines
+        // Calculate colors for the isolines
         let isolinesColors = []
         for(let i = 0; i < isolines.length; ++i){
             isolinesColors.push(Utils.lerpColor(this.colors[0], this.colors[this.colors.length - 1], (i + 1) / (isolines.length + 1)));
@@ -716,6 +695,8 @@ class GradientDescent extends Animation {
             if(i != 0) this.ctx.fillText((-i).toFixed(1), 10, centerY - i * this.scale);
         }
 
+        // Init optimizers
+        const start = this.func.getStartPoint();
         this.optims = [
             new SGD(start),
             new Momentum(start),
@@ -727,6 +708,24 @@ class GradientDescent extends Animation {
         ];
 
         // Draw legend
+        let textYOffset = 22;
+        const textXOffset = 50;
+        const lineHeight = 20;
+
+        this.ctx.fillText(this.func.getName(), textXOffset, textYOffset)
+        if(this.func.hasGlobalMin()) {
+            textYOffset += lineHeight;
+            const globalMin = this.func.getGlobalMin()
+            this.ctx.fillText("Optimum: f(x*) = " + Math.round(this.func.val(globalMin) * 10000) / 10000 + ", at x* =  (" + globalMin[0] + ", " + globalMin[1] + ")", textXOffset, textYOffset);
+            Utils.fillCircle(this.ctx, this.colors[0], centerX + globalMin[0] * this.scale, centerY + -globalMin[1] * this.scale, 2);
+        }
+
+        textYOffset += lineHeight;
+        this.ctx.fillText("Starting point: x0 = (" + start[0] + ", " + start[1] + ")", textXOffset, textYOffset);
+
+        textYOffset += 2 * lineHeight;
+        this.ctx.fillText("Optimizers:", textXOffset, textYOffset);
+
         for(let i = 0; i < this.optims.length; ++i){
             textYOffset += lineHeight;
             this.ctx.fillStyle = this.colorsAlt[i];
@@ -741,7 +740,7 @@ class GradientDescent extends Animation {
 
 module.exports = GradientDescent;
 
-},{"./animation":2,"./utils":13}],6:[function(require,module,exports){
+},{"./animation":2,"./utils":14}],6:[function(require,module,exports){
 'use strict';
 
 // Require
@@ -756,6 +755,7 @@ const CircularWaves = require("./circular-waves");
 const ParticlesVortex = require("./particles-vortex");
 const ParticlesAndAttractors = require("./particles-and-attractors");
 const GradientDescent = require("./gradient-descent");
+const Sorting = require("./sorting");
 
 // Globals
 // ---------------------------------------------------------------------------------------------------------------------
@@ -833,7 +833,8 @@ const animations = [
     CircularWaves,
     ParticlesVortex,
     ParticlesAndAttractors,
-    GradientDescent
+    GradientDescent,
+    Sorting
 ];
 
 let animationId = Math.floor(Math.random() * animations.length);
@@ -899,48 +900,59 @@ function play(){
     render();
 }
 
-backgroundShow.addEventListener("click", function(){
-    if(backgroundShow.innerText == " show") {
-        content.classList.remove("show-from-0");
-        content.classList.add("fade-to-0");
-        canvas.classList.remove("faded-8");
-        canvas.classList.remove("fade-to-8");
-        canvas.classList.add("hue-change");
-        canvas.classList.add("show-from-8");
-        backgroundShow.innerHTML = "<i class=\"fas fa-eye-slash\"></i> hide";
-    } else {
-        content.classList.remove("fade-to-0");
-        content.classList.add("show-from-0");
-        canvas.classList.remove("show-from-8");
-        canvas.classList.add("fade-to-8");
-        canvas.classList.remove("hue-change");
-        backgroundShow.innerHTML = "<i class=\"fas fa-eye\"></i> show";
-    }
-});
+if(backgroundShow && content) {
+    backgroundShow.addEventListener("click", function () {
+        if (backgroundShow.innerText == " show") {
+            content.classList.remove("show-from-0");
+            content.classList.add("fade-to-0");
+            canvas.classList.remove("faded-8");
+            canvas.classList.remove("fade-to-8");
+            canvas.classList.add("hue-change");
+            canvas.classList.add("show-from-8");
+            backgroundShow.innerHTML = "<i class=\"fas fa-eye-slash\"></i> hide";
+        } else {
+            content.classList.remove("fade-to-0");
+            content.classList.add("show-from-0");
+            canvas.classList.remove("show-from-8");
+            canvas.classList.add("fade-to-8");
+            canvas.classList.remove("hue-change");
+            backgroundShow.innerHTML = "<i class=\"fas fa-eye\"></i> show";
+        }
+    });
+}
 
-backgroundNext.addEventListener("click", function(){
-    animationId = (animationId + 1) % animations.length;
-    animation = new animations[animationId](canvas, colors, colorsAlt);
-    updateAnimation(animation);
-    play();
-});
-
-backgroundReset.addEventListener("click", function(){
-    animation = new animations[animationId](canvas, colors, colorsAlt);
-    animation.resize();
-    play();
-});
-
-backgroundStop.addEventListener("click", function(){
-    if(backgroundStop.innerText == " stop") {
-        stopped = true;
-        backgroundStop.innerHTML = "<i class=\"fas fa-play\"></i> play";
-    } else {
+if(backgroundNext) {
+    backgroundNext.addEventListener("click", function () {
+        //let nextAnimationId = Math.floor(Math.random() * animations.length);
+        //while(nextAnimationId == animationId) nextAnimationId = Math.floor(Math.random() * animations.length);
+        //animationId = nextAnimationId;
+        animationId = (animationId + 1) % animations.length;
+        animation = new animations[animationId](canvas, colors, colorsAlt);
+        updateAnimation(animation);
         play();
-    }
-});
+    });
+}
 
-},{"./3n+1":1,"./circular-waves":3,"./game-of-live":4,"./gradient-descent":5,"./neural-network":7,"./particles-and-attractors":9,"./particles-vortex":10,"./perlin-noise-particles":11,"./spinning-shapes":12}],7:[function(require,module,exports){
+if(backgroundReset) {
+    backgroundReset.addEventListener("click", function () {
+        animation = new animations[animationId](canvas, colors, colorsAlt);
+        updateAnimation(animation);
+        play();
+    });
+}
+
+if(backgroundStop) {
+    backgroundStop.addEventListener("click", function () {
+        if (backgroundStop.innerText == " stop") {
+            stopped = true;
+            backgroundStop.innerHTML = "<i class=\"fas fa-play\"></i> play";
+        } else {
+            play();
+        }
+    });
+}
+
+},{"./3n+1":1,"./circular-waves":3,"./game-of-live":4,"./gradient-descent":5,"./neural-network":7,"./particles-and-attractors":9,"./particles-vortex":10,"./perlin-noise-particles":11,"./sorting":12,"./spinning-shapes":13}],7:[function(require,module,exports){
 /*
  * Visualization of a simple, fully connected neural network, with random weights,
  * ReLU activations on intermediate layers, and sigmoid output at the last layer.
@@ -1061,7 +1073,7 @@ class NeuralNetwork extends Animation {
 
 module.exports = NeuralNetwork;
 
-},{"./animation":2,"./utils":13}],8:[function(require,module,exports){
+},{"./animation":2,"./utils":14}],8:[function(require,module,exports){
 /*
  * A speed-improved perlin and simplex noise algorithms for 2D.
  *
@@ -1402,7 +1414,7 @@ class ParticlesAndAttractors extends Animation {
         this.timeBase = Utils.randomRange(0, 10);
 
         for (let i = 0; i < numParticles; ++i)
-            this.particles.push(Utils.rotateVec(Utils.createVec(Utils.randomRange(1, 100), 0), i));
+            this.particles.push(Utils.rotateVec2d(Utils.createVec2d(Utils.randomRange(1, 100), 0), i));
     }
 
     draw() {
@@ -1415,11 +1427,11 @@ class ParticlesAndAttractors extends Animation {
         if(this.attractorsSystem == "circles") {
             const s = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / (2 * (this.numAttractors - 1));
             for (let i = 0; i < this.numAttractors; ++i)
-                attractors.push(Utils.rotateVec(Utils.createVec(i * s, 0), t * i));
+                attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * s, 0), t * i));
         } else if (this.attractorsSystem == "eights") {
             const s = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / this.numAttractors;
             for (let i = 0; i < this.numAttractors; ++i)
-                attractors.push(Utils.rotateVec(Utils.createVec(i * t * s, 0), t * i));
+                attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * t * s, 0), t * i));
         }
 
         for (let p of this.particles) {
@@ -1447,7 +1459,7 @@ class ParticlesAndAttractors extends Animation {
 
 module.exports = ParticlesAndAttractors;
 
-},{"./animation":2,"./utils":13}],10:[function(require,module,exports){
+},{"./animation":2,"./utils":14}],10:[function(require,module,exports){
 /*
  * Particles vortex with randomized speed and direction.
  *
@@ -1511,7 +1523,7 @@ class ParticlesVortex extends Animation {
 
 module.exports = ParticlesVortex;
 
-},{"./animation":2,"./noise":8,"./utils":13}],11:[function(require,module,exports){
+},{"./animation":2,"./noise":8,"./utils":14}],11:[function(require,module,exports){
 /*
  * Particles moving through Perlin noise.
  *
@@ -1614,7 +1626,280 @@ class PerlinNoiseParticles extends Animation {
 
 module.exports = PerlinNoiseParticles;
 
-},{"./animation":2,"./noise":8,"./utils":13}],12:[function(require,module,exports){
+},{"./animation":2,"./noise":8,"./utils":14}],12:[function(require,module,exports){
+/*
+ * Visualization of different sorting algorithms.
+ *
+ * Coded with no external dependencies, using only canvas API.
+ */
+
+const Animation = require("./animation");
+const Utils = require("./utils");
+
+// Simple class for managing animations
+class AnimationQueue {
+    constructor(){
+        this.queue = [];
+    }
+
+    push(stepFunc){
+        this.queue.push({step: stepFunc, time: 0});
+    }
+
+    step(elapsed){
+        let finished = true;
+        if(this.queue.length){
+            let e = this.queue[0];
+            e.time += elapsed;
+            finished = e.step(e.time);
+            if(finished) this.queue.shift();
+        }
+        return (finished && !this.queue.length)
+    }
+}
+
+// Base class for a sorting algorithm
+class SortingAlgorithm {
+    constructor(arr, name){
+        this.arr = arr;
+        this.moves = []
+        this.name = name;
+        this.sort();
+    }
+
+    getName(){
+        return this.name;
+    }
+
+    comp(arr, a, b){
+        if(a != b) this.moves.push(["cmp", arr[a], arr[b]]);
+        return arr[a].val - arr[b].val;
+    }
+
+    swap(arr, a, b){
+        this.moves.push(["swap", arr[a], arr[b]]);
+        let temp = arr[a];
+        arr[a] = arr[b];
+        arr[b] = temp;
+    }
+
+    sort(){}
+
+    getMoves(){
+        return this.moves;
+    }
+}
+
+class BubbleSort extends SortingAlgorithm{
+    constructor(arr) {
+        super(arr, "bubble sort");
+    }
+
+    sort(){
+        const n = this.arr.length;
+        for (let i = 0; i < n; i++) {
+            for (let j = 0; j < n - 1 - i; j++) {
+                if (this.comp(this.arr, j, j + 1) > 0) this.swap(this.arr, j, j + 1);
+            }
+        }
+    }
+}
+
+class SelectionSort extends SortingAlgorithm{
+    constructor(arr) {
+        super(arr, "selection sort");
+    }
+
+    sort(){
+        const n = this.arr.length;
+        for (let i = 0; i < n; i++) {
+            let m = i;
+            for (let j = i; j < n; j++) if (this.comp(this.arr, m, j) > 0) m = j;
+            if (i !== m) this.swap(this.arr, i, m);
+        }
+    }
+}
+
+class InsertionSort extends SortingAlgorithm{
+    constructor(arr) {
+        super(arr, "insertion sort");
+    }
+
+    sort(){
+        const n = this.arr.length;
+        for (let i = 1; i < n; i++) {
+            let j = i;
+            while (j > 0 && this.comp(this.arr, j, j - 1) < 0) {
+                this.swap(this.arr, j, j - 1);
+                --j;
+            }
+        }
+    }
+}
+
+// class MergeSort extends SortingAlgorithm{
+//     constructor(arr, comp) {
+//         super(arr, "Merge sort");
+//     }
+//
+//     sort(){
+//         this.mergeSort(0, this.arr.length - 1);
+//     }
+//
+//     mergeSort(l, r){
+//         if (l < r) {
+//             const m = Math.floor((l + r) / 2);
+//             this.mergeSort(l, m);
+//             this.mergeSort(m + 1, r);
+//             this.merge(l, m, r);
+//         }
+//     }
+//
+//     merge(s, m, e) {
+//         let l = s,
+//             r = m + 1;
+//         if (this.arr[m].val <= this.arr[r].val) return; // If already sorted
+//
+//         let tmpArr = [];
+//         while (l <= m && r <= e) {
+//             if(this.arr[l].val < this.arr[r].val) tmpArr.push(l++);
+//             else tmpArr.push(r++);
+//         }
+//     }
+// }
+
+class QuickSort extends SortingAlgorithm{
+    constructor(arr) {
+        super(arr, "quick sort");
+    }
+
+    sort(){
+        this.quickSort(0, this.arr.length - 1);
+    }
+
+    quickSort(l, r){
+        if (r - l >= 1) {
+            const p = this.partition(l, r);
+            if (l < p - 1) this.quickSort(l, p - 1);
+            if (p < r) this.quickSort(p, r);
+        }
+    }
+
+    partition(l, r) {
+        const p = Math.floor((r + l) / 2);
+        while (l <= r) {
+            while(this.comp(this.arr, l, p) < 0) l++;
+            while(this.comp(this.arr, r, p) > 0) r--;
+            if (l <= r) this.swap(this.arr, l++, r--);
+        }
+        return l;
+    }
+}
+
+
+class Sorting extends Animation {
+    constructor (canvas, colors, colorsAlt, elementPadding = 2, stepDuration = 0.5) {
+        super(canvas, colors, colorsAlt, "Sorting algorithm visualization", "sorting.js");
+        this.numElements = 50;
+        this.elementPadding = elementPadding;
+        this.elementWidth = 0;
+        this.elementMaxHeight = 0;
+        this.stepDuration = stepDuration;
+        this.animQueue = new AnimationQueue();
+
+        // Randomize elements
+        this.elements = [];
+        for(let i = 0; i < this.numElements; ++i){
+            const val = Utils.randomRange(0, 1),
+                color = Utils.lerpColor(this.colors[0], this.colors[this.colors.length - 1], val);
+            this.elements.push({val: val, pos: i, color: color, z: 0})
+        }
+
+        // Sort
+        let sortAlgClass = Utils.randomChoice([BubbleSort, SelectionSort, InsertionSort, QuickSort]),
+            sortAlg = new sortAlgClass(this.elements)
+        this.moves = sortAlg.getMoves();
+        this.name = sortAlg.getName() + " algorithm visualization";
+
+        console.log(this.elements);
+    }
+
+    update(elapsed){
+        elapsed /= 1000
+        this.time += elapsed;
+        ++this.frame;
+
+        if(this.animQueue.step(elapsed)){
+            if(!this.moves.length) return;
+
+            let s = this.moves[0];
+            const colorEasing = (x) => -(Math.cos(2 * Math.PI * x) - 1) / 2,
+                  posEasing = Utils.easeInOutSine,
+                  duration = this.stepDuration;
+
+
+            if(s[0] == "swap") {
+                let e1 = s[1], e2 = s[2];
+                const pos1 = e1.pos,
+                      pos2 = e2.pos,
+                      color1 = e1.color,
+                      color2 = e2.color,
+                      colorSel = this.colorsAlt[1],
+                      z = this.frame;
+
+
+                this.animQueue.push(function (time) {
+                    const prog = Math.min(time, duration) / duration;
+
+                    e1.z = z;
+                    e2.z = z;
+                    e1.color = Utils.lerpColor(color1, colorSel, colorEasing(prog));
+                    e2.color = Utils.lerpColor(color2, colorSel, colorEasing(prog));
+                    e1.pos = Utils.lerp(pos1, pos2, posEasing(prog));
+                    e2.pos = Utils.lerp(pos2, pos1, posEasing(prog));
+                    return time >= duration;
+                });
+            }
+
+            if(s[0] == "cmp") {
+                let e1 = s[1], e2 = s[2];
+                const color1 = e1.color,
+                      color2 = e2.color,
+                      colorSel = this.colorsAlt[5];
+
+                this.animQueue.push(function (time) {
+                    const prog = Math.min(time, duration) / duration;
+                    e1.color = Utils.lerpColor(color1, colorSel, colorEasing(prog));
+                    e2.color = Utils.lerpColor(color2, colorSel, colorEasing(prog));
+                    return time >= duration;
+                });
+            }
+
+            this.moves.shift();
+        }
+    }
+
+    draw() {
+        Utils.clear(this.ctx, "#FFFFFF");
+
+        this.elements = this.elements.sort((e1, e2) => e1.z - e2.z)
+        for(let e of this.elements){
+            const x = e.pos * this.elementWidth + this.elementPadding / 2,
+                  y = e.val * this.elementMaxHeight;
+            this.ctx.fillStyle = e.color;
+            this.ctx.fillRect(x, 0, this.elementWidth - this.elementPadding, y);
+        }
+    }
+
+    resize(){
+        this.elementMaxHeight = this.ctx.canvas.height;
+        this.elementWidth = this.ctx.canvas.width / this.numElements;
+    }
+}
+
+module.exports = Sorting;
+
+},{"./animation":2,"./utils":14}],13:[function(require,module,exports){
 /*
  * Shapes moving in a circle.
  * Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
@@ -1670,9 +1955,10 @@ class SpinningShapes extends Animation {
 
 module.exports = SpinningShapes
 
-},{"./animation":2,"./utils":13}],13:[function(require,module,exports){
+},{"./animation":2,"./utils":14}],14:[function(require,module,exports){
 module.exports = {
 
+    // Randomization helpers
     randomRange(min, max) {
         return Math.random() * (max - min) + min;
     },
@@ -1689,6 +1975,7 @@ module.exports = {
         return Array(length).fill().map(() => this.randomRange(min, max))
     },
 
+    // Array/math helpers
     addArrays(a, b){
         return a.map((e, i) => e + b[i]);
     },
@@ -1717,7 +2004,7 @@ module.exports = {
         return s;
     },
 
-    // Function to linearly interpolate between v1 and v2
+    // Functions to linearly interpolate between v1 and v2
     lerp(v1, v2, t) {
         return (1.0 - t) * v1 + t * v2;
     },
@@ -1736,6 +2023,56 @@ module.exports = {
         return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
     },
 
+    // Easing functions
+    easeInSine(x){
+        return 1 - Math.cos((x * Math.PI) / 2);
+    },
+
+    easeOutSine(x){
+        return Math.sin((x * Math.PI) / 2);
+    },
+
+    easeInOutSine(x) {
+        return -(Math.cos(Math.PI * x) - 1) / 2;
+    },
+
+    easeInQuad(x){
+        return x * x;
+    },
+
+    easeOutQuad(x){
+        return 1 - (1 - x) * (1 - x);
+    },
+
+    easeInOutQuad(x){
+        return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+    },
+
+    easeInCubic(x){
+        return x * x * x;
+    },
+
+    easeOutCubic(x){
+        return 1 - Math.pow(1 - x, 3);
+    },
+
+    easeInOutCubic(x){
+        return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+    },
+
+    easeInQuart(x){
+        return x * x * x * x;
+    },
+    
+    easeOutQuart(x){
+        return 1 - Math.pow(1 - x, 4);
+    },
+
+    easeInOutQuart(x){
+        return x < 0.5 ? 8 * x * x * x * x : 1 - Math.pow(-2 * x + 2, 4) / 2;
+    },
+
+    // Canvas helpers
     clear(ctx, color){
         ctx.fillStyle = color;
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -1791,13 +2128,17 @@ module.exports = {
         ctx.restore();
     },
 
-    createVec(x, y){
+    createVec2d(x, y){
         return {x: x, y: y};
     },
 
-    rotateVec(vec, r){
+    rotateVec2d(vec, r){
         const cos = Math.cos(r), sin = Math.sin(r);
         return {x: vec.x * cos - vec.y * sin, y: vec.x * sin + vec.y * cos};
+    },
+
+    rgbToHex(r, g, b) {
+        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     },
 
     isStrictMode(){

@@ -1,5 +1,5 @@
 /*
- * Visualization of gradient descent optimizations
+ * Visualization of gradient descent-based optimizers.
  *
  * Coded with no external dependencies, using only canvas API.
  */
@@ -292,24 +292,6 @@ class GradientDescent extends Animation {
         if (this.frame >= this.func.getSteps()) this.resize();
     }
 
-    reset() {
-        if(this.imageData == null){
-            this.resize();
-            return;
-        }
-
-        this.ctx.putImageData(this.imageData, 0, 0);
-
-        const start = this.func.getStartPoint();
-        this.optims = [
-            new SGD(start),
-            new Momentum(start),
-            new AdaGrad(start),
-            new RMSProp(start),
-            new Adam(start)
-        ];
-    }
-
     resize() {
         Utils.clear(this.ctx, "#FFFFFF");
         this.frame = 0;
@@ -320,33 +302,14 @@ class GradientDescent extends Animation {
               centerX = width / 2,
               centerY = height / 2;
         this.scale = Math.min(width, height) / this.func.getScale() / 2;
-
-        // Add function name and text
-        let textYOffset = 22;
-        const textXOffset = 50;
-        const lineHeight = 20;
         this.ctx.fillStyle = this.colors[0];
         this.ctx.font = '12px sans-serif';
 
-        this.ctx.fillText(this.func.getName(), textXOffset, textYOffset)
-        if(this.func.hasGlobalMin()) {
-            textYOffset += lineHeight;
-            const globalMin = this.func.getGlobalMin()
-            this.ctx.fillText("Optimum: f(x*) = " + Math.round(this.func.val(globalMin) * 10000) / 10000 + ", at x* =  (" + globalMin[0] + ", " + globalMin[1] + ")", textXOffset, textYOffset);
-            Utils.fillCircle(this.ctx, this.colors[0], centerX + globalMin[0] * this.scale, centerY + -globalMin[1] * this.scale, 2);
-        }
-
-        const start = this.func.getStartPoint();
-        textYOffset += lineHeight;
-        this.ctx.fillText("Starting point: x0 = (" + start[0] + ", " + start[1] + ")", textXOffset, textYOffset);
-
-        textYOffset += 2 * lineHeight;
-        this.ctx.fillText("Optimizers:", textXOffset, textYOffset);
-
+        // Create visualization of the function
         let isobands = new Array(width * height);
         let isolines, exp, plusVal, shiftVal = 0;
 
-        // Decide on scale
+        // Decide on a scale
         if(this.func.hasGlobalMin()) {
             shiftVal = this.func.val(this.func.getGlobalMin());
             isolines = [0, 0.125];
@@ -373,7 +336,7 @@ class GradientDescent extends Animation {
             plusVal = (max - min) / 15;
         }
 
-        // Very simple approach to draw isolines (my simplified version of the marching squares algorithm)
+        // Very simple approach to draw the isolines (my simplified version of the marching squares algorithm)
         for(let i = 0; i < width; ++i) {
             for (let j = 0; j < height; ++j) {
                 const x = (i - centerX) / this.scale, y = -(j - centerY) / this.scale,
@@ -390,7 +353,7 @@ class GradientDescent extends Animation {
             }
         }
 
-        // Calculate colors for isolines
+        // Calculate colors for the isolines
         let isolinesColors = []
         for(let i = 0; i < isolines.length; ++i){
             isolinesColors.push(Utils.lerpColor(this.colors[0], this.colors[this.colors.length - 1], (i + 1) / (isolines.length + 1)));
@@ -421,6 +384,8 @@ class GradientDescent extends Animation {
             if(i != 0) this.ctx.fillText((-i).toFixed(1), 10, centerY - i * this.scale);
         }
 
+        // Init optimizers
+        const start = this.func.getStartPoint();
         this.optims = [
             new SGD(start),
             new Momentum(start),
@@ -432,6 +397,24 @@ class GradientDescent extends Animation {
         ];
 
         // Draw legend
+        let textYOffset = 22;
+        const textXOffset = 50;
+        const lineHeight = 20;
+
+        this.ctx.fillText(this.func.getName(), textXOffset, textYOffset)
+        if(this.func.hasGlobalMin()) {
+            textYOffset += lineHeight;
+            const globalMin = this.func.getGlobalMin()
+            this.ctx.fillText("Optimum: f(x*) = " + Math.round(this.func.val(globalMin) * 10000) / 10000 + ", at x* =  (" + globalMin[0] + ", " + globalMin[1] + ")", textXOffset, textYOffset);
+            Utils.fillCircle(this.ctx, this.colors[0], centerX + globalMin[0] * this.scale, centerY + -globalMin[1] * this.scale, 2);
+        }
+
+        textYOffset += lineHeight;
+        this.ctx.fillText("Starting point: x0 = (" + start[0] + ", " + start[1] + ")", textXOffset, textYOffset);
+
+        textYOffset += 2 * lineHeight;
+        this.ctx.fillText("Optimizers:", textXOffset, textYOffset);
+
         for(let i = 0; i < this.optims.length; ++i){
             textYOffset += lineHeight;
             this.ctx.fillStyle = this.colorsAlt[i];

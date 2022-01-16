@@ -1,5 +1,7 @@
 /*
  * Conway's Game of Life visualization.
+ * Cells that "died" in the previous step keep their color to achieve a stable image
+ * (flickering is not good for a background image).
  *
  * Coded with no external dependencies, using only canvas API.
  */
