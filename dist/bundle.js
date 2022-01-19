@@ -1676,6 +1676,11 @@ class SortingAlgorithm {
         return arr[a].val - arr[b].val;
     }
 
+    compVal(a, b){
+        if(a != b) this.moves.push(["cmp", a, b]);
+        return a.val - b.val;
+    }
+
     swap(arr, a, b){
         this.moves.push(["swap", arr[a], arr[b]]);
         let temp = arr[a];
@@ -1786,10 +1791,10 @@ class QuickSort extends SortingAlgorithm{
     }
 
     partition(l, r) {
-        const p = Math.floor((r + l) / 2);
+        const p = this.arr[Math.floor((r + l) / 2)];
         while (l <= r) {
-            while(this.comp(this.arr, l, p) < 0) l++;
-            while(this.comp(this.arr, r, p) > 0) r--;
+            while(this.compVal(this.arr[l], p) < 0) l++;
+            while(this.compVal(this.arr[r], p) > 0) r--;
             if (l <= r) this.swap(this.arr, l++, r--);
         }
         return l;
