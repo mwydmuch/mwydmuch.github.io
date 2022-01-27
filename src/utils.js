@@ -17,6 +17,15 @@ module.exports = {
         return Array(length).fill().map(() => this.randomRange(min, max))
     },
 
+    randomShuffle(arr){
+        for (let i = arr.length - 1; i > 0; --i) {
+             const j = Math.floor(Math.random() * (i + 1)),
+                   temp = arr[i];
+             arr[i] = arr[j];
+             arr[j] = temp;
+        }
+    },
+
     // Array/math helpers
     addArrays(a, b){
         return a.map((e, i) => e + b[i]);
@@ -63,6 +72,16 @@ module.exports = {
               rb = ab + t * (bb - ab);
 
         return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
+    },
+
+    lerpColorsPallet(colors, t) {
+        const interval = 1.0 / (colors.length - 1),
+              i = Math.floor(t / interval);
+        return this.lerpColor(colors[i % colors.length], colors[(i + 1) % colors.length], (t - i * interval) / interval);
+    },
+
+    mirrorColorsPallet(colors){
+        let newPallet = colors;
     },
 
     // Easing functions

@@ -13,6 +13,8 @@ const ParticlesVortex = require("./particles-vortex");
 const ParticlesAndAttractors = require("./particles-and-attractors");
 const GradientDescent = require("./gradient-descent");
 const Sorting = require("./sorting");
+const Cardioids = require("./cardioids");
+const Utils = require("./utils");
 
 // Globals
 // ---------------------------------------------------------------------------------------------------------------------
@@ -43,6 +45,8 @@ const colors = [ // Green palette
     "#41B8AD",
     "#73D4AD",
     "#AEEABF",
+    "#73D4AD",
+    "#41B8AD",
 ]
 
 // const colorsAlt = [ // Alt palette
@@ -81,7 +85,7 @@ const backgroundStop = document.getElementById("background-stop");
 // Create animation and init animation loop
 // ---------------------------------------------------------------------------------------------------------------------
 
-const animations = [
+let animations = [
     GameOfLife,
     PerlinNoiseParticles,
     SpinningShapes,
@@ -91,10 +95,13 @@ const animations = [
     ParticlesVortex,
     ParticlesAndAttractors,
     GradientDescent,
-    Sorting
+    Sorting,
+    Cardioids,
 ];
 
-let animationId = Math.floor(Math.random() * animations.length);
+Utils.randomShuffle(animations);
+
+let animationId = 0;
 let animation = new animations[animationId](canvas, colors, colorsAlt);
 
 function updateAnimation(animation) {
@@ -180,9 +187,6 @@ if(backgroundShow && content) {
 
 if(backgroundNext) {
     backgroundNext.addEventListener("click", function () {
-        //let nextAnimationId = Math.floor(Math.random() * animations.length);
-        //while(nextAnimationId == animationId) nextAnimationId = Math.floor(Math.random() * animations.length);
-        //animationId = nextAnimationId;
         animationId = (animationId + 1) % animations.length;
         animation = new animations[animationId](canvas, colors, colorsAlt);
         updateAnimation(animation);

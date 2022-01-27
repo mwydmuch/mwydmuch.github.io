@@ -127,6 +127,54 @@ module.exports = Animation;
 
 },{}],3:[function(require,module,exports){
 /*
+ * Modified method of L. Cremona for drawing cardioid with a pencil of lines,
+ * as described in section "Cardioid as envelope of a pencil of lines" of:
+ * https://en.wikipedia.org/wiki/Cardioid
+ * Here the shift of the second point is determined by time passed
+ * from the beginning of the animation.
+ *
+ * Coded with no external dependencies, using only canvas API.
+ */
+
+const Animation = require("./animation");
+const Utils = require("./utils");
+
+class Cardioids extends Animation {
+    constructor (canvas, colors, colorsAlt) {
+        super(canvas, colors, colorsAlt, "Cardioids with a pencil of lines", "cardioids.js");
+
+        this.lines = 400;
+        this.radius = 0;
+    }
+
+    getVec(i){
+        const angle = Utils.remap(i, 0, this.lines, 0, 2 * Math.PI);
+        return Utils.rotateVec2d(Utils.createVec2d(this.radius, 0), Math.PI + angle);
+    }
+
+    draw() {
+        Utils.clear(this.ctx, "#FFFFFF");
+
+        this.radius = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3;
+        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        Utils.strokeCircle(this.ctx, this.colors[0], 0, 0, this.radius);
+
+        for (let i = 0; i <= this.lines; ++i) {
+            const a = this.getVec(i);
+            const b = this.getVec(i * this.time * 0.05);
+            const color = Utils.lerpColorsPallet([this.colors[0], this.colors[3], this.colors[0]], i / this.lines);
+            //const color = 'hsl(' + i / this.lines * 360 + ', 100%, 75%)';
+            Utils.drawLine(this.ctx, a.x, a.y, b.x, b.y, color, 1);
+        }
+
+        this.ctx.resetTransform();
+    }
+}
+
+module.exports = Cardioids
+
+},{"./animation":2,"./utils":15}],4:[function(require,module,exports){
+/*
  * Circular waves animation.
  *
  * Coded with no external dependencies, using only canvas API.
@@ -154,9 +202,6 @@ class CircularWaves extends Animation {
         this.noiseMax = noiseMax;
         this.fadeOut = fadeOut;
 
-        this.color1 = this.colors[0];
-        this.color2 = Utils.randomChoice(this.colorsAlt);
-
         this.radiusMin = 0;
         this.radiusMax = 0;
     }
@@ -165,7 +210,8 @@ class CircularWaves extends Animation {
         if(this.fadeOut && this.frame % 10 == 0) Utils.blendColor(this.ctx, "#FFFFFF", 0.01, "lighter");
 
         const zoff = this.frame * 0.005;
-        this.ctx.strokeStyle = Utils.lerpColor(this.color1, this.color2, Math.abs(Math.sin(zoff * 5)));
+        //this.ctx.strokeStyle = 'hsl(' + Math.abs(Math.sin(zoff * 5)) * 360 + ', 100%, 50%)';
+        this.ctx.strokeStyle = Utils.lerpColor(this.colors[0], this.colors[3], Math.abs(Math.sin(zoff * 5)));
 
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
 
@@ -197,7 +243,7 @@ class CircularWaves extends Animation {
 
 module.exports = CircularWaves;
 
-},{"./animation":2,"./noise":8,"./utils":14}],4:[function(require,module,exports){
+},{"./animation":2,"./noise":9,"./utils":15}],5:[function(require,module,exports){
 /*
  * Conway's Game of Life visualization.
  * Cells that "died" in the previous step keep their color to achieve a stable image
@@ -308,7 +354,7 @@ class GameOfLife extends Animation {
 
 module.exports = GameOfLife;
 
-},{"./animation":2}],5:[function(require,module,exports){
+},{"./animation":2}],6:[function(require,module,exports){
 /*
  * Visualization of gradient descent-based optimizers.
  *
@@ -740,7 +786,7 @@ class GradientDescent extends Animation {
 
 module.exports = GradientDescent;
 
-},{"./animation":2,"./utils":14}],6:[function(require,module,exports){
+},{"./animation":2,"./utils":15}],7:[function(require,module,exports){
 'use strict';
 
 // Require
@@ -756,6 +802,8 @@ const ParticlesVortex = require("./particles-vortex");
 const ParticlesAndAttractors = require("./particles-and-attractors");
 const GradientDescent = require("./gradient-descent");
 const Sorting = require("./sorting");
+const Cardioids = require("./cardioids");
+const Utils = require("./utils");
 
 // Globals
 // ---------------------------------------------------------------------------------------------------------------------
@@ -786,6 +834,8 @@ const colors = [ // Green palette
     "#41B8AD",
     "#73D4AD",
     "#AEEABF",
+    "#73D4AD",
+    "#41B8AD",
 ]
 
 // const colorsAlt = [ // Alt palette
@@ -824,7 +874,7 @@ const backgroundStop = document.getElementById("background-stop");
 // Create animation and init animation loop
 // ---------------------------------------------------------------------------------------------------------------------
 
-const animations = [
+let animations = [
     GameOfLife,
     PerlinNoiseParticles,
     SpinningShapes,
@@ -834,10 +884,13 @@ const animations = [
     ParticlesVortex,
     ParticlesAndAttractors,
     GradientDescent,
-    Sorting
+    Sorting,
+    Cardioids,
 ];
 
-let animationId = Math.floor(Math.random() * animations.length);
+Utils.randomShuffle(animations);
+
+let animationId = 0;
 let animation = new animations[animationId](canvas, colors, colorsAlt);
 
 function updateAnimation(animation) {
@@ -923,9 +976,6 @@ if(backgroundShow && content) {
 
 if(backgroundNext) {
     backgroundNext.addEventListener("click", function () {
-        //let nextAnimationId = Math.floor(Math.random() * animations.length);
-        //while(nextAnimationId == animationId) nextAnimationId = Math.floor(Math.random() * animations.length);
-        //animationId = nextAnimationId;
         animationId = (animationId + 1) % animations.length;
         animation = new animations[animationId](canvas, colors, colorsAlt);
         updateAnimation(animation);
@@ -952,7 +1002,7 @@ if(backgroundStop) {
     });
 }
 
-},{"./3n+1":1,"./circular-waves":3,"./game-of-live":4,"./gradient-descent":5,"./neural-network":7,"./particles-and-attractors":9,"./particles-vortex":10,"./perlin-noise-particles":11,"./sorting":12,"./spinning-shapes":13}],7:[function(require,module,exports){
+},{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./game-of-live":5,"./gradient-descent":6,"./neural-network":8,"./particles-and-attractors":10,"./particles-vortex":11,"./perlin-noise-particles":12,"./sorting":13,"./spinning-shapes":14,"./utils":15}],8:[function(require,module,exports){
 /*
  * Visualization of a simple, fully connected neural network, with random weights,
  * ReLU activations on intermediate layers, and sigmoid output at the last layer.
@@ -1073,7 +1123,7 @@ class NeuralNetwork extends Animation {
 
 module.exports = NeuralNetwork;
 
-},{"./animation":2,"./utils":14}],8:[function(require,module,exports){
+},{"./animation":2,"./utils":15}],9:[function(require,module,exports){
 /*
  * A speed-improved perlin and simplex noise algorithms for 2D.
  *
@@ -1384,7 +1434,7 @@ module.exports = NeuralNetwork;
 
 })(this);
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /*
  * Very simple particles system with attractors.
  * In this system, distance and momentum are ignored.
@@ -1459,7 +1509,7 @@ class ParticlesAndAttractors extends Animation {
 
 module.exports = ParticlesAndAttractors;
 
-},{"./animation":2,"./utils":14}],10:[function(require,module,exports){
+},{"./animation":2,"./utils":15}],11:[function(require,module,exports){
 /*
  * Particles vortex with randomized speed and direction.
  *
@@ -1523,7 +1573,7 @@ class ParticlesVortex extends Animation {
 
 module.exports = ParticlesVortex;
 
-},{"./animation":2,"./noise":8,"./utils":14}],11:[function(require,module,exports){
+},{"./animation":2,"./noise":9,"./utils":15}],12:[function(require,module,exports){
 /*
  * Particles moving through Perlin noise.
  *
@@ -1626,7 +1676,7 @@ class PerlinNoiseParticles extends Animation {
 
 module.exports = PerlinNoiseParticles;
 
-},{"./animation":2,"./noise":8,"./utils":14}],12:[function(require,module,exports){
+},{"./animation":2,"./noise":9,"./utils":15}],13:[function(require,module,exports){
 /*
  * Visualization of different sorting algorithms.
  *
@@ -1904,7 +1954,7 @@ class Sorting extends Animation {
 
 module.exports = Sorting;
 
-},{"./animation":2,"./utils":14}],13:[function(require,module,exports){
+},{"./animation":2,"./utils":15}],14:[function(require,module,exports){
 /*
  * Shapes moving in a circle.
  * Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
@@ -1930,6 +1980,8 @@ class SpinningShapes extends Animation {
         this.distVar = 0.2;
         this.sizeBase = 0.2;
         this.sizeVar = 0.12;
+
+        //this.selColors = Utils.mirrorPalette(this.colors);
     }
 
     draw() {
@@ -1945,7 +1997,8 @@ class SpinningShapes extends Animation {
                   x = Math.cos(theta) * distance,
                   y = Math.sin(theta) * distance,
                   radius = (this.sizeBase + this.sizeVar * Math.cos(theta * 9 - this.time)) * scale;
-            this.ctx.strokeStyle = this.colors[Math.floor((Math.cos(theta * 9 - this.time) + 1) / 2 * this.colors.length)];
+            //this.ctx.strokeStyle = this.colors[Math.floor((Math.cos(theta * 9 - this.time) + 1) / 2 * this.colors.length)]; // Old method
+            this.ctx.strokeStyle = Utils.lerpColor(this.colors[0], this.colors[3],(Math.cos(theta * 9 - this.time) + 1) / 2); // New with smooth color transition
             this.ctx.lineWidth = 1;
 
             this.ctx.beginPath();
@@ -1960,7 +2013,7 @@ class SpinningShapes extends Animation {
 
 module.exports = SpinningShapes
 
-},{"./animation":2,"./utils":14}],14:[function(require,module,exports){
+},{"./animation":2,"./utils":15}],15:[function(require,module,exports){
 module.exports = {
 
     // Randomization helpers
@@ -1978,6 +2031,15 @@ module.exports = {
 
     randomArray(length, min, max){
         return Array(length).fill().map(() => this.randomRange(min, max))
+    },
+
+    randomShuffle(arr){
+        for (let i = arr.length - 1; i > 0; --i) {
+             const j = Math.floor(Math.random() * (i + 1)),
+                   temp = arr[i];
+             arr[i] = arr[j];
+             arr[j] = temp;
+        }
     },
 
     // Array/math helpers
@@ -2026,6 +2088,16 @@ module.exports = {
               rb = ab + t * (bb - ab);
 
         return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
+    },
+
+    lerpColorsPallet(colors, t) {
+        const interval = 1.0 / (colors.length - 1),
+              i = Math.floor(t / interval);
+        return this.lerpColor(colors[i % colors.length], colors[(i + 1) % colors.length], (t - i * interval) / interval);
+    },
+
+    mirrorColorsPallet(colors){
+        let newPallet = colors;
     },
 
     // Easing functions
@@ -2151,4 +2223,4 @@ module.exports = {
     }
 };
 
-},{}]},{},[6])
+},{}]},{},[7])
