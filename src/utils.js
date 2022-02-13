@@ -180,6 +180,20 @@ module.exports = {
         ctx.stroke();
     },
 
+    pathShape(ctx, points){
+        if(points.length) {
+            ctx.moveTo(points[0][0], points[0][1]);
+            for(let i = 1; i < points.length; ++i) ctx.lineTo(points[i][0], points[i][1]);
+        }
+    },
+
+    pathClosedShape(ctx, points){
+        if(points.length) {
+            this.pathShape(ctx, points);
+            ctx.lineTo(points[0][0], points[0][1]);
+        }
+    },
+
     blendColor(ctx, color, alpha = 1.0, globalCompositeOperation = 'source-over'){
         ctx.save();
         ctx.globalCompositeOperation = globalCompositeOperation;
@@ -200,6 +214,13 @@ module.exports = {
 
     rgbToHex(r, g, b) {
         return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    },
+
+    createOffscreenCanvas(width, height){
+        let canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        return canvas;
     },
 
     isStrictMode(){
