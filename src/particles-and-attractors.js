@@ -60,7 +60,7 @@ class ParticlesAndAttractors extends Animation {
 
         if(this.drawAttractors)
             for (let a of attractors)
-                Utils.fillCircle(this.ctx, this.colorsAlt[0], a.x, a.y, 5)
+                Utils.fillCircle(this.ctx, a.x, a.y, 5, this.colorsAlt[0])
 
         this.ctx.resetTransform();
     }

@@ -3,18 +3,22 @@
 // Require
 // ---------------------------------------------------------------------------------------------------------------------
 
-const GameOfLife = require("./game-of-live");
-const PerlinNoiseParticles = require("./perlin-noise-particles");
-const SpinningShapes = require("./spinning-shapes");
-const NeuralNetwork = require("./neural-network");
-const ThreeNPlusOne = require("./3n+1");
-const CircularWaves = require("./circular-waves");
-const ParticlesVortex = require("./particles-vortex");
-const ParticlesAndAttractors = require("./particles-and-attractors");
-const GradientDescent = require("./gradient-descent");
-const Sorting = require("./sorting");
-const Cardioids = require("./cardioids");
 const Utils = require("./utils");
+
+const ThreeNPlusOne = require("./3n+1");
+const Cardioids = require("./cardioids");
+const CircularWaves = require("./circular-waves");
+const GameOfLife = require("./game-of-live");
+const GameOfLifeIsometric = require("./game-of-live-isometric");
+const GradientDescent = require("./gradient-descent");
+const NeuralNetwork = require("./neural-network");
+const ParticlesAndAttractors = require("./particles-and-attractors");
+const ParticlesVortex = require("./particles-vortex");
+const PerlinNoiseParticles = require("./perlin-noise-particles");
+const Sorting = require("./sorting");
+const SpinningShapes = require("./spinning-shapes");
+
+const NoiseStorm = require("./noise-storm");
 
 // Globals
 // ---------------------------------------------------------------------------------------------------------------------
@@ -86,17 +90,20 @@ const backgroundStop = document.getElementById("background-stop");
 // ---------------------------------------------------------------------------------------------------------------------
 
 let animations = [
-    GameOfLife,
-    PerlinNoiseParticles,
-    SpinningShapes,
-    NeuralNetwork,
     ThreeNPlusOne,
+    Cardioids,
     CircularWaves,
+    GameOfLife,
+    GameOfLifeIsometric,
+    GradientDescent,
+    NeuralNetwork,
     ParticlesVortex,
     ParticlesAndAttractors,
-    GradientDescent,
+    PerlinNoiseParticles,
     Sorting,
-    Cardioids,
+    SpinningShapes,
+    //NoiseStorm,
+
 ];
 
 Utils.randomShuffle(animations);

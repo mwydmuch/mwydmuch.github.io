@@ -166,14 +166,14 @@ module.exports = {
         ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
     },
 
-    fillCircle(ctx, color, x, y, radius){
+    fillCircle(ctx, x, y, radius, color){
         ctx.fillStyle = color;
         ctx.beginPath();
         ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
         ctx.fill();
     },
 
-    strokeCircle(ctx, color, x, y, radius){
+    strokeCircle(ctx, x, y, radius, color){
         ctx.strokeStyle = color;
         ctx.beginPath();
         ctx.arc(x, y, radius, 0, 2 * Math.PI, false);

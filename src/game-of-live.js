@@ -10,7 +10,7 @@ const Animation = require("./animation");
 
 class GameOfLife extends Animation {
     constructor (canvas, colors, colorsAlt,
-                 cellSize = 10,
+                 cellSize = 12,
                  cellBasePadding= 1,
                  spawnProb= 0.5) {
         super(canvas, colors, colorsAlt, "Conway's Game of Life", "game-of-live.js");
@@ -33,8 +33,9 @@ class GameOfLife extends Animation {
     }
 
     isAlive(x, y) {
-        if (x < 0 || x >= this.gridWidth || y < 0 || y >= this.gridHeight) return 0;
-        else return (this.getVal(x, y) >= 1) ? 1 : 0;
+        // if (x < 0 || x >= this.gridWidth || y < 0 || y >= this.gridHeight) return 0;
+        // else return (this.getVal(x, y) >= 1) ? 1 : 0;
+        return (this.getVal(x % this.gridWidth, y % this.gridHeight) >= 1) ? 1 : 0;
     }
 
     update(elapsed){
@@ -64,21 +65,17 @@ class GameOfLife extends Animation {
 
         for (let y = 0; y < this.gridHeight; ++y) {
             for (let x = 0; x < this.gridWidth; ++x) {
-                let cellVal = this.getVal(x, y);
-                let cellPadding = 1
-                let fillStyle = null;
-                if(cellVal >= 0 ) fillStyle = this.colors[0];
-                else if(cellVal >= -2){
-                    fillStyle = this.colors[1];
-                    cellPadding += 1
-                }
-                else if(cellVal >= -4){
-                    fillStyle = this.colors[2];
-                    cellPadding += 2
-                }
-                else if(cellVal >= -16){
-                    fillStyle = this.colors[3];
-                    cellPadding += 3
+                const cellVal = this.getVal(x, y);
+                let cellPadding = 0,
+                    fillStyle = null,
+                    valCond = -1;
+                for(let i = 0; i < 5; ++i){
+                    if(cellVal > valCond) {
+                        fillStyle = this.colors[i];
+                        cellPadding = i + 1;
+                        break;
+                    }
+                    valCond *= 2;
                 }
                 if(fillStyle) {
                     this.ctx.fillStyle = fillStyle;

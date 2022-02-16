@@ -13,7 +13,7 @@ const Utils = require("./utils");
 
 class Cardioids extends Animation {
     constructor (canvas, colors, colorsAlt) {
-        super(canvas, colors, colorsAlt, "Cardioids with a pencil of lines", "cardioids.js");
+        super(canvas, colors, colorsAlt, "cardioids with a pencil of lines", "cardioids.js");
 
         this.lines = 400;
         this.radius = 0;
@@ -29,7 +29,7 @@ class Cardioids extends Animation {
 
         this.radius = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3;
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
-        Utils.strokeCircle(this.ctx, this.colors[0], 0, 0, this.radius);
+        Utils.strokeCircle(this.ctx, 0, 0, this.radius, this.colors[0]);
 
         for (let i = 0; i <= this.lines; ++i) {
             const a = this.getVec(i);

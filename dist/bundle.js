@@ -141,7 +141,7 @@ const Utils = require("./utils");
 
 class Cardioids extends Animation {
     constructor (canvas, colors, colorsAlt) {
-        super(canvas, colors, colorsAlt, "Cardioids with a pencil of lines", "cardioids.js");
+        super(canvas, colors, colorsAlt, "cardioids with a pencil of lines", "cardioids.js");
 
         this.lines = 400;
         this.radius = 0;
@@ -157,7 +157,7 @@ class Cardioids extends Animation {
 
         this.radius = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3;
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
-        Utils.strokeCircle(this.ctx, this.colors[0], 0, 0, this.radius);
+        Utils.strokeCircle(this.ctx, 0, 0, this.radius, this.colors[0]);
 
         for (let i = 0; i <= this.lines; ++i) {
             const a = this.getVec(i);
@@ -173,7 +173,7 @@ class Cardioids extends Animation {
 
 module.exports = Cardioids
 
-},{"./animation":2,"./utils":15}],4:[function(require,module,exports){
+},{"./animation":2,"./utils":17}],4:[function(require,module,exports){
 /*
  * Circular waves animation.
  *
@@ -243,7 +243,166 @@ class CircularWaves extends Animation {
 
 module.exports = CircularWaves;
 
-},{"./animation":2,"./noise":9,"./utils":15}],5:[function(require,module,exports){
+},{"./animation":2,"./noise":11,"./utils":17}],5:[function(require,module,exports){
+/*
+ * Conway's Game of Life visualization with isometric rendering.
+ * Cells that "died" in the previous step keep their color to achieve a stable image
+ * (flickering is not good for a background image).
+ *
+ * Coded with no external dependencies, using only canvas API.
+ */
+
+const GameOfLife = require("./game-of-live");
+const Utils = require("./utils");
+
+class GameOfLifeIsometric extends GameOfLife {
+    constructor (canvas, colors, colorsAlt,
+                 cellSize = 12,
+                 cellBasePadding = 0,
+                 spawnProb = 0.5) {
+        super(canvas, colors, colorsAlt, cellSize, cellBasePadding, spawnProb);
+        this.name = "Isometric Conway's Game of Life";
+        this.file = "game-of-live-isometric.js";
+
+        this.sqrt3 = Math.sqrt(3);
+        this.xShift = this.cellSize * this.sqrt3 / 2;
+        this.yShift = this.cellSize / 2;
+
+        // Prerender cubes for better performance
+        this.renderedGrid = null;
+        this.renderedCubes = [];
+        let offCtx = Utils.createOffscreenCanvas(4 * this.xShift, 4 * this.yShift).getContext('2d');
+        this.drawIsoCube(offCtx, 0, 3 * this.yShift, true, true, this.colors, 0, this.cellSize);
+        this.renderedCubes.push(offCtx.canvas);
+
+        for(let i = 1; i < this.cellSize; ++i){
+            offCtx = Utils.createOffscreenCanvas(4 * this.xShift, 4 * this.yShift).getContext('2d');
+            this.drawIsoCube(offCtx, 0, 3 * this.yShift, true, true, this.colorsAlt, -i, this.cellSize);
+            this.renderedCubes.push(offCtx.canvas);
+        }
+    }
+
+    drawIsoCube(ctx, isoX, isoY, drawFront, drawSide, colors, heightMod, size) {
+        const xShift = size * this.sqrt3 / 2,
+              yShift = size / 2;
+
+        heightMod *= -1; //*= -2 * yShift;
+        ctx.strokeStyle = colors[0];
+
+        ctx.fillStyle = colors[3];
+        ctx.beginPath();
+        Utils.pathClosedShape(ctx,[
+            [isoX, isoY - 2 * yShift + heightMod],
+            [isoX + xShift, isoY - yShift + heightMod],
+            [isoX + 2 * xShift, isoY - 2 * yShift + heightMod],
+            [isoX + xShift, isoY - 3 * yShift + heightMod]]);
+        ctx.fill();
+        ctx.stroke();
+
+        if(drawFront) { // Small optimization
+            ctx.fillStyle = colors[2];
+            ctx.beginPath();
+            Utils.pathClosedShape(ctx, [
+                [isoX, isoY],
+                [isoX + xShift, isoY + yShift],
+                [isoX + xShift, isoY - yShift + heightMod],
+                [isoX, isoY - 2 * yShift + heightMod]]);
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        if(drawSide) { // Small optimization
+            ctx.fillStyle = colors[1];
+            ctx.beginPath();
+            Utils.pathClosedShape(ctx, [
+                [isoX + xShift, isoY + yShift],
+                [isoX + 2 * xShift, isoY],
+                [isoX + 2 * xShift, isoY - 2 * yShift + heightMod],
+                [isoX + xShift, isoY - yShift + heightMod]]);
+            ctx.fill();
+            ctx.stroke();
+        }
+    }
+
+    drawCube(x, y, colors, heightMod=0, padding=0) {
+        const isoX = x * this.xShift - y * this.xShift,
+              isoY = (x + y + 1) * this.yShift;
+
+        this.drawIsoCube(this.ctx, isoX, isoY, !this.isAlive(x, y + 1), !this.isAlive(x + 1, y), colors, heightMod, this.cellSize - 2 * padding);
+    }
+
+    drawGrid(ctx, x, y){
+        const westX = this.gridHeight * -this.xShift,
+              westY = this.gridHeight * this.yShift,
+              eastX = this.gridWidth * this.xShift,
+              eastY = this.gridWidth * this.yShift,
+              southX = (-this.gridHeight + this.gridWidth) * this.xShift,
+              southY = (this.gridHeight + this.gridWidth) * this.yShift,
+              color = this.colors[0];
+
+        // Draw grid
+        for (let i = 0; i < this.gridHeight; ++i) {
+            const x = i * -this.xShift,
+                y = i * this.yShift;
+            Utils.drawLine(ctx, x, y, x + eastX, y + eastY, color);
+            Utils.drawLine(ctx, -x, y, -x + westX, y + westY, color);
+        }
+
+        // Draw outline
+        Utils.drawLine(ctx, 0, 0, eastX, eastY, color, 3);
+        Utils.drawLine(ctx, 0, 0, westX, westY, color, 3);
+        Utils.drawLine(ctx, westX, westY, southX, southY, color, 3);
+        Utils.drawLine(ctx, eastX, eastY, southX, southY, color, 3);
+    }
+
+    drawPrerenderedCube(x, y, idx){
+        const isoX = x * this.xShift - y * this.xShift,
+              isoY = (x + y + 1) * this.yShift;
+
+        this.ctx.drawImage(this.renderedCubes[idx], isoX - 1 * this.xShift, isoY - 3 * this.yShift);
+    }
+
+    draw() {
+        this.ctx.fillStyle = "#FFFFFF";
+        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+
+        // Draw grid
+        if(!this.renderedGrid){
+            let offCtx = Utils.createOffscreenCanvas(this.ctx.canvas.width, this.ctx.canvas.height).getContext('2d');
+            offCtx.translate(this.ctx.canvas.width / 2, 1/8 * this.ctx.canvas.height);
+            this.drawGrid(offCtx, 0, 0);
+            this.renderedGrid = offCtx.canvas;
+        }
+        this.ctx.drawImage(this.renderedGrid, 0, 0);
+
+        this.ctx.translate(this.ctx.canvas.width / 2, 1/8 * this.ctx.canvas.height);
+
+        // Draw blocks
+        for (let y = 0; y < this.gridHeight; ++y) {
+            for (let x = 0; x < this.gridWidth; ++x) {
+                let cellVal = this.getVal(x, y);
+                if(cellVal > -(this.cellSize - 2 * this.cellBasePadding))
+                    //this.drawCube(x, y, this.colorsAlt, Math.min(0, cellVal), this.cellBasePadding);
+                    this.drawPrerenderedCube(x, y, Math.max(0, -cellVal));
+            }
+        }
+
+        this.ctx.resetTransform();
+    }
+
+    resize() {
+        // Fill the whole screen (bad performance on low spec computers/mobile devices)
+        //const newGridSize = Math.ceil((this.ctx.canvas.height + this.isoH) / this.cellSize);
+
+        const newGridSize = Math.ceil( 3/4 * this.ctx.canvas.height / this.cellSize);
+        this.resizeGrid(newGridSize, newGridSize);
+        this.renderedGrid = null;
+    }
+}
+
+module.exports = GameOfLifeIsometric;
+
+},{"./game-of-live":6,"./utils":17}],6:[function(require,module,exports){
 /*
  * Conway's Game of Life visualization.
  * Cells that "died" in the previous step keep their color to achieve a stable image
@@ -255,9 +414,14 @@ module.exports = CircularWaves;
 const Animation = require("./animation");
 
 class GameOfLife extends Animation {
-    constructor (canvas, colors, colorsAlt, cellSize = 10) {
+    constructor (canvas, colors, colorsAlt,
+                 cellSize = 12,
+                 cellBasePadding= 1,
+                 spawnProb= 0.5) {
         super(canvas, colors, colorsAlt, "Conway's Game of Life", "game-of-live.js");
         this.cellSize = cellSize;
+        this.cellBasePadding = cellBasePadding;
+        this.spawnProb = spawnProb;
 
         this.gridWidth = 0;
         this.gridHeight = 0;
@@ -274,8 +438,9 @@ class GameOfLife extends Animation {
     }
 
     isAlive(x, y) {
-        if (x < 0 || x >= this.gridWidth || y < 0 || y >= this.gridHeight) return 0;
-        else return (this.getVal(x, y) == 1) ? 1 : 0;
+        // if (x < 0 || x >= this.gridWidth || y < 0 || y >= this.gridHeight) return 0;
+        // else return (this.getVal(x, y) >= 1) ? 1 : 0;
+        return (this.getVal(x % this.gridWidth, y % this.gridHeight) >= 1) ? 1 : 0;
     }
 
     update(elapsed){
@@ -290,9 +455,9 @@ class GameOfLife extends Animation {
                       + this.isAlive(x, y + 1)
                       + this.isAlive(x + 1, y + 1);
                 const cellIdx = this.getIdx(x, y);
-                if (numAlive == 2 && this.grid[cellIdx] == 1) this.gridNextState[cellIdx] = this.grid[cellIdx];
-                else if (numAlive == 3) this.gridNextState[cellIdx] = 1;
-                else this.gridNextState[cellIdx] = this.grid[cellIdx] - 1;
+                if (numAlive == 2 && this.grid[cellIdx] >= 1) this.gridNextState[cellIdx] = this.grid[cellIdx] + 1;
+                else if (numAlive == 3) this.gridNextState[cellIdx] = Math.max(1, this.grid[cellIdx] + 1);
+                else this.gridNextState[cellIdx] = Math.min(0, this.grid[cellIdx] - 1);
             }
         }
 
@@ -305,21 +470,17 @@ class GameOfLife extends Animation {
 
         for (let y = 0; y < this.gridHeight; ++y) {
             for (let x = 0; x < this.gridWidth; ++x) {
-                let cellVal = this.getVal(x, y);
-                let cellPadding = 1
-                let fillStyle = null;
-                if(cellVal >= 0 ) fillStyle = this.colors[0];
-                else if(cellVal >= -2){
-                    fillStyle = this.colors[1];
-                    cellPadding += 1
-                }
-                else if(cellVal >= -4){
-                    fillStyle = this.colors[2];
-                    cellPadding += 2
-                }
-                else if(cellVal >= -16){
-                    fillStyle = this.colors[3];
-                    cellPadding += 3
+                const cellVal = this.getVal(x, y);
+                let cellPadding = 0,
+                    fillStyle = null,
+                    valCond = -1;
+                for(let i = 0; i < 5; ++i){
+                    if(cellVal > valCond) {
+                        fillStyle = this.colors[i];
+                        cellPadding = i + 1;
+                        break;
+                    }
+                    valCond *= 2;
                 }
                 if(fillStyle) {
                     this.ctx.fillStyle = fillStyle;
@@ -332,16 +493,14 @@ class GameOfLife extends Animation {
         }
     }
 
-    resize() {
-        const newGridWidth = Math.ceil(this.ctx.canvas.width / this.cellSize),
-              newGridHeight = Math.ceil(this.ctx.canvas.height / this.cellSize);
+    resizeGrid(newGridWidth, newGridHeight){
         let newGrid = new Array(newGridWidth * newGridHeight);
 
         for (let y = 0; y < newGridHeight; y++) {
             for (let x = 0; x < newGridWidth; x++) {
                 let cellCord = x + y * newGridWidth;
                 if(x < this.gridWidth && y < this.gridHeight) newGrid[cellCord] = this.grid[this.getIdx(x, y)];
-                else newGrid[cellCord] = (Math.random() > 0.5) ? 1 : 0;
+                else newGrid[cellCord] = (Math.random() < this.spawnProb) ? 1 : -99999;
             }
         }
 
@@ -350,11 +509,17 @@ class GameOfLife extends Animation {
         this.gridWidth = newGridWidth;
         this.gridHeight = newGridHeight;
     }
+
+    resize() {
+        const newGridWidth = Math.ceil(this.ctx.canvas.width / this.cellSize),
+              newGridHeight = Math.ceil(this.ctx.canvas.height / this.cellSize);
+        this.resizeGrid(newGridWidth, newGridHeight);
+    }
 }
 
 module.exports = GameOfLife;
 
-},{"./animation":2}],6:[function(require,module,exports){
+},{"./animation":2}],7:[function(require,module,exports){
 /*
  * Visualization of gradient descent-based optimizers.
  *
@@ -763,7 +928,7 @@ class GradientDescent extends Animation {
             textYOffset += lineHeight;
             const globalMin = this.func.getGlobalMin()
             this.ctx.fillText("Optimum: f(x*) = " + Math.round(this.func.val(globalMin) * 10000) / 10000 + ", at x* =  (" + globalMin[0] + ", " + globalMin[1] + ")", textXOffset, textYOffset);
-            Utils.fillCircle(this.ctx, this.colors[0], centerX + globalMin[0] * this.scale, centerY + -globalMin[1] * this.scale, 2);
+            Utils.fillCircle(this.ctx, centerX + globalMin[0] * this.scale, centerY + -globalMin[1] * this.scale, 2, this.colors[0]);
         }
 
         textYOffset += lineHeight;
@@ -777,7 +942,7 @@ class GradientDescent extends Animation {
             this.ctx.fillStyle = this.colorsAlt[i];
             this.ctx.font = '12px sans-serif';
             this.ctx.fillText("    " + this.optims[i].getName(), textXOffset, textYOffset);
-            Utils.fillCircle(this.ctx, this.colorsAlt[i], textXOffset + 3, textYOffset - 4, 3);
+            Utils.fillCircle(this.ctx, textXOffset + 3, textYOffset - 4, 3, this.colorsAlt[i]);
         }
 
         this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
@@ -786,24 +951,28 @@ class GradientDescent extends Animation {
 
 module.exports = GradientDescent;
 
-},{"./animation":2,"./utils":15}],7:[function(require,module,exports){
+},{"./animation":2,"./utils":17}],8:[function(require,module,exports){
 'use strict';
 
 // Require
 // ---------------------------------------------------------------------------------------------------------------------
 
-const GameOfLife = require("./game-of-live");
-const PerlinNoiseParticles = require("./perlin-noise-particles");
-const SpinningShapes = require("./spinning-shapes");
-const NeuralNetwork = require("./neural-network");
-const ThreeNPlusOne = require("./3n+1");
-const CircularWaves = require("./circular-waves");
-const ParticlesVortex = require("./particles-vortex");
-const ParticlesAndAttractors = require("./particles-and-attractors");
-const GradientDescent = require("./gradient-descent");
-const Sorting = require("./sorting");
-const Cardioids = require("./cardioids");
 const Utils = require("./utils");
+
+const ThreeNPlusOne = require("./3n+1");
+const Cardioids = require("./cardioids");
+const CircularWaves = require("./circular-waves");
+const GameOfLife = require("./game-of-live");
+const GameOfLifeIsometric = require("./game-of-live-isometric");
+const GradientDescent = require("./gradient-descent");
+const NeuralNetwork = require("./neural-network");
+const ParticlesAndAttractors = require("./particles-and-attractors");
+const ParticlesVortex = require("./particles-vortex");
+const PerlinNoiseParticles = require("./perlin-noise-particles");
+const Sorting = require("./sorting");
+const SpinningShapes = require("./spinning-shapes");
+
+const NoiseStorm = require("./noise-storm");
 
 // Globals
 // ---------------------------------------------------------------------------------------------------------------------
@@ -875,17 +1044,20 @@ const backgroundStop = document.getElementById("background-stop");
 // ---------------------------------------------------------------------------------------------------------------------
 
 let animations = [
-    GameOfLife,
-    PerlinNoiseParticles,
-    SpinningShapes,
-    NeuralNetwork,
     ThreeNPlusOne,
+    Cardioids,
     CircularWaves,
+    GameOfLife,
+    GameOfLifeIsometric,
+    GradientDescent,
+    NeuralNetwork,
     ParticlesVortex,
     ParticlesAndAttractors,
-    GradientDescent,
+    PerlinNoiseParticles,
     Sorting,
-    Cardioids,
+    SpinningShapes,
+    //NoiseStorm,
+
 ];
 
 Utils.randomShuffle(animations);
@@ -1002,7 +1174,7 @@ if(backgroundStop) {
     });
 }
 
-},{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./game-of-live":5,"./gradient-descent":6,"./neural-network":8,"./particles-and-attractors":10,"./particles-vortex":11,"./perlin-noise-particles":12,"./sorting":13,"./spinning-shapes":14,"./utils":15}],8:[function(require,module,exports){
+},{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./game-of-live":6,"./game-of-live-isometric":5,"./gradient-descent":7,"./neural-network":9,"./noise-storm":10,"./particles-and-attractors":12,"./particles-vortex":13,"./perlin-noise-particles":14,"./sorting":15,"./spinning-shapes":16,"./utils":17}],9:[function(require,module,exports){
 /*
  * Visualization of a simple, fully connected neural network, with random weights,
  * ReLU activations on intermediate layers, and sigmoid output at the last layer.
@@ -1075,7 +1247,7 @@ class NeuralNetwork extends Animation {
                 let v2 = Utils.clip(n.v * 2, 0, 4);
                 let color = this.colors[this.colors.length - 1 - Math.floor(v * this.colors.length)];
                 let nSize = this.baseNodeSize + v2;
-                Utils.fillCircle(this.ctx, color, n.x, n.y, nSize);
+                Utils.fillCircle(this.ctx, n.x, n.y, nSize, color);
                 this.ctx.font = '12px sans-serif';
                 this.ctx.fillText(n.v.toFixed(2), n.x - 11, n.y - 2 * this.baseNodeSize);
             }
@@ -1123,7 +1295,275 @@ class NeuralNetwork extends Animation {
 
 module.exports = NeuralNetwork;
 
-},{"./animation":2,"./utils":15}],9:[function(require,module,exports){
+},{"./animation":2,"./utils":17}],10:[function(require,module,exports){
+/*
+ * Circular waves animation.
+ *
+ * Coded with no external dependencies, using only canvas API.
+ */
+
+const Animation = require("./animation");
+const Noise = require("./noise");
+const Utils = require("./utils");
+
+class NoiseStorm extends Animation {
+    constructor(canvas, colors, colorsAlt,
+                degPerParticle = 1,
+                noiseScale = 0.5,
+                noiseMin = 0.4,
+                noiseMax = 1.2,
+                fadeOut = true
+    ) {
+        super(canvas, colors, colorsAlt, "noise storm", "noise-storm.js");
+        this.noise = Noise.noise;
+        this.noise.seed(Utils.randomRange(0, 1));
+
+        this.degPerParticle = degPerParticle;
+        this.noiseScale = noiseScale;
+        this.noiseMin = noiseMin;
+        this.noiseMax = noiseMax;
+        this.fadeOut = fadeOut;
+
+        this.radiusMin = 0;
+        this.radiusMax = 0;
+
+        this.x = 100;
+        this.y = 100;
+        this.x2 = 100;
+        this.y2 = 100;
+    }
+
+    draw() {
+        Utils.blendColor(this.ctx, "#FFFFFF", 0.03, "lighter");
+
+        const zoff = this.frame * 0.005;
+        //this.ctx.strokeStyle = 'hsl(' + Math.abs(Math.sin(zoff * 5)) * 360 + ', 100%, 50%)';
+        this.ctx.strokeStyle = Utils.lerpColor(this.colors[0], this.colors[3], Math.abs(Math.sin(zoff * 5)));
+
+        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+
+        const rad = -20,
+            rad2 = 160,
+            dist = 500,
+            dist2 = 550,
+            yIn = this.frame * 0.000005;
+
+        for (let a = 0; a <= 360; a += this.degPerParticle) {
+            const aRad = a * Math.PI / 180,
+                xoff = Math.cos(aRad) * this.noiseScale,
+                yoff = Math.sin(aRad) * this.noiseScale,
+
+                n = this.noise.simplex3(xoff, yoff, zoff),
+                r = Utils.remap(n, -1, 1, this.radiusMin, this.radiusMax),
+                x = r * Math.cos(aRad),
+                y = r * Math.sin(aRad);
+
+            Utils.fillCircle(this.ctx, this.colors[0], x, y, 1.5);
+        }
+
+        this.ctx.resetTransform();
+    }
+
+    resize() {
+        this.radiusMin = Math.min(this.ctx.canvas.width, this.ctx.canvas.height) / 2 * this.noiseMin;
+        this.radiusMax = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 2 * this.noiseMax;
+        Utils.clear(this.ctx, "#FFFFFF");
+    }
+}
+
+
+class NoiseStorm2 extends Animation {
+    constructor(canvas, colors, colorsAlt,
+                degPerParticle = 1,
+                noiseScale = 0.5,
+                noiseMin = 0.4,
+                noiseMax = 1.2,
+                fadeOut = true
+    ) {
+        super(canvas, colors, colorsAlt, "noise storm", "noise-storm.js");
+        this.noise = Noise.noise;
+        this.noise.seed(Utils.randomRange(0, 1));
+
+        this.degPerParticle = degPerParticle;
+        this.noiseScale = noiseScale;
+        this.noiseMin = noiseMin;
+        this.noiseMax = noiseMax;
+        this.fadeOut = fadeOut;
+
+        this.radiusMin = 0;
+        this.radiusMax = 0;
+
+        this.x = 100;
+        this.y = 100;
+        this.x2 = 100;
+        this.y2 = 100;
+    }
+
+    draw() {
+        Utils.blendColor(this.ctx, "#FFFFFF", 0.03, "lighter");
+
+        const zoff = this.frame * 0.005;
+        //this.ctx.strokeStyle = 'hsl(' + Math.abs(Math.sin(zoff * 5)) * 360 + ', 100%, 50%)';
+        this.ctx.strokeStyle = Utils.lerpColor(this.colors[0], this.colors[3], Math.abs(Math.sin(zoff * 5)));
+
+        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+
+        const rad = -20,
+            rad2 = 160,
+            dist = 500,
+            dist2 = 550,
+            yIn = this.frame * 0.000005;
+
+        for (let a = 0; a <= 360; a += this.degPerParticle) {
+            const aRad = a * Math.PI / 180,
+                    xoff = Math.cos(aRad) * this.noiseScale,
+                    yoff = Math.sin(aRad) * this.noiseScale,
+
+                    n = this.noise.simplex3(xoff, yoff, zoff),
+                    r = Utils.remap(n, -1, 1, this.radiusMin, this.radiusMax),
+                    x = r * Math.cos(aRad),
+                    y = r * Math.sin(aRad);
+
+            Utils.fillCircle(this.ctx, x,  y, 1.5, this.colors[0]);
+        }
+
+        this.ctx.resetTransform();
+    }
+
+    resize() {
+        this.radiusMin = Math.min(this.ctx.canvas.width, this.ctx.canvas.height) / 2 * this.noiseMin;
+        this.radiusMax = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 2 * this.noiseMax;
+        Utils.clear(this.ctx, "#FFFFFF");
+    }
+}
+
+module.exports = NoiseStorm;
+
+
+// // noise(), sin(), rotate(),
+// float x, y, x2, y2, rad, rad2, dist, dist2;
+// float deg, incr, yIn, rotateBy, ang;
+//
+//
+// void setup() {
+//     fullScreen();
+//     //size(600, 600);
+//     //background(#02021A);
+//     background(255);
+//     incr = 1; // numVerts = 360/incr
+//     rad = -20;
+//     rad2 = -160;
+//     dist = 500;
+//     dist2 = 550;
+// }
+//
+// void draw() {
+//     noStroke();
+//     fill(#02021A, 10);
+//     rect(0, 0, width, height);
+//     fill(random(0, 255), 255, 255);
+//
+//     rotateBy += .003;
+//     pushMatrix();
+//     translate(width/2, height/2);
+//     rotate(rotateBy);
+//     deg = 0;
+//     while (deg <= 360) {
+//         deg += incr;
+//         ang = radians(deg);
+//         x = cos(ang) * (rad + (dist * noise(y/100, yIn)));
+//         y = sin(ang) * (rad + (dist * noise(x/80, yIn)));
+//         ellipse(x, y, 1.5, 1.5);
+//         x2 = sin(ang) * (rad2 + (dist2 * noise(y2/20, yIn)));
+//         y2 = cos(ang) * (rad2 + (dist2 * noise(y2/20, yIn)));
+//         ellipse(x2, y2, 1, 1);
+//     }
+//     yIn += .005;
+//     popMatrix();
+// }
+
+
+// Pixel-sized particles version, of 'surfs_up'.
+// Particles are now directly noise driven omitting the flow field.
+// Array[], particle, pixel, noise()
+// Mouse click to reset, mouseX adjusts background clear.
+
+// Particle[] particles;
+// float alpha;
+//
+// void setup() {
+//     size(900, 500);
+//     background(0);
+//     noStroke();
+//     setParticles();
+// }
+//
+// void draw() {
+//     frameRate(30);
+//     alpha = map(mouseX, 0, width, 5, 35);
+//     fill(0, alpha);
+//     rect(0, 0, width, height);
+//
+//     loadPixels();
+//     for (Particle p : particles) {
+//         p.move();
+//     }
+//     updatePixels();
+// }
+//
+// void setParticles() {
+//     particles = new Particle[10000];
+//     for (int i = 0; i < 10000; i++) {
+//         float x = random(width);
+//         float y = random(height);
+//         float adj = map(y, 0, height, 255, 0);
+//         int c = color(60, adj, 255);
+//         particles[i]= new Particle(x, y, c);
+//     }
+// }
+//
+// void mousePressed() {
+//     setParticles();
+// }
+//
+// class Particle {
+//     float posX, posY, incr, theta;
+//     color  c;
+//
+//     Particle(float xIn, float yIn, color cIn) {
+//     posX = xIn;
+//     posY = yIn;
+//     c = cIn;
+// }
+//
+// public void move() {
+//     update();
+//     wrap();
+//     display();
+// }
+//
+// void update() {
+//     incr +=  .008;
+//     theta = noise(posX * .006, posY * .008, incr) * TWO_PI;
+//     posX += 2 * tan(theta);
+//     posY += 2 * sin(theta);
+// }
+//
+// void display() {
+//     if (posX > 0 && posX < width && posY > 0  && posY < height) {
+//         pixels[(int)posX + (int)posY * width] =  c;
+//     }
+// }
+//
+// void wrap() {
+//     if (posX < 0) posX = width;
+//     if (posX > width ) posX =  0;
+//     if (posY < 0 ) posY = height;
+//     if (posY > height) posY =  0;
+// }
+// }
+
+},{"./animation":2,"./noise":11,"./utils":17}],11:[function(require,module,exports){
 /*
  * A speed-improved perlin and simplex noise algorithms for 2D.
  *
@@ -1434,7 +1874,7 @@ module.exports = NeuralNetwork;
 
 })(this);
 
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /*
  * Very simple particles system with attractors.
  * In this system, distance and momentum are ignored.
@@ -1497,7 +1937,7 @@ class ParticlesAndAttractors extends Animation {
 
         if(this.drawAttractors)
             for (let a of attractors)
-                Utils.fillCircle(this.ctx, this.colorsAlt[0], a.x, a.y, 5)
+                Utils.fillCircle(this.ctx, a.x, a.y, 5, this.colorsAlt[0])
 
         this.ctx.resetTransform();
     }
@@ -1509,7 +1949,7 @@ class ParticlesAndAttractors extends Animation {
 
 module.exports = ParticlesAndAttractors;
 
-},{"./animation":2,"./utils":15}],11:[function(require,module,exports){
+},{"./animation":2,"./utils":17}],13:[function(require,module,exports){
 /*
  * Particles vortex with randomized speed and direction.
  *
@@ -1573,7 +2013,7 @@ class ParticlesVortex extends Animation {
 
 module.exports = ParticlesVortex;
 
-},{"./animation":2,"./noise":9,"./utils":15}],12:[function(require,module,exports){
+},{"./animation":2,"./noise":11,"./utils":17}],14:[function(require,module,exports){
 /*
  * Particles moving through Perlin noise.
  *
@@ -1616,7 +2056,7 @@ class PerlinNoiseParticles extends Animation {
 
     draw() {
         for(let p of this.particles){
-            // Utils.fillCircle(this.ctx, p.color, p.x, p.y, p.radius);
+            // Utils.fillCircle(this.ctx, p.x, p.y, p.radius, p.color);
             Utils.drawLine(this.ctx, p.prevX, p.prevY, p.x, p.y, p.color, 2 * p.radius); // This results with better antialiasing
         }
         this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
@@ -1676,7 +2116,7 @@ class PerlinNoiseParticles extends Animation {
 
 module.exports = PerlinNoiseParticles;
 
-},{"./animation":2,"./noise":9,"./utils":15}],13:[function(require,module,exports){
+},{"./animation":2,"./noise":11,"./utils":17}],15:[function(require,module,exports){
 /*
  * Visualization of different sorting algorithms.
  *
@@ -1954,7 +2394,7 @@ class Sorting extends Animation {
 
 module.exports = Sorting;
 
-},{"./animation":2,"./utils":15}],14:[function(require,module,exports){
+},{"./animation":2,"./utils":17}],16:[function(require,module,exports){
 /*
  * Shapes moving in a circle.
  * Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
@@ -2013,7 +2453,7 @@ class SpinningShapes extends Animation {
 
 module.exports = SpinningShapes
 
-},{"./animation":2,"./utils":15}],15:[function(require,module,exports){
+},{"./animation":2,"./utils":17}],17:[function(require,module,exports){
 module.exports = {
 
     // Randomization helpers
@@ -2182,18 +2622,32 @@ module.exports = {
         ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
     },
 
-    fillCircle(ctx, color, x, y, radius){
+    fillCircle(ctx, x, y, radius, color){
         ctx.fillStyle = color;
         ctx.beginPath();
         ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
         ctx.fill();
     },
 
-    strokeCircle(ctx, color, x, y, radius){
+    strokeCircle(ctx, x, y, radius, color){
         ctx.strokeStyle = color;
         ctx.beginPath();
         ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
         ctx.stroke();
+    },
+
+    pathShape(ctx, points){
+        if(points.length) {
+            ctx.moveTo(points[0][0], points[0][1]);
+            for(let i = 1; i < points.length; ++i) ctx.lineTo(points[i][0], points[i][1]);
+        }
+    },
+
+    pathClosedShape(ctx, points){
+        if(points.length) {
+            this.pathShape(ctx, points);
+            ctx.lineTo(points[0][0], points[0][1]);
+        }
     },
 
     blendColor(ctx, color, alpha = 1.0, globalCompositeOperation = 'source-over'){
@@ -2218,9 +2672,16 @@ module.exports = {
         return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     },
 
+    createOffscreenCanvas(width, height){
+        let canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        return canvas;
+    },
+
     isStrictMode(){
         return ((eval("var __temp = null"), (typeof __temp === "undefined")) ? "strict":  "non-strict");
     }
 };
 
-},{}]},{},[7])
+},{}]},{},[8])

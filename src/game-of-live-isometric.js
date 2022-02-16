@@ -11,9 +11,9 @@ const Utils = require("./utils");
 
 class GameOfLifeIsometric extends GameOfLife {
     constructor (canvas, colors, colorsAlt,
-                 cellSize = 10,
+                 cellSize = 12,
                  cellBasePadding = 0,
-                 spawnProb = 0.3) {
+                 spawnProb = 0.5) {
         super(canvas, colors, colorsAlt, cellSize, cellBasePadding, spawnProb);
         this.name = "Isometric Conway's Game of Life";
         this.file = "game-of-live-isometric.js";
@@ -21,18 +21,18 @@ class GameOfLifeIsometric extends GameOfLife {
         this.sqrt3 = Math.sqrt(3);
         this.xShift = this.cellSize * this.sqrt3 / 2;
         this.yShift = this.cellSize / 2;
-        this.isoHeight = 0;
 
         // Prerender cubes for better performance
-        this.cubes = [];
+        this.renderedGrid = null;
+        this.renderedCubes = [];
         let offCtx = Utils.createOffscreenCanvas(4 * this.xShift, 4 * this.yShift).getContext('2d');
         this.drawIsoCube(offCtx, 0, 3 * this.yShift, true, true, this.colors, 0, this.cellSize);
-        this.cubes.push(offCtx.canvas);
+        this.renderedCubes.push(offCtx.canvas);
 
         for(let i = 1; i < this.cellSize; ++i){
             offCtx = Utils.createOffscreenCanvas(4 * this.xShift, 4 * this.yShift).getContext('2d');
             this.drawIsoCube(offCtx, 0, 3 * this.yShift, true, true, this.colorsAlt, -i, this.cellSize);
-            this.cubes.push(offCtx.canvas);
+            this.renderedCubes.push(offCtx.canvas);
         }
     }
 
@@ -79,22 +79,41 @@ class GameOfLifeIsometric extends GameOfLife {
     }
 
     drawCube(x, y, colors, heightMod=0, padding=0) {
-        const isoX = x * this.xShift - y * this.xShift + padding * this.sqrt3,
-              isoY = (x + y) * this.yShift;
+        const isoX = x * this.xShift - y * this.xShift,
+              isoY = (x + y + 1) * this.yShift;
 
-        if(isoX >= 0 && isoX < this.ctx.canvas.width && isoY >= 0 && isoY < this.ctx.canvas.height)
-            this.drawIsoCube(this.ctx, isoX, isoY, !this.isAlive(x, y + 1), !this.isAlive(x + 1, y), colors, heightMod, this.cellSize - 2 * padding);
+        this.drawIsoCube(this.ctx, isoX, isoY, !this.isAlive(x, y + 1), !this.isAlive(x + 1, y), colors, heightMod, this.cellSize - 2 * padding);
+    }
+
+    drawGrid(ctx, x, y){
+        const westX = this.gridHeight * -this.xShift,
+              westY = this.gridHeight * this.yShift,
+              eastX = this.gridWidth * this.xShift,
+              eastY = this.gridWidth * this.yShift,
+              southX = (-this.gridHeight + this.gridWidth) * this.xShift,
+              southY = (this.gridHeight + this.gridWidth) * this.yShift,
+              color = this.colors[0];
+
+        // Draw grid
+        for (let i = 0; i < this.gridHeight; ++i) {
+            const x = i * -this.xShift,
+                y = i * this.yShift;
+            Utils.drawLine(ctx, x, y, x + eastX, y + eastY, color);
+            Utils.drawLine(ctx, -x, y, -x + westX, y + westY, color);
+        }
+
+        // Draw outline
+        Utils.drawLine(ctx, 0, 0, eastX, eastY, color, 3);
+        Utils.drawLine(ctx, 0, 0, westX, westY, color, 3);
+        Utils.drawLine(ctx, westX, westY, southX, southY, color, 3);
+        Utils.drawLine(ctx, eastX, eastY, southX, southY, color, 3);
     }
 
     drawPrerenderedCube(x, y, idx){
-        const isoX = x * this.xShift - y * this.xShift + this.ctx.canvas.width / 2,
-              isoY = (x + y + 1) * this.yShift - this.isoH / 2;
+        const isoX = x * this.xShift - y * this.xShift,
+              isoY = (x + y + 1) * this.yShift;
 
-        // const isoX = x * this.xShift - y * this.xShift,
-        //    isoY = (x + y + 1) * this.yShift;
-
-        if(isoX >= 0 && isoX < this.ctx.canvas.width && isoY >= 0 && isoY < this.ctx.canvas.height)
-            this.ctx.drawImage(this.cubes[idx], isoX, isoY);
+        this.ctx.drawImage(this.renderedCubes[idx], isoX - 1 * this.xShift, isoY - 3 * this.yShift);
     }
 
     draw() {
@@ -102,16 +121,15 @@ class GameOfLifeIsometric extends GameOfLife {
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
         // Draw grid
-        this.ctx.strokeStyle = this.colors[0];
-        const alignHeight = Math.floor(this.ctx.canvas.width / this.cellSize) * this.cellSize,
-              isoHeight = this.ctx.canvas.width / this.sqrt3;
-        for(let i = -alignHeight; i < this.ctx.canvas.height; i += this.cellSize)
-            Utils.drawLine(this.ctx, 0, i, this.ctx.canvas.width, i + isoHeight);
+        if(!this.renderedGrid){
+            let offCtx = Utils.createOffscreenCanvas(this.ctx.canvas.width, this.ctx.canvas.height).getContext('2d');
+            offCtx.translate(this.ctx.canvas.width / 2, 1/8 * this.ctx.canvas.height);
+            this.drawGrid(offCtx, 0, 0);
+            this.renderedGrid = offCtx.canvas;
+        }
+        this.ctx.drawImage(this.renderedGrid, 0, 0);
 
-        for(let i = 0; i < this.ctx.canvas.height + alignHeight; i += this.cellSize)
-            Utils.drawLine(this.ctx, 0, i, this.ctx.canvas.width, i - isoHeight);
-
-        this.ctx.translate(this.ctx.canvas.width / 2, -this.isoH / 2);
+        this.ctx.translate(this.ctx.canvas.width / 2, 1/8 * this.ctx.canvas.height);
 
         // Draw blocks
         for (let y = 0; y < this.gridHeight; ++y) {
@@ -127,9 +145,12 @@ class GameOfLifeIsometric extends GameOfLife {
     }
 
     resize() {
-        this.isoH = this.ctx.canvas.width / this.sqrt3;
-        const newGridSize = Math.ceil((this.ctx.canvas.height + this.isoH) / this.cellSize);
+        // Fill the whole screen (bad performance on low spec computers/mobile devices)
+        //const newGridSize = Math.ceil((this.ctx.canvas.height + this.isoH) / this.cellSize);
+
+        const newGridSize = Math.ceil( 3/4 * this.ctx.canvas.height / this.cellSize);
         this.resizeGrid(newGridSize, newGridSize);
+        this.renderedGrid = null;
     }
 }
 

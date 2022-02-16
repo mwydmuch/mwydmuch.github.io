@@ -406,7 +406,7 @@ class GradientDescent extends Animation {
             textYOffset += lineHeight;
             const globalMin = this.func.getGlobalMin()
             this.ctx.fillText("Optimum: f(x*) = " + Math.round(this.func.val(globalMin) * 10000) / 10000 + ", at x* =  (" + globalMin[0] + ", " + globalMin[1] + ")", textXOffset, textYOffset);
-            Utils.fillCircle(this.ctx, this.colors[0], centerX + globalMin[0] * this.scale, centerY + -globalMin[1] * this.scale, 2);
+            Utils.fillCircle(this.ctx, centerX + globalMin[0] * this.scale, centerY + -globalMin[1] * this.scale, 2, this.colors[0]);
         }
 
         textYOffset += lineHeight;
@@ -420,7 +420,7 @@ class GradientDescent extends Animation {
             this.ctx.fillStyle = this.colorsAlt[i];
             this.ctx.font = '12px sans-serif';
             this.ctx.fillText("    " + this.optims[i].getName(), textXOffset, textYOffset);
-            Utils.fillCircle(this.ctx, this.colorsAlt[i], textXOffset + 3, textYOffset - 4, 3);
+            Utils.fillCircle(this.ctx, textXOffset + 3, textYOffset - 4, 3, this.colorsAlt[i]);
         }
 
         this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);

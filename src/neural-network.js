@@ -70,7 +70,7 @@ class NeuralNetwork extends Animation {
                 let v2 = Utils.clip(n.v * 2, 0, 4);
                 let color = this.colors[this.colors.length - 1 - Math.floor(v * this.colors.length)];
                 let nSize = this.baseNodeSize + v2;
-                Utils.fillCircle(this.ctx, color, n.x, n.y, nSize);
+                Utils.fillCircle(this.ctx, n.x, n.y, nSize, color);
                 this.ctx.font = '12px sans-serif';
                 this.ctx.fillText(n.v.toFixed(2), n.x - 11, n.y - 2 * this.baseNodeSize);
             }

@@ -40,7 +40,7 @@ class PerlinNoiseParticles extends Animation {
 
     draw() {
         for(let p of this.particles){
-            // Utils.fillCircle(this.ctx, p.color, p.x, p.y, p.radius);
+            // Utils.fillCircle(this.ctx, p.x, p.y, p.radius, p.color);
             Utils.drawLine(this.ctx, p.prevX, p.prevY, p.x, p.y, p.color, 2 * p.radius); // This results with better antialiasing
         }
         this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
