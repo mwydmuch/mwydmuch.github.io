@@ -293,7 +293,7 @@ class GradientDescent extends Animation {
     }
 
     resize() {
-        Utils.clear(this.ctx, "#FFFFFF");
+        Utils.clear(this.ctx, this.bgColor);
         this.frame = 0;
         this.imageData = null;
 

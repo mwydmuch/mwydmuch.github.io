@@ -77,7 +77,7 @@ class ThreeNPlusOne extends Animation {
 
     resize() {
         this.frame = 0;
-        this.ctx.fillStyle = "#FFFFFF";
+        this.ctx.fillStyle = this.bgColor;
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     }
 }
@@ -95,6 +95,9 @@ class Animation {
         this.bgColor = "#FFFFFF";
         this.colors = colors;
         this.colorsAlt = colorsAlt;
+        this.colorA = colors[0];
+        this.colorB = colors[3];
+
         this.name = name;
         this.file = file;
         this.time = 0;
@@ -153,17 +156,17 @@ class Cardioids extends Animation {
     }
 
     draw() {
-        Utils.clear(this.ctx, "#FFFFFF");
+        Utils.clear(this.ctx, this.bgColor);
 
         this.radius = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3;
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
         Utils.strokeCircle(this.ctx, 0, 0, this.radius, this.colors[0]);
 
         for (let i = 0; i <= this.lines; ++i) {
-            const a = this.getVec(i);
-            const b = this.getVec(i * this.time * 0.05);
-            const color = Utils.lerpColorsPallet([this.colors[0], this.colors[3], this.colors[0]], i / this.lines);
-            //const color = 'hsl(' + i / this.lines * 360 + ', 100%, 75%)';
+            const a = this.getVec(i),
+                  b = this.getVec(i * this.time * 0.05),
+                  color = Utils.lerpColorsPallet([this.colorA, this.colorB, this.colorA], i / this.lines);
+            //    color = 'hsl(' + i / this.lines * 360 + ', 100%, 75%)';
             Utils.drawLine(this.ctx, a.x, a.y, b.x, b.y, color, 1);
         }
 
@@ -173,7 +176,7 @@ class Cardioids extends Animation {
 
 module.exports = Cardioids
 
-},{"./animation":2,"./utils":17}],4:[function(require,module,exports){
+},{"./animation":2,"./utils":16}],4:[function(require,module,exports){
 /*
  * Circular waves animation.
  *
@@ -207,11 +210,11 @@ class CircularWaves extends Animation {
     }
 
     draw() {
-        if(this.fadeOut && this.frame % 10 == 0) Utils.blendColor(this.ctx, "#FFFFFF", 0.01, "lighter");
+        if(this.fadeOut && this.frame % 10 == 0) Utils.blendColor(this.ctx, this.bgColor, 0.01, "lighter");
 
         const zoff = this.frame * 0.005;
         //this.ctx.strokeStyle = 'hsl(' + Math.abs(Math.sin(zoff * 5)) * 360 + ', 100%, 50%)';
-        this.ctx.strokeStyle = Utils.lerpColor(this.colors[0], this.colors[3], Math.abs(Math.sin(zoff * 5)));
+        this.ctx.strokeStyle = Utils.lerpColor(this.colorA, this.colorB, Math.abs(Math.sin(zoff * 5)));
 
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
 
@@ -243,9 +246,9 @@ class CircularWaves extends Animation {
 
 module.exports = CircularWaves;
 
-},{"./animation":2,"./noise":11,"./utils":17}],5:[function(require,module,exports){
+},{"./animation":2,"./noise":10,"./utils":16}],5:[function(require,module,exports){
 /*
- * Conway's Game of Life visualization with isometric rendering.
+ * Conway's game of life visualization with isometric rendering.
  * Cells that "died" in the previous step keep their color to achieve a stable image
  * (flickering is not good for a background image).
  *
@@ -261,7 +264,7 @@ class GameOfLifeIsometric extends GameOfLife {
                  cellBasePadding = 0,
                  spawnProb = 0.5) {
         super(canvas, colors, colorsAlt, cellSize, cellBasePadding, spawnProb);
-        this.name = "Isometric Conway's Game of Life";
+        this.name = "isometric Conway's game of life";
         this.file = "game-of-live-isometric.js";
 
         this.sqrt3 = Math.sqrt(3);
@@ -363,8 +366,7 @@ class GameOfLifeIsometric extends GameOfLife {
     }
 
     draw() {
-        this.ctx.fillStyle = "#FFFFFF";
-        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        Utils.clear(this.ctx, this.bgColor);
 
         // Draw grid
         if(!this.renderedGrid){
@@ -402,9 +404,9 @@ class GameOfLifeIsometric extends GameOfLife {
 
 module.exports = GameOfLifeIsometric;
 
-},{"./game-of-live":6,"./utils":17}],6:[function(require,module,exports){
+},{"./game-of-live":6,"./utils":16}],6:[function(require,module,exports){
 /*
- * Conway's Game of Life visualization.
+ * Conway's game of life visualization.
  * Cells that "died" in the previous step keep their color to achieve a stable image
  * (flickering is not good for a background image).
  *
@@ -418,7 +420,7 @@ class GameOfLife extends Animation {
                  cellSize = 12,
                  cellBasePadding= 1,
                  spawnProb= 0.5) {
-        super(canvas, colors, colorsAlt, "Conway's Game of Life", "game-of-live.js");
+        super(canvas, colors, colorsAlt, "Conway's game of life", "game-of-live.js");
         this.cellSize = cellSize;
         this.cellBasePadding = cellBasePadding;
         this.spawnProb = spawnProb;
@@ -465,7 +467,7 @@ class GameOfLife extends Animation {
     }
 
     draw() {
-        this.ctx.fillStyle = "#FFFFFF";
+        this.ctx.fillStyle = this.bgColor;
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
         for (let y = 0; y < this.gridHeight; ++y) {
@@ -815,7 +817,7 @@ class GradientDescent extends Animation {
     }
 
     resize() {
-        Utils.clear(this.ctx, "#FFFFFF");
+        Utils.clear(this.ctx, this.bgColor);
         this.frame = 0;
         this.imageData = null;
 
@@ -951,7 +953,7 @@ class GradientDescent extends Animation {
 
 module.exports = GradientDescent;
 
-},{"./animation":2,"./utils":17}],8:[function(require,module,exports){
+},{"./animation":2,"./utils":16}],8:[function(require,module,exports){
 'use strict';
 
 // Require
@@ -971,8 +973,8 @@ const ParticlesVortex = require("./particles-vortex");
 const PerlinNoiseParticles = require("./perlin-noise-particles");
 const Sorting = require("./sorting");
 const SpinningShapes = require("./spinning-shapes");
+//const NoiseStorm = require("./noise-storm");
 
-const NoiseStorm = require("./noise-storm");
 
 // Globals
 // ---------------------------------------------------------------------------------------------------------------------
@@ -1057,7 +1059,6 @@ let animations = [
     Sorting,
     SpinningShapes,
     //NoiseStorm,
-
 ];
 
 Utils.randomShuffle(animations);
@@ -1174,7 +1175,7 @@ if(backgroundStop) {
     });
 }
 
-},{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./game-of-live":6,"./game-of-live-isometric":5,"./gradient-descent":7,"./neural-network":9,"./noise-storm":10,"./particles-and-attractors":12,"./particles-vortex":13,"./perlin-noise-particles":14,"./sorting":15,"./spinning-shapes":16,"./utils":17}],9:[function(require,module,exports){
+},{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./game-of-live":6,"./game-of-live-isometric":5,"./gradient-descent":7,"./neural-network":9,"./particles-and-attractors":11,"./particles-vortex":12,"./perlin-noise-particles":13,"./sorting":14,"./spinning-shapes":15,"./utils":16}],9:[function(require,module,exports){
 /*
  * Visualization of a simple, fully connected neural network, with random weights,
  * ReLU activations on intermediate layers, and sigmoid output at the last layer.
@@ -1223,7 +1224,7 @@ class NeuralNetwork extends Animation {
     }
 
     draw() {
-        Utils.clear(this.ctx, "#FFFFFF");
+        Utils.clear(this.ctx, this.bgColor);
 
         // Draw connections
         for (let i = 0; i < this.nLayers - 1; i++) {
@@ -1295,275 +1296,7 @@ class NeuralNetwork extends Animation {
 
 module.exports = NeuralNetwork;
 
-},{"./animation":2,"./utils":17}],10:[function(require,module,exports){
-/*
- * Circular waves animation.
- *
- * Coded with no external dependencies, using only canvas API.
- */
-
-const Animation = require("./animation");
-const Noise = require("./noise");
-const Utils = require("./utils");
-
-class NoiseStorm extends Animation {
-    constructor(canvas, colors, colorsAlt,
-                degPerParticle = 1,
-                noiseScale = 0.5,
-                noiseMin = 0.4,
-                noiseMax = 1.2,
-                fadeOut = true
-    ) {
-        super(canvas, colors, colorsAlt, "noise storm", "noise-storm.js");
-        this.noise = Noise.noise;
-        this.noise.seed(Utils.randomRange(0, 1));
-
-        this.degPerParticle = degPerParticle;
-        this.noiseScale = noiseScale;
-        this.noiseMin = noiseMin;
-        this.noiseMax = noiseMax;
-        this.fadeOut = fadeOut;
-
-        this.radiusMin = 0;
-        this.radiusMax = 0;
-
-        this.x = 100;
-        this.y = 100;
-        this.x2 = 100;
-        this.y2 = 100;
-    }
-
-    draw() {
-        Utils.blendColor(this.ctx, "#FFFFFF", 0.03, "lighter");
-
-        const zoff = this.frame * 0.005;
-        //this.ctx.strokeStyle = 'hsl(' + Math.abs(Math.sin(zoff * 5)) * 360 + ', 100%, 50%)';
-        this.ctx.strokeStyle = Utils.lerpColor(this.colors[0], this.colors[3], Math.abs(Math.sin(zoff * 5)));
-
-        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
-
-        const rad = -20,
-            rad2 = 160,
-            dist = 500,
-            dist2 = 550,
-            yIn = this.frame * 0.000005;
-
-        for (let a = 0; a <= 360; a += this.degPerParticle) {
-            const aRad = a * Math.PI / 180,
-                xoff = Math.cos(aRad) * this.noiseScale,
-                yoff = Math.sin(aRad) * this.noiseScale,
-
-                n = this.noise.simplex3(xoff, yoff, zoff),
-                r = Utils.remap(n, -1, 1, this.radiusMin, this.radiusMax),
-                x = r * Math.cos(aRad),
-                y = r * Math.sin(aRad);
-
-            Utils.fillCircle(this.ctx, this.colors[0], x, y, 1.5);
-        }
-
-        this.ctx.resetTransform();
-    }
-
-    resize() {
-        this.radiusMin = Math.min(this.ctx.canvas.width, this.ctx.canvas.height) / 2 * this.noiseMin;
-        this.radiusMax = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 2 * this.noiseMax;
-        Utils.clear(this.ctx, "#FFFFFF");
-    }
-}
-
-
-class NoiseStorm2 extends Animation {
-    constructor(canvas, colors, colorsAlt,
-                degPerParticle = 1,
-                noiseScale = 0.5,
-                noiseMin = 0.4,
-                noiseMax = 1.2,
-                fadeOut = true
-    ) {
-        super(canvas, colors, colorsAlt, "noise storm", "noise-storm.js");
-        this.noise = Noise.noise;
-        this.noise.seed(Utils.randomRange(0, 1));
-
-        this.degPerParticle = degPerParticle;
-        this.noiseScale = noiseScale;
-        this.noiseMin = noiseMin;
-        this.noiseMax = noiseMax;
-        this.fadeOut = fadeOut;
-
-        this.radiusMin = 0;
-        this.radiusMax = 0;
-
-        this.x = 100;
-        this.y = 100;
-        this.x2 = 100;
-        this.y2 = 100;
-    }
-
-    draw() {
-        Utils.blendColor(this.ctx, "#FFFFFF", 0.03, "lighter");
-
-        const zoff = this.frame * 0.005;
-        //this.ctx.strokeStyle = 'hsl(' + Math.abs(Math.sin(zoff * 5)) * 360 + ', 100%, 50%)';
-        this.ctx.strokeStyle = Utils.lerpColor(this.colors[0], this.colors[3], Math.abs(Math.sin(zoff * 5)));
-
-        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
-
-        const rad = -20,
-            rad2 = 160,
-            dist = 500,
-            dist2 = 550,
-            yIn = this.frame * 0.000005;
-
-        for (let a = 0; a <= 360; a += this.degPerParticle) {
-            const aRad = a * Math.PI / 180,
-                    xoff = Math.cos(aRad) * this.noiseScale,
-                    yoff = Math.sin(aRad) * this.noiseScale,
-
-                    n = this.noise.simplex3(xoff, yoff, zoff),
-                    r = Utils.remap(n, -1, 1, this.radiusMin, this.radiusMax),
-                    x = r * Math.cos(aRad),
-                    y = r * Math.sin(aRad);
-
-            Utils.fillCircle(this.ctx, x,  y, 1.5, this.colors[0]);
-        }
-
-        this.ctx.resetTransform();
-    }
-
-    resize() {
-        this.radiusMin = Math.min(this.ctx.canvas.width, this.ctx.canvas.height) / 2 * this.noiseMin;
-        this.radiusMax = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 2 * this.noiseMax;
-        Utils.clear(this.ctx, "#FFFFFF");
-    }
-}
-
-module.exports = NoiseStorm;
-
-
-// // noise(), sin(), rotate(),
-// float x, y, x2, y2, rad, rad2, dist, dist2;
-// float deg, incr, yIn, rotateBy, ang;
-//
-//
-// void setup() {
-//     fullScreen();
-//     //size(600, 600);
-//     //background(#02021A);
-//     background(255);
-//     incr = 1; // numVerts = 360/incr
-//     rad = -20;
-//     rad2 = -160;
-//     dist = 500;
-//     dist2 = 550;
-// }
-//
-// void draw() {
-//     noStroke();
-//     fill(#02021A, 10);
-//     rect(0, 0, width, height);
-//     fill(random(0, 255), 255, 255);
-//
-//     rotateBy += .003;
-//     pushMatrix();
-//     translate(width/2, height/2);
-//     rotate(rotateBy);
-//     deg = 0;
-//     while (deg <= 360) {
-//         deg += incr;
-//         ang = radians(deg);
-//         x = cos(ang) * (rad + (dist * noise(y/100, yIn)));
-//         y = sin(ang) * (rad + (dist * noise(x/80, yIn)));
-//         ellipse(x, y, 1.5, 1.5);
-//         x2 = sin(ang) * (rad2 + (dist2 * noise(y2/20, yIn)));
-//         y2 = cos(ang) * (rad2 + (dist2 * noise(y2/20, yIn)));
-//         ellipse(x2, y2, 1, 1);
-//     }
-//     yIn += .005;
-//     popMatrix();
-// }
-
-
-// Pixel-sized particles version, of 'surfs_up'.
-// Particles are now directly noise driven omitting the flow field.
-// Array[], particle, pixel, noise()
-// Mouse click to reset, mouseX adjusts background clear.
-
-// Particle[] particles;
-// float alpha;
-//
-// void setup() {
-//     size(900, 500);
-//     background(0);
-//     noStroke();
-//     setParticles();
-// }
-//
-// void draw() {
-//     frameRate(30);
-//     alpha = map(mouseX, 0, width, 5, 35);
-//     fill(0, alpha);
-//     rect(0, 0, width, height);
-//
-//     loadPixels();
-//     for (Particle p : particles) {
-//         p.move();
-//     }
-//     updatePixels();
-// }
-//
-// void setParticles() {
-//     particles = new Particle[10000];
-//     for (int i = 0; i < 10000; i++) {
-//         float x = random(width);
-//         float y = random(height);
-//         float adj = map(y, 0, height, 255, 0);
-//         int c = color(60, adj, 255);
-//         particles[i]= new Particle(x, y, c);
-//     }
-// }
-//
-// void mousePressed() {
-//     setParticles();
-// }
-//
-// class Particle {
-//     float posX, posY, incr, theta;
-//     color  c;
-//
-//     Particle(float xIn, float yIn, color cIn) {
-//     posX = xIn;
-//     posY = yIn;
-//     c = cIn;
-// }
-//
-// public void move() {
-//     update();
-//     wrap();
-//     display();
-// }
-//
-// void update() {
-//     incr +=  .008;
-//     theta = noise(posX * .006, posY * .008, incr) * TWO_PI;
-//     posX += 2 * tan(theta);
-//     posY += 2 * sin(theta);
-// }
-//
-// void display() {
-//     if (posX > 0 && posX < width && posY > 0  && posY < height) {
-//         pixels[(int)posX + (int)posY * width] =  c;
-//     }
-// }
-//
-// void wrap() {
-//     if (posX < 0) posX = width;
-//     if (posX > width ) posX =  0;
-//     if (posY < 0 ) posY = height;
-//     if (posY > height) posY =  0;
-// }
-// }
-
-},{"./animation":2,"./noise":11,"./utils":17}],11:[function(require,module,exports){
+},{"./animation":2,"./utils":16}],10:[function(require,module,exports){
 /*
  * A speed-improved perlin and simplex noise algorithms for 2D.
  *
@@ -1874,7 +1607,7 @@ module.exports = NoiseStorm;
 
 })(this);
 
-},{}],12:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /*
  * Very simple particles system with attractors.
  * In this system, distance and momentum are ignored.
@@ -1891,7 +1624,7 @@ class ParticlesAndAttractors extends Animation {
     constructor (canvas, colors, colorsAlt,
                  numParticles= 10000,
                  numAttractors = 5,
-                 drawAttractors = false
+                 drawAttractors = true
     ) {
         super(canvas, colors, colorsAlt, "system of particles and attractors", "particles-and-attractors.js");
         this.particles = []
@@ -1908,7 +1641,7 @@ class ParticlesAndAttractors extends Animation {
     }
 
     draw() {
-        Utils.blendColor(this.ctx, "#FFFFFF", 0.03, "lighter");
+        Utils.blendColor(this.ctx, this.bgColor, 0.03, "lighter");
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
 
         const t = (this.timeBase + this.time) * this.attractorsSpeed;
@@ -1921,7 +1654,7 @@ class ParticlesAndAttractors extends Animation {
         } else if (this.attractorsSystem == "eights") {
             const s = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / this.numAttractors;
             for (let i = 0; i < this.numAttractors; ++i)
-                attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * t * s, 0), t * i));
+                attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * Math.sin(t * Math.PI / 2) * s, 0), t * i));
         }
 
         for (let p of this.particles) {
@@ -1937,7 +1670,7 @@ class ParticlesAndAttractors extends Animation {
 
         if(this.drawAttractors)
             for (let a of attractors)
-                Utils.fillCircle(this.ctx, a.x, a.y, 5, this.colorsAlt[0])
+                Utils.fillCircle(this.ctx, a.x, a.y, 5, this.colorsAlt[2])
 
         this.ctx.resetTransform();
     }
@@ -1949,7 +1682,7 @@ class ParticlesAndAttractors extends Animation {
 
 module.exports = ParticlesAndAttractors;
 
-},{"./animation":2,"./utils":17}],13:[function(require,module,exports){
+},{"./animation":2,"./utils":16}],12:[function(require,module,exports){
 /*
  * Particles vortex with randomized speed and direction.
  *
@@ -2013,7 +1746,7 @@ class ParticlesVortex extends Animation {
 
 module.exports = ParticlesVortex;
 
-},{"./animation":2,"./noise":11,"./utils":17}],14:[function(require,module,exports){
+},{"./animation":2,"./noise":10,"./utils":16}],13:[function(require,module,exports){
 /*
  * Particles moving through Perlin noise.
  *
@@ -2076,13 +1809,13 @@ class PerlinNoiseParticles extends Animation {
                 prevY: particleY,
                 speed: Math.random() * 0.20 + 0.10,
                 radius: Math.random() * 0.5 + 0.5,
-                color: this.colors[Math.floor(Math.random() * this.colors.length)]
+                color: Utils.randomChoice(this.colors)
             });
         }
     }
 
     resize() {
-        Utils.clear(this.ctx, "#FFFFFF");
+        Utils.clear(this.ctx, this.bgColor);
         if(this.imageData != null) this.ctx.putImageData(this.imageData, 0, 0);
 
         // Add particles to new parts of the image
@@ -2116,7 +1849,7 @@ class PerlinNoiseParticles extends Animation {
 
 module.exports = PerlinNoiseParticles;
 
-},{"./animation":2,"./noise":11,"./utils":17}],15:[function(require,module,exports){
+},{"./animation":2,"./noise":10,"./utils":16}],14:[function(require,module,exports){
 /*
  * Visualization of different sorting algorithms.
  *
@@ -2394,7 +2127,7 @@ class Sorting extends Animation {
 
 module.exports = Sorting;
 
-},{"./animation":2,"./utils":17}],16:[function(require,module,exports){
+},{"./animation":2,"./utils":16}],15:[function(require,module,exports){
 /*
  * Shapes moving in a circle.
  * Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
@@ -2420,8 +2153,6 @@ class SpinningShapes extends Animation {
         this.distVar = 0.2;
         this.sizeBase = 0.2;
         this.sizeVar = 0.12;
-
-        //this.selColors = Utils.mirrorPalette(this.colors);
     }
 
     draw() {
@@ -2437,8 +2168,7 @@ class SpinningShapes extends Animation {
                   x = Math.cos(theta) * distance,
                   y = Math.sin(theta) * distance,
                   radius = (this.sizeBase + this.sizeVar * Math.cos(theta * 9 - this.time)) * scale;
-            //this.ctx.strokeStyle = this.colors[Math.floor((Math.cos(theta * 9 - this.time) + 1) / 2 * this.colors.length)]; // Old method
-            this.ctx.strokeStyle = Utils.lerpColor(this.colors[0], this.colors[3],(Math.cos(theta * 9 - this.time) + 1) / 2); // New with smooth color transition
+            this.ctx.strokeStyle = Utils.lerpColor(this.colorA, this.colorB,(Math.cos(theta * 9 - this.time) + 1) / 2); // New with smooth color transition
             this.ctx.lineWidth = 1;
 
             this.ctx.beginPath();
@@ -2453,7 +2183,7 @@ class SpinningShapes extends Animation {
 
 module.exports = SpinningShapes
 
-},{"./animation":2,"./utils":17}],17:[function(require,module,exports){
+},{"./animation":2,"./utils":16}],16:[function(require,module,exports){
 module.exports = {
 
     // Randomization helpers

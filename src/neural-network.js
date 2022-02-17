@@ -46,7 +46,7 @@ class NeuralNetwork extends Animation {
     }
 
     draw() {
-        Utils.clear(this.ctx, "#FFFFFF");
+        Utils.clear(this.ctx, this.bgColor);
 
         // Draw connections
         for (let i = 0; i < this.nLayers - 1; i++) {

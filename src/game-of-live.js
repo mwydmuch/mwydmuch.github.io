@@ -1,5 +1,5 @@
 /*
- * Conway's Game of Life visualization.
+ * Conway's game of life visualization.
  * Cells that "died" in the previous step keep their color to achieve a stable image
  * (flickering is not good for a background image).
  *
@@ -13,7 +13,7 @@ class GameOfLife extends Animation {
                  cellSize = 12,
                  cellBasePadding= 1,
                  spawnProb= 0.5) {
-        super(canvas, colors, colorsAlt, "Conway's Game of Life", "game-of-live.js");
+        super(canvas, colors, colorsAlt, "Conway's game of life", "game-of-live.js");
         this.cellSize = cellSize;
         this.cellBasePadding = cellBasePadding;
         this.spawnProb = spawnProb;
@@ -60,7 +60,7 @@ class GameOfLife extends Animation {
     }
 
     draw() {
-        this.ctx.fillStyle = "#FFFFFF";
+        this.ctx.fillStyle = this.bgColor;
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
         for (let y = 0; y < this.gridHeight; ++y) {

@@ -8,6 +8,9 @@ class Animation {
         this.bgColor = "#FFFFFF";
         this.colors = colors;
         this.colorsAlt = colorsAlt;
+        this.colorA = colors[0];
+        this.colorB = colors[3];
+
         this.name = name;
         this.file = file;
         this.time = 0;

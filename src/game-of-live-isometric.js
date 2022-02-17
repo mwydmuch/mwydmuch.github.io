@@ -1,5 +1,5 @@
 /*
- * Conway's Game of Life visualization with isometric rendering.
+ * Conway's game of life visualization with isometric rendering.
  * Cells that "died" in the previous step keep their color to achieve a stable image
  * (flickering is not good for a background image).
  *
@@ -15,7 +15,7 @@ class GameOfLifeIsometric extends GameOfLife {
                  cellBasePadding = 0,
                  spawnProb = 0.5) {
         super(canvas, colors, colorsAlt, cellSize, cellBasePadding, spawnProb);
-        this.name = "Isometric Conway's Game of Life";
+        this.name = "isometric Conway's game of life";
         this.file = "game-of-live-isometric.js";
 
         this.sqrt3 = Math.sqrt(3);
@@ -117,8 +117,7 @@ class GameOfLifeIsometric extends GameOfLife {
     }
 
     draw() {
-        this.ctx.fillStyle = "#FFFFFF";
-        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        Utils.clear(this.ctx, this.bgColor);
 
         // Draw grid
         if(!this.renderedGrid){

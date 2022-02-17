@@ -25,17 +25,17 @@ class Cardioids extends Animation {
     }
 
     draw() {
-        Utils.clear(this.ctx, "#FFFFFF");
+        Utils.clear(this.ctx, this.bgColor);
 
         this.radius = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3;
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
         Utils.strokeCircle(this.ctx, 0, 0, this.radius, this.colors[0]);
 
         for (let i = 0; i <= this.lines; ++i) {
-            const a = this.getVec(i);
-            const b = this.getVec(i * this.time * 0.05);
-            const color = Utils.lerpColorsPallet([this.colors[0], this.colors[3], this.colors[0]], i / this.lines);
-            //const color = 'hsl(' + i / this.lines * 360 + ', 100%, 75%)';
+            const a = this.getVec(i),
+                  b = this.getVec(i * this.time * 0.05),
+                  color = Utils.lerpColorsPallet([this.colorA, this.colorB, this.colorA], i / this.lines);
+            //    color = 'hsl(' + i / this.lines * 360 + ', 100%, 75%)';
             Utils.drawLine(this.ctx, a.x, a.y, b.x, b.y, color, 1);
         }
 

@@ -23,8 +23,6 @@ class SpinningShapes extends Animation {
         this.distVar = 0.2;
         this.sizeBase = 0.2;
         this.sizeVar = 0.12;
-
-        //this.selColors = Utils.mirrorPalette(this.colors);
     }
 
     draw() {
@@ -40,8 +38,7 @@ class SpinningShapes extends Animation {
                   x = Math.cos(theta) * distance,
                   y = Math.sin(theta) * distance,
                   radius = (this.sizeBase + this.sizeVar * Math.cos(theta * 9 - this.time)) * scale;
-            //this.ctx.strokeStyle = this.colors[Math.floor((Math.cos(theta * 9 - this.time) + 1) / 2 * this.colors.length)]; // Old method
-            this.ctx.strokeStyle = Utils.lerpColor(this.colors[0], this.colors[3],(Math.cos(theta * 9 - this.time) + 1) / 2); // New with smooth color transition
+            this.ctx.strokeStyle = Utils.lerpColor(this.colorA, this.colorB,(Math.cos(theta * 9 - this.time) + 1) / 2); // New with smooth color transition
             this.ctx.lineWidth = 1;
 
             this.ctx.beginPath();

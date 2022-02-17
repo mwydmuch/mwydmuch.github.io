@@ -17,8 +17,8 @@ const ParticlesVortex = require("./particles-vortex");
 const PerlinNoiseParticles = require("./perlin-noise-particles");
 const Sorting = require("./sorting");
 const SpinningShapes = require("./spinning-shapes");
+//const NoiseStorm = require("./noise-storm");
 
-const NoiseStorm = require("./noise-storm");
 
 // Globals
 // ---------------------------------------------------------------------------------------------------------------------
@@ -103,7 +103,6 @@ let animations = [
     Sorting,
     SpinningShapes,
     //NoiseStorm,
-
 ];
 
 Utils.randomShuffle(animations);

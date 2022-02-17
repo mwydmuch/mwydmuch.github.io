@@ -31,7 +31,7 @@ class ParticlesAndAttractors extends Animation {
     }
 
     draw() {
-        Utils.blendColor(this.ctx, "#FFFFFF", 0.03, "lighter");
+        Utils.blendColor(this.ctx, this.bgColor, 0.03, "lighter");
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
 
         const t = (this.timeBase + this.time) * this.attractorsSpeed;
@@ -44,7 +44,7 @@ class ParticlesAndAttractors extends Animation {
         } else if (this.attractorsSystem == "eights") {
             const s = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / this.numAttractors;
             for (let i = 0; i < this.numAttractors; ++i)
-                attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * t * s, 0), t * i));
+                attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * Math.sin(t * Math.PI / 2) * s, 0), t * i));
         }
 
         for (let p of this.particles) {
@@ -60,7 +60,7 @@ class ParticlesAndAttractors extends Animation {
 
         if(this.drawAttractors)
             for (let a of attractors)
-                Utils.fillCircle(this.ctx, a.x, a.y, 5, this.colorsAlt[0])
+                Utils.fillCircle(this.ctx, a.x, a.y, 5, this.colorsAlt[2])
 
         this.ctx.resetTransform();
     }

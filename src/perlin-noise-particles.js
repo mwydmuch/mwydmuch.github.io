@@ -60,13 +60,13 @@ class PerlinNoiseParticles extends Animation {
                 prevY: particleY,
                 speed: Math.random() * 0.20 + 0.10,
                 radius: Math.random() * 0.5 + 0.5,
-                color: this.colors[Math.floor(Math.random() * this.colors.length)]
+                color: Utils.randomChoice(this.colors)
             });
         }
     }
 
     resize() {
-        Utils.clear(this.ctx, "#FFFFFF");
+        Utils.clear(this.ctx, this.bgColor);
         if(this.imageData != null) this.ctx.putImageData(this.imageData, 0, 0);
 
         // Add particles to new parts of the image

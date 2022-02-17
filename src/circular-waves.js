@@ -31,11 +31,11 @@ class CircularWaves extends Animation {
     }
 
     draw() {
-        if(this.fadeOut && this.frame % 10 == 0) Utils.blendColor(this.ctx, "#FFFFFF", 0.01, "lighter");
+        if(this.fadeOut && this.frame % 10 == 0) Utils.blendColor(this.ctx, this.bgColor, 0.01, "lighter");
 
         const zoff = this.frame * 0.005;
         //this.ctx.strokeStyle = 'hsl(' + Math.abs(Math.sin(zoff * 5)) * 360 + ', 100%, 50%)';
-        this.ctx.strokeStyle = Utils.lerpColor(this.colors[0], this.colors[3], Math.abs(Math.sin(zoff * 5)));
+        this.ctx.strokeStyle = Utils.lerpColor(this.colorA, this.colorB, Math.abs(Math.sin(zoff * 5)));
 
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
 
