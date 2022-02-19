@@ -5,6 +5,10 @@ module.exports = {
         return Math.random() * (max - min) + min;
     },
 
+    randomInt(min, max) {
+        return Math.floor(this.randomRange(min, max));
+    },
+
     randomChoice(arr) {
         return arr[Math.floor(Math.random() * arr.length)];
     },
