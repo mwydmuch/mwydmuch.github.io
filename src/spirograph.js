@@ -1,7 +1,7 @@
 /*
  * Spirograph created with 2-4 random gears.
- * See: https://en.wikipedia.org/wiki/Spirograph
- * and: http://www.eddaardvark.co.uk/v2/spirograph/spirograph2.html
+ * See: https://en.wikipedia.org/wiki/Spirograph,
+ * and: http://www.eddaardvark.co.uk/v2/spirograph/spirograph2.html (this site is amazing).
  *
  * Coded with no external dependencies, using only canvas API.
  */
@@ -20,9 +20,9 @@ class Spirograph extends Animation {
         this.name = "spirograph with " + gearNames[gearCount] + " random gears"
         for(let i = 0; i < gearCount; ++i){
             this.gears.push({
-                "r": Utils.randomRange(0, 100),
-                "rate": Utils.randomRange(-100, 100),
-                "phase": i * 0.005
+                r: Utils.randomRange(0, 100),
+                rate: Utils.randomRange(-100, 100),
+                phase: i * 0.005
             });
         }
     }
@@ -35,7 +35,7 @@ class Spirograph extends Animation {
             y += g.r * scale * Math.sin(g.rate * (i + j * g.phase));
         }
 
-        return {"x": x, "y": y}
+        return {x: x, y: y}
     }
 
     draw() {

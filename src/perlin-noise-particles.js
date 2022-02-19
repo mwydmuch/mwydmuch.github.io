@@ -27,8 +27,9 @@ class PerlinNoiseParticles extends Animation {
         this.imageData = null;
     }
 
-    update(timeElapsed) {
-        // TODO: Make it time dependent
+    update(elapsed) {
+        this.time += elapsed / 1000;
+        ++this.frame;
         for(let p of this.particles){
             const angle = this.noise.perlin2(p.x * this.noiseScale, p.y * this.noiseScale) * 2 * Math.PI / this.noiseScale;
             p.prevX = p.x;

@@ -131,7 +131,7 @@ module.exports = Animation;
 },{}],3:[function(require,module,exports){
 /*
  * Modified method of L. Cremona for drawing cardioid with a pencil of lines,
- * as described in section "Cardioid as envelope of a pencil of lines" of:
+ * as described in section "cardioid as envelope of a pencil of lines" of:
  * https://en.wikipedia.org/wiki/Cardioid
  * Here the shift of the second point is determined by time passed
  * from the beginning of the animation.
@@ -176,7 +176,7 @@ class Cardioids extends Animation {
 
 module.exports = Cardioids
 
-},{"./animation":2,"./utils":16}],4:[function(require,module,exports){
+},{"./animation":2,"./utils":18}],4:[function(require,module,exports){
 /*
  * Circular waves animation.
  *
@@ -246,7 +246,7 @@ class CircularWaves extends Animation {
 
 module.exports = CircularWaves;
 
-},{"./animation":2,"./noise":10,"./utils":16}],5:[function(require,module,exports){
+},{"./animation":2,"./noise":10,"./utils":18}],5:[function(require,module,exports){
 /*
  * Conway's game of life visualization with isometric rendering.
  * Cells that "died" in the previous step keep their color to achieve a stable image
@@ -404,7 +404,7 @@ class GameOfLifeIsometric extends GameOfLife {
 
 module.exports = GameOfLifeIsometric;
 
-},{"./game-of-live":6,"./utils":16}],6:[function(require,module,exports){
+},{"./game-of-live":6,"./utils":18}],6:[function(require,module,exports){
 /*
  * Conway's game of life visualization.
  * Cells that "died" in the previous step keep their color to achieve a stable image
@@ -953,7 +953,7 @@ class GradientDescent extends Animation {
 
 module.exports = GradientDescent;
 
-},{"./animation":2,"./utils":16}],8:[function(require,module,exports){
+},{"./animation":2,"./utils":18}],8:[function(require,module,exports){
 'use strict';
 
 // Require
@@ -970,10 +970,11 @@ const GradientDescent = require("./gradient-descent");
 const NeuralNetwork = require("./neural-network");
 const ParticlesAndAttractors = require("./particles-and-attractors");
 const ParticlesVortex = require("./particles-vortex");
+const ParticlesWaves = require("./particles-waves");
 const PerlinNoiseParticles = require("./perlin-noise-particles");
 const Sorting = require("./sorting");
 const SpinningShapes = require("./spinning-shapes");
-//const NoiseStorm = require("./noise-storm");
+const Spirograph = require("./spirograph")
 
 
 // Globals
@@ -1053,12 +1054,13 @@ let animations = [
     GameOfLifeIsometric,
     GradientDescent,
     NeuralNetwork,
-    ParticlesVortex,
     ParticlesAndAttractors,
+    ParticlesVortex,
+    ParticlesWaves,
     PerlinNoiseParticles,
     Sorting,
     SpinningShapes,
-    //NoiseStorm,
+    Spirograph
 ];
 
 Utils.randomShuffle(animations);
@@ -1175,7 +1177,7 @@ if(backgroundStop) {
     });
 }
 
-},{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./game-of-live":6,"./game-of-live-isometric":5,"./gradient-descent":7,"./neural-network":9,"./particles-and-attractors":11,"./particles-vortex":12,"./perlin-noise-particles":13,"./sorting":14,"./spinning-shapes":15,"./utils":16}],9:[function(require,module,exports){
+},{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./game-of-live":6,"./game-of-live-isometric":5,"./gradient-descent":7,"./neural-network":9,"./particles-and-attractors":11,"./particles-vortex":12,"./particles-waves":13,"./perlin-noise-particles":14,"./sorting":15,"./spinning-shapes":16,"./spirograph":17,"./utils":18}],9:[function(require,module,exports){
 /*
  * Visualization of a simple, fully connected neural network, with random weights,
  * ReLU activations on intermediate layers, and sigmoid output at the last layer.
@@ -1296,7 +1298,7 @@ class NeuralNetwork extends Animation {
 
 module.exports = NeuralNetwork;
 
-},{"./animation":2,"./utils":16}],10:[function(require,module,exports){
+},{"./animation":2,"./utils":18}],10:[function(require,module,exports){
 /*
  * A speed-improved perlin and simplex noise algorithms for 2D.
  *
@@ -1624,7 +1626,7 @@ class ParticlesAndAttractors extends Animation {
     constructor (canvas, colors, colorsAlt,
                  numParticles= 10000,
                  numAttractors = 5,
-                 drawAttractors = true
+                 drawAttractors = false
     ) {
         super(canvas, colors, colorsAlt, "system of particles and attractors", "particles-and-attractors.js");
         this.particles = []
@@ -1682,7 +1684,7 @@ class ParticlesAndAttractors extends Animation {
 
 module.exports = ParticlesAndAttractors;
 
-},{"./animation":2,"./utils":16}],12:[function(require,module,exports){
+},{"./animation":2,"./utils":18}],12:[function(require,module,exports){
 /*
  * Particles vortex with randomized speed and direction.
  *
@@ -1746,7 +1748,82 @@ class ParticlesVortex extends Animation {
 
 module.exports = ParticlesVortex;
 
-},{"./animation":2,"./noise":10,"./utils":16}],13:[function(require,module,exports){
+},{"./animation":2,"./noise":10,"./utils":18}],13:[function(require,module,exports){
+/*
+ * "Particles waves" animation.
+ * The effect was achieved by modifying perlin-noise-particles.js.
+ *
+ * Coded with no external dependencies, using only canvas API.
+ */
+
+const Animation = require("./animation");
+const Noise = require("./noise");
+const Utils = require("./utils");
+
+class ParticlesStorm extends Animation {
+    constructor(canvas, colors, colorsAlt, particlePer100PixSq = 48, noiseScale = 0.001) {
+        super(canvas, colors, colorsAlt, "particles waves", "particles-waves.js");
+
+        this.particlePer100PixSq = particlePer100PixSq;
+        this.noiseScale = noiseScale;
+        this.noise = Noise.noise;
+        this.noise.seed(Utils.randomRange(0, 1));
+        this.particles = [];
+
+        this.width = 0;
+        this.height = 0;
+    }
+
+    update(elapsed) {
+        this.time += elapsed / 1000;
+        ++this.frame;
+
+        for(let p of this.particles){
+            const theta = this.noise.perlin3(p.x * this.noiseScale * 2,
+                p.y  *this.noiseScale * 3,
+                this.frame * this.noiseScale * 3) * 2 * Math.PI;
+            p.x += 2 * Math.tan(theta);
+            p.y += 2 * Math.sin(theta);
+
+            // Wrap particles
+            if (p.x < 0) p.x = this.width;
+            if (p.x > this.width ) p.x = 0;
+            if (p.y < 0 ) p.y = this.height;
+            if (p.y > this.height) p.y =  0;
+        }
+    }
+
+    draw() {
+        Utils.blendColor(this.ctx, this.bgColor, 0.02, "lighter");
+        for(let p of this.particles){
+            this.ctx.fillStyle = p.color;
+            this.ctx.fillRect(p.x, p.y, 1, 1);
+        }
+    }
+
+    resize() {
+        Utils.clear(this.ctx, this.bgColor);
+        this.width = this.ctx.canvas.width;
+        this.height = this.ctx.canvas.height;
+        const newParticles = this.width / 100 * this.height / 100 * this.particlePer100PixSq;
+
+        // Create new particles
+        this.particles = [];
+        for(let i = 0; i < newParticles; i++){
+            const particleX = Math.random() * this.width,
+                  particleY = Math.random() * this.height;
+            this.particles.push({
+                x: particleX,
+                y: particleY,
+                color: Utils.lerpColor(this.colorA, this.colorB, particleX / this.width)
+            });
+        }
+    }
+}
+
+module.exports = ParticlesStorm;
+
+},{"./animation":2,"./noise":10,"./utils":18}],14:[function(require,module,exports){
 /*
  * Particles moving through Perlin noise.
  *
@@ -1776,8 +1853,9 @@ class PerlinNoiseParticles extends Animation {
         this.imageData = null;
     }
 
-    update(timeElapsed) {
-        // TODO: Make it time dependent
+    update(elapsed) {
+        this.time += elapsed / 1000;
+        ++this.frame;
         for(let p of this.particles){
             const angle = this.noise.perlin2(p.x * this.noiseScale, p.y * this.noiseScale) * 2 * Math.PI / this.noiseScale;
             p.prevX = p.x;
@@ -1849,7 +1927,7 @@ class PerlinNoiseParticles extends Animation {
 
 module.exports = PerlinNoiseParticles;
 
-},{"./animation":2,"./noise":10,"./utils":16}],14:[function(require,module,exports){
+},{"./animation":2,"./noise":10,"./utils":18}],15:[function(require,module,exports){
 /*
  * Visualization of different sorting algorithms.
  *
@@ -2127,7 +2205,7 @@ class Sorting extends Animation {
 
 module.exports = Sorting;
 
-},{"./animation":2,"./utils":16}],15:[function(require,module,exports){
+},{"./animation":2,"./utils":18}],16:[function(require,module,exports){
 /*
  * Shapes moving in a circle.
  * Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
@@ -2183,12 +2261,82 @@ class SpinningShapes extends Animation {
 
 module.exports = SpinningShapes
 
-},{"./animation":2,"./utils":16}],16:[function(require,module,exports){
+},{"./animation":2,"./utils":18}],17:[function(require,module,exports){
+/*
+ * Spirograph created with 2-4 random gears.
+ * See: https://en.wikipedia.org/wiki/Spirograph,
+ * and: http://www.eddaardvark.co.uk/v2/spirograph/spirograph2.html (this site is amazing).
+ *
+ * Coded with no external dependencies, using only canvas API.
+ */
+
+const Animation = require("./animation");
+const Utils = require("./utils");
+
+class Spirograph extends Animation {
+    constructor (canvas, colors, colorsAlt, points = 2500) {
+        super(canvas, colors, colorsAlt, "spirograph", "spirograph.js");
+
+        this.points = points;
+        this.gears = []
+        const gearCount = Utils.randomInt(2, 5),
+              gearNames = ["one", "two", "three", "four", "five", "six"];
+        this.name = "spirograph with " + gearNames[gearCount] + " random gears"
+        for(let i = 0; i < gearCount; ++i){
+            this.gears.push({
+                r: Utils.randomRange(0, 100),
+                rate: Utils.randomRange(-100, 100),
+                phase: i * 0.005
+            });
+        }
+    }
+
+    get_x_y(i, j, scale = 1){
+        let x = 0, y = 0;
+
+        for(let g of this.gears){
+            x += g.r * scale * Math.cos(g.rate * (i + j * g.phase));
+            y += g.r * scale * Math.sin(g.rate * (i + j * g.phase));
+        }
+
+        return {x: x, y: y}
+    }
+
+    draw() {
+        Utils.clear(this.ctx, this.bgColor);
+
+        let r = 0;
+        for(let g of this.gears) r += g.r;
+        const scale = Math.min(this.ctx.canvas.width, this.ctx.canvas.height) / 2 / r;
+
+        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+
+        const incr = Math.PI * 2 / this.points;
+        let start = this.get_x_y(0, this.time, scale);
+
+        for (let i = incr; i <= Math.PI * 2; i += incr) {
+            let next = this.get_x_y(i, this.time, scale);
+            const color = Utils.lerpColor(this.colorA, this.colorB, i / (Math.PI * 2));
+            Utils.drawLine(this.ctx, start.x, start.y, next.x, next.y, color, 1);
+            start = next;
+        }
+
+        this.ctx.resetTransform();
+    }
+}
+
+module.exports = Spirograph
+
+},{"./animation":2,"./utils":18}],18:[function(require,module,exports){
 module.exports = {
 
     // Randomization helpers
     randomRange(min, max) {
         return Math.random() * (max - min) + min;
+    },
+
+    randomInt(min, max) {
+        return Math.floor(this.randomRange(min, max));
     },
 
     randomChoice(arr) {

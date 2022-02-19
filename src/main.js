@@ -14,10 +14,11 @@ const GradientDescent = require("./gradient-descent");
 const NeuralNetwork = require("./neural-network");
 const ParticlesAndAttractors = require("./particles-and-attractors");
 const ParticlesVortex = require("./particles-vortex");
+const ParticlesWaves = require("./particles-waves");
 const PerlinNoiseParticles = require("./perlin-noise-particles");
 const Sorting = require("./sorting");
 const SpinningShapes = require("./spinning-shapes");
-//const NoiseStorm = require("./noise-storm");
+const Spirograph = require("./spirograph")
 
 
 // Globals
@@ -97,12 +98,13 @@ let animations = [
     GameOfLifeIsometric,
     GradientDescent,
     NeuralNetwork,
-    ParticlesVortex,
     ParticlesAndAttractors,
+    ParticlesVortex,
+    ParticlesWaves,
     PerlinNoiseParticles,
     Sorting,
     SpinningShapes,
-    //NoiseStorm,
+    Spirograph
 ];
 
 Utils.randomShuffle(animations);

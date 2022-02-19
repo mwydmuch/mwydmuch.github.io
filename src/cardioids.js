@@ -1,6 +1,6 @@
 /*
  * Modified method of L. Cremona for drawing cardioid with a pencil of lines,
- * as described in section "Cardioid as envelope of a pencil of lines" of:
+ * as described in section "cardioid as envelope of a pencil of lines" of:
  * https://en.wikipedia.org/wiki/Cardioid
  * Here the shift of the second point is determined by time passed
  * from the beginning of the animation.
