@@ -1133,16 +1133,16 @@ if(backgroundShow && content) {
         if (backgroundShow.innerText == " show") {
             content.classList.remove("show-from-0");
             content.classList.add("fade-to-0");
-            canvas.classList.remove("faded-8");
-            canvas.classList.remove("fade-to-8");
+            canvas.classList.remove("faded-10");
+            canvas.classList.remove("fade-to-10");
             canvas.classList.add("hue-change");
-            canvas.classList.add("show-from-8");
+            canvas.classList.add("show-from-10");
             backgroundShow.innerHTML = "<i class=\"fas fa-eye-slash\"></i> hide";
         } else {
             content.classList.remove("fade-to-0");
             content.classList.add("show-from-0");
-            canvas.classList.remove("show-from-8");
-            canvas.classList.add("fade-to-8");
+            canvas.classList.remove("show-from-10");
+            canvas.classList.add("fade-to-10");
             canvas.classList.remove("hue-change");
             backgroundShow.innerHTML = "<i class=\"fas fa-eye\"></i> show";
         }

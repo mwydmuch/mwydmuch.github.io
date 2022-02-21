@@ -13,11 +13,17 @@
 @main: #43696B;
 @main-light: #43696B;
 @main-dark: #38575A;
+@main-gd1: @main-light;
+//@main-gradient: linear-gradient(135deg, #349BA9, #AEEABF);
+@main-gradient: linear-gradient(135deg, #38575A, #43696B);
 
 // Other colors
 @mlinpl-red: #E52C2C;
 @mlinpl-purple: #7F4FB2;
 @put-blue: #006991;
+
+@mlinpl-red-gradient: linear-gradient(135deg, #E52C2C, #F13F3F);
+
 
 // Others
 @font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -78,11 +84,13 @@ p {
 }
 
 .reverse{
-  background: @main;
+  //background: @main;
+  background-image: @main-gradient;
 }
 
 .reverse-red{
-  background: @mlinpl-red;
+  //background: @mlinpl-red;
+  background-image: @mlinpl-red-gradient
 }
 
 .reverse-purple{
@@ -144,8 +152,15 @@ ul{
 
     img {
       box-sizing: border-box;
+      // Old solid border
+      //border-radius: 100%;
+      //border: @global-border-width solid @main;
+
+      // New gradient border
       border-radius: 100%;
-      border: @global-border-width solid @main;
+      border: double @global-border-width transparent;
+      background-image: @main-gradient;
+      background-origin: border-box;
       height: 100%;
     }
   }
@@ -187,22 +202,23 @@ ul{
   }
 }
 
-@fade-show-values: 0, 8;
+@grayscale: 100%;
+@fade-show-values: 0, 10;
 each(@fade-show-values, {
 
   .keyframes(%("fade-to-%s-animation", @value), {
     from {opacity: 100%; filter: grayscale(0%);}
-    to {opacity: percentage(@value / 100); filter: grayscale(100%);}
+    to {opacity: percentage(@value / 100); filter: grayscale(@grayscale);}
   });
 
   .keyframes(%("show-from-%s-animation", @value), {
-    from {opacity: percentage(@value / 100); filter: grayscale(100%);}
+    from {opacity: percentage(@value / 100); filter: grayscale(@grayscale);}
     to {opacity: 100%; filter: grayscale(0%);}
   });
 
   .faded-@{value} {
     opacity: percentage(@value / 100);
-    filter: grayscale(100%);
+    filter: grayscale(@grayscale);
   }
 
   .fade-to-@{value} {
@@ -210,7 +226,7 @@ each(@fade-show-values, {
     animation-duration: 0.5s;
     animation-timing-function: ease;
     opacity: percentage(@value / 100);
-    filter: grayscale(100%);
+    filter: grayscale(@grayscale);
   }
 
   .show-from-@{value}{
@@ -251,7 +267,8 @@ each(@fade-show-values, {
     padding: 0 0.25rem;
     margin: 0 0.05rem;
     display: inline-block;
-    background: @main;
+    //background: @main;
+    background-image: @main-gradient;
 
     a, a:link, a:visited, a:hover, a:active {
       color: @background;
