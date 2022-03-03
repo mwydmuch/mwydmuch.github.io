@@ -1983,10 +1983,21 @@ class SortingAlgorithm {
     }
 
     swap(arr, a, b){
-        this.moves.push(["swap", arr[a], arr[b]]);
+        this.moves.push(["swap", [arr[a], arr[b]], [arr[b], arr[a]]]);
         let temp = arr[a];
         arr[a] = arr[b];
         arr[b] = temp;
+    }
+
+    rearrange(arr, a, b){
+        let elA = [],
+            elB = [];
+        for(let i = 0; i < a.length; ++i){
+            elA.push(this.arr[a[i]]);
+            elB.push(this.arr[b[i]]);
+        }
+        for(let i = 0; i < a.length; ++i) arr[a[i]] = elB[i];
+        this.moves.push(["swap", elB, elA]);
     }
 
     sort(){}
@@ -2043,36 +2054,41 @@ class InsertionSort extends SortingAlgorithm{
     }
 }
 
-// class MergeSort extends SortingAlgorithm{
-//     constructor(arr, comp) {
-//         super(arr, "Merge sort");
-//     }
-//
-//     sort(){
-//         this.mergeSort(0, this.arr.length - 1);
-//     }
-//
-//     mergeSort(l, r){
-//         if (l < r) {
-//             const m = Math.floor((l + r) / 2);
-//             this.mergeSort(l, m);
-//             this.mergeSort(m + 1, r);
-//             this.merge(l, m, r);
-//         }
-//     }
-//
-//     merge(s, m, e) {
-//         let l = s,
-//             r = m + 1;
-//         if (this.arr[m].val <= this.arr[r].val) return; // If already sorted
-//
-//         let tmpArr = [];
-//         while (l <= m && r <= e) {
-//             if(this.arr[l].val < this.arr[r].val) tmpArr.push(l++);
-//             else tmpArr.push(r++);
-//         }
-//     }
-// }
+class MergeSort extends SortingAlgorithm{
+    constructor(arr) {
+        super(arr, "merge sort");
+    }
+
+    sort(){
+        this.mergeSort(0, this.arr.length - 1);
+    }
+
+    mergeSort(l, r){
+        if (l < r) {
+            const m = Math.floor((l + r) / 2);
+            this.mergeSort(l, m);
+            this.mergeSort(m + 1, r);
+            this.merge(l, m, r);
+        }
+    }
+
+    merge(s, m, e) {
+        let l = s,
+            r = m + 1;
+        if (this.comp(this.arr, m, r) <= 0) return; // If already sorted
+
+        let newOrder = [],
+            oldOrder = [];
+        for(let i = l; i <= e; ++i) oldOrder.push(i);
+        while (l <= m && r <= e) {
+            if(this.comp(this.arr, l, r) < 0) newOrder.push(l++);
+            else newOrder.push(r++);
+        }
+        while (l <= m) newOrder.push(l++);
+        while (r <= e) newOrder.push(r++);
+        this.rearrange(this.arr, oldOrder, newOrder)
+    }
+}
 
 class QuickSort extends SortingAlgorithm{
     constructor(arr) {
@@ -2104,13 +2120,18 @@ class QuickSort extends SortingAlgorithm{
 
 
 class Sorting extends Animation {
-    constructor (canvas, colors, colorsAlt, elementPadding = 2, stepDuration = 0.5) {
+    constructor (canvas, colors, colorsAlt,
+                 elementPadding = 2,
+                 cmpDuration = 0.25,
+                 swapDuration = 0.5) {
         super(canvas, colors, colorsAlt, "Sorting algorithm visualization", "sorting.js");
         this.numElements = 50;
         this.elementPadding = elementPadding;
         this.elementWidth = 0;
         this.elementMaxHeight = 0;
-        this.stepDuration = stepDuration;
+        this.cmpDuration = cmpDuration;
+        this.swapDuration = swapDuration;
+
         this.animQueue = new AnimationQueue();
 
         // Randomize elements
@@ -2122,12 +2143,12 @@ class Sorting extends Animation {
         }
 
         // Sort
-        let sortAlgClass = Utils.randomChoice([BubbleSort, SelectionSort, InsertionSort, QuickSort]),
+        let sortAlgClass = Utils.randomChoice([BubbleSort, SelectionSort, InsertionSort, QuickSort, MergeSort]),
             sortAlg = new sortAlgClass(this.elements)
         this.moves = sortAlg.getMoves();
         this.name = sortAlg.getName() + " algorithm visualization";
 
-        console.log(this.elements);
+        //console.log(this.elements);
     }
 
     update(elapsed){
@@ -2140,43 +2161,45 @@ class Sorting extends Animation {
 
             let s = this.moves[0];
             const colorEasing = (x) => -(Math.cos(2 * Math.PI * x) - 1) / 2,
-                  posEasing = Utils.easeInOutSine,
-                  duration = this.stepDuration;
-
-
-            if(s[0] == "swap") {
-                let e1 = s[1], e2 = s[2];
-                const pos1 = e1.pos,
-                      pos2 = e2.pos,
-                      color1 = e1.color,
-                      color2 = e2.color,
-                      colorSel = this.colorsAlt[1],
-                      z = this.frame;
-
-
-                this.animQueue.push(function (time) {
-                    const prog = Math.min(time, duration) / duration;
-
-                    e1.z = z;
-                    e2.z = z;
-                    e1.color = Utils.lerpColor(color1, colorSel, colorEasing(prog));
-                    e2.color = Utils.lerpColor(color2, colorSel, colorEasing(prog));
-                    e1.pos = Utils.lerp(pos1, pos2, posEasing(prog));
-                    e2.pos = Utils.lerp(pos2, pos1, posEasing(prog));
-                    return time >= duration;
-                });
-            }
+                  posEasing = Utils.easeInOutSine;
 
             if(s[0] == "cmp") {
                 let e1 = s[1], e2 = s[2];
                 const color1 = e1.color,
                       color2 = e2.color,
-                      colorSel = this.colorsAlt[5];
+                      colorSel = this.colorsAlt[5],
+                      duration = this.cmpDuration;
 
                 this.animQueue.push(function (time) {
                     const prog = Math.min(time, duration) / duration;
                     e1.color = Utils.lerpColor(color1, colorSel, colorEasing(prog));
                     e2.color = Utils.lerpColor(color2, colorSel, colorEasing(prog));
+                    return time >= duration;
+                });
+            }
+
+            if(s[0] == "swap") {
+                let e1 = s[1], e2 = s[2];
+                let pos1 = [],
+                    pos2 = [],
+                    color = [];
+                const colorSel = this.colorsAlt[1],
+                      z = this.frame,
+                      duration = this.swapDuration;
+
+                for(let i = 0; i < e1.length; ++i){
+                    pos1.push(e1[i].pos);
+                    pos2.push(e2[i].pos);
+                    color.push(e1[i].color);
+                }
+
+                this.animQueue.push(function (time) {
+                    const prog = Math.min(time, duration) / duration;
+                    for(let i = 0; i < e1.length; ++i) {
+                        e1[i].z = z;
+                        e1[i].color = Utils.lerpColor(color[i], colorSel, colorEasing(prog));
+                        e1[i].pos = Utils.lerp(pos1[i], pos2[i], posEasing(prog));
+                    }
                     return time >= duration;
                 });
             }
