@@ -11,7 +11,7 @@ a:link,
 a:visited,
 a:hover,
 a:active {
-  color: #43696B;
+  color: #f6bd00;
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
@@ -67,7 +67,7 @@ p {
   color: #FFFFFF;
 }
 .reverse {
-  background-image: linear-gradient(135deg, #38575A, #43696B);
+  background-image: linear-gradient(135deg, #0058B5, #0070b5);
 }
 .reverse-red {
   background-image: linear-gradient(135deg, #E52C2C, #F13F3F);
@@ -121,7 +121,7 @@ ul {
   box-sizing: border-box;
   border-radius: 100%;
   border: double 4px transparent;
-  background-image: linear-gradient(135deg, #38575A, #43696B);
+  background-image: linear-gradient(135deg, #0058B5, #0070b5);
   background-origin: border-box;
   height: 100%;
 }
@@ -136,8 +136,8 @@ ul {
 }
 #me #profiles .profile-link {
   padding: 0.15rem 0.5rem;
-  border: 2px solid #43696B;
-  color: #43696B;
+  border: 2px solid #F6CE00;
+  color: #F6CE00;
   background: none;
   transition: all;
   transition-duration: 0.5s;
@@ -147,7 +147,7 @@ ul {
   margin: 0.15rem 0.25rem;
 }
 #me #profiles .profile-link:hover {
-  background: #43696B;
+  background: #F6CE00;
   color: #FFFFFF;
 }
 @keyframes "fade-to-0-animation" {
@@ -262,7 +262,7 @@ ul {
   padding: 0 0.25rem;
   margin: 0 0.05rem;
   display: inline-block;
-  background-image: linear-gradient(135deg, #38575A, #43696B);
+  background-image: linear-gradient(135deg, #0058B5, #0070b5);
 }
 #footer #background-controls a,
 #footer #background-controls a:link,

@@ -1001,13 +1001,22 @@ const colors = [ // Old color palette
 ]
  */
 
-const colors = [ // Green palette
-    "#349BA9",
-    "#41B8AD",
-    "#73D4AD",
-    "#AEEABF",
-    "#73D4AD",
-    "#41B8AD",
+// const colors = [ // Green palette
+//     "#349BA9",
+//     "#41B8AD",
+//     "#73D4AD",
+//     "#AEEABF",
+//     "#73D4AD",
+//     "#41B8AD",
+// ]
+
+const colors = [ // UA palette
+    "#0058B5",
+    "#0070b5",
+    "#0193c9",
+    "#03b2d9",
+    "#007fb5",
+    "#03609a",
 ]
 
 // const colorsAlt = [ // Alt palette
@@ -1025,7 +1034,8 @@ const colorsAlt = [ // Alt palette
     "#b6245c",
     "#e14f3b",
     "#ec8c4d",
-    "#a4f540",
+    "#fff202",
+    "#99f32b",
     "#106aa6",
     "#283b93",
 ];
@@ -2015,9 +2025,14 @@ class BubbleSort extends SortingAlgorithm{
     sort(){
         const n = this.arr.length;
         for (let i = 0; i < n; i++) {
+            let sorted = true;
             for (let j = 0; j < n - 1 - i; j++) {
-                if (this.comp(this.arr, j, j + 1) > 0) this.swap(this.arr, j, j + 1);
+                if (this.comp(this.arr, j, j + 1) > 0){
+                    this.swap(this.arr, j, j + 1);
+                    sorted = false;
+                }
             }
+            if(sorted) break;
         }
     }
 }
@@ -2118,14 +2133,20 @@ class QuickSort extends SortingAlgorithm{
     }
 }
 
+class HeapSort extends SortingAlgorithm{
+    constructor(arr) {
+        super(arr, "heap sort");
+    }
+}
+
 
 class Sorting extends Animation {
     constructor (canvas, colors, colorsAlt,
                  elementPadding = 2,
                  cmpDuration = 0.25,
-                 swapDuration = 0.5) {
+                 swapDuration = 0.25) {
         super(canvas, colors, colorsAlt, "Sorting algorithm visualization", "sorting.js");
-        this.numElements = 50;
+        this.numElements = 100;
         this.elementPadding = elementPadding;
         this.elementWidth = 0;
         this.elementMaxHeight = 0;
@@ -2160,14 +2181,14 @@ class Sorting extends Animation {
             if(!this.moves.length) return;
 
             let s = this.moves[0];
-            const colorEasing = (x) => -(Math.cos(2 * Math.PI * x) - 1) / 2,
+            const colorEasing = (x) => x < 0.5 ? Utils.easeInOutCubic( 2 * x) : 1 - Utils.easeInOutCubic( 2 * x - 1),
                   posEasing = Utils.easeInOutSine;
 
             if(s[0] == "cmp") {
                 let e1 = s[1], e2 = s[2];
                 const color1 = e1.color,
                       color2 = e2.color,
-                      colorSel = this.colorsAlt[5],
+                      colorSel = this.colorsAlt[3],
                       duration = this.cmpDuration;
 
                 this.animQueue.push(function (time) {
@@ -2185,7 +2206,7 @@ class Sorting extends Animation {
                     color = [];
                 const colorSel = this.colorsAlt[1],
                       z = this.frame,
-                      duration = this.swapDuration;
+                      duration = this.swapDuration * e1.length;
 
                 for(let i = 0; i < e1.length; ++i){
                     pos1.push(e1[i].pos);

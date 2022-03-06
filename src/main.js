@@ -45,13 +45,22 @@ const colors = [ // Old color palette
 ]
  */
 
-const colors = [ // Green palette
-    "#349BA9",
-    "#41B8AD",
-    "#73D4AD",
-    "#AEEABF",
-    "#73D4AD",
-    "#41B8AD",
+// const colors = [ // Green palette
+//     "#349BA9",
+//     "#41B8AD",
+//     "#73D4AD",
+//     "#AEEABF",
+//     "#73D4AD",
+//     "#41B8AD",
+// ]
+
+const colors = [ // UA palette
+    "#0058B5",
+    "#0070b5",
+    "#0193c9",
+    "#03b2d9",
+    "#007fb5",
+    "#03609a",
 ]
 
 // const colorsAlt = [ // Alt palette
@@ -69,7 +78,8 @@ const colorsAlt = [ // Alt palette
     "#b6245c",
     "#e14f3b",
     "#ec8c4d",
-    "#a4f540",
+    "#fff202",
+    "#99f32b",
     "#106aa6",
     "#283b93",
 ];
