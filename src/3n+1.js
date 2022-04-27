@@ -15,8 +15,8 @@ class ThreeNPlusOne extends Animation {
     ) {
         super(canvas, colors, colorsAlt, "3n + 1 (Collatz Conjecture) visualization", "3n+1.js");
         this.length = length;
-        this.evenAngle = evenAngle * Math.PI / 180;
-        this.oddAngle = oddAngle * Math.PI / 180;
+        this.evenAngle = evenAngle;
+        this.oddAngle = oddAngle;
         this.seqences = []
         this.drawNumbers = (Math.random() > 0.5);
     }
@@ -47,8 +47,8 @@ class ThreeNPlusOne extends Animation {
             this.ctx.beginPath();
             this.ctx.moveTo(x, y);
 
-            if(sequence[i] % 2) angle += this.oddAngle;
-            else angle += this.evenAngle;
+            if(sequence[i] % 2) angle += this.oddAngleRad;
+            else angle += this.evenAngleRad;
 
             if(this.drawNumbers){
                 const sin = Math.cos(angle),
@@ -68,6 +68,9 @@ class ThreeNPlusOne extends Animation {
     }
 
     draw() {
+        this.evenAngleRad = this.evenAngle * Math.PI / 180;
+        this.oddAngleRad = this.oddAngle * Math.PI / 180;
+
         while(this.frame < this.seqences.length){
             this.drawSequence(this.seqences[this.frame]);
             ++this.frame;
@@ -78,6 +81,35 @@ class ThreeNPlusOne extends Animation {
         this.frame = 0;
         this.ctx.fillStyle = this.bgColor;
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    }
+
+    getSettings() {
+        return [{
+            "prop": "length",
+            "type": "int",
+            "min": 1,
+            "max": 100,
+            "requires_resize": true,
+        },
+        {
+            "prop": "evenAngle",
+            "type": "int",
+            "min": -45,
+            "max": 45,
+            "requires_resize": true,
+        },
+        {
+            "prop": "oddAngle",
+            "type": "int",
+            "min": -45,
+            "max": 45,
+            "requires_resize": true,
+        },
+        {
+            "prop": "drawNumbers",
+            "type": "bool",
+            "requires_resize": true,
+        }];
     }
 }
 

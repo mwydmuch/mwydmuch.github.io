@@ -16,8 +16,8 @@ class ThreeNPlusOne extends Animation {
     ) {
         super(canvas, colors, colorsAlt, "3n + 1 (Collatz Conjecture) visualization", "3n+1.js");
         this.length = length;
-        this.evenAngle = evenAngle * Math.PI / 180;
-        this.oddAngle = oddAngle * Math.PI / 180;
+        this.evenAngle = evenAngle;
+        this.oddAngle = oddAngle;
         this.seqences = []
         this.drawNumbers = (Math.random() > 0.5);
     }
@@ -48,8 +48,8 @@ class ThreeNPlusOne extends Animation {
             this.ctx.beginPath();
             this.ctx.moveTo(x, y);
 
-            if(sequence[i] % 2) angle += this.oddAngle;
-            else angle += this.evenAngle;
+            if(sequence[i] % 2) angle += this.oddAngleRad;
+            else angle += this.evenAngleRad;
 
             if(this.drawNumbers){
                 const sin = Math.cos(angle),
@@ -69,6 +69,9 @@ class ThreeNPlusOne extends Animation {
     }
 
     draw() {
+        this.evenAngleRad = this.evenAngle * Math.PI / 180;
+        this.oddAngleRad = this.oddAngle * Math.PI / 180;
+
         while(this.frame < this.seqences.length){
             this.drawSequence(this.seqences[this.frame]);
             ++this.frame;
@@ -79,6 +82,35 @@ class ThreeNPlusOne extends Animation {
         this.frame = 0;
         this.ctx.fillStyle = this.bgColor;
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    }
+
+    getSettings() {
+        return [{
+            "prop": "length",
+            "type": "int",
+            "min": 1,
+            "max": 100,
+            "requires_resize": true,
+        },
+        {
+            "prop": "evenAngle",
+            "type": "int",
+            "min": -45,
+            "max": 45,
+            "requires_resize": true,
+        },
+        {
+            "prop": "oddAngle",
+            "type": "int",
+            "min": -45,
+            "max": 45,
+            "requires_resize": true,
+        },
+        {
+            "prop": "drawNumbers",
+            "type": "bool",
+            "requires_resize": true,
+        }];
     }
 }
 
@@ -114,6 +146,10 @@ class Animation {
 
     getCodeUrl(){
         return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/src/" + this.file;
+    }
+
+    getSettings() {
+        return []
     }
 
     update(elapsed){
@@ -418,8 +454,9 @@ const Animation = require("./animation");
 class GameOfLife extends Animation {
     constructor (canvas, colors, colorsAlt,
                  cellSize = 12,
-                 cellBasePadding= 1,
-                 spawnProb= 0.5) {
+                 cellBasePadding = 1,
+                 spawnProb= 0.5,
+                 cellShape = "none") {
         super(canvas, colors, colorsAlt, "Conway's game of life", "game-of-live.js");
         this.cellSize = cellSize;
         this.cellBasePadding = cellBasePadding;
@@ -479,7 +516,7 @@ class GameOfLife extends Animation {
                 for(let i = 0; i < 5; ++i){
                     if(cellVal > valCond) {
                         fillStyle = this.colors[i];
-                        cellPadding = i + 1;
+                        cellPadding = i + this.cellBasePadding;
                         break;
                     }
                     valCond *= 2;
@@ -490,6 +527,9 @@ class GameOfLife extends Animation {
                         y * this.cellSize + cellPadding,
                         this.cellSize - 2 * cellPadding,
                         this.cellSize - 2 * cellPadding);
+                    // this.ctx.beginPath();
+                    // this.ctx.arc(x * this.cellSize + cellPadding / 2, y * this.cellSize + cellPadding / 2, this.cellSize / 2 - cellPadding, 0, 2 * Math.PI, false);
+                    // this.ctx.fill();
                 }
             }
         }
@@ -1041,16 +1081,19 @@ const colorsAlt = [ // Alt palette
 ];
 
 
-// Get controls
+// Get elements controls
 // ---------------------------------------------------------------------------------------------------------------------
 
 const content = document.getElementById("content");
-const backgroundShow = document.getElementById("background-show");
-const backgroundName = document.getElementById("background-name");
-const backgroundNext = document.getElementById("background-next");
-const backgroundCode = document.getElementById("background-code");
-const backgroundReset = document.getElementById("background-reset");
-const backgroundStop = document.getElementById("background-stop");
+const elemBgShow = document.getElementById("background-show");
+const elemBgName = document.getElementById("background-name");
+const elemBgNext = document.getElementById("background-next");
+const elemBgCode = document.getElementById("background-code");
+const elemBgReset = document.getElementById("background-reset");
+const elemBgStop = document.getElementById("background-stop");
+const elemBgSettings = document.getElementById("background-settings");
+const elemBgSettingsControls = document.getElementById("background-settings-controls");
+const elemBgSettingsClose = document.getElementById("background-settings-close");
 
 
 // Create animation and init animation loop
@@ -1082,9 +1125,51 @@ function updateAnimation(animation) {
     let fps = animation.getFPS();
     framesInterval = 1000 / fps;
     then = Date.now();
-    backgroundName.innerHTML = animation.getName();
-    backgroundCode.href = animation.getCodeUrl();
+    elemBgName.innerHTML = animation.getName();
+    elemBgCode.href = animation.getCodeUrl();
     animation.resize();
+
+    if(elemBgSettingsControls) {
+        let settings = animation.getSettings();
+        let bgSetList = document.getElementById("background-settings-controls-list")
+        bgSetList.innerHTML = "";
+
+        if(settings.length == 0)
+            bgSetList.innerHTML = "No settings";
+
+        // Create settings controls
+        settings.forEach(function(setting, index) {
+            let prop = setting["prop"];
+            let value = animation[prop];
+            let elemId = prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls";
+            let name = prop.split(/(?=[A-Z])/).join(' ').toLowerCase();
+
+            let optionControls = '<div><span class="setting-name">' + name + ' = </span>'
+            if(setting['type'] === 'int') {
+                optionControls +=
+                    '<input type="range" class="setting-input" name="' + prop +
+                    '" id="' + elemId + '" value="' + value +
+                    '" min="' + setting["min"] + '" max="' + setting["max"] +
+                    '" onInput="this.nextElementSibling.value = this.value">' +
+                    '[<output class="setting-value">' + value + '</output>]';
+            }
+            optionControls += "</div>";
+            bgSetList.innerHTML += optionControls;
+        });
+
+        // Add events
+        settings.forEach(function(setting, index) {
+            let prop = setting["prop"];
+            let elemId = prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls";
+            let reqResize = setting["requires_resize"];
+            let elem = document.getElementById(elemId);
+            if(elem)
+                elem.addEventListener("click", function (e) {
+                    animation[prop] = e.target.value;
+                    if (reqResize) animation.resize();
+                });
+        });
+    }
 }
 
 updateAnimation(animation);
@@ -1132,35 +1217,40 @@ render();
 // ---------------------------------------------------------------------------------------------------------------------
 
 function play(){
-    backgroundStop.innerHTML = "<i class=\"fas fa-stop\"></i> stop";
+    elemBgStop.innerHTML = "<i class=\"fas fa-stop\"></i> stop";
     stopped = false;
     then = Date.now();
     render();
 }
 
-if(backgroundShow && content) {
-    backgroundShow.addEventListener("click", function () {
-        if (backgroundShow.innerText == " show") {
-            content.classList.remove("show-from-0");
-            content.classList.add("fade-to-0");
-            canvas.classList.remove("faded-10");
-            canvas.classList.remove("fade-to-10");
-            canvas.classList.add("hue-change");
-            canvas.classList.add("show-from-10");
-            backgroundShow.innerHTML = "<i class=\"fas fa-eye-slash\"></i> hide";
-        } else {
-            content.classList.remove("fade-to-0");
-            content.classList.add("show-from-0");
-            canvas.classList.remove("show-from-10");
-            canvas.classList.add("fade-to-10");
-            canvas.classList.remove("hue-change");
-            backgroundShow.innerHTML = "<i class=\"fas fa-eye\"></i> show";
-        }
+if(elemBgShow) {
+    function hideBackground(){
+        content.classList.remove("fade-out");
+        content.classList.add("fade-in");
+        canvas.classList.remove("show-from-10");
+        //canvas.classList.remove("hue-change");
+        canvas.classList.add("fade-to-10");
+        elemBgShow.innerHTML = "<i class=\"fas fa-eye\"></i> show";
+    }
+
+    function showBackground(){
+        content.classList.remove("fade-in");
+        content.classList.add("fade-out");
+        canvas.classList.remove("faded-10");
+        canvas.classList.remove("fade-to-10");
+        //canvas.classList.add("hue-change");
+        canvas.classList.add("show-from-10");
+        elemBgShow.innerHTML = "<i class=\"fas fa-eye-slash\"></i> hide";
+    }
+
+    elemBgShow.addEventListener("click", function () {
+        if (content.classList.contains("fade-out")) hideBackground();
+        else showBackground();
     });
 }
 
-if(backgroundNext) {
-    backgroundNext.addEventListener("click", function () {
+if(elemBgNext) {
+    elemBgNext.addEventListener("click", function () {
         animationId = (animationId + 1) % animations.length;
         animation = new animations[animationId](canvas, colors, colorsAlt);
         updateAnimation(animation);
@@ -1168,22 +1258,64 @@ if(backgroundNext) {
     });
 }
 
-if(backgroundReset) {
-    backgroundReset.addEventListener("click", function () {
+if(elemBgReset) {
+    elemBgReset.addEventListener("click", function () {
         animation = new animations[animationId](canvas, colors, colorsAlt);
         updateAnimation(animation);
         play();
     });
 }
 
-if(backgroundStop) {
-    backgroundStop.addEventListener("click", function () {
-        if (backgroundStop.innerText == " stop") {
+if(elemBgStop) {
+    elemBgStop.addEventListener("click", function () {
+        if (elemBgStop.innerText == " stop") {
             stopped = true;
-            backgroundStop.innerHTML = "<i class=\"fas fa-play\"></i> play";
+            elemBgStop.innerHTML = "<i class=\"fas fa-play\"></i> play";
         } else {
             play();
         }
+    });
+}
+
+if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
+    function closeSettings(){
+        elemBgSettingsControls.classList.remove("fade-in");
+        elemBgSettingsControls.classList.add("fade-out");
+        //elemBgSettings.innerHTML = "<i class=\"fas fa-cog\"></i> show settings";
+    }
+
+    function showSettings(){
+        elemBgSettingsControls.classList.remove("fade-out");
+        elemBgSettingsControls.classList.add("fade-in");
+        elemBgSettingsControls.style.display = "block";
+        //elemBgSettings.innerHTML = "<i class=\"fas fa-cog\"></i> close settings";
+    }
+
+    // Show/hide the background settings window
+    elemBgSettings.addEventListener("click", function () {
+        if (elemBgSettingsControls.classList.contains("fade-in")) closeSettings();
+        else showSettings();
+    });
+
+    elemBgSettingsClose.addEventListener("click", function () {
+        closeSettings();
+    });
+
+    // Events for dragging the background settings windows
+    elemBgSettingsControls.addEventListener('mousedown', function (e) {
+        if(e.target !== e.currentTarget) return;
+        e.target.classList.add('moving');
+    });
+
+    addEventListener('mousemove', function (e) {
+        if(elemBgSettingsControls.classList.contains('moving')){
+            elemBgSettingsControls.style.left = e.clientX + 'px';
+            elemBgSettingsControls.style.top = e.clientY  + 'px';
+        }
+    });
+
+    addEventListener('mouseup', function (e) {
+        elemBgSettingsControls.classList.remove('moving');
     });
 }
 

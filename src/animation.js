@@ -29,6 +29,10 @@ class Animation {
         return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/src/" + this.file;
     }
 
+    getSettings() {
+        return []
+    }
+
     update(elapsed){
         this.time += elapsed / 1000;
         ++this.frame;

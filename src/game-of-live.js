@@ -11,8 +11,9 @@ const Animation = require("./animation");
 class GameOfLife extends Animation {
     constructor (canvas, colors, colorsAlt,
                  cellSize = 12,
-                 cellBasePadding= 1,
-                 spawnProb= 0.5) {
+                 cellBasePadding = 1,
+                 spawnProb= 0.5,
+                 cellShape = "none") {
         super(canvas, colors, colorsAlt, "Conway's game of life", "game-of-live.js");
         this.cellSize = cellSize;
         this.cellBasePadding = cellBasePadding;
@@ -72,7 +73,7 @@ class GameOfLife extends Animation {
                 for(let i = 0; i < 5; ++i){
                     if(cellVal > valCond) {
                         fillStyle = this.colors[i];
-                        cellPadding = i + 1;
+                        cellPadding = i + this.cellBasePadding;
                         break;
                     }
                     valCond *= 2;
@@ -83,6 +84,9 @@ class GameOfLife extends Animation {
                         y * this.cellSize + cellPadding,
                         this.cellSize - 2 * cellPadding,
                         this.cellSize - 2 * cellPadding);
+                    // this.ctx.beginPath();
+                    // this.ctx.arc(x * this.cellSize + cellPadding / 2, y * this.cellSize + cellPadding / 2, this.cellSize / 2 - cellPadding, 0, 2 * Math.PI, false);
+                    // this.ctx.fill();
                 }
             }
         }

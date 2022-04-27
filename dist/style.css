@@ -150,6 +150,44 @@ ul {
   background: #F6CE00;
   color: #FFFFFF;
 }
+@keyframes fade-out-animation {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+  99% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@keyframes fade-in-animation {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  99% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+.fade-out {
+  animation: fade-out-animation;
+  animation-duration: 0.5s;
+  animation-timing-function: ease;
+  visibility: hidden;
+}
+.fade-in {
+  animation: fade-in-animation;
+  animation-duration: 0.5s;
+  animation-timing-function: ease;
+  visibility: visible;
+}
 @keyframes "fade-to-0-animation" {
   from {
     opacity: 100%;
@@ -231,13 +269,13 @@ ul {
     filter: hue-rotate(0deg);
   }
   25% {
-    filter: hue-rotate(30deg);
+    filter: hue-rotate(20deg);
   }
   50% {
     filter: hue-rotate(0deg);
   }
   75% {
-    filter: hue-rotate(-30deg);
+    filter: hue-rotate(-20deg);
   }
   100% {
     filter: hue-rotate(0deg);
@@ -257,17 +295,58 @@ ul {
   margin: 1.6rem 0;
   font-size: 0.7rem;
 }
-#footer #background-controls {
+#footer #background-controls,
+#footer #background-settings-controls {
   color: #FFFFFF;
   padding: 0 0.25rem;
-  margin: 0 0.05rem;
+  margin: 0 0.1rem;
   display: inline-block;
   background-image: linear-gradient(135deg, #0058B5, #0070b5);
 }
 #footer #background-controls a,
+#footer #background-settings-controls a,
 #footer #background-controls a:link,
+#footer #background-settings-controls a:link,
 #footer #background-controls a:visited,
+#footer #background-settings-controls a:visited,
 #footer #background-controls a:hover,
-#footer #background-controls a:active {
+#footer #background-settings-controls a:hover,
+#footer #background-controls a:active,
+#footer #background-settings-controls a:active {
   color: #FFFFFF;
+}
+#footer #background-settings-controls {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  display: none;
+  z-index: 1000;
+  padding: 0.25rem;
+  cursor: move;
+}
+#footer #background-settings-controls #background-settings-controls-list {
+  cursor: default;
+  text-align: left;
+  border-top: 1px solid #FFFFFF;
+  margin-top: 0.1rem;
+}
+#footer #background-settings-controls #background-settings-controls-list .setting-name {
+  width: 6rem;
+  display: inline-block;
+}
+#footer #background-settings-controls #background-settings-controls-list .setting-input {
+  width: 5rem;
+  height: 0.5rem;
+  margin: 0 0.25rem;
+  display: inline-block;
+}
+#footer #background-settings-controls #background-settings-controls-list .setting-value {
+  text-align: center;
+  width: 1.1rem;
+  display: inline-block;
+}
+#footer #background-settings-controls #background-settings-close {
+  float: right;
+  cursor: pointer;
+  margin-left: 0.5rem;
 }
