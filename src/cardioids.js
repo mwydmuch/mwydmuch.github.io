@@ -12,11 +12,17 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class Cardioids extends Animation {
-    constructor (canvas, colors, colorsAlt) {
+    constructor (canvas, colors, colorsAlt,
+                 lines = 400,
+                 scale = 1.0,
+                 speed = 0.05) {
         super(canvas, colors, colorsAlt, "cardioids with a pencil of lines", "cardioids.js");
 
-        this.lines = 400;
+        this.lines = lines;
+        this.scale = scale;
+        this.speed = speed;
         this.radius = 0;
+        this.position = 0;
     }
 
     getVec(i){
@@ -24,22 +30,47 @@ class Cardioids extends Animation {
         return Utils.rotateVec2d(Utils.createVec2d(this.radius, 0), Math.PI + angle);
     }
 
+    update(elapsed){
+        this.time += elapsed / 1000;
+        ++this.frame;
+        this.position += elapsed / 1000 * this.speed;
+    }
+
     draw() {
         Utils.clear(this.ctx, this.bgColor);
 
-        this.radius = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3;
+        this.radius = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3 * this.scale;
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
         Utils.strokeCircle(this.ctx, 0, 0, this.radius, this.colors[0]);
 
         for (let i = 0; i <= this.lines; ++i) {
             const a = this.getVec(i),
-                  b = this.getVec(i * this.time * 0.05),
+                  b = this.getVec(i * this.position),
                   color = Utils.lerpColorsPallet([this.colorA, this.colorB, this.colorA], i / this.lines);
             //    color = 'hsl(' + i / this.lines * 360 + ', 100%, 75%)';
             Utils.drawLine(this.ctx, a.x, a.y, b.x, b.y, color, 1);
         }
 
         this.ctx.resetTransform();
+    }
+
+    getSettings() {
+        return [{
+            "prop": "lines",
+            "type": "int",
+            "min": 1,
+            "max": 2500,
+        }, {
+            "prop": "speed",
+            "type": "float",
+            "min": -1.0,
+            "max": 1.0,
+        }, {
+            "prop": "scale",
+            "type": "float",
+            "min": 0.25,
+            "max": 1.75,
+        }];
     }
 }
 

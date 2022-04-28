@@ -8,17 +8,18 @@
 const Animation = require("./animation");
 
 class ThreeNPlusOne extends Animation {
-    constructor (canvas, colors, colorsAlt,
-                 length = 30,
-                 evenAngle = 8,
-                 oddAngle = -20
+    constructor(canvas, colors, colorsAlt,
+                length = 30,
+                evenAngle = 8,
+                oddAngle = -20,
+                drawNumbers = false
     ) {
         super(canvas, colors, colorsAlt, "3n + 1 (Collatz Conjecture) visualization", "3n+1.js");
         this.length = length;
         this.evenAngle = evenAngle;
         this.oddAngle = oddAngle;
-        this.seqences = []
-        this.drawNumbers = (Math.random() > 0.5);
+        this.seqences = [];
+        this.drawNumbers = drawNumbers;
     }
 
     update(elapsed){

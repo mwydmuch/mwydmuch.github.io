@@ -149,13 +149,37 @@ function updateAnimation(animation) {
             let name = prop.split(/(?=[A-Z])/).join(' ').toLowerCase();
 
             let optionControls = '<div><span class="setting-name">' + name + ' = </span>'
-            if(setting['type'] === 'int') {
+
+            if(["int", "float", "bool"].includes(setting['type'])) {
+                let inputType = "range";
+                let valueProp = "value";
+                if(setting['type'] === "bool"){
+                    inputType = "checkbox";
+                    valueProp = "checked";
+                }
+
+                optionControls += `<input type="${inputType}" class="setting-input"` +
+                    ` name="${prop}" id="${elemId}" value="${value}"`;
+
+                if(setting['type'] === "float"){
+                    if("step" in setting) optionControls += ` step="${setting["step"]}"`;
+                    else optionControls += ' step="0.01"';
+                }
+
+                if(["int", "float"].includes(setting['type']))
+                    optionControls += ` min="${setting["min"]}" max="${setting["max"]}"`;
+
+                optionControls += ` onInput="this.nextElementSibling.value = this.${valueProp}">` +
+                    `[<output class="setting-value">${value}</output>]`;
+            }
+            if(setting['type'] === 'select') {
                 optionControls +=
-                    '<input type="range" class="setting-input" name="' + prop +
-                    '" id="' + elemId + '" value="' + value +
-                    '" min="' + setting["min"] + '" max="' + setting["max"] +
-                    '" onInput="this.nextElementSibling.value = this.value">' +
-                    '[<output class="setting-value">' + value + '</output>]';
+                    '<select class="setting-select" name="' + prop +
+                    '" id="' + elemId + '" value="' + value + '">';
+                for(let v of setting['values']) { // TODO add selected
+                    optionControls += '<option value="' + v + '">' + v + '</option>';
+                }
+                //optionControls += '</select>[<output class="setting-value">' + value + '</output>]';
             }
             optionControls += "</div>";
             bgSetList.innerHTML += optionControls;
@@ -169,7 +193,9 @@ function updateAnimation(animation) {
             let elem = document.getElementById(elemId);
             if(elem)
                 elem.addEventListener("click", function (e) {
-                    animation[prop] = e.target.value;
+                    console.log(e.target, prop, e.target.value, e.target.checked);
+                    if(e.target.type === "checkbox") animation[prop] = e.target.checked;
+                    else animation[prop] = e.target.value;
                     if (reqResize) animation.resize();
                 });
         });
