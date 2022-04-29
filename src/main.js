@@ -335,12 +335,14 @@ if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
     elemBgSettingsControls.addEventListener('mousedown', function (e) {
         if(e.target !== e.currentTarget) return;
         e.target.classList.add('moving');
+        e.target.clickAnchorX = e.clientX - parseInt(e.target.style.left);
+        e.target.clickAnchorY = e.clientY - parseInt(e.target.style.top);
     });
 
     addEventListener('mousemove', function (e) {
         if(elemBgSettingsControls.classList.contains('moving')){
-            elemBgSettingsControls.style.left = e.clientX + 'px';
-            elemBgSettingsControls.style.top = e.clientY  + 'px';
+            elemBgSettingsControls.style.left = e.clientX - elemBgSettingsControls.clickAnchorX + 'px';
+            elemBgSettingsControls.style.top = e.clientY - elemBgSettingsControls.clickAnchorY  + 'px';
         }
     });
 
