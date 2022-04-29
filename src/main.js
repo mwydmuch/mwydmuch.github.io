@@ -139,7 +139,7 @@ function updateAnimation(animation) {
         bgSetList.innerHTML = "";
 
         if(settings.length == 0)
-            bgSetList.innerHTML = "No settings";
+            bgSetList.innerHTML = "There are no settings for this animation";
 
         // Create settings controls
         settings.forEach(function(setting, index) {
@@ -152,34 +152,28 @@ function updateAnimation(animation) {
 
             if(["int", "float", "bool"].includes(setting['type'])) {
                 let inputType = "range";
-                let valueProp = "value";
-                if(setting['type'] === "bool"){
-                    inputType = "checkbox";
-                    valueProp = "checked";
-                }
+                if(setting['type'] === "bool") inputType = "checkbox";
 
                 optionControls += `<input type="${inputType}" class="setting-input"` +
                     ` name="${prop}" id="${elemId}" value="${value}"`;
 
-                if(setting['type'] === "float"){
+                if(["int", "float"].includes(setting['type'])) {
                     if("step" in setting) optionControls += ` step="${setting["step"]}"`;
-                    else optionControls += ' step="0.01"';
+                    else if(setting['type'] === "float") optionControls += ' step="0.01"';
+                    else optionControls += ' step="1"';
+                    optionControls += ` min="${setting["min"]}" max="${setting["max"]}"`;
                 }
 
-                if(["int", "float"].includes(setting['type']))
-                    optionControls += ` min="${setting["min"]}" max="${setting["max"]}"`;
-
-                optionControls += ` onInput="this.nextElementSibling.value = this.${valueProp}">` +
-                    `[<output class="setting-value">${value}</output>]`;
+                if(setting['type'] === "bool" && value) optionControls += ' checked';
+                optionControls += `>[<output class="setting-value">${value}</output>]`;
             }
             if(setting['type'] === 'select') {
-                optionControls +=
-                    '<select class="setting-select" name="' + prop +
-                    '" id="' + elemId + '" value="' + value + '">';
-                for(let v of setting['values']) { // TODO add selected
-                    optionControls += '<option value="' + v + '">' + v + '</option>';
+                optionControls += `<select class="setting-select" name="${prop}" id="${elemId}" value="${value}"`;
+                for(let v of setting['values']) {
+                    if(v === value) optionControls += `<option selected value="${v}">${v}</option>`;
+                    else optionControls += `<option value="${v}">${v}</option>`;
                 }
-                //optionControls += '</select>[<output class="setting-value">' + value + '</output>]';
+                optionControls += "</select>";
             }
             optionControls += "</div>";
             bgSetList.innerHTML += optionControls;
@@ -192,10 +186,16 @@ function updateAnimation(animation) {
             let reqResize = setting["requires_resize"];
             let elem = document.getElementById(elemId);
             if(elem)
-                elem.addEventListener("click", function (e) {
-                    console.log(e.target, prop, e.target.value, e.target.checked);
-                    if(e.target.type === "checkbox") animation[prop] = e.target.checked;
-                    else animation[prop] = e.target.value;
+                elem.addEventListener("input", function (e) {
+                    console.log(e.target, e.target.value, e.target.checked);
+                    if(e.target.type === "checkbox"){
+                        if(e.target.nextElementSibling) e.target.nextElementSibling.value = e.target.checked;
+                        animation[prop] = e.target.checked;
+                    }
+                    else{
+                        if(e.target.nextElementSibling)  e.target.nextElementSibling.value = e.target.value;
+                        animation[prop] = e.target.value;
+                    }
                     if (reqResize) animation.resize();
                 });
         });
