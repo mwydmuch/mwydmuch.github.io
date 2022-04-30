@@ -9,13 +9,17 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class SpinningShapes extends Animation {
-    constructor (canvas, colors, colorsAlt, shapes = 500, sides = [0], rotatePolygons = false) {
+    constructor (canvas, colors, colorsAlt, 
+                 shapes = 500, 
+                 sides = [0], 
+                 rotateShapes = false,
+                 scale = 1) {
         super(canvas, colors, colorsAlt, "", "spinning-shapes.js");
 
         const shapeSides = [0, 3, 4, 5, 6, 8];
         const shapeNames = ["circles", "triangles", "rectangles", "pentagons", "hexagons", "octagons"];
         this.sides = Utils.randomChoice(sides);
-        this.rotatePolygons = rotatePolygons;
+        this.rotateShapes = rotateShapes;
         this.shapes = shapes;
         this.name = shapeNames[shapeSides.indexOf(this.sides)] + " moving in a circle";
 
@@ -23,12 +27,14 @@ class SpinningShapes extends Animation {
         this.distVar = 0.2;
         this.sizeBase = 0.2;
         this.sizeVar = 0.12;
+
+        this.scale = scale;
     }
 
     draw() {
         Utils.clear(this.ctx, "#FFFFFF");
 
-        const scale = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3;
+        const scale = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3 * this.scale;
 
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
 
@@ -43,11 +49,34 @@ class SpinningShapes extends Animation {
 
             this.ctx.beginPath();
             if(this.sides == 0) Utils.pathCircle(this.ctx, x, y, radius);
-            else Utils.pathPolygon(this.ctx, x, y, radius, this.sides, theta * this.rotatePolygons);
+            else Utils.pathPolygon(this.ctx, x, y, radius, this.sides, theta * this.rotateShapes);
             this.ctx.stroke();
         }
 
         this.ctx.resetTransform();
+    }
+
+    getSettings() {
+        return [{
+            "prop": "sides",
+            "type": "int",
+            "min": 0,
+            "max": 8,
+        }, {
+            "prop": "shapes",
+            "type": "int",
+            "min": 0,
+            "max": 2500,
+        }, {
+            "prop": "rotateShapes",
+            "type": "bool",
+        }, {
+            "prop": "scale",
+            "type": "float",
+            "min": 0.05,
+            "max": 1.95,
+            "toCall": "resize",
+        }];
     }
 }
 

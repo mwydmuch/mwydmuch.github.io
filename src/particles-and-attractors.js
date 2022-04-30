@@ -13,38 +13,63 @@ const Utils = require("./utils");
 class ParticlesAndAttractors extends Animation {
     constructor (canvas, colors, colorsAlt,
                  numParticles= 10000,
+                 particlesSpeed = "random",
+                 fadingSpeed = 0.03,
                  numAttractors = 5,
-                 drawAttractors = false
+                 attractorsSystem = "random",
+                 attractorsSpeed = "random",
+                 drawAttractors = false,
+                 scale = 1
     ) {
         super(canvas, colors, colorsAlt, "system of particles and attractors", "particles-and-attractors.js");
         this.particles = []
-        this.particlesSpeed = Utils.randomRange(5, 15);
+        this.numParticles = numParticles;
+        this.particlesSpeed = this.assignAndCheckIfRandom(particlesSpeed, Utils.round(Utils.randomRange(5, 15)));
+        this.fadingSpeed = fadingSpeed;
 
         this.drawAttractors = drawAttractors;
         this.numAttractors = numAttractors;
-        this.attractorsSystem = Utils.randomChoice(["circles", "eights"]);
-        this.attractorsSpeed = Utils.randomRange(0.05, 0.1) * Utils.randomChoice([-1, 1]);
-        this.timeBase = Utils.randomRange(0, 10);
 
-        for (let i = 0; i < numParticles; ++i)
+        this.attractorsSystems = ["orbits", "eights"]
+        this.attractorsSystem = this.assignAndCheckIfRandom(attractorsSystem, Utils.randomChoice(this.attractorsSystems));
+        this.attractorsSpeed = this.assignAndCheckIfRandom(attractorsSpeed, Utils.round(Utils.randomRange(0.05, 0.1) * Utils.randomChoice([-1, 1])));
+        this.attractorsPosition = 0;
+        this.startingPosition = Utils.randomRange(0, 10);
+
+        this.scale = scale;
+
+        this.reset();
+    }
+
+    reset(){
+        this.particles = []
+        for (let i = 0; i < this.numParticles; ++i)
             this.particles.push(Utils.rotateVec2d(Utils.createVec2d(Utils.randomRange(1, 100), 0), i));
     }
 
-    draw() {
-        Utils.blendColor(this.ctx, this.bgColor, 0.03, "lighter");
-        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+    update(elapsed){
+        this.time += elapsed / 1000;
+        ++this.frame;
+        this.attractorsPosition += elapsed / 1000 * this.attractorsSpeed;
+    }
 
-        const t = (this.timeBase + this.time) * this.attractorsSpeed;
+    draw() {
+        this.fadeOut(this.fadingSpeed);
+
+        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        this.ctx.scale(this.scale, this.scale);
+
+        const p = this.startingPosition + this.attractorsPosition;
 
         let attractors = [];
-        if(this.attractorsSystem == "circles") {
+        if(this.attractorsSystem === "orbits") {
             const s = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / (2 * (this.numAttractors - 1));
             for (let i = 0; i < this.numAttractors; ++i)
-                attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * s, 0), t * i));
-        } else if (this.attractorsSystem == "eights") {
+                attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * s, 0), p * i));
+        } else if (this.attractorsSystem === "eights") {
             const s = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / this.numAttractors;
             for (let i = 0; i < this.numAttractors; ++i)
-                attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * Math.sin(t * Math.PI / 2) * s, 0), t * i));
+                attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * Math.sin(p * Math.PI / 2) * s, 0), p * i));
         }
 
         for (let p of this.particles) {
@@ -67,6 +92,49 @@ class ParticlesAndAttractors extends Animation {
 
     resize() {
         Utils.clear(this.ctx, "#FFFFFF");
+    }
+
+    getSettings() {
+        return [{
+            "prop": "numParticles",
+            "type": "int",
+            "min": 1000,
+            "max": 15000,
+            "toCall": "reset",
+        }, {
+            "prop": "particlesSpeed",
+            "type": "float",
+            "min": 1,
+            "max": 20,
+        }, {
+            "prop": "fadingSpeed",
+            "type": "float",
+            "step": 0.001,
+            "min": 0,
+            "max": 0.1,
+        }, {
+            "prop": "attractorsSystem",
+            "type": "select",
+            "values": this.attractorsSystems
+        }, {
+            "prop": "numAttractors",
+            "type": "int",
+            "min": 3,
+            "max": 7,
+        }, {
+            "prop": "attractorsSpeed",
+            "type": "float",
+            "min": -0.2,
+            "max": 0.2,
+        }, {
+            "prop": "drawAttractors",
+            "type": "bool",
+        }, {
+            "prop": "scale",
+            "type": "float",
+            "min": 0.05,
+            "max": 1.95,
+        }];
     }
 }
 

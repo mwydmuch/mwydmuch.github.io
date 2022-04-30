@@ -31,6 +31,11 @@ module.exports = {
     },
 
     // Array/math helpers
+    round(value, decimalPlace = 2){
+        const shift = Math.pow(10, decimalPlace);
+        return Math.round( value * shift) / shift;
+    },
+
     addArrays(a, b){
         return a.map((e, i) => e + b[i]);
     },

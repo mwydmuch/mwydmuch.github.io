@@ -15,12 +15,15 @@ class Cardioids extends Animation {
     constructor (canvas, colors, colorsAlt,
                  lines = 400,
                  scale = 1.0,
-                 speed = 0.05) {
+                 speed = 0.05,
+                 rainbowColors = false) {
         super(canvas, colors, colorsAlt, "cardioids with a pencil of lines", "cardioids.js");
 
         this.lines = lines;
         this.scale = scale;
         this.speed = speed;
+        this.rainbowColors = rainbowColors;
+
         this.radius = 0;
         this.position = 0;
     }
@@ -45,9 +48,10 @@ class Cardioids extends Animation {
 
         for (let i = 0; i <= this.lines; ++i) {
             const a = this.getVec(i),
-                  b = this.getVec(i * this.position),
-                  color = Utils.lerpColorsPallet([this.colorA, this.colorB, this.colorA], i / this.lines);
-            //    color = 'hsl(' + i / this.lines * 360 + ', 100%, 75%)';
+                  b = this.getVec(i * this.position);
+            let color;
+            if(this.rainbowColors) color = 'hsl(' + i / this.lines * 360 + ', 100%, 75%)';
+            else color = Utils.lerpColorsPallet([this.colorA, this.colorB, this.colorA], i / this.lines);
             Utils.drawLine(this.ctx, a.x, a.y, b.x, b.y, color, 1);
         }
 
@@ -70,6 +74,9 @@ class Cardioids extends Animation {
             "type": "float",
             "min": 0.25,
             "max": 1.75,
+        }, {
+            "prop": "rainbowColors",
+            "type": "bool",
         }];
     }
 }

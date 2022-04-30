@@ -143,10 +143,10 @@ function updateAnimation(animation) {
 
         // Create settings controls
         settings.forEach(function(setting, index) {
-            let prop = setting["prop"];
-            let value = animation[prop];
-            let elemId = prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls";
-            let name = prop.split(/(?=[A-Z])/).join(' ').toLowerCase();
+            const prop = setting["prop"],
+                  value = animation[prop],
+                  elemId = prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls",
+                  name = prop.split(/(?=[A-Z])/).join(' ').toLowerCase();
 
             let optionControls = '<div><span class="setting-name">' + name + ' = </span>'
 
@@ -168,7 +168,7 @@ function updateAnimation(animation) {
                 optionControls += `>[<output class="setting-value">${value}</output>]`;
             }
             if(setting['type'] === 'select') {
-                optionControls += `<select class="setting-select" name="${prop}" id="${elemId}" value="${value}"`;
+                optionControls += `<select class="setting-select" name="${prop}" id="${elemId}">`;
                 for(let v of setting['values']) {
                     if(v === value) optionControls += `<option selected value="${v}">${v}</option>`;
                     else optionControls += `<option value="${v}">${v}</option>`;
@@ -181,9 +181,9 @@ function updateAnimation(animation) {
 
         // Add events
         settings.forEach(function(setting, index) {
-            let prop = setting["prop"];
-            let elemId = prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls";
-            let reqResize = setting["requires_resize"];
+            const prop = setting["prop"],
+                  elemId = prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls",
+                  toCall = setting["toCall"];
             let elem = document.getElementById(elemId);
             if(elem)
                 elem.addEventListener("input", function (e) {
@@ -196,7 +196,8 @@ function updateAnimation(animation) {
                         if(e.target.nextElementSibling)  e.target.nextElementSibling.value = e.target.value;
                         animation[prop] = e.target.value;
                     }
-                    if (reqResize) animation.resize();
+                    if (toCall) animation[toCall]();
+                    play();
                 });
         });
     }
@@ -253,6 +254,11 @@ function play(){
     render();
 }
 
+function stop(){
+    elemBgStop.innerHTML = "<i class=\"fas fa-play\"></i> play";
+    stopped = true;
+}
+
 if(elemBgShow) {
     function hideBackground(){
         content.classList.remove("fade-out");
@@ -298,12 +304,8 @@ if(elemBgReset) {
 
 if(elemBgStop) {
     elemBgStop.addEventListener("click", function () {
-        if (elemBgStop.innerText == " stop") {
-            stopped = true;
-            elemBgStop.innerHTML = "<i class=\"fas fa-play\"></i> play";
-        } else {
-            play();
-        }
+        if (stopped === false) stop()
+        else play();
     });
 }
 
@@ -311,17 +313,15 @@ if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
     function closeSettings(){
         elemBgSettingsControls.classList.remove("fade-in");
         elemBgSettingsControls.classList.add("fade-out");
-        //elemBgSettings.innerHTML = "<i class=\"fas fa-cog\"></i> show settings";
     }
 
     function showSettings(){
         elemBgSettingsControls.classList.remove("fade-out");
         elemBgSettingsControls.classList.add("fade-in");
         elemBgSettingsControls.style.display = "block";
-        //elemBgSettings.innerHTML = "<i class=\"fas fa-cog\"></i> close settings";
     }
 
-    // Show/hide the background settings window
+    // Show/hide the background settings panel
     elemBgSettings.addEventListener("click", function () {
         if (elemBgSettingsControls.classList.contains("fade-in")) closeSettings();
         else showSettings();
@@ -331,7 +331,7 @@ if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
         closeSettings();
     });
 
-    // Events for dragging the background settings windows
+    // Events for dragging the background settings panel
     elemBgSettingsControls.addEventListener('mousedown', function (e) {
         if(e.target !== e.currentTarget) return;
         e.target.classList.add('moving');

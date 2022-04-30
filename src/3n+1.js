@@ -12,20 +12,23 @@ class ThreeNPlusOne extends Animation {
                 length = 30,
                 evenAngle = 8,
                 oddAngle = -20,
-                drawNumbers = false
+                drawNumbers = false,
+                scale = 1
     ) {
         super(canvas, colors, colorsAlt, "3n + 1 (Collatz Conjecture) visualization", "3n+1.js");
         this.length = length;
         this.evenAngle = evenAngle;
         this.oddAngle = oddAngle;
-        this.seqences = [];
+        this.scale = scale;
         this.drawNumbers = drawNumbers;
+
+        this.seqences = [];
     }
 
     update(elapsed){
         let n = this.seqences.length + 1;
         let sequence = [n];
-        while(n != 1){
+        while(n !== 1){
             if(n % 2) n = 3 * n + 1;
             else n /= 2;
             sequence.push(n);
@@ -34,8 +37,11 @@ class ThreeNPlusOne extends Animation {
     }
 
     drawSequence(sequence) {
-        let x = this.ctx.canvas.width / 2,
-            y = this.ctx.canvas.height,
+        // let x = this.ctx.canvas.width / 2,
+        //     y = this.ctx.canvas.height,
+        //     angle = 270 * Math.PI / 180;
+        let x = 0,
+            y = 0,
             angle = 270 * Math.PI / 180;
         const color = this.colors[this.frame % this.colors.length];
 
@@ -72,10 +78,14 @@ class ThreeNPlusOne extends Animation {
         this.evenAngleRad = this.evenAngle * Math.PI / 180;
         this.oddAngleRad = this.oddAngle * Math.PI / 180;
 
+        this.ctx.translate(this.ctx.canvas.width / 2,  this.ctx.canvas.height);
+        this.ctx.scale(this.scale, this.scale);
+
         while(this.frame < this.seqences.length){
             this.drawSequence(this.seqences[this.frame]);
             ++this.frame;
         }
+        this.ctx.resetTransform();
     }
 
     resize() {
@@ -90,26 +100,32 @@ class ThreeNPlusOne extends Animation {
             "type": "int",
             "min": 1,
             "max": 100,
-            "requires_resize": true,
+            "toCall": "resize",
         },
         {
             "prop": "evenAngle",
             "type": "int",
             "min": -45,
             "max": 45,
-            "requires_resize": true,
+            "toCall": "resize",
         },
         {
             "prop": "oddAngle",
             "type": "int",
             "min": -45,
             "max": 45,
-            "requires_resize": true,
+            "toCall": "resize",
         },
         {
             "prop": "drawNumbers",
             "type": "bool",
-            "requires_resize": true,
+            "toCall": "resize",
+        }, {
+            "prop": "scale",
+            "type": "float",
+            "min": 0.05,
+            "max": 1.95,
+            "toCall": "resize",
         }];
     }
 }
