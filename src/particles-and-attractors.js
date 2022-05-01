@@ -38,10 +38,10 @@ class ParticlesAndAttractors extends Animation {
 
         this.scale = scale;
 
-        this.reset();
+        this.setup();
     }
 
-    reset(){
+    setup(){
         this.particles = []
         for (let i = 0; i < this.numParticles; ++i)
             this.particles.push(Utils.rotateVec2d(Utils.createVec2d(Utils.randomRange(1, 100), 0), i));
@@ -100,7 +100,7 @@ class ParticlesAndAttractors extends Animation {
             "type": "int",
             "min": 1000,
             "max": 15000,
-            "toCall": "reset",
+            "toCall": "setup",
         }, {
             "prop": "particlesSpeed",
             "type": "float",

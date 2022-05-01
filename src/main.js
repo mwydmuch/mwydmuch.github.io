@@ -131,15 +131,17 @@ function updateAnimation(animation) {
     then = Date.now();
     elemBgName.innerHTML = animation.getName();
     elemBgCode.href = animation.getCodeUrl();
+    //updateSettings(animation.getSettings());
     animation.resize();
 
     if(elemBgSettingsControls) {
         let settings = animation.getSettings();
+
         let bgSetList = document.getElementById("background-settings-controls-list")
         bgSetList.innerHTML = "";
 
         if(settings.length == 0)
-            bgSetList.innerHTML = "There are no settings for this animation";
+            bgSetList.innerHTML = "There are no settings (yet) for this animation";
 
         // Create settings controls
         settings.forEach(function(setting, index) {
@@ -197,6 +199,7 @@ function updateAnimation(animation) {
                         animation[prop] = e.target.value;
                     }
                     if (toCall) animation[toCall]();
+                    elemBgName.innerHTML = animation.getName();
                     play();
                 });
         });
@@ -349,4 +352,8 @@ if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
     addEventListener('mouseup', function (e) {
         elemBgSettingsControls.classList.remove('moving');
     });
+}
+
+function updateSettings(){
+
 }

@@ -34,6 +34,7 @@ class SortingAlgorithm {
     constructor(arr, name){
         this.arr = arr;
         this.moves = []
+        this.cmpCount = 0;
         this.name = name;
         this.sort();
     }
@@ -43,12 +44,18 @@ class SortingAlgorithm {
     }
 
     comp(arr, a, b){
-        if(a != b) this.moves.push(["cmp", arr[a], arr[b]]);
+        if(a != b) {
+            ++this.cmpCount;
+            this.moves.push(["cmp", arr[a], arr[b]]);
+        }
         return arr[a].val - arr[b].val;
     }
 
     compVal(a, b){
-        if(a != b) this.moves.push(["cmp", a, b]);
+        if(a != b){
+            ++this.cmpCount;
+            this.moves.push(["cmp", a, b]);
+        }
         return a.val - b.val;
     }
 
@@ -202,38 +209,59 @@ class HeapSort extends SortingAlgorithm{
 
 class Sorting extends Animation {
     constructor (canvas, colors, colorsAlt,
+                 sortingAlgorithm = "random",
+                 numElements = 100,
                  elementPadding = 2,
                  cmpDuration = 0.25,
-                 swapDuration = 0.25) {
+                 swapDuration = 0.25,
+                 speed = 1,
+                 showNumbers = false,
+                 showStats = false
+        ) {
         super(canvas, colors, colorsAlt, "Sorting algorithm visualization", "sorting.js");
-        this.numElements = 100;
+        this.numElements = numElements;
         this.elementPadding = elementPadding;
         this.elementWidth = 0;
         this.elementMaxHeight = 0;
         this.cmpDuration = cmpDuration;
         this.swapDuration = swapDuration;
+        this.speed = speed;
+        this.showStats = showStats;
 
+        this.sortAlgoNames = ["selection sort", "bubble sort", "insertion sort", "quick sort", "merge sort"];
+        this.sortAlgoClasses = [SelectionSort, BubbleSort, InsertionSort, QuickSort, MergeSort];
+        this.sortingAlgorithm = this.assignAndCheckIfRandom(sortingAlgorithm, Utils.randomChoice(this.sortAlgoNames));
+        this.cmpTotal = 0;
+        this.cmpCount = 0;
+
+        this.setup();
+    }
+
+    setup(){
         this.animQueue = new AnimationQueue();
 
         // Randomize elements
         this.elements = [];
         for(let i = 0; i < this.numElements; ++i){
             const val = Utils.randomRange(0, 1),
-                color = Utils.lerpColor(this.colors[0], this.colors[this.colors.length - 1], val);
+                  color = Utils.lerpColor(this.colors[0], this.colors[this.colors.length - 1], val);
             this.elements.push({val: val, pos: i, color: color, z: 0})
         }
 
         // Sort
-        let sortAlgClass = Utils.randomChoice([BubbleSort, SelectionSort, InsertionSort, QuickSort, MergeSort]),
-            sortAlg = new sortAlgClass(this.elements)
-        this.moves = sortAlg.getMoves();
-        this.name = sortAlg.getName() + " algorithm visualization";
+        let sortAlgoCls = this.sortAlgoClasses[this.sortAlgoNames.indexOf(this.sortingAlgorithm)];
+        console.log(this.sortingAlgorithm, this.sortAlgoNames.indexOf(this.sortingAlgorithm), sortAlgoCls);
+        let sortAlgo = new sortAlgoCls(this.elements);
+        this.moves = sortAlgo.getMoves();
+        this.name = sortAlgo.getName() + " algorithm visualization";
 
-        //console.log(this.elements);
+        this.cmpTotal = sortAlgo.cmpCount;
+        this.cmpCount = 0;
     }
 
     update(elapsed){
-        elapsed /= 1000
+        elapsed /= 1000;
+        elapsed *= this.speed;
         this.time += elapsed;
         ++this.frame;
 
@@ -244,7 +272,8 @@ class Sorting extends Animation {
             const colorEasing = (x) => x < 0.5 ? Utils.easeInOutCubic( 2 * x) : 1 - Utils.easeInOutCubic( 2 * x - 1),
                   posEasing = Utils.easeInOutSine;
 
-            if(s[0] == "cmp") {
+            if(s[0] === "cmp") {
+                ++this.cmpCount;
                 let e1 = s[1], e2 = s[2];
                 const color1 = e1.color,
                       color2 = e2.color,
@@ -259,7 +288,7 @@ class Sorting extends Animation {
                 });
             }
 
-            if(s[0] == "swap") {
+            if(s[0] === "swap") {
                 let e1 = s[1], e2 = s[2];
                 let pos1 = [],
                     pos2 = [],
@@ -292,18 +321,49 @@ class Sorting extends Animation {
     draw() {
         Utils.clear(this.ctx, "#FFFFFF");
 
+        const elementMaxHeight = this.ctx.canvas.height,
+              elementWidth = this.ctx.canvas.width / this.numElements;
+
         this.elements = this.elements.sort((e1, e2) => e1.z - e2.z)
         for(let e of this.elements){
-            const x = e.pos * this.elementWidth + this.elementPadding / 2,
-                  y = e.val * this.elementMaxHeight;
+            const x = e.pos * elementWidth + this.elementPadding / 2,
+                  y = e.val * elementMaxHeight;
             this.ctx.fillStyle = e.color;
-            this.ctx.fillRect(x, 0, this.elementWidth - this.elementPadding, y);
+            this.ctx.fillRect(x, 0, elementWidth - this.elementPadding, y);
+        }
+
+        if(this.showStats){
+            this.ctx.font = '12px sans-serif';
+            this.ctx.fillStyle = this.colors[0];
+
+            this.ctx.fillText(`Sorting algorithm: ${this.sortingAlgorithm}`, 20, this.elementMaxHeight - 60);
+            this.ctx.fillText(`Number of elements: ${this.numElements}`, 20, this.elementMaxHeight - 40);
+            this.ctx.fillText(`Number of element comparisons: ${this.cmpCount} / ${this.cmpTotal}`, 20, this.elementMaxHeight - 20);
         }
     }
 
-    resize(){
-        this.elementMaxHeight = this.ctx.canvas.height;
-        this.elementWidth = this.ctx.canvas.width / this.numElements;
+    getSettings() {
+        return [{
+            "prop": "sortingAlgorithm",
+            "type": "select",
+            "values": ["selection sort", "bubble sort", "insertion sort", "quick sort", "merge sort"],
+            "toCall": "setup",
+        }, {
+            "prop": "numElements",
+            "type": "int",
+            "min": 8,
+            "max": 256,
+            "toCall": "setup",
+        }, {
+            "prop": "speed",
+            "type": "float",
+            "step": 0.25,
+            "min": 0.5,
+            "max": 8,
+        }, {
+            "prop": "showStats",
+            "type": "bool"
+        }];
     }
 }
 

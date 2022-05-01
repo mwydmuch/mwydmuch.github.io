@@ -11,17 +11,16 @@ const Utils = require("./utils");
 class SpinningShapes extends Animation {
     constructor (canvas, colors, colorsAlt, 
                  shapes = 500, 
-                 sides = [0], 
+                 sides = 0,
                  rotateShapes = false,
                  scale = 1) {
         super(canvas, colors, colorsAlt, "", "spinning-shapes.js");
 
-        const shapeSides = [0, 3, 4, 5, 6, 8];
-        const shapeNames = ["circles", "triangles", "rectangles", "pentagons", "hexagons", "octagons"];
-        this.sides = Utils.randomChoice(sides);
+        this.shapeSides = [0, 1, 2, 3, 4, 5, 6, 8];
+        this.shapeNames = ["circles", "triangles", "rectangles", "pentagons", "hexagons", "octagons"];
+        this.sides = this.assignAndCheckIfRandom(sides, Utils.randomChoice(this.shapeSides));
         this.rotateShapes = rotateShapes;
         this.shapes = shapes;
-        this.name = shapeNames[shapeSides.indexOf(this.sides)] + " moving in a circle";
 
         this.distBase = 0.6;
         this.distVar = 0.2;
@@ -29,6 +28,10 @@ class SpinningShapes extends Animation {
         this.sizeVar = 0.12;
 
         this.scale = scale;
+    }
+
+    setup(){
+        this.name = this.shapeNames[this.shapeSides.indexOf(this.sides)] + " moving in a circle";
     }
 
     draw() {

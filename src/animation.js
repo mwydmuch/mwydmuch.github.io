@@ -25,7 +25,7 @@ class Animation {
     }
 
     fadeOut(alpha){
-        if(alpha < 0.01 && this.frame % 10 === 0) Utils.blendColor(this.ctx, this.bgColor, alpha * 10, "lighter");
+        if(alpha < 0.005 && this.frame % 2 === 0) Utils.blendColor(this.ctx, this.bgColor, alpha * 2, "lighter");
         else Utils.blendColor(this.ctx, this.bgColor, alpha, "lighter");
     }
 

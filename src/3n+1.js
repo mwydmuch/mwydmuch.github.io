@@ -37,11 +37,7 @@ class ThreeNPlusOne extends Animation {
     }
 
     drawSequence(sequence) {
-        // let x = this.ctx.canvas.width / 2,
-        //     y = this.ctx.canvas.height,
-        //     angle = 270 * Math.PI / 180;
-        let x = 0,
-            y = 0,
+        let x = 0, y = 0,
             angle = 270 * Math.PI / 180;
         const color = this.colors[this.frame % this.colors.length];
 
