@@ -10,10 +10,11 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class Spirograph extends Animation {
-    constructor (canvas, colors, colorsAlt, points = 2500, gearCount = "random") {
+    constructor (canvas, colors, colorsAlt, points = 2500, length = 2, gearCount = "random") {
         super(canvas, colors, colorsAlt, "spirograph", "spirograph.js");
 
         this.points = points;
+        this.length = length;
         this.maxGears = 5;
         this.gearCount = this.assignAndCheckIfRandom(gearCount, Utils.randomInt(2, this.maxGears));
         this.gearNames = ["zero", "one", "two", "three", "four", "five"];
@@ -54,12 +55,13 @@ class Spirograph extends Animation {
 
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
 
-        const incr = Math.PI * 2 / this.points;
+        const length = Math.PI * this.length,
+              incr = length / this.points;
         let start = this.getXY(0, this.time, scale);
 
-        for (let i = incr; i <= Math.PI * 2; i += incr) {
+        for (let i = 0; i <= length; i += incr) {
             let next = this.getXY(i, this.time, scale);
-            const color = Utils.lerpColor(this.colorA, this.colorB, i / (Math.PI * 2));
+            const color = Utils.lerpColor(this.colorA, this.colorB, i / length);
             Utils.drawLine(this.ctx, start.x, start.y, next.x, next.y, color, 1);
             start = next;
         }
@@ -69,36 +71,42 @@ class Spirograph extends Animation {
 
     getSettings() {
         let settings = [{
-            "prop": "points",
-            "type": "int",
-            "min": 100,
-            "max": 5000,
+            prop: "points",
+            type: "int",
+            min: 100,
+            max: 10000,
         }, {
-            "prop": "gearCount",
-            "type": "int",
-            "min": 1,
-            "max": this.maxGears,
-            "toCall": "updateName"
+            prop: "length",
+            type: "float",
+            step: 0.25,
+            min: 1,
+            max: 8,
+        }, {
+            prop: "gearCount",
+            type: "int",
+            min: 1,
+            max: this.maxGears,
+            toCall: "updateName"
         }];
         for(let i = 0; i < this.maxGears; ++i){
             settings = settings.concat([{
-                "prop": `gears[${i}].radius`,
-                "type": "float",
-                "step": 0.01,
-                "min": 0,
-                "max": 100,
+                prop: `gears[${i}].radius`,
+                type: "float",
+                step: 0.01,
+                min: 0,
+                max: 100,
             }, {
-                "prop": `gears[${i}].rate`,
-                "type": "float",
-                "step": 0.01,
-                "min": -100,
-                "max": 100,
+                prop: `gears[${i}].rate`,
+                type: "float",
+                step: 0.01,
+                min: -100,
+                max: 100,
             }, {
-                "prop": `gears[${i}].phase`,
-                "type": "float",
-                "step": 0.001,
-                "min": -0.1,
-                "max": 0.1,
+                prop: `gears[${i}].phase`,
+                type: "float",
+                step: 0.001,
+                min: -0.1,
+                max: 0.1,
             }]);
         }
         return settings;

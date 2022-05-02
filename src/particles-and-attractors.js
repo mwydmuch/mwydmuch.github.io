@@ -96,44 +96,44 @@ class ParticlesAndAttractors extends Animation {
 
     getSettings() {
         return [{
-            "prop": "numParticles",
-            "type": "int",
-            "min": 1000,
-            "max": 15000,
-            "toCall": "setup",
+            prop: "numParticles",
+            type: "int",
+            min: 1000,
+            max: 15000,
+            toCall: "setup",
         }, {
-            "prop": "particlesSpeed",
-            "type": "float",
-            "min": 1,
-            "max": 20,
+            prop: "particlesSpeed",
+            type: "float",
+            min: 1,
+            max: 20,
         }, {
-            "prop": "fadingSpeed",
-            "type": "float",
-            "step": 0.001,
-            "min": 0,
-            "max": 0.1,
+            prop: "fadingSpeed",
+            type: "float",
+            step: 0.001,
+            min: 0,
+            max: 0.1,
         }, {
-            "prop": "attractorsSystem",
-            "type": "select",
+            prop: "attractorsSystem",
+            type: "select",
             "values": this.attractorsSystems
         }, {
-            "prop": "numAttractors",
-            "type": "int",
-            "min": 3,
-            "max": 7,
+            prop: "numAttractors",
+            type: "int",
+            min: 3,
+            max: 7,
         }, {
-            "prop": "attractorsSpeed",
-            "type": "float",
-            "min": -0.2,
-            "max": 0.2,
+            prop: "attractorsSpeed",
+            type: "float",
+            min: -0.2,
+            max: 0.2,
         }, {
-            "prop": "drawAttractors",
-            "type": "bool",
+            prop: "drawAttractors",
+            type: "bool",
         }, {
-            "prop": "scale",
-            "type": "float",
-            "min": 0.05,
-            "max": 1.95,
+            prop: "scale",
+            type: "float",
+            min: 0.05,
+            max: 1.95,
         }];
     }
 }

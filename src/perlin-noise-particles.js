@@ -117,16 +117,16 @@ class PerlinNoiseParticles extends Animation {
 
     getSettings() {
         return [{
-            "prop": "particlesSpeed",
-            "type": "float",
-            "min": 0.25,
-            "max": 32,
+            prop: "particlesSpeed",
+            type: "float",
+            min: 0.25,
+            max: 32,
         }, {
-            "prop": "fadingSpeed",
-            "type": "float",
-            "step": 0.0001,
-            "min": 0,
-            "max": 0.01,
+            prop: "fadingSpeed",
+            type: "float",
+            step: 0.0001,
+            min: 0,
+            max: 0.01,
         }];
     }
 }

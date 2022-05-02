@@ -157,8 +157,8 @@ class GameOfLifeIsometric extends GameOfLife {
 
     getSettings() {
         return [{
-            "prop": "fadeDeadCells",
-            "type": "bool",
+            prop: "fadeDeadCells",
+            type: "bool",
         }];
     }
 }

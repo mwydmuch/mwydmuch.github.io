@@ -131,82 +131,8 @@ function updateAnimation(animation) {
     then = Date.now();
     elemBgName.innerHTML = animation.getName();
     elemBgCode.href = animation.getCodeUrl();
-    //updateSettings(animation.getSettings());
+    updateSettings(animation.getSettings());
     animation.resize();
-
-    if(elemBgSettingsControls) {
-        let settings = animation.getSettings();
-
-        let bgSetList = document.getElementById("background-settings-controls-list")
-        bgSetList.innerHTML = "";
-
-        if(settings.length == 0)
-            bgSetList.innerHTML = "There are no settings (yet) for this animation";
-
-        // Create settings controls
-        settings.forEach(function(setting, index) {
-            const prop = setting["prop"],
-                  value = eval(`animation.${prop}`),
-                  elemId = prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls",
-                  name = prop.split(/(?=[A-Z])/).join(' ').toLowerCase();
-
-            let optionControls = '<div><span class="setting-name">' + name + ' = </span>'
-
-            if(["int", "float", "bool"].includes(setting['type'])) {
-                let inputType = "range";
-                if(setting['type'] === "bool") inputType = "checkbox";
-
-                optionControls += `<input type="${inputType}" class="setting-input"` +
-                    ` name="${prop}" id="${elemId}" value="${value}"`;
-
-                if(["int", "float"].includes(setting['type'])) {
-                    if("step" in setting) optionControls += ` step="${setting["step"]}"`;
-                    else if(setting['type'] === "float") optionControls += ' step="0.01"';
-                    else optionControls += ' step="1"';
-                    optionControls += ` min="${setting["min"]}" max="${setting["max"]}"`;
-                }
-
-                if(setting['type'] === "bool" && value) optionControls += ' checked';
-                optionControls += `>[<output class="setting-value">${value}</output>]`;
-            }
-            if(setting['type'] === 'select') {
-                optionControls += `<select class="setting-select" name="${prop}" id="${elemId}">`;
-                for(let v of setting['values']) {
-                    if(v === value) optionControls += `<option selected value="${v}">${v}</option>`;
-                    else optionControls += `<option value="${v}">${v}</option>`;
-                }
-                optionControls += "</select>";
-            }
-            optionControls += "</div>";
-            bgSetList.innerHTML += optionControls;
-        });
-
-        // Add events
-        settings.forEach(function(setting, index) {
-            const prop = setting["prop"],
-                  elemId = prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls",
-                  type = setting['type'],
-                  toCall = setting["toCall"];
-            let elem = document.getElementById(elemId);
-            if(elem)
-                elem.addEventListener("input", function (e) {
-                    if(e.target.type === "checkbox"){
-                        if(e.target.nextElementSibling) e.target.nextElementSibling.value = e.target.checked;
-                        eval(`animation.${prop} = e.target.checked;`);
-                    }
-                    else{
-                        if(e.target.nextElementSibling)  e.target.nextElementSibling.value = e.target.value;
-                        let value = e.target.value;
-                        if(type === "int")  value = parseInt(e.target.value);
-                        else if(type === "float") value = parseFloat(e.target.value);
-                        eval(`animation.${prop} = value;`);
-                    }
-                    if (toCall) animation[toCall]();
-                    elemBgName.innerHTML = animation.getName();
-                    play();
-                });
-        });
-    }
 }
 
 updateAnimation(animation);
@@ -357,6 +283,73 @@ if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
     });
 }
 
-function updateSettings(){
+function updateSettings(settings){
+    let elemBgSettingsList = document.getElementById("background-settings-controls-list");
+    if(elemBgSettingsControls && elemBgSettingsList) {
+        elemBgSettingsList.innerHTML = "";
 
+        if(settings.length === 0)
+            elemBgSettingsList.innerHTML = "There are no settings (yet) for this animation";
+
+        // Create settings controls
+        settings.forEach(function(setting, index) {
+            const value = eval(`animation.${setting.prop}`),
+                elemId = setting.prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls",
+                name = setting.prop.split(/(?=[A-Z])/).join(' ').toLowerCase();
+
+            let optionControls = '<div><span class="setting-name">' + name + ' = </span>'
+
+            if(["int", "float", "bool"].includes(setting['type'])) {
+                let inputType = "range";
+                if(setting.type === "bool") inputType = "checkbox";
+
+                optionControls += `<input type="${inputType}" class="setting-input"` +
+                    ` name="${setting.prop}" id="${elemId}" value="${value}"`;
+
+                if(["int", "float"].includes(setting.type)) {
+                    if(setting.step) optionControls += ` step="${setting.step}"`;
+                    else if(setting.type === "float") optionControls += ' step="0.01"';
+                    else optionControls += ' step="1"';
+                    optionControls += ` min="${setting["min"]}" max="${setting["max"]}"`;
+                }
+
+                if(setting.type === "bool" && value) optionControls += ' checked';
+                optionControls += `>[<output class="setting-value">${value}</output>]`;
+            }
+            if(setting.type === 'select') {
+                optionControls += `<select class="setting-select" name="${setting.prop}" id="${elemId}">`;
+                for(let v of setting['values']) {
+                    if(v === value) optionControls += `<option selected value="${v}">${v}</option>`;
+                    else optionControls += `<option value="${v}">${v}</option>`;
+                }
+                optionControls += "</select>";
+            }
+            optionControls += "</div>";
+            elemBgSettingsList.innerHTML += optionControls;
+        });
+
+        // Add events
+        settings.forEach(function(setting, index) {
+            const elemId = setting.prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls";
+            let elem = document.getElementById(elemId);
+            if(elem) {
+                elem.addEventListener("input", function (e) {
+                    console.log(setting, e.target.value);
+                    if (e.target.type === "checkbox") {
+                        if (e.target.nextElementSibling) e.target.nextElementSibling.value = e.target.checked;
+                        eval(`animation.${setting.prop} = e.target.checked;`);
+                    } else {
+                        if (e.target.nextElementSibling) e.target.nextElementSibling.value = e.target.value;
+                        let value = e.target.value;
+                        if (setting.type === "int") value = parseInt(e.target.value);
+                        else if (setting.type === "float") value = parseFloat(e.target.value);
+                        eval(`animation.${setting.prop} = value;`);
+                    }
+                    if (setting.toCall) animation[setting.toCall]();
+                    elemBgName.innerHTML = animation.getName();
+                    play();
+                });
+            }
+        });
+    }
 }

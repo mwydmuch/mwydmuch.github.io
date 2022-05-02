@@ -10,15 +10,19 @@ const Noise = require("./noise");
 const Utils = require("./utils");
 
 class ParticlesStorm extends Animation {
-    constructor(canvas, colors, colorsAlt, particlePer100PixSq = 48, noiseScale = 0.001) {
+    constructor(canvas, colors, colorsAlt, 
+                particlePer100PixSq = 48, 
+                noiseScale = 0.001,
+                fadingSpeed = 0.02) {
         super(canvas, colors, colorsAlt, "particles waves", "particles-waves.js");
 
         this.particlePer100PixSq = particlePer100PixSq;
         this.noiseScale = noiseScale;
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
+        this.fadingSpeed = fadingSpeed;
         this.particles = [];
-
+        
         this.width = 0;
         this.height = 0;
     }
@@ -43,7 +47,7 @@ class ParticlesStorm extends Animation {
     }
 
     draw() {
-        Utils.blendColor(this.ctx, this.bgColor, 0.02, "lighter");
+        this.fadeOut(this.fadingSpeed);
         for(let p of this.particles){
             this.ctx.fillStyle = p.color;
             this.ctx.fillRect(p.x, p.y, 1, 1);
@@ -67,6 +71,28 @@ class ParticlesStorm extends Animation {
                 color: Utils.lerpColor(this.colorA, this.colorB, particleX / this.width)
             });
         }
+    }
+
+    getSettings() {
+        return [{
+            prop: "particlePer100PixSq",
+            type: "int",
+            min: 1,
+            max: 250,
+            toCall: "resize",
+        }, {
+            prop: "noiseScale",
+            type: "float",
+            step: 0.0001,
+            min: 0,
+            max: 0.01,
+        }, {
+            prop: "fadingSpeed",
+            type: "float",
+            step: 0.001,
+            min: 0,
+            max: 0.1,
+        }];
     }
 }
 

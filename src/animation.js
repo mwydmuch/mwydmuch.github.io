@@ -19,20 +19,15 @@ class Animation {
         this.frame = 0;
     }
 
-    assignAndCheckIfRandom(value, random){
+    assignAndCheckIfRandom(value, random){  // Commonly used by many constructors
         if(value === "random") return random;
         else return value;
     }
 
-    fadeOut(alpha){
-        if(alpha <= 0.001 && this.frame % 10 === 0) Utils.blendColor(this.ctx, this.bgColor, alpha * 10, "lighter");
-        else if(alpha <= 0.005 && this.frame % 2 === 0) Utils.blendColor(this.ctx, this.bgColor, alpha * 2, "lighter");
+    fadeOut(alpha) {  // Commonly used by some animations
+        if (alpha <= 0.001 && this.frame % 10 === 0) Utils.blendColor(this.ctx, this.bgColor, alpha * 10, "lighter");
+        else if (alpha <= 0.005 && this.frame % 2 === 0) Utils.blendColor(this.ctx, this.bgColor, alpha * 2, "lighter");
         else Utils.blendColor(this.ctx, this.bgColor, alpha, "lighter");
-    }
-
-    restart(){
-        // By default do nothing
-        // Should be called by constrictor to init animation
     }
 
     getFPS(){

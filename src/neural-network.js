@@ -25,11 +25,6 @@ class NeuralNetwork extends Animation {
     update(timeElapsed){
         // Update network values
 
-        // Randomly
-        // for (let l of this.network) {
-        //     for (let n of l) n.v = Math.random();
-        // }
-
         // Calculate values based on weights
         if(this.network.length == 0) return;
         for (let n of this.network[0]) n.v = Utils.randomRange(-1, 1);

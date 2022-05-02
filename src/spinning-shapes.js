@@ -66,28 +66,28 @@ class SpinningShapes extends Animation {
 
     getSettings() {
         return [{
-            "prop": "sides",
-            "type": "int",
-            "min": 0,
-            "max": 8,
-            "toCall": "updateName"
+            prop: "sides",
+            type: "int",
+            min: 0,
+            max: 8,
+            toCall: "updateName"
         }, {
-            "prop": "shapes",
-            "type": "int",
-            "min": 0,
-            "max": 2500,
+            prop: "shapes",
+            type: "int",
+            min: 0,
+            max: 2500,
         }, {
-            "prop": "rotateShapes",
-            "type": "bool",
+            prop: "rotateShapes",
+            type: "bool",
         }, {
-            "prop": "scale",
-            "type": "float",
-            "min": 0.05,
-            "max": 1.95,
-            "toCall": "resize",
+            prop: "scale",
+            type: "float",
+            min: 0.05,
+            max: 1.95,
+            toCall: "resize",
         }, {
-            "prop": "rainbowColors",
-            "type": "bool",
+            prop: "rainbowColors",
+            type: "bool",
         }];
     }
 }
