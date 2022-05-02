@@ -13,12 +13,14 @@ class SpinningShapes extends Animation {
                  shapes = 500, 
                  sides = 0,
                  rotateShapes = false,
-                 scale = 1) {
+                 scale = 1,
+                 rainbowColors = false) {
         super(canvas, colors, colorsAlt, "", "spinning-shapes.js");
 
         this.shapeSides = [0, 1, 2, 3, 4, 5, 6, 8];
-        this.shapeNames = ["circles", "triangles", "rectangles", "pentagons", "hexagons", "octagons"];
+        this.shapeNames = ["circles", "points", "lines", "triangles", "rectangles", "pentagons", "hexagons", "octagons"];
         this.sides = this.assignAndCheckIfRandom(sides, Utils.randomChoice(this.shapeSides));
+        this.updateName();
         this.rotateShapes = rotateShapes;
         this.shapes = shapes;
 
@@ -28,9 +30,10 @@ class SpinningShapes extends Animation {
         this.sizeVar = 0.12;
 
         this.scale = scale;
+        this.rainbowColors = rainbowColors;
     }
 
-    setup(){
+    updateName(){
         this.name = this.shapeNames[this.shapeSides.indexOf(this.sides)] + " moving in a circle";
     }
 
@@ -47,11 +50,13 @@ class SpinningShapes extends Animation {
                   x = Math.cos(theta) * distance,
                   y = Math.sin(theta) * distance,
                   radius = (this.sizeBase + this.sizeVar * Math.cos(theta * 9 - this.time)) * scale;
-            this.ctx.strokeStyle = Utils.lerpColor(this.colorA, this.colorB,(Math.cos(theta * 9 - this.time) + 1) / 2); // New with smooth color transition
+            if(this.rainbowColors) this.ctx.strokeStyle = 'hsl(' + (Math.cos(theta * 9 - this.time) + 1) / 2 * 360 + ', 100%, 75%)';
+            else this.ctx.strokeStyle = Utils.lerpColor(this.colorA, this.colorB,(Math.cos(theta * 9 - this.time) + 1) / 2); // New with smooth color transition
             this.ctx.lineWidth = 1;
 
             this.ctx.beginPath();
-            if(this.sides == 0) Utils.pathCircle(this.ctx, x, y, radius);
+            if(this.sides === 0) Utils.pathCircle(this.ctx, x, y, radius);
+            if(this.sides === 1) Utils.pathCircle(this.ctx, x, y, 1);
             else Utils.pathPolygon(this.ctx, x, y, radius, this.sides, theta * this.rotateShapes);
             this.ctx.stroke();
         }
@@ -65,6 +70,7 @@ class SpinningShapes extends Animation {
             "type": "int",
             "min": 0,
             "max": 8,
+            "toCall": "updateName"
         }, {
             "prop": "shapes",
             "type": "int",
@@ -79,6 +85,9 @@ class SpinningShapes extends Animation {
             "min": 0.05,
             "max": 1.95,
             "toCall": "resize",
+        }, {
+            "prop": "rainbowColors",
+            "type": "bool",
         }];
     }
 }

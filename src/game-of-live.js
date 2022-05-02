@@ -11,13 +11,16 @@ const Animation = require("./animation");
 class GameOfLife extends Animation {
     constructor (canvas, colors, colorsAlt,
                  cellSize = 12,
-                 cellBasePadding = 1,
+                 cellPadding = 1,
                  spawnProb= 0.5,
-                 cellShape = "none") {
+                 cellShape = "square",
+                 deadCellsFadingSteps = 5) {
         super(canvas, colors, colorsAlt, "Conway's game of life", "game-of-live.js");
         this.cellSize = cellSize;
-        this.cellBasePadding = cellBasePadding;
+        this.cellBasePadding = cellPadding;
         this.spawnProb = spawnProb;
+        this.cellShape = cellShape;
+        this.deadCellsFadingSteps = deadCellsFadingSteps;
 
         this.gridWidth = 0;
         this.gridHeight = 0;
@@ -60,33 +63,47 @@ class GameOfLife extends Animation {
         [this.grid, this.gridNextState] = [this.gridNextState, this.grid];
     }
 
+    drawSquareCell(x, y, cellPadding){
+        this.ctx.fillRect(x * this.cellSize + cellPadding, y * this.cellSize + cellPadding,
+            this.cellSize - 2 * cellPadding, this.cellSize - 2 * cellPadding);
+    }
+
+    drawCircleCell(x, y, cellPadding){
+        this.ctx.beginPath();
+        this.ctx.arc(x * this.cellSize + this.cellSize / 2, y * this.cellSize + this.cellSize / 2, this.cellSize / 2 - cellPadding, 0, 2 * Math.PI, false);
+        this.ctx.fill();
+    }
+
     draw() {
         this.ctx.fillStyle = this.bgColor;
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
+        if(this.cellShape === "square") this.drawCell = this.drawSquareCell;
+        else this.drawCell = this.drawCircleCell;
+
+        const maxPadding = this.cellSize / 2 - this.cellBasePadding,
+              paddingPerStep = maxPadding / (this.deadCellsFadingSteps + 1);
+
         for (let y = 0; y < this.gridHeight; ++y) {
             for (let x = 0; x < this.gridWidth; ++x) {
                 const cellVal = this.getVal(x, y);
-                let cellPadding = 0,
+                let cellPadding = this.cellBasePadding,
                     fillStyle = null,
                     valCond = -1;
-                for(let i = 0; i < 5; ++i){
-                    if(cellVal > valCond) {
-                        fillStyle = this.colors[i];
-                        cellPadding = i + this.cellBasePadding;
-                        break;
+                if(cellVal > 0) fillStyle = this.colors[0];
+                else {
+                    for (let i = 0; i < this.deadCellsFadingSteps; ++i) {
+                        if (cellVal > valCond) {
+                            fillStyle = this.colors[Math.min(i, this.colors.length - 1)];
+                            cellPadding += i * paddingPerStep;
+                            break;
+                        }
+                        valCond *= 2;
                     }
-                    valCond *= 2;
                 }
                 if(fillStyle) {
                     this.ctx.fillStyle = fillStyle;
-                    this.ctx.fillRect(x * this.cellSize + cellPadding,
-                        y * this.cellSize + cellPadding,
-                        this.cellSize - 2 * cellPadding,
-                        this.cellSize - 2 * cellPadding);
-                    // this.ctx.beginPath();
-                    // this.ctx.arc(x * this.cellSize + cellPadding / 2, y * this.cellSize + cellPadding / 2, this.cellSize / 2 - cellPadding, 0, 2 * Math.PI, false);
-                    // this.ctx.fill();
+                    this.drawCell(x, y, cellPadding);
                 }
             }
         }
@@ -113,6 +130,25 @@ class GameOfLife extends Animation {
         const newGridWidth = Math.ceil(this.ctx.canvas.width / this.cellSize),
               newGridHeight = Math.ceil(this.ctx.canvas.height / this.cellSize);
         this.resizeGrid(newGridWidth, newGridHeight);
+    }
+
+    getSettings() {
+        return [{
+            "prop": "cellSize",
+            "type": "int",
+            "min": 4,
+            "max": 32,
+            "toCall": "resize",
+        }, {
+            "prop": "cellShape",
+            "type": "select",
+            "values": ["square", "circle"],
+        }, {
+            "prop": "deadCellsFadingSteps",
+            "type": "int",
+            "min": 0,
+            "max": 8,
+        }];
     }
 }
 

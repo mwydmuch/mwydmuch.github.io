@@ -12,7 +12,9 @@ class PerlinNoiseParticles extends Animation {
     constructor(canvas, colors, colorsAlt,
                 particlePer100PixSq = 4,
                 noiseScale = 0.001,
-                drawNoise = false
+                particlesSpeed = 1,
+                drawNoise = false,
+                fadingSpeed = 0
     ) {
         super(canvas, colors, colorsAlt, "particles moving through Perlin noise", "perlin-noise-particles.js");
         this.particlePer100PixSq = particlePer100PixSq;
@@ -20,6 +22,9 @@ class PerlinNoiseParticles extends Animation {
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
         this.drawNoise = drawNoise;
+
+        this.particlesSpeed = particlesSpeed;
+        this.fadingSpeed = fadingSpeed;
 
         this.width = 0;
         this.height = 0;
@@ -30,16 +35,28 @@ class PerlinNoiseParticles extends Animation {
     update(elapsed) {
         this.time += elapsed / 1000;
         ++this.frame;
-        for(let p of this.particles){
-            const angle = this.noise.perlin2(p.x * this.noiseScale, p.y * this.noiseScale) * 2 * Math.PI / this.noiseScale;
+        let updates = 1,
+            particlesSpeed = this.particlesSpeed;
+        while(particlesSpeed > 1.0){
+            particlesSpeed /= 2;
+            updates *= 2;
+        }
+        for (let p of this.particles) {
             p.prevX = p.x;
             p.prevY = p.y;
-            p.x += Math.cos(angle) * p.speed;
-            p.y += Math.sin(angle) * p.speed;
+        }
+        for(let i = 0; i < updates; ++i) {
+            for (let p of this.particles) {
+                const angle = this.noise.perlin2(p.x * this.noiseScale, p.y * this.noiseScale) * 2 * Math.PI / this.noiseScale;
+                p.x += Math.cos(angle) * p.speed * particlesSpeed;
+                p.y += Math.sin(angle) * p.speed * particlesSpeed;
+            }
         }
     }
 
     draw() {
+        this.fadeOut(this.fadingSpeed);
+
         for(let p of this.particles){
             // Utils.fillCircle(this.ctx, p.x, p.y, p.radius, p.color);
             Utils.drawLine(this.ctx, p.prevX, p.prevY, p.x, p.y, p.color, 2 * p.radius); // This results with better antialiasing
@@ -96,6 +113,21 @@ class PerlinNoiseParticles extends Animation {
                 }
             }
         }
+    }
+
+    getSettings() {
+        return [{
+            "prop": "particlesSpeed",
+            "type": "float",
+            "min": 0.25,
+            "max": 32,
+        }, {
+            "prop": "fadingSpeed",
+            "type": "float",
+            "step": 0.0001,
+            "min": 0,
+            "max": 0.01,
+        }];
     }
 }
 

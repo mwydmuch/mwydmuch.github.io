@@ -16,7 +16,8 @@ class ParticlesVortex extends Animation {
                  speedMin = 25,
                  speedMax = 50,
                  rotationSpeedMin = 0.01,
-                 rotationSpeedMax = 0.02
+                 rotationSpeedMax = 0.02,
+                 scale = 1
     ){
         super(canvas, colors, colorsAlt, "vortex of particles", "particles-vortex.js");
 
@@ -29,7 +30,7 @@ class ParticlesVortex extends Animation {
         this.rotationSpeed = Utils.randomRange(rotationSpeedMin, rotationSpeedMax) * Utils.randomChoice([-1, 1]);
         this.dirX = Utils.randomRange(-0.75, 0.75);
         this.dirY = Utils.randomRange(-0.75, 0.75);
-        this.resize();
+        this.scale = scale;
     }
 
     draw() {
@@ -43,6 +44,7 @@ class ParticlesVortex extends Animation {
               s = Math.round(this.time * this.speed) / 2;
 
         this.ctx.translate(centerX, centerY);
+        this.ctx.scale(this.scale, this.scale);
 
         this.ctx.beginPath();
         for(let i = 1; i <= this.particles; i++){

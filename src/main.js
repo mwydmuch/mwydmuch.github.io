@@ -146,7 +146,7 @@ function updateAnimation(animation) {
         // Create settings controls
         settings.forEach(function(setting, index) {
             const prop = setting["prop"],
-                  value = animation[prop],
+                  value = eval(`animation.${prop}`),
                   elemId = prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls",
                   name = prop.split(/(?=[A-Z])/).join(' ').toLowerCase();
 
@@ -185,18 +185,21 @@ function updateAnimation(animation) {
         settings.forEach(function(setting, index) {
             const prop = setting["prop"],
                   elemId = prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls",
+                  type = setting['type'],
                   toCall = setting["toCall"];
             let elem = document.getElementById(elemId);
             if(elem)
                 elem.addEventListener("input", function (e) {
-                    console.log(e.target, e.target.value, e.target.checked);
                     if(e.target.type === "checkbox"){
                         if(e.target.nextElementSibling) e.target.nextElementSibling.value = e.target.checked;
-                        animation[prop] = e.target.checked;
+                        eval(`animation.${prop} = e.target.checked;`);
                     }
                     else{
                         if(e.target.nextElementSibling)  e.target.nextElementSibling.value = e.target.value;
-                        animation[prop] = e.target.value;
+                        let value = e.target.value;
+                        if(type === "int")  value = parseInt(e.target.value);
+                        else if(type === "float") value = parseFloat(e.target.value);
+                        eval(`animation.${prop} = value;`);
                     }
                     if (toCall) animation[toCall]();
                     elemBgName.innerHTML = animation.getName();

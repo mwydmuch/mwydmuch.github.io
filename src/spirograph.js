@@ -10,29 +10,35 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class Spirograph extends Animation {
-    constructor (canvas, colors, colorsAlt, points = 2500) {
+    constructor (canvas, colors, colorsAlt, points = 2500, gearCount = "random") {
         super(canvas, colors, colorsAlt, "spirograph", "spirograph.js");
 
         this.points = points;
-        this.gears = []
-        const gearCount = Utils.randomInt(2, 5),
-              gearNames = ["one", "two", "three", "four", "five", "six"];
-        this.name = "spirograph with " + gearNames[gearCount] + " random gears"
-        for(let i = 0; i < gearCount; ++i){
+        this.maxGears = 5;
+        this.gearCount = this.assignAndCheckIfRandom(gearCount, Utils.randomInt(2, this.maxGears));
+        this.gearNames = ["zero", "one", "two", "three", "four", "five"];
+        this.updateName();
+        this.gears = [];
+        for (let i = 0; i < this.maxGears; ++i) {
             this.gears.push({
-                r: Utils.randomRange(0, 100),
-                rate: Utils.randomRange(-100, 100),
+                radius: Utils.round(Utils.randomRange(0, 100), 2),
+                rate: Utils.round(Utils.randomRange(-100, 100), 2),
                 phase: i * 0.005
             });
         }
     }
 
-    get_x_y(i, j, scale = 1){
+    updateName(){
+        this.name = "spirograph with " + this.gearNames[this.gearCount] + " random gears";
+    }
+
+    getXY(i, j, scale = 1){
         let x = 0, y = 0;
 
-        for(let g of this.gears){
-            x += g.r * scale * Math.cos(g.rate * (i + j * g.phase));
-            y += g.r * scale * Math.sin(g.rate * (i + j * g.phase));
+        for(let k = 0; k < this.gearCount; ++k){
+            const g = this.gears[k];
+            x += g.radius * scale * Math.cos(g.rate * (i + j * g.phase));
+            y += g.radius * scale * Math.sin(g.rate * (i + j * g.phase));
         }
 
         return {x: x, y: y}
@@ -41,23 +47,61 @@ class Spirograph extends Animation {
     draw() {
         Utils.clear(this.ctx, this.bgColor);
 
-        let r = 0;
-        for(let g of this.gears) r += g.r;
-        const scale = Math.min(this.ctx.canvas.width, this.ctx.canvas.height) / 2 / r;
+        // Normalize size to fit the screen nicely
+        let totalRadius = 0;
+        for(let i = 0; i < this.gearCount; ++i) totalRadius += this.gears[i].radius;
+        const scale = Math.min(this.ctx.canvas.width, this.ctx.canvas.height) / 2 / totalRadius;
 
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
 
         const incr = Math.PI * 2 / this.points;
-        let start = this.get_x_y(0, this.time, scale);
+        let start = this.getXY(0, this.time, scale);
 
         for (let i = incr; i <= Math.PI * 2; i += incr) {
-            let next = this.get_x_y(i, this.time, scale);
+            let next = this.getXY(i, this.time, scale);
             const color = Utils.lerpColor(this.colorA, this.colorB, i / (Math.PI * 2));
             Utils.drawLine(this.ctx, start.x, start.y, next.x, next.y, color, 1);
             start = next;
         }
 
         this.ctx.resetTransform();
+    }
+
+    getSettings() {
+        let settings = [{
+            "prop": "points",
+            "type": "int",
+            "min": 100,
+            "max": 5000,
+        }, {
+            "prop": "gearCount",
+            "type": "int",
+            "min": 1,
+            "max": this.maxGears,
+            "toCall": "updateName"
+        }];
+        for(let i = 0; i < this.maxGears; ++i){
+            settings = settings.concat([{
+                "prop": `gears[${i}].radius`,
+                "type": "float",
+                "step": 0.01,
+                "min": 0,
+                "max": 100,
+            }, {
+                "prop": `gears[${i}].rate`,
+                "type": "float",
+                "step": 0.01,
+                "min": -100,
+                "max": 100,
+            }, {
+                "prop": `gears[${i}].phase`,
+                "type": "float",
+                "step": 0.001,
+                "min": -0.1,
+                "max": 0.1,
+            }]);
+        }
+        return settings;
     }
 }
 

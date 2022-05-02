@@ -13,10 +13,12 @@ class GameOfLifeIsometric extends GameOfLife {
     constructor (canvas, colors, colorsAlt,
                  cellSize = 12,
                  cellBasePadding = 0,
-                 spawnProb = 0.5) {
+                 spawnProb = 0.5,
+                 fadeDeadCells = true) {
         super(canvas, colors, colorsAlt, cellSize, cellBasePadding, spawnProb);
         this.name = "isometric Conway's game of life";
         this.file = "game-of-live-isometric.js";
+        this.fadeDeadCells = fadeDeadCells;
 
         this.sqrt3 = Math.sqrt(3);
         this.xShift = this.cellSize * this.sqrt3 / 2;
@@ -134,9 +136,10 @@ class GameOfLifeIsometric extends GameOfLife {
         for (let y = 0; y < this.gridHeight; ++y) {
             for (let x = 0; x < this.gridWidth; ++x) {
                 let cellVal = this.getVal(x, y);
-                if(cellVal > -(this.cellSize - 2 * this.cellBasePadding))
+                if(this.fadeDeadCells && cellVal > -(this.cellSize - 2 * this.cellBasePadding))
                     //this.drawCube(x, y, this.colorsAlt, Math.min(0, cellVal), this.cellBasePadding);
                     this.drawPrerenderedCube(x, y, Math.max(0, -cellVal));
+                else if (cellVal > 0) this.drawPrerenderedCube(x, y, 0);
             }
         }
 
@@ -150,6 +153,13 @@ class GameOfLifeIsometric extends GameOfLife {
         const newGridSize = Math.ceil( 3/4 * this.ctx.canvas.height / this.cellSize);
         this.resizeGrid(newGridSize, newGridSize);
         this.renderedGrid = null;
+    }
+
+    getSettings() {
+        return [{
+            "prop": "fadeDeadCells",
+            "type": "bool",
+        }];
     }
 }
 

@@ -250,7 +250,6 @@ class Sorting extends Animation {
 
         // Sort
         let sortAlgoCls = this.sortAlgoClasses[this.sortAlgoNames.indexOf(this.sortingAlgorithm)];
-        console.log(this.sortingAlgorithm, this.sortAlgoNames.indexOf(this.sortingAlgorithm), sortAlgoCls);
         let sortAlgo = new sortAlgoCls(this.elements);
         this.moves = sortAlgo.getMoves();
         this.name = sortAlgo.getName() + " algorithm visualization";
@@ -333,12 +332,13 @@ class Sorting extends Animation {
         }
 
         if(this.showStats){
+            const lineHeight = 20;
             this.ctx.font = '12px sans-serif';
             this.ctx.fillStyle = this.colors[0];
 
-            this.ctx.fillText(`Sorting algorithm: ${this.sortingAlgorithm}`, 20, this.elementMaxHeight - 60);
-            this.ctx.fillText(`Number of elements: ${this.numElements}`, 20, this.elementMaxHeight - 40);
-            this.ctx.fillText(`Number of element comparisons: ${this.cmpCount} / ${this.cmpTotal}`, 20, this.elementMaxHeight - 20);
+            this.ctx.fillText(`Sorting algorithm: ${this.sortingAlgorithm}`, lineHeight, elementMaxHeight - 3 * lineHeight);
+            this.ctx.fillText(`Number of elements: ${this.numElements}`, lineHeight, elementMaxHeight - 2 * lineHeight);
+            this.ctx.fillText(`Number of element comparisons: ${this.cmpCount} / ${this.cmpTotal}`, lineHeight, elementMaxHeight - lineHeight);
         }
     }
 
