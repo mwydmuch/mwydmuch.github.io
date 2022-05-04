@@ -35,6 +35,7 @@
 @font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
 @global-radius: 4px;
 @global-border-width: 4px;
+@global-animation-duration: 0.5s;
 
 
 // Base Styles
@@ -135,6 +136,7 @@ ul{
   }
 }
 
+
 // Layout
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -145,6 +147,10 @@ ul{
   z-index: -1;
   overflow: hidden;
 }
+
+
+// Me section
+// ---------------------------------------------------------------------------------------------------------------------
 
 #me{
   text-align: center;
@@ -193,7 +199,7 @@ ul{
       border: 2px solid @main;
       color: @main;
       background: none;
-      transition: background 0.5s, color 0.5s;
+      transition: background @global-animation-duration, color @global-animation-duration;
       transition-timing-function: ease;
       display: inline-block;
       box-sizing: border-box;
@@ -207,13 +213,16 @@ ul{
   }
 }
 
+
+// Animations
+// ---------------------------------------------------------------------------------------------------------------------
+
 .keyframes(@name, @rules) {
   @keyframes @name {
     @rules();
   }
 }
 
-@animation-duration: 0.5s;
 @grayscale: 100%;
 @fade-show-values: 0, 10;
 
@@ -231,14 +240,14 @@ ul{
 
 .fade-out{
   animation: fade-out-animation;
-  animation-duration: @animation-duration;
+  animation-duration: @global-animation-duration;
   animation-timing-function: ease;
   visibility: hidden;
 }
 
 .fade-in{
   animation: fade-in-animation;
-  animation-duration: @animation-duration;
+  animation-duration: @global-animation-duration;
   animation-timing-function: ease;
   visibility: visible;
 }
@@ -262,7 +271,7 @@ each(@fade-show-values, {
 
   .fade-to-@{value} {
     animation: %("fade-to-%s-animation", @value);
-    animation-duration: @animation-duration;
+    animation-duration: @global-animation-duration;
     animation-timing-function: ease;
     opacity: percentage(@value / 100);
     filter: grayscale(@grayscale);
@@ -270,7 +279,7 @@ each(@fade-show-values, {
 
   .show-from-@{value}{
     animation: %("show-from-%s-animation", @value);
-    animation-duration: @animation-duration;
+    animation-duration: @global-animation-duration;
     animation-timing-function: ease;
     opacity: 100%;
     filter: grayscale(0%);
@@ -295,6 +304,15 @@ each(@fade-show-values, {
 .hide{
   display: none;
 }
+
+.moving {
+  transition: opacity @global-animation-duration;
+  opacity: 0.75;
+}
+
+
+// Footer and settings
+// ---------------------------------------------------------------------------------------------------------------------
 
 #footer{
   text-align: center;
@@ -322,6 +340,7 @@ each(@fade-show-values, {
     z-index: 1000;
     padding: 0.25rem;
     cursor: move;
+    transition: opacity @global-animation-duration;
 
     #background-settings-controls-list{
       cursor: default;

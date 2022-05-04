@@ -1467,7 +1467,7 @@ function updateSettings(settings){
                 let inputType = "range";
                 if(setting.type === "bool") inputType = "checkbox";
 
-                optionControls += `<input type="${inputType}" class="setting-input"` +
+                optionControls += `<span class="nowrap"><input type="${inputType}" class="setting-input"` +
                     ` name="${setting.prop}" id="${elemId}" value="${value}"`;
 
                 if(["int", "float"].includes(setting.type)) {
@@ -1488,7 +1488,7 @@ function updateSettings(settings){
                 }
                 optionControls += "</select>";
             }
-            optionControls += "</div>";
+            optionControls += "</span></div>";
             elemBgSettingsList.innerHTML += optionControls;
         });
 
@@ -2239,7 +2239,7 @@ class ParticlesStorm extends Animation {
             prop: "particlePer100PixSq",
             type: "int",
             min: 1,
-            max: 250,
+            max: 128,
             toCall: "resize",
         }, {
             prop: "noiseScale",

@@ -78,7 +78,7 @@ class ParticlesStorm extends Animation {
             prop: "particlePer100PixSq",
             type: "int",
             min: 1,
-            max: 250,
+            max: 128,
             toCall: "resize",
         }, {
             prop: "noiseScale",
