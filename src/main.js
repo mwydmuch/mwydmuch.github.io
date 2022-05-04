@@ -31,7 +31,7 @@ var lastHeight = 0;
 var needResize = false;
 var framesInterval = 0;
 var then = 0;
-var stopped = false;
+var paused = false;
 
 /*
 const colors = [ // Old color palette
@@ -94,7 +94,7 @@ const elemBgName = document.getElementById("background-name");
 const elemBgNext = document.getElementById("background-next");
 const elemBgCode = document.getElementById("background-code");
 const elemBgReset = document.getElementById("background-reset");
-const elemBgStop = document.getElementById("background-stop");
+const elemBgPlayPause = document.getElementById("background-play-pause");
 const elemBgSettings = document.getElementById("background-settings");
 const elemBgSettingsControls = document.getElementById("background-settings-controls");
 const elemBgSettingsClose = document.getElementById("background-settings-close");
@@ -139,7 +139,7 @@ updateAnimation(animation);
 
 
 function render() {
-    if(stopped) return;
+    if(paused) return;
 
     const now = Date.now(),
           timeElapsed = now - then;
@@ -152,7 +152,7 @@ function render() {
     // Detect container size change
     const width  = Math.max(container.offsetWidth, window.innerWidth),
           height = Math.max(container.offsetHeight, window.innerHeight);
-    if(width != lastWidth || height != lastHeight) needResize = true;
+    if(width !== lastWidth || height !== lastHeight) needResize = true;
     else if (needResize){
         canvas.width = width;
         canvas.height = height;
@@ -180,15 +180,15 @@ render();
 // ---------------------------------------------------------------------------------------------------------------------
 
 function play(){
-    elemBgStop.innerHTML = "<i class=\"fas fa-stop\"></i> stop";
-    stopped = false;
+    elemBgPlayPause.innerHTML = "<i class=\"fas fa-pause\"></i> pause";
+    paused = false;
     then = Date.now();
     render();
 }
 
-function stop(){
-    elemBgStop.innerHTML = "<i class=\"fas fa-play\"></i> play";
-    stopped = true;
+function pause(){
+    elemBgPlayPause.innerHTML = "<i class=\"fas fa-play\"></i> play";
+    paused = true;
 }
 
 if(elemBgShow) {
@@ -234,9 +234,9 @@ if(elemBgReset) {
     });
 }
 
-if(elemBgStop) {
-    elemBgStop.addEventListener("click", function () {
-        if (stopped === false) stop()
+if(elemBgPlayPause) {
+    elemBgPlayPause.addEventListener("click", function () {
+        if (paused === false) pause()
         else play();
     });
 }
