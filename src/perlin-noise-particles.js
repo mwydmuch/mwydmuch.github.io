@@ -85,7 +85,7 @@ class PerlinNoiseParticles extends Animation {
 
     resize() {
         Utils.clear(this.ctx, this.bgColor);
-        if(this.imageData != null) this.ctx.putImageData(this.imageData, 0, 0);
+        if(this.imageData !== null) this.ctx.putImageData(this.imageData, 0, 0);
 
         // Add particles to new parts of the image
         let divWidth = this.ctx.canvas.width - this.width;

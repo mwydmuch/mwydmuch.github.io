@@ -142,7 +142,7 @@ class GameOfLife extends Animation {
         }, {
             prop: "cellShape",
             type: "select",
-            "values": ["square", "circle"],
+            values: ["square", "circle"],
         }, {
             prop: "deadCellsFadingSteps",
             type: "int",

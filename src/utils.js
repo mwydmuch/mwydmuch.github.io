@@ -234,5 +234,9 @@ module.exports = {
 
     isStrictMode(){
         return ((eval("var __temp = null"), (typeof __temp === "undefined")) ? "strict":  "non-strict");
+    },
+
+    addMultipleEventListener(element, events, handler) {
+        events.forEach(e => element.addEventListener(e, handler))
     }
 };

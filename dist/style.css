@@ -14,7 +14,6 @@ a:active {
   color: #f6bd00;
   font-weight: 700;
   cursor: pointer;
-  white-space: nowrap;
 }
 h1,
 h2,
@@ -34,6 +33,9 @@ p {
 }
 .justify {
   text-align: justify;
+}
+.nowrap {
+  white-space: nowrap;
 }
 .reverse,
 .reverse-red,
@@ -139,8 +141,7 @@ ul {
   border: 2px solid #F6CE00;
   color: #F6CE00;
   background: none;
-  transition: all;
-  transition-duration: 0.5s;
+  transition: background 0.5s, color 0.5s;
   transition-timing-function: ease;
   display: inline-block;
   box-sizing: border-box;
@@ -331,18 +332,24 @@ ul {
   margin-top: 0.1rem;
 }
 #footer #background-settings-controls #background-settings-controls-list .setting-name {
-  width: 6rem;
+  width: 8rem;
   display: inline-block;
 }
 #footer #background-settings-controls #background-settings-controls-list .setting-input {
-  width: 5rem;
+  width: 5.25rem;
   height: 0.5rem;
+  margin: 0 0.25rem;
+  display: inline-block;
+}
+#footer #background-settings-controls #background-settings-controls-list .setting-select {
+  width: 8rem;
+  height: 1rem;
   margin: 0 0.25rem;
   display: inline-block;
 }
 #footer #background-settings-controls #background-settings-controls-list .setting-value {
   text-align: center;
-  width: 1.1rem;
+  width: 2.25rem;
   display: inline-block;
 }
 #footer #background-settings-controls #background-settings-close {

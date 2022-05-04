@@ -44,7 +44,7 @@ class SortingAlgorithm {
     }
 
     comp(arr, a, b){
-        if(a != b) {
+        if(a !== b) {
             ++this.cmpCount;
             this.moves.push(["cmp", arr[a], arr[b]]);
         }
@@ -52,7 +52,7 @@ class SortingAlgorithm {
     }
 
     compVal(a, b){
-        if(a != b){
+        if(a !== b){
             ++this.cmpCount;
             this.moves.push(["cmp", a, b]);
         }
@@ -221,8 +221,6 @@ class Sorting extends Animation {
         super(canvas, colors, colorsAlt, "Sorting algorithm visualization", "sorting.js");
         this.numElements = numElements;
         this.elementPadding = elementPadding;
-        this.elementWidth = 0;
-        this.elementMaxHeight = 0;
         this.cmpDuration = cmpDuration;
         this.swapDuration = swapDuration;
         this.speed = speed;
@@ -346,7 +344,7 @@ class Sorting extends Animation {
         return [{
             prop: "sortingAlgorithm",
             type: "select",
-            "values": ["selection sort", "bubble sort", "insertion sort", "quick sort", "merge sort"],
+            values: this.sortAlgoNames,
             toCall: "setup",
         }, {
             prop: "numElements",

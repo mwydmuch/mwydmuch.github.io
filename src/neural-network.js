@@ -26,7 +26,7 @@ class NeuralNetwork extends Animation {
         // Update network values
 
         // Calculate values based on weights
-        if(this.network.length == 0) return;
+        if(this.network.length === 0) return;
         for (let n of this.network[0]) n.v = Utils.randomRange(-1, 1);
         for (let i = 1; i < this.nLayers; i++) {
             for (let n of this.network[i]) {
@@ -34,8 +34,8 @@ class NeuralNetwork extends Animation {
                 for (let j = 0; j < this.network[i - 1].length; ++j) {
                     n.v += this.network[i - 1][j].v * n.w[j];
                 }
-                if(i == this.nLayers - 1) n.v = 1 / (1 + Math.exp(-n.v)); // Sigmoid for last layer
-                else n.v = Math.max(0, n.v); // ReLU
+                if(i === this.nLayers - 1) n.nlv = 1 / (1 + Math.exp(-n.v)); // Sigmoid for last layer
+                else n.nlv = Math.max(0, n.v); // ReLU
             }
         }
     }
@@ -45,12 +45,12 @@ class NeuralNetwork extends Animation {
 
         // Draw connections
         for (let i = 0; i < this.nLayers - 1; i++) {
-            let l1 = this.network[i];
-            let l2 = this.network[i + 1];
+            const l1 = this.network[i],
+                  l2 = this.network[i + 1];
             for (let n1 of l1) {
                 for (let n2 of l2) {
-                    const v = Utils.clip(n1.v, 0, 1);
-                    const color = this.colors[this.colors.length - 1 - Math.floor(v * this.colors.length)];
+                    const v = Utils.clip(n1.v, 0, 1),
+                          color = this.colors[this.colors.length - 1 - Math.floor(v * this.colors.length)];
                     this.ctx.globalAlpha = v;
                     Utils.drawLine(this.ctx, n1.x, n1.y, n2.x, n2.y, color, 1 + v);
                 }
@@ -59,15 +59,19 @@ class NeuralNetwork extends Animation {
 
         // Draw nodes
         this.ctx.globalAlpha = 1.0;
-        for (let l of this.network) {
+        for (let i = 0; i < this.nLayers; ++i) {
+            const l = this.network[i];
             for (let n of l) {
-                let v = Utils.clip(n.v, 0, 1);
-                let v2 = Utils.clip(n.v * 2, 0, 4);
-                let color = this.colors[this.colors.length - 1 - Math.floor(v * this.colors.length)];
-                let nSize = this.baseNodeSize + v2;
+                const v = Utils.clip(n.nlv, 0, 1),
+                      v2 = Utils.clip(n.nlv * 2, 0, 4),
+                      color = this.colors[this.colors.length - 1 - Math.floor(v * this.colors.length)],
+                      nSize = this.baseNodeSize + v2;
                 Utils.fillCircle(this.ctx, n.x, n.y, nSize, color);
                 this.ctx.font = '12px sans-serif';
-                this.ctx.fillText(n.v.toFixed(2), n.x - 11, n.y - 2 * this.baseNodeSize);
+                let text = `ReLU(${Utils.round(n.v, 2)}) = ${Utils.round(n.nlv, 2)}`;
+                if(i === 0) text = `${Utils.round(n.v, 2)}`;
+                else if(i === this.nLayers - 1) text = `Sigmoid(${Utils.round(n.v, 2)}) = ${Utils.round(n.nlv, 2)}`;
+                this.ctx.fillText(text, n.x - text.length * 2.5, n.y - 3 * this.baseNodeSize);
             }
         }
     }
@@ -97,7 +101,7 @@ class NeuralNetwork extends Animation {
             if (layerNodes % 2 == 0) y += interNode/2;
 
             for (let j = 0; j < layerNodes; j++) {
-                let n = {x: x, y: y, v: 0, w: null};
+                let n = {x: x, y: y, v: 0, nlv: 0, w: null};
                 if(i > 0) n.w = Utils.randomArray(this.network[i - 1].length, -1, 1);
                 layer.push(n);
                 y += interNode;

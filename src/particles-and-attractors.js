@@ -115,7 +115,7 @@ class ParticlesAndAttractors extends Animation {
         }, {
             prop: "attractorsSystem",
             type: "select",
-            "values": this.attractorsSystems
+            values: this.attractorsSystems
         }, {
             prop: "numAttractors",
             type: "int",

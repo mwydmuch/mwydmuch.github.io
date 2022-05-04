@@ -165,7 +165,7 @@ class Func {
     }
 
     hasGlobalMin(){
-        return this.globalMin != null;
+        return this.globalMin !== null;
     }
 
     getGlobalMin(){
@@ -265,10 +265,11 @@ class StyblinskiTangFunc extends Func{
 
 
 class GradientDescent extends Animation {
-    constructor (canvas, colors, colorsAlt) {
+    constructor (canvas, colors, colorsAlt, functionToOptimize = "random") {
         super(canvas, colors, colorsAlt, "visualization of gradient descent algorithms", "gradient-descent.js");
-        this.funcClass = Utils.randomChoice([SaddlePointFunc, BealeFunc, StyblinskiTangFunc]);
-        this.func = new this.funcClass();
+        this.funcNames = ["with saddle point", "Beale", "Styblinski-Tang"];
+        this.functionToOptimize = this.assignAndCheckIfRandom(functionToOptimize, Utils.randomChoice(this.funcNames));
+        this.funcClasses = [SaddlePointFunc, BealeFunc, StyblinskiTangFunc];
 
         this.scale = 0;
         this.optims = null;
@@ -291,9 +292,15 @@ class GradientDescent extends Animation {
 
         if (this.frame >= this.func.getSteps()) this.resize();
     }
-
+    
+    // TODO: refactor
     resize() {
         Utils.clear(this.ctx, this.bgColor);
+        
+        // Create function
+        let funcCls = this.funcClasses[this.funcNames.indexOf(this.functionToOptimize)];
+        this.func = new funcCls();
+        
         this.frame = 0;
         this.imageData = null;
 
@@ -365,7 +372,7 @@ class GradientDescent extends Animation {
                 const idx = i + j * width;
                 const sum = -3 * isobands[idx] + isobands[idx + 1] + isobands[idx + width] + isobands[idx + 1 + width];
                 this.ctx.fillStyle = isolinesColors[isobands[idx]];
-                if(sum != 0 && sum != 4) this.ctx.fillRect(i, j, 1, 1);
+                if(sum !== 0 && sum !== 4) this.ctx.fillRect(i, j, 1, 1);
             }
         }
 
@@ -377,11 +384,11 @@ class GradientDescent extends Animation {
 
         for(let i = 0; i < centerX / this.scale; i += labelsDist){
             this.ctx.fillText(i.toFixed(1), centerX + i * this.scale, height - 22);
-            if(i != 0) this.ctx.fillText((-i).toFixed(1), centerX - i * this.scale, height - 22);
+            if(i !== 0) this.ctx.fillText((-i).toFixed(1), centerX - i * this.scale, height - 22);
         }
         for(let i = 0; i < centerY / this.scale; i += labelsDist){
             this.ctx.fillText(i.toFixed(1), 10, centerY + i * this.scale);
-            if(i != 0) this.ctx.fillText((-i).toFixed(1), 10, centerY - i * this.scale);
+            if(i !== 0) this.ctx.fillText((-i).toFixed(1), 10, centerY - i * this.scale);
         }
 
         // Init optimizers
@@ -424,6 +431,15 @@ class GradientDescent extends Animation {
         }
 
         this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    }
+
+    getSettings() {
+        return [{
+            prop: "functionToOptimize",
+            type: "select",
+            values: this.funcNames,
+            toCall: "resize",
+        }];
     }
 }
 

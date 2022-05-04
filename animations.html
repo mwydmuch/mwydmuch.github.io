@@ -34,17 +34,19 @@
 <!-- Primary Page Layout -->
 <div id="container" class="container">
   <div id="footer">
-    <div>
-      <span id="background-controls">
-        <div>Animation: <span id="background-name"></span></div>
-        <div>
-          [<a href="index.html"><i class="fas fa-home"></i> home</a>]
-          [<a id="background-code"><i class="fas fa-file-code"></i> code</a>]
-          [<a id="background-stop"><i class="fas fa-stop"></i> stop</a>]
-          [<a id="background-next"><i class="fas fa-step-forward"></i> change</a>]
-          [<a id="background-reset"><i class="fas fa-redo"></i> reset</a>]
-        </div>
-      </span>
+    <div id="background-controls">
+      <div>Animation: <span id="background-name"></span></div>
+      <div>
+        <span class="nowrap">[<a id="background-code"><i class="fas fa-file-code"></i> code</a>]</span>
+        <span class="nowrap">[<a id="background-play-pause"><i class="fas fa-pause"></i> pause</a>]</span>
+        <span class="nowrap">[<a id="background-reset"><i class="fas fa-redo"></i> reset</a>]</span>
+        <span class="nowrap">[<a id="background-settings"><i class="fas fa-cog"></i> settings</a>]</span>
+        <span class="nowrap">[<a id="background-next"><i class="fas fa-step-forward"></i> change</a>]</span>
+      </div>
+    </div>
+    <div id="background-settings-controls" style="left: 10px; top: 10px;">
+      SETTINGS <span id="background-settings-close">[<i class="fas fa-close"></i>]</span>
+      <div id="background-settings-controls-list"></div>
     </div>
   </div>
 </div>

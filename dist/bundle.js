@@ -9,23 +9,27 @@
 const Animation = require("./animation");
 
 class ThreeNPlusOne extends Animation {
-    constructor (canvas, colors, colorsAlt,
-                 length = 30,
-                 evenAngle = 8,
-                 oddAngle = -20
+    constructor(canvas, colors, colorsAlt,
+                length = 30,
+                evenAngle = 8,
+                oddAngle = -20,
+                drawNumbers = false,
+                scale = 1
     ) {
         super(canvas, colors, colorsAlt, "3n + 1 (Collatz Conjecture) visualization", "3n+1.js");
         this.length = length;
         this.evenAngle = evenAngle;
         this.oddAngle = oddAngle;
-        this.seqences = []
-        this.drawNumbers = (Math.random() > 0.5);
+        this.scale = scale;
+        this.drawNumbers = drawNumbers;
+
+        this.seqences = [];
     }
 
     update(elapsed){
         let n = this.seqences.length + 1;
         let sequence = [n];
-        while(n != 1){
+        while(n !== 1){
             if(n % 2) n = 3 * n + 1;
             else n /= 2;
             sequence.push(n);
@@ -34,8 +38,7 @@ class ThreeNPlusOne extends Animation {
     }
 
     drawSequence(sequence) {
-        let x = this.ctx.canvas.width / 2,
-            y = this.ctx.canvas.height,
+        let x = 0, y = 0,
             angle = 270 * Math.PI / 180;
         const color = this.colors[this.frame % this.colors.length];
 
@@ -72,10 +75,14 @@ class ThreeNPlusOne extends Animation {
         this.evenAngleRad = this.evenAngle * Math.PI / 180;
         this.oddAngleRad = this.oddAngle * Math.PI / 180;
 
+        this.ctx.translate(this.ctx.canvas.width / 2,  this.ctx.canvas.height);
+        this.ctx.scale(this.scale, this.scale);
+
         while(this.frame < this.seqences.length){
             this.drawSequence(this.seqences[this.frame]);
             ++this.frame;
         }
+        this.ctx.resetTransform();
     }
 
     resize() {
@@ -86,30 +93,36 @@ class ThreeNPlusOne extends Animation {
 
     getSettings() {
         return [{
-            "prop": "length",
-            "type": "int",
-            "min": 1,
-            "max": 100,
-            "requires_resize": true,
+            prop: "length",
+            type: "int",
+            min: 1,
+            max: 100,
+            toCall: "resize",
         },
         {
-            "prop": "evenAngle",
-            "type": "int",
-            "min": -45,
-            "max": 45,
-            "requires_resize": true,
+            prop: "evenAngle",
+            type: "int",
+            min: -45,
+            max: 45,
+            toCall: "resize",
         },
         {
-            "prop": "oddAngle",
-            "type": "int",
-            "min": -45,
-            "max": 45,
-            "requires_resize": true,
+            prop: "oddAngle",
+            type: "int",
+            min: -45,
+            max: 45,
+            toCall: "resize",
         },
         {
-            "prop": "drawNumbers",
-            "type": "bool",
-            "requires_resize": true,
+            prop: "drawNumbers",
+            type: "bool",
+            toCall: "resize",
+        }, {
+            prop: "scale",
+            type: "float",
+            min: 0.05,
+            max: 1.95,
+            toCall: "resize",
         }];
     }
 }
@@ -120,6 +133,8 @@ module.exports = ThreeNPlusOne;
 /*
  * Base class for all the background animations.
  */
+
+const Utils = require("./utils");
 
 class Animation {
     constructor(canvas, colors, colorsAlt, name, file) {
@@ -136,6 +151,17 @@ class Animation {
         this.frame = 0;
     }
 
+    assignAndCheckIfRandom(value, random){  // Commonly used by many constructors
+        if(value === "random") return random;
+        else return value;
+    }
+
+    fadeOut(alpha) {  // Commonly used by some animations
+        if (alpha <= 0.001 && this.frame % 10 === 0) Utils.blendColor(this.ctx, this.bgColor, alpha * 10, "lighter");
+        else if (alpha <= 0.005 && this.frame % 2 === 0) Utils.blendColor(this.ctx, this.bgColor, alpha * 2, "lighter");
+        else Utils.blendColor(this.ctx, this.bgColor, alpha, "lighter");
+    }
+
     getFPS(){
         return 30;
     }
@@ -148,23 +174,24 @@ class Animation {
         return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/src/" + this.file;
     }
 
-    getSettings() {
-        return []
-    }
-
     update(elapsed){
+        // By default just update timer and frame count
         this.time += elapsed / 1000;
         ++this.frame;
     }
 
     resize(){
+        // By default do nothing
+    }
 
+    getSettings() {
+        return [] // By default there is no settings
     }
 }
 
 module.exports = Animation;
 
-},{}],3:[function(require,module,exports){
+},{"./utils":18}],3:[function(require,module,exports){
 /*
  * Modified method of L. Cremona for drawing cardioid with a pencil of lines,
  * as described in section "cardioid as envelope of a pencil of lines" of:
@@ -179,11 +206,20 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class Cardioids extends Animation {
-    constructor (canvas, colors, colorsAlt) {
+    constructor (canvas, colors, colorsAlt,
+                 lines = 400,
+                 scale = 1.0,
+                 speed = 0.05,
+                 rainbowColors = false) {
         super(canvas, colors, colorsAlt, "cardioids with a pencil of lines", "cardioids.js");
 
-        this.lines = 400;
+        this.lines = lines;
+        this.scale = scale;
+        this.speed = speed;
+        this.rainbowColors = rainbowColors;
+
         this.radius = 0;
+        this.position = 0;
     }
 
     getVec(i){
@@ -191,22 +227,51 @@ class Cardioids extends Animation {
         return Utils.rotateVec2d(Utils.createVec2d(this.radius, 0), Math.PI + angle);
     }
 
+    update(elapsed){
+        this.time += elapsed / 1000;
+        ++this.frame;
+        this.position += elapsed / 1000 * this.speed;
+    }
+
     draw() {
         Utils.clear(this.ctx, this.bgColor);
 
-        this.radius = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3;
+        this.radius = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3 * this.scale;
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
         Utils.strokeCircle(this.ctx, 0, 0, this.radius, this.colors[0]);
 
         for (let i = 0; i <= this.lines; ++i) {
             const a = this.getVec(i),
-                  b = this.getVec(i * this.time * 0.05),
-                  color = Utils.lerpColorsPallet([this.colorA, this.colorB, this.colorA], i / this.lines);
-            //    color = 'hsl(' + i / this.lines * 360 + ', 100%, 75%)';
+                  b = this.getVec(i * this.position);
+            let color;
+            if(this.rainbowColors) color = 'hsl(' + i / this.lines * 360 + ', 100%, 75%)';
+            else color = Utils.lerpColorsPallet([this.colorA, this.colorB, this.colorA], i / this.lines);
             Utils.drawLine(this.ctx, a.x, a.y, b.x, b.y, color, 1);
         }
 
         this.ctx.resetTransform();
+    }
+
+    getSettings() {
+        return [{
+            prop: "lines",
+            type: "int",
+            min: 1,
+            max: 2500,
+        }, {
+            prop: "speed",
+            type: "float",
+            min: -1.0,
+            max: 1.0,
+        }, {
+            prop: "scale",
+            type: "float",
+            min: 0.25,
+            max: 1.75,
+        }, {
+            prop: "rainbowColors",
+            type: "bool",
+        }];
     }
 }
 
@@ -225,37 +290,40 @@ const Utils = require("./utils");
 
 class CircularWaves extends Animation {
     constructor(canvas, colors, colorsAlt,
-                degPerVertex = 2,
+                vertexes = 180,
                 noiseScale = 0.5,
-                noiseMin = 0.4,
-                noiseMax = 1.2,
-                fadeOut = true
+                radiusScaleMin = 0.4,
+                radiusScaleMax = 1.2,
+                fadingSpeed = 0.001,
+                rainbowColors = false
     ) {
         super(canvas, colors, colorsAlt, "circular waves", "circular-waves.js");
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
 
-        this.degPerVertex = degPerVertex;
+        this.vertexes = vertexes;
         this.noiseScale = noiseScale;
-        this.noiseMin = noiseMin;
-        this.noiseMax = noiseMax;
-        this.fadeOut = fadeOut;
+        this.radiusScaleMin = radiusScaleMin;
+        this.radiusScaleMax = radiusScaleMax;
+        this.fadingSpeed = fadingSpeed;
+        this.rainbowColors = rainbowColors;
 
         this.radiusMin = 0;
         this.radiusMax = 0;
     }
 
     draw() {
-        if(this.fadeOut && this.frame % 10 == 0) Utils.blendColor(this.ctx, this.bgColor, 0.01, "lighter");
+        this.fadeOut(this.fadingSpeed);
 
         const zoff = this.frame * 0.005;
-        //this.ctx.strokeStyle = 'hsl(' + Math.abs(Math.sin(zoff * 5)) * 360 + ', 100%, 50%)';
-        this.ctx.strokeStyle = Utils.lerpColor(this.colorA, this.colorB, Math.abs(Math.sin(zoff * 5)));
+        const degPerVertex = 360 / this.vertexes;
+        if(this.rainbowColors) this.ctx.strokeStyle = 'hsl(' + Math.abs(Math.sin(zoff * 5)) * 360 + ', 100%, 50%)';
+        else this.ctx.strokeStyle = Utils.lerpColor(this.colorA, this.colorB, Math.abs(Math.sin(zoff * 5)));
 
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
 
         this.ctx.beginPath();
-        for (let a = 0; a <= 360; a += this.degPerVertex) {
+        for (let a = 0; a <= 360; a += degPerVertex) {
             const aRad = a * Math.PI / 180,
                   xoff = Math.cos(aRad) * this.noiseScale,
                   yoff = Math.sin(aRad) * this.noiseScale,
@@ -265,7 +333,7 @@ class CircularWaves extends Animation {
                   x = r * Math.cos(aRad),
                   y = r * Math.sin(aRad);
 
-            if(a == 0) this.ctx.moveTo(x, y);
+            if(a === 0) this.ctx.moveTo(x, y);
             else this.ctx.lineTo(x, y);
         }
         this.ctx.stroke();
@@ -274,9 +342,47 @@ class CircularWaves extends Animation {
     }
 
     resize() {
-        this.radiusMin = Math.min(this.ctx.canvas.width, this.ctx.canvas.height) / 2 * this.noiseMin;
-        this.radiusMax = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 2 * this.noiseMax;
+        this.radiusMin = Math.min(this.ctx.canvas.width, this.ctx.canvas.height) / 2 * this.radiusScaleMin;
+        this.radiusMax = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 2 * this.radiusScaleMax;
+        if(this.radiusMin > this.radiusMax) [this.radiusMin, this.radiusMax] = [this.radiusMax, this.radiusMin];
         Utils.clear(this.ctx, "#FFFFFF");
+    }
+
+    getSettings() {
+        return [{
+            prop: "vertexes",
+            type: "int",
+            min: 3,
+            max: 720,
+            toCall: "resize",
+        }, {
+            prop: "radiusScaleMin",
+            type: "float",
+            min: 0,
+            max: 2.0,
+            toCall: "resize",
+        }, {
+            prop: "radiusScaleMax",
+            type: "float",
+            min: 0,
+            max: 2.0,
+            toCall: "resize",
+        }, {
+            prop: "noiseScale",
+            type: "float",
+            min: 0,
+            max: 2.0,
+            toCall: "resize",
+        }, {
+            prop: "fadingSpeed",
+            type: "float",
+            step: 0.001,
+            min: 0,
+            max: 0.1,
+        }, {
+            prop: "rainbowColors",
+            type: "bool",
+        }];
     }
 }
 
@@ -298,10 +404,12 @@ class GameOfLifeIsometric extends GameOfLife {
     constructor (canvas, colors, colorsAlt,
                  cellSize = 12,
                  cellBasePadding = 0,
-                 spawnProb = 0.5) {
+                 spawnProb = 0.5,
+                 fadeDeadCells = true) {
         super(canvas, colors, colorsAlt, cellSize, cellBasePadding, spawnProb);
         this.name = "isometric Conway's game of life";
         this.file = "game-of-live-isometric.js";
+        this.fadeDeadCells = fadeDeadCells;
 
         this.sqrt3 = Math.sqrt(3);
         this.xShift = this.cellSize * this.sqrt3 / 2;
@@ -419,9 +527,10 @@ class GameOfLifeIsometric extends GameOfLife {
         for (let y = 0; y < this.gridHeight; ++y) {
             for (let x = 0; x < this.gridWidth; ++x) {
                 let cellVal = this.getVal(x, y);
-                if(cellVal > -(this.cellSize - 2 * this.cellBasePadding))
+                if(this.fadeDeadCells && cellVal > -(this.cellSize - 2 * this.cellBasePadding))
                     //this.drawCube(x, y, this.colorsAlt, Math.min(0, cellVal), this.cellBasePadding);
                     this.drawPrerenderedCube(x, y, Math.max(0, -cellVal));
+                else if (cellVal > 0) this.drawPrerenderedCube(x, y, 0);
             }
         }
 
@@ -435,6 +544,13 @@ class GameOfLifeIsometric extends GameOfLife {
         const newGridSize = Math.ceil( 3/4 * this.ctx.canvas.height / this.cellSize);
         this.resizeGrid(newGridSize, newGridSize);
         this.renderedGrid = null;
+    }
+
+    getSettings() {
+        return [{
+            prop: "fadeDeadCells",
+            type: "bool",
+        }];
     }
 }
 
@@ -454,13 +570,16 @@ const Animation = require("./animation");
 class GameOfLife extends Animation {
     constructor (canvas, colors, colorsAlt,
                  cellSize = 12,
-                 cellBasePadding = 1,
+                 cellPadding = 1,
                  spawnProb= 0.5,
-                 cellShape = "none") {
+                 cellShape = "square",
+                 deadCellsFadingSteps = 5) {
         super(canvas, colors, colorsAlt, "Conway's game of life", "game-of-live.js");
         this.cellSize = cellSize;
-        this.cellBasePadding = cellBasePadding;
+        this.cellBasePadding = cellPadding;
         this.spawnProb = spawnProb;
+        this.cellShape = cellShape;
+        this.deadCellsFadingSteps = deadCellsFadingSteps;
 
         this.gridWidth = 0;
         this.gridHeight = 0;
@@ -503,33 +622,47 @@ class GameOfLife extends Animation {
         [this.grid, this.gridNextState] = [this.gridNextState, this.grid];
     }
 
+    drawSquareCell(x, y, cellPadding){
+        this.ctx.fillRect(x * this.cellSize + cellPadding, y * this.cellSize + cellPadding,
+            this.cellSize - 2 * cellPadding, this.cellSize - 2 * cellPadding);
+    }
+
+    drawCircleCell(x, y, cellPadding){
+        this.ctx.beginPath();
+        this.ctx.arc(x * this.cellSize + this.cellSize / 2, y * this.cellSize + this.cellSize / 2, this.cellSize / 2 - cellPadding, 0, 2 * Math.PI, false);
+        this.ctx.fill();
+    }
+
     draw() {
         this.ctx.fillStyle = this.bgColor;
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
+        if(this.cellShape === "square") this.drawCell = this.drawSquareCell;
+        else this.drawCell = this.drawCircleCell;
+
+        const maxPadding = this.cellSize / 2 - this.cellBasePadding,
+              paddingPerStep = maxPadding / (this.deadCellsFadingSteps + 1);
+
         for (let y = 0; y < this.gridHeight; ++y) {
             for (let x = 0; x < this.gridWidth; ++x) {
                 const cellVal = this.getVal(x, y);
-                let cellPadding = 0,
+                let cellPadding = this.cellBasePadding,
                     fillStyle = null,
                     valCond = -1;
-                for(let i = 0; i < 5; ++i){
-                    if(cellVal > valCond) {
-                        fillStyle = this.colors[i];
-                        cellPadding = i + this.cellBasePadding;
-                        break;
+                if(cellVal > 0) fillStyle = this.colors[0];
+                else {
+                    for (let i = 0; i < this.deadCellsFadingSteps; ++i) {
+                        if (cellVal > valCond) {
+                            fillStyle = this.colors[Math.min(i, this.colors.length - 1)];
+                            cellPadding += i * paddingPerStep;
+                            break;
+                        }
+                        valCond *= 2;
                     }
-                    valCond *= 2;
                 }
                 if(fillStyle) {
                     this.ctx.fillStyle = fillStyle;
-                    this.ctx.fillRect(x * this.cellSize + cellPadding,
-                        y * this.cellSize + cellPadding,
-                        this.cellSize - 2 * cellPadding,
-                        this.cellSize - 2 * cellPadding);
-                    // this.ctx.beginPath();
-                    // this.ctx.arc(x * this.cellSize + cellPadding / 2, y * this.cellSize + cellPadding / 2, this.cellSize / 2 - cellPadding, 0, 2 * Math.PI, false);
-                    // this.ctx.fill();
+                    this.drawCell(x, y, cellPadding);
                 }
             }
         }
@@ -556,6 +689,25 @@ class GameOfLife extends Animation {
         const newGridWidth = Math.ceil(this.ctx.canvas.width / this.cellSize),
               newGridHeight = Math.ceil(this.ctx.canvas.height / this.cellSize);
         this.resizeGrid(newGridWidth, newGridHeight);
+    }
+
+    getSettings() {
+        return [{
+            prop: "cellSize",
+            type: "int",
+            min: 4,
+            max: 32,
+            toCall: "resize",
+        }, {
+            prop: "cellShape",
+            type: "select",
+            values: ["square", "circle"],
+        }, {
+            prop: "deadCellsFadingSteps",
+            type: "int",
+            min: 0,
+            max: 8,
+        }];
     }
 }
 
@@ -729,7 +881,7 @@ class Func {
     }
 
     hasGlobalMin(){
-        return this.globalMin != null;
+        return this.globalMin !== null;
     }
 
     getGlobalMin(){
@@ -829,10 +981,11 @@ class StyblinskiTangFunc extends Func{
 
 
 class GradientDescent extends Animation {
-    constructor (canvas, colors, colorsAlt) {
+    constructor (canvas, colors, colorsAlt, functionToOptimize = "random") {
         super(canvas, colors, colorsAlt, "visualization of gradient descent algorithms", "gradient-descent.js");
-        this.funcClass = Utils.randomChoice([SaddlePointFunc, BealeFunc, StyblinskiTangFunc]);
-        this.func = new this.funcClass();
+        this.funcNames = ["with saddle point", "Beale", "Styblinski-Tang"];
+        this.functionToOptimize = this.assignAndCheckIfRandom(functionToOptimize, Utils.randomChoice(this.funcNames));
+        this.funcClasses = [SaddlePointFunc, BealeFunc, StyblinskiTangFunc];
 
         this.scale = 0;
         this.optims = null;
@@ -855,9 +1008,15 @@ class GradientDescent extends Animation {
 
         if (this.frame >= this.func.getSteps()) this.resize();
     }
-
+    
+    // TODO: refactor
     resize() {
         Utils.clear(this.ctx, this.bgColor);
+        
+        // Create function
+        let funcCls = this.funcClasses[this.funcNames.indexOf(this.functionToOptimize)];
+        this.func = new funcCls();
+        
         this.frame = 0;
         this.imageData = null;
 
@@ -929,7 +1088,7 @@ class GradientDescent extends Animation {
                 const idx = i + j * width;
                 const sum = -3 * isobands[idx] + isobands[idx + 1] + isobands[idx + width] + isobands[idx + 1 + width];
                 this.ctx.fillStyle = isolinesColors[isobands[idx]];
-                if(sum != 0 && sum != 4) this.ctx.fillRect(i, j, 1, 1);
+                if(sum !== 0 && sum !== 4) this.ctx.fillRect(i, j, 1, 1);
             }
         }
 
@@ -941,11 +1100,11 @@ class GradientDescent extends Animation {
 
         for(let i = 0; i < centerX / this.scale; i += labelsDist){
             this.ctx.fillText(i.toFixed(1), centerX + i * this.scale, height - 22);
-            if(i != 0) this.ctx.fillText((-i).toFixed(1), centerX - i * this.scale, height - 22);
+            if(i !== 0) this.ctx.fillText((-i).toFixed(1), centerX - i * this.scale, height - 22);
         }
         for(let i = 0; i < centerY / this.scale; i += labelsDist){
             this.ctx.fillText(i.toFixed(1), 10, centerY + i * this.scale);
-            if(i != 0) this.ctx.fillText((-i).toFixed(1), 10, centerY - i * this.scale);
+            if(i !== 0) this.ctx.fillText((-i).toFixed(1), 10, centerY - i * this.scale);
         }
 
         // Init optimizers
@@ -989,6 +1148,15 @@ class GradientDescent extends Animation {
 
         this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     }
+
+    getSettings() {
+        return [{
+            prop: "functionToOptimize",
+            type: "select",
+            values: this.funcNames,
+            toCall: "resize",
+        }];
+    }
 }
 
 module.exports = GradientDescent;
@@ -1027,7 +1195,7 @@ var lastHeight = 0;
 var needResize = false;
 var framesInterval = 0;
 var then = 0;
-var stopped = false;
+var paused = false;
 
 /*
 const colors = [ // Old color palette
@@ -1090,7 +1258,7 @@ const elemBgName = document.getElementById("background-name");
 const elemBgNext = document.getElementById("background-next");
 const elemBgCode = document.getElementById("background-code");
 const elemBgReset = document.getElementById("background-reset");
-const elemBgStop = document.getElementById("background-stop");
+const elemBgPlayPause = document.getElementById("background-play-pause");
 const elemBgSettings = document.getElementById("background-settings");
 const elemBgSettingsControls = document.getElementById("background-settings-controls");
 const elemBgSettingsClose = document.getElementById("background-settings-close");
@@ -1127,56 +1295,15 @@ function updateAnimation(animation) {
     then = Date.now();
     elemBgName.innerHTML = animation.getName();
     elemBgCode.href = animation.getCodeUrl();
+    updateSettings(animation.getSettings());
     animation.resize();
-
-    if(elemBgSettingsControls) {
-        let settings = animation.getSettings();
-        let bgSetList = document.getElementById("background-settings-controls-list")
-        bgSetList.innerHTML = "";
-
-        if(settings.length == 0)
-            bgSetList.innerHTML = "No settings";
-
-        // Create settings controls
-        settings.forEach(function(setting, index) {
-            let prop = setting["prop"];
-            let value = animation[prop];
-            let elemId = prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls";
-            let name = prop.split(/(?=[A-Z])/).join(' ').toLowerCase();
-
-            let optionControls = '<div><span class="setting-name">' + name + ' = </span>'
-            if(setting['type'] === 'int') {
-                optionControls +=
-                    '<input type="range" class="setting-input" name="' + prop +
-                    '" id="' + elemId + '" value="' + value +
-                    '" min="' + setting["min"] + '" max="' + setting["max"] +
-                    '" onInput="this.nextElementSibling.value = this.value">' +
-                    '[<output class="setting-value">' + value + '</output>]';
-            }
-            optionControls += "</div>";
-            bgSetList.innerHTML += optionControls;
-        });
-
-        // Add events
-        settings.forEach(function(setting, index) {
-            let prop = setting["prop"];
-            let elemId = prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls";
-            let reqResize = setting["requires_resize"];
-            let elem = document.getElementById(elemId);
-            if(elem)
-                elem.addEventListener("click", function (e) {
-                    animation[prop] = e.target.value;
-                    if (reqResize) animation.resize();
-                });
-        });
-    }
 }
 
 updateAnimation(animation);
 
 
 function render() {
-    if(stopped) return;
+    if(paused) return;
 
     const now = Date.now(),
           timeElapsed = now - then;
@@ -1189,7 +1316,7 @@ function render() {
     // Detect container size change
     const width  = Math.max(container.offsetWidth, window.innerWidth),
           height = Math.max(container.offsetHeight, window.innerHeight);
-    if(width != lastWidth || height != lastHeight) needResize = true;
+    if(width !== lastWidth || height !== lastHeight) needResize = true;
     else if (needResize){
         canvas.width = width;
         canvas.height = height;
@@ -1217,10 +1344,15 @@ render();
 // ---------------------------------------------------------------------------------------------------------------------
 
 function play(){
-    elemBgStop.innerHTML = "<i class=\"fas fa-stop\"></i> stop";
-    stopped = false;
+    elemBgPlayPause.innerHTML = "<i class=\"fas fa-pause\"></i> pause";
+    paused = false;
     then = Date.now();
     render();
+}
+
+function pause(){
+    elemBgPlayPause.innerHTML = "<i class=\"fas fa-play\"></i> play";
+    paused = true;
 }
 
 if(elemBgShow) {
@@ -1266,14 +1398,10 @@ if(elemBgReset) {
     });
 }
 
-if(elemBgStop) {
-    elemBgStop.addEventListener("click", function () {
-        if (elemBgStop.innerText == " stop") {
-            stopped = true;
-            elemBgStop.innerHTML = "<i class=\"fas fa-play\"></i> play";
-        } else {
-            play();
-        }
+if(elemBgPlayPause) {
+    elemBgPlayPause.addEventListener("click", function () {
+        if (paused === false) pause()
+        else play();
     });
 }
 
@@ -1281,17 +1409,15 @@ if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
     function closeSettings(){
         elemBgSettingsControls.classList.remove("fade-in");
         elemBgSettingsControls.classList.add("fade-out");
-        //elemBgSettings.innerHTML = "<i class=\"fas fa-cog\"></i> show settings";
     }
 
     function showSettings(){
         elemBgSettingsControls.classList.remove("fade-out");
         elemBgSettingsControls.classList.add("fade-in");
         elemBgSettingsControls.style.display = "block";
-        //elemBgSettings.innerHTML = "<i class=\"fas fa-cog\"></i> close settings";
     }
 
-    // Show/hide the background settings window
+    // Show/hide the background settings panel
     elemBgSettings.addEventListener("click", function () {
         if (elemBgSettingsControls.classList.contains("fade-in")) closeSettings();
         else showSettings();
@@ -1301,22 +1427,95 @@ if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
         closeSettings();
     });
 
-    // Events for dragging the background settings windows
+    // Events for dragging the background settings panel
     elemBgSettingsControls.addEventListener('mousedown', function (e) {
         if(e.target !== e.currentTarget) return;
         e.target.classList.add('moving');
+        e.target.clickAnchorX = e.clientX - parseInt(e.target.style.left);
+        e.target.clickAnchorY = e.clientY - parseInt(e.target.style.top);
     });
 
     addEventListener('mousemove', function (e) {
         if(elemBgSettingsControls.classList.contains('moving')){
-            elemBgSettingsControls.style.left = e.clientX + 'px';
-            elemBgSettingsControls.style.top = e.clientY  + 'px';
+            elemBgSettingsControls.style.left = e.clientX - elemBgSettingsControls.clickAnchorX + 'px';
+            elemBgSettingsControls.style.top = e.clientY - elemBgSettingsControls.clickAnchorY  + 'px';
         }
     });
 
     addEventListener('mouseup', function (e) {
         elemBgSettingsControls.classList.remove('moving');
     });
+}
+
+function updateSettings(settings){
+    let elemBgSettingsList = document.getElementById("background-settings-controls-list");
+    if(elemBgSettingsControls && elemBgSettingsList) {
+        elemBgSettingsList.innerHTML = "";
+
+        if(settings.length === 0)
+            elemBgSettingsList.innerHTML = "There are no settings (yet) for this animation";
+
+        // Create settings controls
+        settings.forEach(function(setting, index) {
+            const value = eval(`animation.${setting.prop}`),
+                elemId = setting.prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls",
+                name = setting.prop.split(/(?=[A-Z])/).join(' ').toLowerCase();
+
+            let optionControls = '<div><span class="setting-name">' + name + ' = </span>'
+
+            if(["int", "float", "bool"].includes(setting['type'])) {
+                let inputType = "range";
+                if(setting.type === "bool") inputType = "checkbox";
+
+                optionControls += `<input type="${inputType}" class="setting-input"` +
+                    ` name="${setting.prop}" id="${elemId}" value="${value}"`;
+
+                if(["int", "float"].includes(setting.type)) {
+                    if(setting.step) optionControls += ` step="${setting.step}"`;
+                    else if(setting.type === "float") optionControls += ' step="0.01"';
+                    else optionControls += ' step="1"';
+                    optionControls += ` min="${setting["min"]}" max="${setting["max"]}"`;
+                }
+
+                if(setting.type === "bool" && value) optionControls += ' checked';
+                optionControls += `>[<output class="setting-value">${value}</output>]`;
+            }
+            if(setting.type === 'select') {
+                optionControls += `<select class="setting-select" name="${setting.prop}" id="${elemId}">`;
+                for(let v of setting['values']) {
+                    if(v === value) optionControls += `<option selected value="${v}">${v}</option>`;
+                    else optionControls += `<option value="${v}">${v}</option>`;
+                }
+                optionControls += "</select>";
+            }
+            optionControls += "</div>";
+            elemBgSettingsList.innerHTML += optionControls;
+        });
+
+        // Add events
+        settings.forEach(function(setting, index) {
+            const elemId = setting.prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls";
+            let elem = document.getElementById(elemId);
+            if(elem) {
+                elem.addEventListener("input", function (e) {
+                    console.log(setting, e.target.value);
+                    if (e.target.type === "checkbox") {
+                        if (e.target.nextElementSibling) e.target.nextElementSibling.value = e.target.checked;
+                        eval(`animation.${setting.prop} = e.target.checked;`);
+                    } else {
+                        if (e.target.nextElementSibling) e.target.nextElementSibling.value = e.target.value;
+                        let value = e.target.value;
+                        if (setting.type === "int") value = parseInt(e.target.value);
+                        else if (setting.type === "float") value = parseFloat(e.target.value);
+                        eval(`animation.${setting.prop} = value;`);
+                    }
+                    if (setting.toCall) animation[setting.toCall]();
+                    elemBgName.innerHTML = animation.getName();
+                    play();
+                });
+            }
+        });
+    }
 }
 
 },{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./game-of-live":6,"./game-of-live-isometric":5,"./gradient-descent":7,"./neural-network":9,"./particles-and-attractors":11,"./particles-vortex":12,"./particles-waves":13,"./perlin-noise-particles":14,"./sorting":15,"./spinning-shapes":16,"./spirograph":17,"./utils":18}],9:[function(require,module,exports){
@@ -1347,13 +1546,8 @@ class NeuralNetwork extends Animation {
     update(timeElapsed){
         // Update network values
 
-        // Randomly
-        // for (let l of this.network) {
-        //     for (let n of l) n.v = Math.random();
-        // }
-
         // Calculate values based on weights
-        if(this.network.length == 0) return;
+        if(this.network.length === 0) return;
         for (let n of this.network[0]) n.v = Utils.randomRange(-1, 1);
         for (let i = 1; i < this.nLayers; i++) {
             for (let n of this.network[i]) {
@@ -1361,8 +1555,8 @@ class NeuralNetwork extends Animation {
                 for (let j = 0; j < this.network[i - 1].length; ++j) {
                     n.v += this.network[i - 1][j].v * n.w[j];
                 }
-                if(i == this.nLayers - 1) n.v = 1 / (1 + Math.exp(-n.v)); // Sigmoid for last layer
-                else n.v = Math.max(0, n.v); // ReLU
+                if(i === this.nLayers - 1) n.nlv = 1 / (1 + Math.exp(-n.v)); // Sigmoid for last layer
+                else n.nlv = Math.max(0, n.v); // ReLU
             }
         }
     }
@@ -1372,12 +1566,12 @@ class NeuralNetwork extends Animation {
 
         // Draw connections
         for (let i = 0; i < this.nLayers - 1; i++) {
-            let l1 = this.network[i];
-            let l2 = this.network[i + 1];
+            const l1 = this.network[i],
+                  l2 = this.network[i + 1];
             for (let n1 of l1) {
                 for (let n2 of l2) {
-                    const v = Utils.clip(n1.v, 0, 1);
-                    const color = this.colors[this.colors.length - 1 - Math.floor(v * this.colors.length)];
+                    const v = Utils.clip(n1.v, 0, 1),
+                          color = this.colors[this.colors.length - 1 - Math.floor(v * this.colors.length)];
                     this.ctx.globalAlpha = v;
                     Utils.drawLine(this.ctx, n1.x, n1.y, n2.x, n2.y, color, 1 + v);
                 }
@@ -1386,15 +1580,19 @@ class NeuralNetwork extends Animation {
 
         // Draw nodes
         this.ctx.globalAlpha = 1.0;
-        for (let l of this.network) {
+        for (let i = 0; i < this.nLayers; ++i) {
+            const l = this.network[i];
             for (let n of l) {
-                let v = Utils.clip(n.v, 0, 1);
-                let v2 = Utils.clip(n.v * 2, 0, 4);
-                let color = this.colors[this.colors.length - 1 - Math.floor(v * this.colors.length)];
-                let nSize = this.baseNodeSize + v2;
+                const v = Utils.clip(n.nlv, 0, 1),
+                      v2 = Utils.clip(n.nlv * 2, 0, 4),
+                      color = this.colors[this.colors.length - 1 - Math.floor(v * this.colors.length)],
+                      nSize = this.baseNodeSize + v2;
                 Utils.fillCircle(this.ctx, n.x, n.y, nSize, color);
                 this.ctx.font = '12px sans-serif';
-                this.ctx.fillText(n.v.toFixed(2), n.x - 11, n.y - 2 * this.baseNodeSize);
+                let text = `ReLU(${Utils.round(n.v, 2)}) = ${Utils.round(n.nlv, 2)}`;
+                if(i === 0) text = `${Utils.round(n.v, 2)}`;
+                else if(i === this.nLayers - 1) text = `Sigmoid(${Utils.round(n.v, 2)}) = ${Utils.round(n.nlv, 2)}`;
+                this.ctx.fillText(text, n.x - text.length * 2.5, n.y - 3 * this.baseNodeSize);
             }
         }
     }
@@ -1424,7 +1622,7 @@ class NeuralNetwork extends Animation {
             if (layerNodes % 2 == 0) y += interNode/2;
 
             for (let j = 0; j < layerNodes; j++) {
-                let n = {x: x, y: y, v: 0, w: null};
+                let n = {x: x, y: y, v: 0, nlv: 0, w: null};
                 if(i > 0) n.w = Utils.randomArray(this.network[i - 1].length, -1, 1);
                 layer.push(n);
                 y += interNode;
@@ -1767,38 +1965,63 @@ const Utils = require("./utils");
 class ParticlesAndAttractors extends Animation {
     constructor (canvas, colors, colorsAlt,
                  numParticles= 10000,
+                 particlesSpeed = "random",
+                 fadingSpeed = 0.03,
                  numAttractors = 5,
-                 drawAttractors = false
+                 attractorsSystem = "random",
+                 attractorsSpeed = "random",
+                 drawAttractors = false,
+                 scale = 1
     ) {
         super(canvas, colors, colorsAlt, "system of particles and attractors", "particles-and-attractors.js");
         this.particles = []
-        this.particlesSpeed = Utils.randomRange(5, 15);
+        this.numParticles = numParticles;
+        this.particlesSpeed = this.assignAndCheckIfRandom(particlesSpeed, Utils.round(Utils.randomRange(5, 15)));
+        this.fadingSpeed = fadingSpeed;
 
         this.drawAttractors = drawAttractors;
         this.numAttractors = numAttractors;
-        this.attractorsSystem = Utils.randomChoice(["circles", "eights"]);
-        this.attractorsSpeed = Utils.randomRange(0.05, 0.1) * Utils.randomChoice([-1, 1]);
-        this.timeBase = Utils.randomRange(0, 10);
 
-        for (let i = 0; i < numParticles; ++i)
+        this.attractorsSystems = ["orbits", "eights"]
+        this.attractorsSystem = this.assignAndCheckIfRandom(attractorsSystem, Utils.randomChoice(this.attractorsSystems));
+        this.attractorsSpeed = this.assignAndCheckIfRandom(attractorsSpeed, Utils.round(Utils.randomRange(0.05, 0.1) * Utils.randomChoice([-1, 1])));
+        this.attractorsPosition = 0;
+        this.startingPosition = Utils.randomRange(0, 10);
+
+        this.scale = scale;
+
+        this.setup();
+    }
+
+    setup(){
+        this.particles = []
+        for (let i = 0; i < this.numParticles; ++i)
             this.particles.push(Utils.rotateVec2d(Utils.createVec2d(Utils.randomRange(1, 100), 0), i));
     }
 
-    draw() {
-        Utils.blendColor(this.ctx, this.bgColor, 0.03, "lighter");
-        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+    update(elapsed){
+        this.time += elapsed / 1000;
+        ++this.frame;
+        this.attractorsPosition += elapsed / 1000 * this.attractorsSpeed;
+    }
 
-        const t = (this.timeBase + this.time) * this.attractorsSpeed;
+    draw() {
+        this.fadeOut(this.fadingSpeed);
+
+        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        this.ctx.scale(this.scale, this.scale);
+
+        const p = this.startingPosition + this.attractorsPosition;
 
         let attractors = [];
-        if(this.attractorsSystem == "circles") {
+        if(this.attractorsSystem === "orbits") {
             const s = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / (2 * (this.numAttractors - 1));
             for (let i = 0; i < this.numAttractors; ++i)
-                attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * s, 0), t * i));
-        } else if (this.attractorsSystem == "eights") {
+                attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * s, 0), p * i));
+        } else if (this.attractorsSystem === "eights") {
             const s = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / this.numAttractors;
             for (let i = 0; i < this.numAttractors; ++i)
-                attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * Math.sin(t * Math.PI / 2) * s, 0), t * i));
+                attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * Math.sin(p * Math.PI / 2) * s, 0), p * i));
         }
 
         for (let p of this.particles) {
@@ -1821,6 +2044,49 @@ class ParticlesAndAttractors extends Animation {
 
     resize() {
         Utils.clear(this.ctx, "#FFFFFF");
+    }
+
+    getSettings() {
+        return [{
+            prop: "numParticles",
+            type: "int",
+            min: 1000,
+            max: 15000,
+            toCall: "setup",
+        }, {
+            prop: "particlesSpeed",
+            type: "float",
+            min: 1,
+            max: 20,
+        }, {
+            prop: "fadingSpeed",
+            type: "float",
+            step: 0.001,
+            min: 0,
+            max: 0.1,
+        }, {
+            prop: "attractorsSystem",
+            type: "select",
+            values: this.attractorsSystems
+        }, {
+            prop: "numAttractors",
+            type: "int",
+            min: 3,
+            max: 7,
+        }, {
+            prop: "attractorsSpeed",
+            type: "float",
+            min: -0.2,
+            max: 0.2,
+        }, {
+            prop: "drawAttractors",
+            type: "bool",
+        }, {
+            prop: "scale",
+            type: "float",
+            min: 0.05,
+            max: 1.95,
+        }];
     }
 }
 
@@ -1845,7 +2111,8 @@ class ParticlesVortex extends Animation {
                  speedMin = 25,
                  speedMax = 50,
                  rotationSpeedMin = 0.01,
-                 rotationSpeedMax = 0.02
+                 rotationSpeedMax = 0.02,
+                 scale = 1
     ){
         super(canvas, colors, colorsAlt, "vortex of particles", "particles-vortex.js");
 
@@ -1858,7 +2125,7 @@ class ParticlesVortex extends Animation {
         this.rotationSpeed = Utils.randomRange(rotationSpeedMin, rotationSpeedMax) * Utils.randomChoice([-1, 1]);
         this.dirX = Utils.randomRange(-0.75, 0.75);
         this.dirY = Utils.randomRange(-0.75, 0.75);
-        this.resize();
+        this.scale = scale;
     }
 
     draw() {
@@ -1872,6 +2139,7 @@ class ParticlesVortex extends Animation {
               s = Math.round(this.time * this.speed) / 2;
 
         this.ctx.translate(centerX, centerY);
+        this.ctx.scale(this.scale, this.scale);
 
         this.ctx.beginPath();
         for(let i = 1; i <= this.particles; i++){
@@ -1903,15 +2171,19 @@ const Noise = require("./noise");
 const Utils = require("./utils");
 
 class ParticlesStorm extends Animation {
-    constructor(canvas, colors, colorsAlt, particlePer100PixSq = 48, noiseScale = 0.001) {
+    constructor(canvas, colors, colorsAlt, 
+                particlePer100PixSq = 48, 
+                noiseScale = 0.001,
+                fadingSpeed = 0.02) {
         super(canvas, colors, colorsAlt, "particles waves", "particles-waves.js");
 
         this.particlePer100PixSq = particlePer100PixSq;
         this.noiseScale = noiseScale;
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
+        this.fadingSpeed = fadingSpeed;
         this.particles = [];
-
+        
         this.width = 0;
         this.height = 0;
     }
@@ -1936,7 +2208,7 @@ class ParticlesStorm extends Animation {
     }
 
     draw() {
-        Utils.blendColor(this.ctx, this.bgColor, 0.02, "lighter");
+        this.fadeOut(this.fadingSpeed);
         for(let p of this.particles){
             this.ctx.fillStyle = p.color;
             this.ctx.fillRect(p.x, p.y, 1, 1);
@@ -1961,6 +2233,28 @@ class ParticlesStorm extends Animation {
             });
         }
     }
+
+    getSettings() {
+        return [{
+            prop: "particlePer100PixSq",
+            type: "int",
+            min: 1,
+            max: 250,
+            toCall: "resize",
+        }, {
+            prop: "noiseScale",
+            type: "float",
+            step: 0.0001,
+            min: 0,
+            max: 0.01,
+        }, {
+            prop: "fadingSpeed",
+            type: "float",
+            step: 0.001,
+            min: 0,
+            max: 0.1,
+        }];
+    }
 }
 
 module.exports = ParticlesStorm;
@@ -1980,7 +2274,9 @@ class PerlinNoiseParticles extends Animation {
     constructor(canvas, colors, colorsAlt,
                 particlePer100PixSq = 4,
                 noiseScale = 0.001,
-                drawNoise = false
+                particlesSpeed = 1,
+                drawNoise = false,
+                fadingSpeed = 0
     ) {
         super(canvas, colors, colorsAlt, "particles moving through Perlin noise", "perlin-noise-particles.js");
         this.particlePer100PixSq = particlePer100PixSq;
@@ -1988,6 +2284,9 @@ class PerlinNoiseParticles extends Animation {
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
         this.drawNoise = drawNoise;
+
+        this.particlesSpeed = particlesSpeed;
+        this.fadingSpeed = fadingSpeed;
 
         this.width = 0;
         this.height = 0;
@@ -1998,16 +2297,28 @@ class PerlinNoiseParticles extends Animation {
     update(elapsed) {
         this.time += elapsed / 1000;
         ++this.frame;
-        for(let p of this.particles){
-            const angle = this.noise.perlin2(p.x * this.noiseScale, p.y * this.noiseScale) * 2 * Math.PI / this.noiseScale;
+        let updates = 1,
+            particlesSpeed = this.particlesSpeed;
+        while(particlesSpeed > 1.0){
+            particlesSpeed /= 2;
+            updates *= 2;
+        }
+        for (let p of this.particles) {
             p.prevX = p.x;
             p.prevY = p.y;
-            p.x += Math.cos(angle) * p.speed;
-            p.y += Math.sin(angle) * p.speed;
+        }
+        for(let i = 0; i < updates; ++i) {
+            for (let p of this.particles) {
+                const angle = this.noise.perlin2(p.x * this.noiseScale, p.y * this.noiseScale) * 2 * Math.PI / this.noiseScale;
+                p.x += Math.cos(angle) * p.speed * particlesSpeed;
+                p.y += Math.sin(angle) * p.speed * particlesSpeed;
+            }
         }
     }
 
     draw() {
+        this.fadeOut(this.fadingSpeed);
+
         for(let p of this.particles){
             // Utils.fillCircle(this.ctx, p.x, p.y, p.radius, p.color);
             Utils.drawLine(this.ctx, p.prevX, p.prevY, p.x, p.y, p.color, 2 * p.radius); // This results with better antialiasing
@@ -2036,7 +2347,7 @@ class PerlinNoiseParticles extends Animation {
 
     resize() {
         Utils.clear(this.ctx, this.bgColor);
-        if(this.imageData != null) this.ctx.putImageData(this.imageData, 0, 0);
+        if(this.imageData !== null) this.ctx.putImageData(this.imageData, 0, 0);
 
         // Add particles to new parts of the image
         let divWidth = this.ctx.canvas.width - this.width;
@@ -2064,6 +2375,21 @@ class PerlinNoiseParticles extends Animation {
                 }
             }
         }
+    }
+
+    getSettings() {
+        return [{
+            prop: "particlesSpeed",
+            type: "float",
+            min: 0.25,
+            max: 32,
+        }, {
+            prop: "fadingSpeed",
+            type: "float",
+            step: 0.0001,
+            min: 0,
+            max: 0.01,
+        }];
     }
 }
 
@@ -2106,6 +2432,7 @@ class SortingAlgorithm {
     constructor(arr, name){
         this.arr = arr;
         this.moves = []
+        this.cmpCount = 0;
         this.name = name;
         this.sort();
     }
@@ -2115,12 +2442,18 @@ class SortingAlgorithm {
     }
 
     comp(arr, a, b){
-        if(a != b) this.moves.push(["cmp", arr[a], arr[b]]);
+        if(a !== b) {
+            ++this.cmpCount;
+            this.moves.push(["cmp", arr[a], arr[b]]);
+        }
         return arr[a].val - arr[b].val;
     }
 
     compVal(a, b){
-        if(a != b) this.moves.push(["cmp", a, b]);
+        if(a !== b){
+            ++this.cmpCount;
+            this.moves.push(["cmp", a, b]);
+        }
         return a.val - b.val;
     }
 
@@ -2274,38 +2607,56 @@ class HeapSort extends SortingAlgorithm{
 
 class Sorting extends Animation {
     constructor (canvas, colors, colorsAlt,
+                 sortingAlgorithm = "random",
+                 numElements = 100,
                  elementPadding = 2,
                  cmpDuration = 0.25,
-                 swapDuration = 0.25) {
+                 swapDuration = 0.25,
+                 speed = 1,
+                 showNumbers = false,
+                 showStats = false
+        ) {
         super(canvas, colors, colorsAlt, "Sorting algorithm visualization", "sorting.js");
-        this.numElements = 100;
+        this.numElements = numElements;
         this.elementPadding = elementPadding;
-        this.elementWidth = 0;
-        this.elementMaxHeight = 0;
         this.cmpDuration = cmpDuration;
         this.swapDuration = swapDuration;
+        this.speed = speed;
+        this.showStats = showStats;
 
+        this.sortAlgoNames = ["selection sort", "bubble sort", "insertion sort", "quick sort", "merge sort"];
+        this.sortAlgoClasses = [SelectionSort, BubbleSort, InsertionSort, QuickSort, MergeSort];
+        this.sortingAlgorithm = this.assignAndCheckIfRandom(sortingAlgorithm, Utils.randomChoice(this.sortAlgoNames));
+        this.cmpTotal = 0;
+        this.cmpCount = 0;
+
+        this.setup();
+    }
+
+    setup(){
         this.animQueue = new AnimationQueue();
 
         // Randomize elements
         this.elements = [];
         for(let i = 0; i < this.numElements; ++i){
             const val = Utils.randomRange(0, 1),
-                color = Utils.lerpColor(this.colors[0], this.colors[this.colors.length - 1], val);
+                  color = Utils.lerpColor(this.colors[0], this.colors[this.colors.length - 1], val);
             this.elements.push({val: val, pos: i, color: color, z: 0})
         }
 
         // Sort
-        let sortAlgClass = Utils.randomChoice([BubbleSort, SelectionSort, InsertionSort, QuickSort, MergeSort]),
-            sortAlg = new sortAlgClass(this.elements)
-        this.moves = sortAlg.getMoves();
-        this.name = sortAlg.getName() + " algorithm visualization";
+        let sortAlgoCls = this.sortAlgoClasses[this.sortAlgoNames.indexOf(this.sortingAlgorithm)];
+        let sortAlgo = new sortAlgoCls(this.elements);
+        this.moves = sortAlgo.getMoves();
+        this.name = sortAlgo.getName() + " algorithm visualization";
 
-        //console.log(this.elements);
+        this.cmpTotal = sortAlgo.cmpCount;
+        this.cmpCount = 0;
     }
 
     update(elapsed){
-        elapsed /= 1000
+        elapsed /= 1000;
+        elapsed *= this.speed;
         this.time += elapsed;
         ++this.frame;
 
@@ -2316,7 +2667,8 @@ class Sorting extends Animation {
             const colorEasing = (x) => x < 0.5 ? Utils.easeInOutCubic( 2 * x) : 1 - Utils.easeInOutCubic( 2 * x - 1),
                   posEasing = Utils.easeInOutSine;
 
-            if(s[0] == "cmp") {
+            if(s[0] === "cmp") {
+                ++this.cmpCount;
                 let e1 = s[1], e2 = s[2];
                 const color1 = e1.color,
                       color2 = e2.color,
@@ -2331,7 +2683,7 @@ class Sorting extends Animation {
                 });
             }
 
-            if(s[0] == "swap") {
+            if(s[0] === "swap") {
                 let e1 = s[1], e2 = s[2];
                 let pos1 = [],
                     pos2 = [],
@@ -2364,18 +2716,50 @@ class Sorting extends Animation {
     draw() {
         Utils.clear(this.ctx, "#FFFFFF");
 
+        const elementMaxHeight = this.ctx.canvas.height,
+              elementWidth = this.ctx.canvas.width / this.numElements;
+
         this.elements = this.elements.sort((e1, e2) => e1.z - e2.z)
         for(let e of this.elements){
-            const x = e.pos * this.elementWidth + this.elementPadding / 2,
-                  y = e.val * this.elementMaxHeight;
+            const x = e.pos * elementWidth + this.elementPadding / 2,
+                  y = e.val * elementMaxHeight;
             this.ctx.fillStyle = e.color;
-            this.ctx.fillRect(x, 0, this.elementWidth - this.elementPadding, y);
+            this.ctx.fillRect(x, 0, elementWidth - this.elementPadding, y);
+        }
+
+        if(this.showStats){
+            const lineHeight = 20;
+            this.ctx.font = '12px sans-serif';
+            this.ctx.fillStyle = this.colors[0];
+
+            this.ctx.fillText(`Sorting algorithm: ${this.sortingAlgorithm}`, lineHeight, elementMaxHeight - 3 * lineHeight);
+            this.ctx.fillText(`Number of elements: ${this.numElements}`, lineHeight, elementMaxHeight - 2 * lineHeight);
+            this.ctx.fillText(`Number of element comparisons: ${this.cmpCount} / ${this.cmpTotal}`, lineHeight, elementMaxHeight - lineHeight);
         }
     }
 
-    resize(){
-        this.elementMaxHeight = this.ctx.canvas.height;
-        this.elementWidth = this.ctx.canvas.width / this.numElements;
+    getSettings() {
+        return [{
+            prop: "sortingAlgorithm",
+            type: "select",
+            values: this.sortAlgoNames,
+            toCall: "setup",
+        }, {
+            prop: "numElements",
+            type: "int",
+            min: 8,
+            max: 256,
+            toCall: "setup",
+        }, {
+            prop: "speed",
+            type: "float",
+            step: 0.25,
+            min: 0.5,
+            max: 8,
+        }, {
+            prop: "showStats",
+            type: "bool"
+        }];
     }
 }
 
@@ -2393,26 +2777,38 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class SpinningShapes extends Animation {
-    constructor (canvas, colors, colorsAlt, shapes = 500, sides = [0], rotatePolygons = false) {
+    constructor (canvas, colors, colorsAlt, 
+                 shapes = 500, 
+                 sides = 0,
+                 rotateShapes = false,
+                 scale = 1,
+                 rainbowColors = false) {
         super(canvas, colors, colorsAlt, "", "spinning-shapes.js");
 
-        const shapeSides = [0, 3, 4, 5, 6, 8];
-        const shapeNames = ["circles", "triangles", "rectangles", "pentagons", "hexagons", "octagons"];
-        this.sides = Utils.randomChoice(sides);
-        this.rotatePolygons = rotatePolygons;
+        this.shapeSides = [0, 1, 2, 3, 4, 5, 6, 8];
+        this.shapeNames = ["circles", "points", "lines", "triangles", "rectangles", "pentagons", "hexagons", "octagons"];
+        this.sides = this.assignAndCheckIfRandom(sides, Utils.randomChoice(this.shapeSides));
+        this.updateName();
+        this.rotateShapes = rotateShapes;
         this.shapes = shapes;
-        this.name = shapeNames[shapeSides.indexOf(this.sides)] + " moving in a circle";
 
         this.distBase = 0.6;
         this.distVar = 0.2;
         this.sizeBase = 0.2;
         this.sizeVar = 0.12;
+
+        this.scale = scale;
+        this.rainbowColors = rainbowColors;
+    }
+
+    updateName(){
+        this.name = this.shapeNames[this.shapeSides.indexOf(this.sides)] + " moving in a circle";
     }
 
     draw() {
         Utils.clear(this.ctx, "#FFFFFF");
 
-        const scale = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3;
+        const scale = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3 * this.scale;
 
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
 
@@ -2422,16 +2818,45 @@ class SpinningShapes extends Animation {
                   x = Math.cos(theta) * distance,
                   y = Math.sin(theta) * distance,
                   radius = (this.sizeBase + this.sizeVar * Math.cos(theta * 9 - this.time)) * scale;
-            this.ctx.strokeStyle = Utils.lerpColor(this.colorA, this.colorB,(Math.cos(theta * 9 - this.time) + 1) / 2); // New with smooth color transition
+            if(this.rainbowColors) this.ctx.strokeStyle = 'hsl(' + (Math.cos(theta * 9 - this.time) + 1) / 2 * 360 + ', 100%, 75%)';
+            else this.ctx.strokeStyle = Utils.lerpColor(this.colorA, this.colorB,(Math.cos(theta * 9 - this.time) + 1) / 2); // New with smooth color transition
             this.ctx.lineWidth = 1;
 
             this.ctx.beginPath();
-            if(this.sides == 0) Utils.pathCircle(this.ctx, x, y, radius);
-            else Utils.pathPolygon(this.ctx, x, y, radius, this.sides, theta * this.rotatePolygons);
+            if(this.sides === 0) Utils.pathCircle(this.ctx, x, y, radius);
+            if(this.sides === 1) Utils.pathCircle(this.ctx, x, y, 1);
+            else Utils.pathPolygon(this.ctx, x, y, radius, this.sides, theta * this.rotateShapes);
             this.ctx.stroke();
         }
 
         this.ctx.resetTransform();
+    }
+
+    getSettings() {
+        return [{
+            prop: "sides",
+            type: "int",
+            min: 0,
+            max: 8,
+            toCall: "updateName"
+        }, {
+            prop: "shapes",
+            type: "int",
+            min: 0,
+            max: 2500,
+        }, {
+            prop: "rotateShapes",
+            type: "bool",
+        }, {
+            prop: "scale",
+            type: "float",
+            min: 0.05,
+            max: 1.95,
+            toCall: "resize",
+        }, {
+            prop: "rainbowColors",
+            type: "bool",
+        }];
     }
 }
 
@@ -2450,29 +2875,36 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class Spirograph extends Animation {
-    constructor (canvas, colors, colorsAlt, points = 2500) {
+    constructor (canvas, colors, colorsAlt, points = 2500, length = 2, gearCount = "random") {
         super(canvas, colors, colorsAlt, "spirograph", "spirograph.js");
 
         this.points = points;
-        this.gears = []
-        const gearCount = Utils.randomInt(2, 5),
-              gearNames = ["one", "two", "three", "four", "five", "six"];
-        this.name = "spirograph with " + gearNames[gearCount] + " random gears"
-        for(let i = 0; i < gearCount; ++i){
+        this.length = length;
+        this.maxGears = 5;
+        this.gearCount = this.assignAndCheckIfRandom(gearCount, Utils.randomInt(2, this.maxGears));
+        this.gearNames = ["zero", "one", "two", "three", "four", "five"];
+        this.updateName();
+        this.gears = [];
+        for (let i = 0; i < this.maxGears; ++i) {
             this.gears.push({
-                r: Utils.randomRange(0, 100),
-                rate: Utils.randomRange(-100, 100),
+                radius: Utils.round(Utils.randomRange(0, 100), 2),
+                rate: Utils.round(Utils.randomRange(-100, 100), 2),
                 phase: i * 0.005
             });
         }
     }
 
-    get_x_y(i, j, scale = 1){
+    updateName(){
+        this.name = "spirograph with " + this.gearNames[this.gearCount] + " random gears";
+    }
+
+    getXY(i, j, scale = 1){
         let x = 0, y = 0;
 
-        for(let g of this.gears){
-            x += g.r * scale * Math.cos(g.rate * (i + j * g.phase));
-            y += g.r * scale * Math.sin(g.rate * (i + j * g.phase));
+        for(let k = 0; k < this.gearCount; ++k){
+            const g = this.gears[k];
+            x += g.radius * scale * Math.cos(g.rate * (i + j * g.phase));
+            y += g.radius * scale * Math.sin(g.rate * (i + j * g.phase));
         }
 
         return {x: x, y: y}
@@ -2481,23 +2913,68 @@ class Spirograph extends Animation {
     draw() {
         Utils.clear(this.ctx, this.bgColor);
 
-        let r = 0;
-        for(let g of this.gears) r += g.r;
-        const scale = Math.min(this.ctx.canvas.width, this.ctx.canvas.height) / 2 / r;
+        // Normalize size to fit the screen nicely
+        let totalRadius = 0;
+        for(let i = 0; i < this.gearCount; ++i) totalRadius += this.gears[i].radius;
+        const scale = Math.min(this.ctx.canvas.width, this.ctx.canvas.height) / 2 / totalRadius;
 
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
 
-        const incr = Math.PI * 2 / this.points;
-        let start = this.get_x_y(0, this.time, scale);
+        const length = Math.PI * this.length,
+              incr = length / this.points;
+        let start = this.getXY(0, this.time, scale);
 
-        for (let i = incr; i <= Math.PI * 2; i += incr) {
-            let next = this.get_x_y(i, this.time, scale);
-            const color = Utils.lerpColor(this.colorA, this.colorB, i / (Math.PI * 2));
+        for (let i = 0; i <= length; i += incr) {
+            let next = this.getXY(i, this.time, scale);
+            const color = Utils.lerpColor(this.colorA, this.colorB, i / length);
             Utils.drawLine(this.ctx, start.x, start.y, next.x, next.y, color, 1);
             start = next;
         }
 
         this.ctx.resetTransform();
+    }
+
+    getSettings() {
+        let settings = [{
+            prop: "points",
+            type: "int",
+            min: 100,
+            max: 10000,
+        }, {
+            prop: "length",
+            type: "float",
+            step: 0.25,
+            min: 1,
+            max: 8,
+        }, {
+            prop: "gearCount",
+            type: "int",
+            min: 1,
+            max: this.maxGears,
+            toCall: "updateName"
+        }];
+        for(let i = 0; i < this.maxGears; ++i){
+            settings = settings.concat([{
+                prop: `gears[${i}].radius`,
+                type: "float",
+                step: 0.01,
+                min: 0,
+                max: 100,
+            }, {
+                prop: `gears[${i}].rate`,
+                type: "float",
+                step: 0.01,
+                min: -100,
+                max: 100,
+            }, {
+                prop: `gears[${i}].phase`,
+                type: "float",
+                step: 0.001,
+                min: -0.1,
+                max: 0.1,
+            }]);
+        }
+        return settings;
     }
 }
 
@@ -2537,6 +3014,11 @@ module.exports = {
     },
 
     // Array/math helpers
+    round(value, decimalPlace = 2){
+        const shift = Math.pow(10, decimalPlace);
+        return Math.round( value * shift) / shift;
+    },
+
     addArrays(a, b){
         return a.map((e, i) => e + b[i]);
     },
@@ -2735,6 +3217,10 @@ module.exports = {
 
     isStrictMode(){
         return ((eval("var __temp = null"), (typeof __temp === "undefined")) ? "strict":  "non-strict");
+    },
+
+    addMultipleEventListener(element, events, handler) {
+        events.forEach(e => element.addEventListener(e, handler))
     }
 };
 
