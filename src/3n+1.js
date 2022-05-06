@@ -91,38 +91,11 @@ class ThreeNPlusOne extends Animation {
     }
 
     getSettings() {
-        return [{
-            prop: "length",
-            type: "int",
-            min: 1,
-            max: 100,
-            toCall: "resize",
-        },
-        {
-            prop: "evenAngle",
-            type: "int",
-            min: -45,
-            max: 45,
-            toCall: "resize",
-        },
-        {
-            prop: "oddAngle",
-            type: "int",
-            min: -45,
-            max: 45,
-            toCall: "resize",
-        },
-        {
-            prop: "drawNumbers",
-            type: "bool",
-            toCall: "resize",
-        }, {
-            prop: "scale",
-            type: "float",
-            min: 0.05,
-            max: 1.95,
-            toCall: "resize",
-        }];
+        return [{prop: "length", type: "int", min: 1, max: 100, toCall: "resize"},
+                {prop: "evenAngle", type: "int", min: -45, max: 45, toCall: "resize"},
+                {prop: "oddAngle", type: "int", min: -45, max: 45, toCall: "resize"},
+                {prop: "drawNumbers", type: "bool", toCall: "resize"},
+                {prop: "scale", type: "float", min: 0.05, max: 1.95, toCall: "resize"}];
     }
 }
 

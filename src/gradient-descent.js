@@ -434,12 +434,7 @@ class GradientDescent extends Animation {
     }
 
     getSettings() {
-        return [{
-            prop: "functionToOptimize",
-            type: "select",
-            values: this.funcNames,
-            toCall: "resize",
-        }];
+        return [{prop: "functionToOptimize", type: "select", values: this.funcNames, toCall: "resize"}];
     }
 }
 

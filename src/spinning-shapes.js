@@ -1,5 +1,5 @@
 /*
- * Shapes moving in a circle.
+ * Shapes moving in a circle/dancing.
  * Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
  *
  * Coded with no external dependencies, using only canvas API.
@@ -14,6 +14,8 @@ class SpinningShapes extends Animation {
                  sides = 0,
                  rotateShapes = false,
                  scale = 1,
+                 colorsScale = 1,
+                 colorsShift = "random",
                  rainbowColors = false) {
         super(canvas, colors, colorsAlt, "", "spinning-shapes.js");
 
@@ -24,12 +26,14 @@ class SpinningShapes extends Animation {
         this.rotateShapes = rotateShapes;
         this.shapes = shapes;
 
-        this.distBase = 0.6;
-        this.distVar = 0.2;
+        this.distanceBase = 0.6;
+        this.distanceRange = 0.2;
         this.sizeBase = 0.2;
-        this.sizeVar = 0.12;
+        this.sizeRange = 0.12;
 
         this.scale = scale;
+        this.colorsScale = colorsScale;
+        this.colorsShift = this.assignAndCheckIfRandom(colorsShift, Utils.randomChoice([0, 3.14]));
         this.rainbowColors = rainbowColors;
     }
 
@@ -46,12 +50,14 @@ class SpinningShapes extends Animation {
 
         for (let i = 0; i < this.shapes; ++i) {
             const theta = i / this.shapes * 2 * Math.PI,
-                  distance = (this.distBase + this.distVar * Math.cos(theta * 6 + Math.cos(theta * 8 + this.time / 2))) * scale,
+                  distance = (this.distanceBase + this.distanceRange * Math.cos(theta * 6 + Math.cos(theta * 8 + this.time / 2))) * scale,
                   x = Math.cos(theta) * distance,
                   y = Math.sin(theta) * distance,
-                  radius = (this.sizeBase + this.sizeVar * Math.cos(theta * 9 - this.time)) * scale;
-            if(this.rainbowColors) this.ctx.strokeStyle = 'hsl(' + (Math.cos(theta * 9 - this.time) + 1) / 2 * 360 + ', 100%, 75%)';
-            else this.ctx.strokeStyle = Utils.lerpColor(this.colorA, this.colorB,(Math.cos(theta * 9 - this.time) + 1) / 2); // New with smooth color transition
+                  theta9 = theta * 9 - this.time,
+                  radius = (this.sizeBase + this.sizeRange * Math.cos(theta9)) * scale,
+                  color = (Math.cos((theta9 + this.colorsShift) * this.colorsScale) + 1) / 2;
+            if(this.rainbowColors) this.ctx.strokeStyle = `hsl(${color * 360}, 100%, 75%)`;
+            else this.ctx.strokeStyle = Utils.lerpColor(this.colorA, this.colorB, color);
             this.ctx.lineWidth = 1;
 
             this.ctx.beginPath();
@@ -65,30 +71,15 @@ class SpinningShapes extends Animation {
     }
 
     getSettings() {
-        return [{
-            prop: "sides",
-            type: "int",
-            min: 0,
-            max: 8,
-            toCall: "updateName"
-        }, {
-            prop: "shapes",
-            type: "int",
-            min: 0,
-            max: 2500,
-        }, {
-            prop: "rotateShapes",
-            type: "bool",
-        }, {
-            prop: "scale",
-            type: "float",
-            min: 0.05,
-            max: 1.95,
-            toCall: "resize",
-        }, {
-            prop: "rainbowColors",
-            type: "bool",
-        }];
+        return [{prop: "sides", type: "int", min: 0, max: 8, toCall: "updateName"},
+                {prop: "shapes", type: "int", min: 0, max: 2500},
+                {prop: "rotateShapes", type: "bool" },
+                //{prop: "distanceRange", type: "float", min: 0, max: 1},
+                //{prop: "sizeRange", type: "float", min: 0, max: 1},
+                {prop: "scale", type: "float", min: 0.05, max: 1.95, toCall: "resize"},
+                {prop: "colorsShift", type: "float", min: 0, max: 3.14},
+                {prop: "colorsScale", type: "float", min: 0.05, max: 2},
+                {prop: "rainbowColors", type: "bool"}];
     }
 }
 

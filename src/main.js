@@ -20,6 +20,10 @@ const Sorting = require("./sorting");
 const SpinningShapes = require("./spinning-shapes");
 const Spirograph = require("./spirograph")
 
+//const Codding = require("./dev/codding");
+const Matrix = require("./dev/matrix");
+const SpiralDomino = require("./dev/spiral-domino");
+const Tree = require("./dev/tree");
 
 // Globals
 // ---------------------------------------------------------------------------------------------------------------------
@@ -104,20 +108,22 @@ const elemBgSettingsClose = document.getElementById("background-settings-close")
 // ---------------------------------------------------------------------------------------------------------------------
 
 let animations = [
-    ThreeNPlusOne,
-    Cardioids,
-    CircularWaves,
-    GameOfLife,
-    GameOfLifeIsometric,
-    GradientDescent,
+    Matrix,
+    SpiralDomino,
+    // ThreeNPlusOne,
+    // Cardioids,
+    // CircularWaves,
+    // GameOfLife,
+    // GameOfLifeIsometric,
+    // GradientDescent,
     NeuralNetwork,
-    ParticlesAndAttractors,
-    ParticlesVortex,
-    ParticlesWaves,
-    PerlinNoiseParticles,
-    Sorting,
+    // ParticlesAndAttractors,
+    // ParticlesVortex,
+    // ParticlesWaves,
+    // PerlinNoiseParticles,
+    // Sorting,
     SpinningShapes,
-    Spirograph
+    // Spirograph
 ];
 
 Utils.randomShuffle(animations);

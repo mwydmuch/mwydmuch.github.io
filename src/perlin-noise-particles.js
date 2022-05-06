@@ -10,14 +10,14 @@ const Utils = require("./utils");
 
 class PerlinNoiseParticles extends Animation {
     constructor(canvas, colors, colorsAlt,
-                particlePer100PixSq = 4,
+                particlesDensity = 0.0004,
                 noiseScale = 0.001,
                 particlesSpeed = 1,
                 drawNoise = false,
                 fadingSpeed = 0
     ) {
         super(canvas, colors, colorsAlt, "particles moving through Perlin noise", "perlin-noise-particles.js");
-        this.particlePer100PixSq = particlePer100PixSq;
+        this.particlesDensity = particlesDensity;
         this.noiseScale = noiseScale;
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
@@ -37,14 +37,17 @@ class PerlinNoiseParticles extends Animation {
         ++this.frame;
         let updates = 1,
             particlesSpeed = this.particlesSpeed;
+
         while(particlesSpeed > 1.0){
             particlesSpeed /= 2;
             updates *= 2;
         }
+
         for (let p of this.particles) {
             p.prevX = p.x;
             p.prevY = p.y;
         }
+
         for(let i = 0; i < updates; ++i) {
             for (let p of this.particles) {
                 const angle = this.noise.perlin2(p.x * this.noiseScale, p.y * this.noiseScale) * 2 * Math.PI / this.noiseScale;
@@ -65,7 +68,7 @@ class PerlinNoiseParticles extends Animation {
     }
 
     spawnParticles(x, y, width, height) {
-        let newParticles = width / 100 * height / 100 * this.particlePer100PixSq;
+        let newParticles = width * height * this.particlesDensity;
 
         // Create new particles
         for(let i = 0; i < newParticles; i++){
@@ -88,8 +91,8 @@ class PerlinNoiseParticles extends Animation {
         if(this.imageData !== null) this.ctx.putImageData(this.imageData, 0, 0);
 
         // Add particles to new parts of the image
-        let divWidth = this.ctx.canvas.width - this.width;
-        let divHeight = this.ctx.canvas.height - this.height;
+        const divWidth = this.ctx.canvas.width - this.width,
+              divHeight = this.ctx.canvas.height - this.height;
 
         if(divWidth > 0) this.spawnParticles(this.width, 0, divWidth, this.height);
         if(divHeight > 0) this.spawnParticles(0, this.height, this.width, divHeight);
@@ -116,18 +119,8 @@ class PerlinNoiseParticles extends Animation {
     }
 
     getSettings() {
-        return [{
-            prop: "particlesSpeed",
-            type: "float",
-            min: 0.25,
-            max: 32,
-        }, {
-            prop: "fadingSpeed",
-            type: "float",
-            step: 0.0001,
-            min: 0,
-            max: 0.01,
-        }];
+        return [{prop: "particlesSpeed", type: "float", min: 0.25, max: 32},
+                {prop: "fadingSpeed", type: "float", step: 0.0001, min: 0, max: 0.01}];
     }
 }
 

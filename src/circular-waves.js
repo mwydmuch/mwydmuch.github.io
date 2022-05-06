@@ -10,7 +10,7 @@ const Utils = require("./utils");
 
 class CircularWaves extends Animation {
     constructor(canvas, colors, colorsAlt,
-                vertexes = 180,
+                vertices = 180,
                 noiseScale = 0.5,
                 radiusScaleMin = 0.4,
                 radiusScaleMax = 1.2,
@@ -21,7 +21,7 @@ class CircularWaves extends Animation {
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
 
-        this.vertexes = vertexes;
+        this.vertices = vertices;
         this.noiseScale = noiseScale;
         this.radiusScaleMin = radiusScaleMin;
         this.radiusScaleMax = radiusScaleMax;
@@ -35,8 +35,8 @@ class CircularWaves extends Animation {
     draw() {
         this.fadeOut(this.fadingSpeed);
 
-        const zoff = this.frame * 0.005;
-        const degPerVertex = 360 / this.vertexes;
+        const zoff = this.frame * 0.005,
+              degPerVertex = 360 / this.vertices;
         if(this.rainbowColors) this.ctx.strokeStyle = 'hsl(' + Math.abs(Math.sin(zoff * 5)) * 360 + ', 100%, 50%)';
         else this.ctx.strokeStyle = Utils.lerpColor(this.colorA, this.colorB, Math.abs(Math.sin(zoff * 5)));
 
@@ -69,40 +69,12 @@ class CircularWaves extends Animation {
     }
 
     getSettings() {
-        return [{
-            prop: "vertexes",
-            type: "int",
-            min: 3,
-            max: 720,
-            toCall: "resize",
-        }, {
-            prop: "radiusScaleMin",
-            type: "float",
-            min: 0,
-            max: 2.0,
-            toCall: "resize",
-        }, {
-            prop: "radiusScaleMax",
-            type: "float",
-            min: 0,
-            max: 2.0,
-            toCall: "resize",
-        }, {
-            prop: "noiseScale",
-            type: "float",
-            min: 0,
-            max: 2.0,
-            toCall: "resize",
-        }, {
-            prop: "fadingSpeed",
-            type: "float",
-            step: 0.001,
-            min: 0,
-            max: 0.1,
-        }, {
-            prop: "rainbowColors",
-            type: "bool",
-        }];
+        return [{prop: "vertices", type: "int", min: 3, max: 720, toCall: "resize"},
+                {prop: "radiusScaleMin", type: "float", min: 0, max: 2.0, toCall: "resize"},
+                {prop: "radiusScaleMax", type: "float", min: 0, max: 2.0, toCall: "resize"},
+                {prop: "noiseScale", type: "float", min: 0, max: 2.0, toCall: "resize"},
+                {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.1},
+                {prop: "rainbowColors", type: "bool"}];
     }
 }
 

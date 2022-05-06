@@ -59,25 +59,10 @@ class Cardioids extends Animation {
     }
 
     getSettings() {
-        return [{
-            prop: "lines",
-            type: "int",
-            min: 1,
-            max: 2500,
-        }, {
-            prop: "speed",
-            type: "float",
-            min: -1.0,
-            max: 1.0,
-        }, {
-            prop: "scale",
-            type: "float",
-            min: 0.25,
-            max: 1.75,
-        }, {
-            prop: "rainbowColors",
-            type: "bool",
-        }];
+        return [{prop: "lines", type: "int", min: 1, max: 2500},
+                {prop: "speed", type: "float", min: -1.0, max: 1.0},
+                {prop: "scale", type: "float", min: 0.25, max: 1.75},
+                {prop: "rainbowColors", type: "bool"}];
     }
 }
 

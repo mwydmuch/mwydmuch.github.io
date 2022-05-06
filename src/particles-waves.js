@@ -10,13 +10,13 @@ const Noise = require("./noise");
 const Utils = require("./utils");
 
 class ParticlesStorm extends Animation {
-    constructor(canvas, colors, colorsAlt, 
-                particlePer100PixSq = 48, 
+    constructor(canvas, colors, colorsAlt,
+                particlesDensity = 0.005,
                 noiseScale = 0.001,
                 fadingSpeed = 0.02) {
         super(canvas, colors, colorsAlt, "particles waves", "particles-waves.js");
 
-        this.particlePer100PixSq = particlePer100PixSq;
+        this.particlesDensity = particlesDensity;
         this.noiseScale = noiseScale;
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
@@ -58,7 +58,7 @@ class ParticlesStorm extends Animation {
         Utils.clear(this.ctx, this.bgColor);
         this.width = this.ctx.canvas.width;
         this.height = this.ctx.canvas.height;
-        const newParticles = this.width / 100 * this.height / 100 * this.particlePer100PixSq;
+        const newParticles = this.width * this.height * this.particlesDensity;
 
         // Create new particles
         this.particles = [];
@@ -74,25 +74,9 @@ class ParticlesStorm extends Animation {
     }
 
     getSettings() {
-        return [{
-            prop: "particlePer100PixSq",
-            type: "int",
-            min: 1,
-            max: 128,
-            toCall: "resize",
-        }, {
-            prop: "noiseScale",
-            type: "float",
-            step: 0.0001,
-            min: 0,
-            max: 0.01,
-        }, {
-            prop: "fadingSpeed",
-            type: "float",
-            step: 0.001,
-            min: 0,
-            max: 0.1,
-        }];
+        return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.01, toCall: "resize"},
+                {prop: "noiseScale", type: "float", step: 0.0001, min: 0, max: 0.01},
+                {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.1}];
     }
 }
 

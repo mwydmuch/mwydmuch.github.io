@@ -68,10 +68,11 @@ class NeuralNetwork extends Animation {
                       nSize = this.baseNodeSize + v2;
                 Utils.fillCircle(this.ctx, n.x, n.y, nSize, color);
                 this.ctx.font = '12px sans-serif';
+                this.ctx.textAlign = "center";
                 let text = `ReLU(${Utils.round(n.v, 2)}) = ${Utils.round(n.nlv, 2)}`;
                 if(i === 0) text = `${Utils.round(n.v, 2)}`;
                 else if(i === this.nLayers - 1) text = `Sigmoid(${Utils.round(n.v, 2)}) = ${Utils.round(n.nlv, 2)}`;
-                this.ctx.fillText(text, n.x - text.length * 2.5, n.y - 3 * this.baseNodeSize);
+                this.ctx.fillText(text, n.x, n.y - 3 * this.baseNodeSize);
             }
         }
     }

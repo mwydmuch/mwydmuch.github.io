@@ -17,6 +17,11 @@ class Animation {
         this.file = file;
         this.time = 0;
         this.frame = 0;
+
+        // Reset text settings
+        this.ctx.font = '12px sans-serif';
+        this.ctx.textAlign = "left";
+        this.ctx.textBaseline = "alphabetic";
     }
 
     assignAndCheckIfRandom(value, random){  // Commonly used by many constructors

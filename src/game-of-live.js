@@ -133,22 +133,9 @@ class GameOfLife extends Animation {
     }
 
     getSettings() {
-        return [{
-            prop: "cellSize",
-            type: "int",
-            min: 4,
-            max: 32,
-            toCall: "resize",
-        }, {
-            prop: "cellShape",
-            type: "select",
-            values: ["square", "circle"],
-        }, {
-            prop: "deadCellsFadingSteps",
-            type: "int",
-            min: 0,
-            max: 8,
-        }];
+        return [{prop: "cellSize", type: "int", min: 4, max: 32, toCall: "resize"},
+                {prop: "cellShape", type: "select", values: ["square", "circle"]},
+                {prop: "deadCellsFadingSteps", type: "int", min: 0, max: 8}];
     }
 }
 

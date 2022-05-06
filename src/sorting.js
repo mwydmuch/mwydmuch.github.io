@@ -200,7 +200,7 @@ class QuickSort extends SortingAlgorithm{
     }
 }
 
-class HeapSort extends SortingAlgorithm{
+class HeapSort extends SortingAlgorithm{ // TODO
     constructor(arr) {
         super(arr, "heap sort");
     }
@@ -341,27 +341,10 @@ class Sorting extends Animation {
     }
 
     getSettings() {
-        return [{
-            prop: "sortingAlgorithm",
-            type: "select",
-            values: this.sortAlgoNames,
-            toCall: "setup",
-        }, {
-            prop: "numElements",
-            type: "int",
-            min: 8,
-            max: 256,
-            toCall: "setup",
-        }, {
-            prop: "speed",
-            type: "float",
-            step: 0.25,
-            min: 0.5,
-            max: 8,
-        }, {
-            prop: "showStats",
-            type: "bool"
-        }];
+        return [{prop: "sortingAlgorithm", type: "select", values: this.sortAlgoNames, toCall: "setup"},
+                {prop: "numElements", type: "int", min: 8, max: 256, toCall: "setup"},
+                {prop: "speed", type: "float", step: 0.25, min: 0.5, max: 8},
+                {prop: "showStats", type: "bool"}];
     }
 }
 
