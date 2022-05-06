@@ -11,6 +11,7 @@ const CircularWaves = require("./circular-waves");
 const GameOfLife = require("./game-of-live");
 const GameOfLifeIsometric = require("./game-of-live-isometric");
 const GradientDescent = require("./gradient-descent");
+const Matrix = require("./matrix");
 const NeuralNetwork = require("./neural-network");
 const ParticlesAndAttractors = require("./particles-and-attractors");
 const ParticlesVortex = require("./particles-vortex");
@@ -21,9 +22,8 @@ const SpinningShapes = require("./spinning-shapes");
 const Spirograph = require("./spirograph")
 
 //const Codding = require("./dev/codding");
-const Matrix = require("./dev/matrix");
+
 const SpiralDomino = require("./dev/spiral-domino");
-const Tree = require("./dev/tree");
 
 // Globals
 // ---------------------------------------------------------------------------------------------------------------------
@@ -108,22 +108,21 @@ const elemBgSettingsClose = document.getElementById("background-settings-close")
 // ---------------------------------------------------------------------------------------------------------------------
 
 let animations = [
+    ThreeNPlusOne,
+    Cardioids,
+    CircularWaves,
+    GameOfLife,
+    GameOfLifeIsometric,
+    GradientDescent,
     Matrix,
-    SpiralDomino,
-    // ThreeNPlusOne,
-    // Cardioids,
-    // CircularWaves,
-    // GameOfLife,
-    // GameOfLifeIsometric,
-    // GradientDescent,
     NeuralNetwork,
-    // ParticlesAndAttractors,
-    // ParticlesVortex,
-    // ParticlesWaves,
-    // PerlinNoiseParticles,
-    // Sorting,
+    ParticlesAndAttractors,
+    ParticlesVortex,
+    ParticlesWaves,
+    PerlinNoiseParticles,
+    Sorting,
     SpinningShapes,
-    // Spirograph
+    Spirograph
 ];
 
 Utils.randomShuffle(animations);

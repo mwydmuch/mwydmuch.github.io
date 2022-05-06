@@ -92,38 +92,11 @@ class ThreeNPlusOne extends Animation {
     }
 
     getSettings() {
-        return [{
-            prop: "length",
-            type: "int",
-            min: 1,
-            max: 100,
-            toCall: "resize",
-        },
-        {
-            prop: "evenAngle",
-            type: "int",
-            min: -45,
-            max: 45,
-            toCall: "resize",
-        },
-        {
-            prop: "oddAngle",
-            type: "int",
-            min: -45,
-            max: 45,
-            toCall: "resize",
-        },
-        {
-            prop: "drawNumbers",
-            type: "bool",
-            toCall: "resize",
-        }, {
-            prop: "scale",
-            type: "float",
-            min: 0.05,
-            max: 1.95,
-            toCall: "resize",
-        }];
+        return [{prop: "length", type: "int", min: 1, max: 100, toCall: "resize"},
+                {prop: "evenAngle", type: "int", min: -45, max: 45, toCall: "resize"},
+                {prop: "oddAngle", type: "int", min: -45, max: 45, toCall: "resize"},
+                {prop: "drawNumbers", type: "bool", toCall: "resize"},
+                {prop: "scale", type: "float", min: 0.05, max: 1.95, toCall: "resize"}];
     }
 }
 
@@ -149,6 +122,11 @@ class Animation {
         this.file = file;
         this.time = 0;
         this.frame = 0;
+
+        // Reset text settings
+        this.ctx.font = '12px sans-serif';
+        this.ctx.textAlign = "left";
+        this.ctx.textBaseline = "alphabetic";
     }
 
     assignAndCheckIfRandom(value, random){  // Commonly used by many constructors
@@ -191,7 +169,7 @@ class Animation {
 
 module.exports = Animation;
 
-},{"./utils":18}],3:[function(require,module,exports){
+},{"./utils":20}],3:[function(require,module,exports){
 /*
  * Modified method of L. Cremona for drawing cardioid with a pencil of lines,
  * as described in section "cardioid as envelope of a pencil of lines" of:
@@ -253,31 +231,16 @@ class Cardioids extends Animation {
     }
 
     getSettings() {
-        return [{
-            prop: "lines",
-            type: "int",
-            min: 1,
-            max: 2500,
-        }, {
-            prop: "speed",
-            type: "float",
-            min: -1.0,
-            max: 1.0,
-        }, {
-            prop: "scale",
-            type: "float",
-            min: 0.25,
-            max: 1.75,
-        }, {
-            prop: "rainbowColors",
-            type: "bool",
-        }];
+        return [{prop: "lines", type: "int", min: 1, max: 2500},
+                {prop: "speed", type: "float", min: -1.0, max: 1.0},
+                {prop: "scale", type: "float", min: 0.25, max: 1.75},
+                {prop: "rainbowColors", type: "bool"}];
     }
 }
 
 module.exports = Cardioids
 
-},{"./animation":2,"./utils":18}],4:[function(require,module,exports){
+},{"./animation":2,"./utils":20}],4:[function(require,module,exports){
 /*
  * Circular waves animation.
  *
@@ -290,7 +253,7 @@ const Utils = require("./utils");
 
 class CircularWaves extends Animation {
     constructor(canvas, colors, colorsAlt,
-                vertexes = 180,
+                vertices = 180,
                 noiseScale = 0.5,
                 radiusScaleMin = 0.4,
                 radiusScaleMax = 1.2,
@@ -301,7 +264,7 @@ class CircularWaves extends Animation {
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
 
-        this.vertexes = vertexes;
+        this.vertices = vertices;
         this.noiseScale = noiseScale;
         this.radiusScaleMin = radiusScaleMin;
         this.radiusScaleMax = radiusScaleMax;
@@ -315,8 +278,8 @@ class CircularWaves extends Animation {
     draw() {
         this.fadeOut(this.fadingSpeed);
 
-        const zoff = this.frame * 0.005;
-        const degPerVertex = 360 / this.vertexes;
+        const zoff = this.frame * 0.005,
+              degPerVertex = 360 / this.vertices;
         if(this.rainbowColors) this.ctx.strokeStyle = 'hsl(' + Math.abs(Math.sin(zoff * 5)) * 360 + ', 100%, 50%)';
         else this.ctx.strokeStyle = Utils.lerpColor(this.colorA, this.colorB, Math.abs(Math.sin(zoff * 5)));
 
@@ -349,46 +312,62 @@ class CircularWaves extends Animation {
     }
 
     getSettings() {
-        return [{
-            prop: "vertexes",
-            type: "int",
-            min: 3,
-            max: 720,
-            toCall: "resize",
-        }, {
-            prop: "radiusScaleMin",
-            type: "float",
-            min: 0,
-            max: 2.0,
-            toCall: "resize",
-        }, {
-            prop: "radiusScaleMax",
-            type: "float",
-            min: 0,
-            max: 2.0,
-            toCall: "resize",
-        }, {
-            prop: "noiseScale",
-            type: "float",
-            min: 0,
-            max: 2.0,
-            toCall: "resize",
-        }, {
-            prop: "fadingSpeed",
-            type: "float",
-            step: 0.001,
-            min: 0,
-            max: 0.1,
-        }, {
-            prop: "rainbowColors",
-            type: "bool",
-        }];
+        return [{prop: "vertices", type: "int", min: 3, max: 720, toCall: "resize"},
+                {prop: "radiusScaleMin", type: "float", min: 0, max: 2.0, toCall: "resize"},
+                {prop: "radiusScaleMax", type: "float", min: 0, max: 2.0, toCall: "resize"},
+                {prop: "noiseScale", type: "float", min: 0, max: 2.0, toCall: "resize"},
+                {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.1},
+                {prop: "rainbowColors", type: "bool"}];
     }
 }
 
 module.exports = CircularWaves;
 
-},{"./animation":2,"./noise":10,"./utils":18}],5:[function(require,module,exports){
+},{"./animation":2,"./noise":12,"./utils":20}],5:[function(require,module,exports){
+/*
+ * Spiral domino animation.
+ *
+ * Coded with no external dependencies, using only canvas API.
+ */
+
+const Animation = require("./../animation");
+const Utils = require("./../utils");
+
+class SpiralDomino extends Animation {
+    constructor (canvas, colors, colorsAlt){
+        super(canvas, colors, colorsAlt, "spiral domino", "spiral-domino.js");
+        this.particles = 1000;
+    }
+
+    draw() {
+        Utils.clear(this.ctx, "#FFFFFF");
+
+        const centerX = this.ctx.canvas.width / 2,
+              centerY = this.ctx.canvas.height / 2;
+
+        for(let i = 1; i <= this.particles; i++){
+            const r = 2 * i,
+                  p = 5 * i * Math.PI / 180,
+                  x = centerX + Math.cos(p) * r,
+                  y = centerY + Math.sin(p) * r;
+
+            const r2 = 2 * (i - 1),
+                p2 = 5 * (i - 1) * Math.PI / 180,
+                x2 = centerX + Math.cos(p2) * r2,
+                y2 = centerY + Math.sin(p2) * r2;
+
+            let v = Utils.rotateVec2d(Utils.createVec2d(36, 0), this.time + p);
+
+            Utils.drawLine(this.ctx, x - v.x, y - v.y, x + v.x, y + v.y, this.colorsAlt[0]);
+
+            Utils.drawLine(this.ctx, x2, y2, x, y, this.colors[0]);
+        }
+    }
+}
+
+module.exports = SpiralDomino;
+
+},{"./../animation":2,"./../utils":20}],6:[function(require,module,exports){
 /*
  * Conway's game of life visualization with isometric rendering.
  * Cells that "died" in the previous step keep their color to achieve a stable image
@@ -547,16 +526,13 @@ class GameOfLifeIsometric extends GameOfLife {
     }
 
     getSettings() {
-        return [{
-            prop: "fadeDeadCells",
-            type: "bool",
-        }];
+        return [{prop: "fadeDeadCells", type: "bool"}];
     }
 }
 
 module.exports = GameOfLifeIsometric;
 
-},{"./game-of-live":6,"./utils":18}],6:[function(require,module,exports){
+},{"./game-of-live":7,"./utils":20}],7:[function(require,module,exports){
 /*
  * Conway's game of life visualization.
  * Cells that "died" in the previous step keep their color to achieve a stable image
@@ -692,28 +668,15 @@ class GameOfLife extends Animation {
     }
 
     getSettings() {
-        return [{
-            prop: "cellSize",
-            type: "int",
-            min: 4,
-            max: 32,
-            toCall: "resize",
-        }, {
-            prop: "cellShape",
-            type: "select",
-            values: ["square", "circle"],
-        }, {
-            prop: "deadCellsFadingSteps",
-            type: "int",
-            min: 0,
-            max: 8,
-        }];
+        return [{prop: "cellSize", type: "int", min: 4, max: 32, toCall: "resize"},
+                {prop: "cellShape", type: "select", values: ["square", "circle"]},
+                {prop: "deadCellsFadingSteps", type: "int", min: 0, max: 8}];
     }
 }
 
 module.exports = GameOfLife;
 
-},{"./animation":2}],7:[function(require,module,exports){
+},{"./animation":2}],8:[function(require,module,exports){
 /*
  * Visualization of gradient descent-based optimizers.
  *
@@ -1150,18 +1113,13 @@ class GradientDescent extends Animation {
     }
 
     getSettings() {
-        return [{
-            prop: "functionToOptimize",
-            type: "select",
-            values: this.funcNames,
-            toCall: "resize",
-        }];
+        return [{prop: "functionToOptimize", type: "select", values: this.funcNames, toCall: "resize"}];
     }
 }
 
 module.exports = GradientDescent;
 
-},{"./animation":2,"./utils":18}],8:[function(require,module,exports){
+},{"./animation":2,"./utils":20}],9:[function(require,module,exports){
 'use strict';
 
 // Require
@@ -1175,6 +1133,7 @@ const CircularWaves = require("./circular-waves");
 const GameOfLife = require("./game-of-live");
 const GameOfLifeIsometric = require("./game-of-live-isometric");
 const GradientDescent = require("./gradient-descent");
+const Matrix = require("./matrix");
 const NeuralNetwork = require("./neural-network");
 const ParticlesAndAttractors = require("./particles-and-attractors");
 const ParticlesVortex = require("./particles-vortex");
@@ -1184,6 +1143,9 @@ const Sorting = require("./sorting");
 const SpinningShapes = require("./spinning-shapes");
 const Spirograph = require("./spirograph")
 
+//const Codding = require("./dev/codding");
+
+const SpiralDomino = require("./dev/spiral-domino");
 
 // Globals
 // ---------------------------------------------------------------------------------------------------------------------
@@ -1274,6 +1236,7 @@ let animations = [
     GameOfLife,
     GameOfLifeIsometric,
     GradientDescent,
+    Matrix,
     NeuralNetwork,
     ParticlesAndAttractors,
     ParticlesVortex,
@@ -1518,7 +1481,126 @@ function updateSettings(settings){
     }
 }
 
-},{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./game-of-live":6,"./game-of-live-isometric":5,"./gradient-descent":7,"./neural-network":9,"./particles-and-attractors":11,"./particles-vortex":12,"./particles-waves":13,"./perlin-noise-particles":14,"./sorting":15,"./spinning-shapes":16,"./spirograph":17,"./utils":18}],9:[function(require,module,exports){
+},{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./dev/spiral-domino":5,"./game-of-live":7,"./game-of-live-isometric":6,"./gradient-descent":8,"./matrix":10,"./neural-network":11,"./particles-and-attractors":13,"./particles-vortex":14,"./particles-waves":15,"./perlin-noise-particles":16,"./sorting":17,"./spinning-shapes":18,"./spirograph":19,"./utils":20}],10:[function(require,module,exports){
+/*
+ * Recreation of matrix digital rain based on this analysis
+ * of the original effect: https://carlnewton.github.io/digital-rain-analysis/
+ *
+ * Coded with no external dependencies, using only canvas API.
+ */
+
+const Animation = require("./animation");
+const Utils = require("./utils");
+
+class Matrix extends Animation {
+    constructor(canvas, colors, colorsAlt,
+                dropsSize = 20,
+                dropsSpeed = 0.6,
+                fadingSpeed = 0.01) {
+        super(canvas, colors, colorsAlt, "Matrix digital rain", "matrix.js");
+        this.dropsSize = dropsSize;
+        this.dropsSpeed = dropsSpeed;
+        this.fadingSpeed = fadingSpeed;
+
+        this.flipProp = 0.25; // Probability of flipping a character
+        this.errorProp = 0.1; // Probability of drawing character in different row
+
+        this.cellWidth = 0;
+        this.cellHeight = 0;
+        this.columns = 0;
+        this.columnHeight = 0;
+        this.drops = [];
+        
+        this.imageData = null;
+
+        const katakana = "ｦｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾜﾝ",
+              katakanaSubset = "ﾊﾋｼﾂｳｰﾅﾐﾓﾆｻﾜｵﾘﾎﾏｴｷﾑﾃｹﾒｶﾕﾗｾﾈｽﾀﾇ",
+              digits = "0123456789",
+              latin = "ABCDEFGHIKLMNOPQRSTVXYZ",
+              symbols = "*+:=.<>#@!?^~\"",
+              oldItalic = "𐌀𐌁𐌂𐌃𐌄𐌅𐌆𐌇𐌈𐌉𐌊𐌋𐌌𐌍𐌎𐌏𐌐𐌑𐌒𐌓𐌔𐌕𐌖𐌗𐌘𐌙𐌚";
+
+        this.characters = katakana + digits + symbols;
+    }
+
+    dropSpawnPoint(y){
+        return Utils.randomInt(0, Math.min(y - 1, this.columnHeight / 2)) - 1;
+    }
+
+    dropDespawn(y){
+        return (Math.random() < Math.pow(y / this.columnHeight, 2) * 0.1) || (y > this.columnHeight);
+    }
+
+    drawCharacter(char, cellX, cellY, color){
+        this.ctx.fillStyle = this.bgColor;
+        this.ctx.fillRect(cellX - this.cellWidth/2, cellY, this.cellWidth, this.cellHeight);
+        this.ctx.fillStyle = color;
+
+        if(Math.random() < this.flipProp){ // Randomly flip character
+            this.ctx.save();
+            this.ctx.translate(cellX, cellY);
+            this.ctx.scale(-1, 1);
+            this.ctx.fillText(char, 0, 0);
+            this.ctx.restore();
+        } else this.ctx.fillText(char, cellX, cellY);
+    }
+
+    draw() {
+        this.fadeOut(this.fadingSpeed);
+
+        this.ctx.font = `${this.dropsSize}px monospace`;
+        this.ctx.textAlign = "center"; // This helps with aligning flipped characters
+        this.ctx.textBaseline = "top"; // This nicely align characters in a cells
+
+        for(let d of this.drops){
+            if(Math.floor(d.y) !== Math.floor(d.y + this.dropsSpeed)){
+                d.y += this.dropsSpeed;
+                const cellX = d.x * this.cellWidth + this.cellWidth / 2,
+                      cellY = Math.floor(d.y) * this.cellHeight;
+
+                this.drawCharacter(d.char, cellX, cellY, this.colors[0]);
+
+                d.char = Utils.randomChoice(this.characters);
+                if(this.dropDespawn(d.y)) d.y = this.dropSpawnPoint(d.y);
+
+                if(Math.random() < this.errorProp){
+                    const yDiff = Utils.randomInt(-8, 8);
+                    this.drawCharacter(Utils.randomChoice(this.characters), cellX, Math.floor(yDiff + d.y) * this.cellHeight, this.colors[0]);
+                }
+            }
+            else d.y += this.dropsSpeed;
+        }
+
+        this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    }
+
+    resize() {
+        Utils.clear(this.ctx, this.bgColor);
+        if(this.imageData !== null) this.ctx.putImageData(this.imageData, 0, 0);
+
+        this.cellHeight = this.dropsSize;
+        this.cellWidth = Math.ceil(this.dropsSize / 1.618);
+
+        this.columns = this.ctx.canvas.width / this.cellWidth;
+        this.columnHeight = this.ctx.canvas.height / this.cellHeight;
+
+        if(this.drops.length < this.columns){
+            for(let i = this.drops.length; i < this.columns; ++i){
+                this.drops.push({char: Utils.randomChoice(this.characters), x: i, y: this.dropSpawnPoint(this.columnHeight)});
+            }
+        }
+    }
+
+    getSettings() {
+        return [{prop: "dropsSize", type: "int", min: 8, max: 64, toCall: "resize"},
+                {prop: "dropsSpeed", type: "float", min: 0, max: 1},
+                {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.5}];
+    }
+}
+
+module.exports = Matrix;
+
+},{"./animation":2,"./utils":20}],11:[function(require,module,exports){
 /*
  * Visualization of a simple, fully connected neural network, with random weights,
  * ReLU activations on intermediate layers, and sigmoid output at the last layer.
@@ -1589,10 +1671,11 @@ class NeuralNetwork extends Animation {
                       nSize = this.baseNodeSize + v2;
                 Utils.fillCircle(this.ctx, n.x, n.y, nSize, color);
                 this.ctx.font = '12px sans-serif';
+                this.ctx.textAlign = "center";
                 let text = `ReLU(${Utils.round(n.v, 2)}) = ${Utils.round(n.nlv, 2)}`;
                 if(i === 0) text = `${Utils.round(n.v, 2)}`;
                 else if(i === this.nLayers - 1) text = `Sigmoid(${Utils.round(n.v, 2)}) = ${Utils.round(n.nlv, 2)}`;
-                this.ctx.fillText(text, n.x - text.length * 2.5, n.y - 3 * this.baseNodeSize);
+                this.ctx.fillText(text, n.x, n.y - 3 * this.baseNodeSize);
             }
         }
     }
@@ -1638,7 +1721,7 @@ class NeuralNetwork extends Animation {
 
 module.exports = NeuralNetwork;
 
-},{"./animation":2,"./utils":18}],10:[function(require,module,exports){
+},{"./animation":2,"./utils":20}],12:[function(require,module,exports){
 /*
  * A speed-improved perlin and simplex noise algorithms for 2D.
  *
@@ -1949,7 +2032,7 @@ module.exports = NeuralNetwork;
 
 })(this);
 
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /*
  * Very simple particles system with attractors.
  * In this system, distance and momentum are ignored.
@@ -2047,52 +2130,20 @@ class ParticlesAndAttractors extends Animation {
     }
 
     getSettings() {
-        return [{
-            prop: "numParticles",
-            type: "int",
-            min: 1000,
-            max: 15000,
-            toCall: "setup",
-        }, {
-            prop: "particlesSpeed",
-            type: "float",
-            min: 1,
-            max: 20,
-        }, {
-            prop: "fadingSpeed",
-            type: "float",
-            step: 0.001,
-            min: 0,
-            max: 0.1,
-        }, {
-            prop: "attractorsSystem",
-            type: "select",
-            values: this.attractorsSystems
-        }, {
-            prop: "numAttractors",
-            type: "int",
-            min: 3,
-            max: 7,
-        }, {
-            prop: "attractorsSpeed",
-            type: "float",
-            min: -0.2,
-            max: 0.2,
-        }, {
-            prop: "drawAttractors",
-            type: "bool",
-        }, {
-            prop: "scale",
-            type: "float",
-            min: 0.05,
-            max: 1.95,
-        }];
+        return [{prop: "numParticles", type: "int", min: 1000, max: 15000, toCall: "setup"},
+                {prop: "particlesSpeed", type: "float", min: 1, max: 20},
+                {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.1},
+                {prop: "attractorsSystem", type: "select", values: this.attractorsSystems},
+                {prop: "numAttractors", type: "int", min: 3, max: 7},
+                {prop: "attractorsSpeed", type: "float", min: -0.2, max: 0.2},
+                {prop: "drawAttractors", type: "bool"},
+                {prop: "scale", type: "float", min: 0.05, max: 1.95}];
     }
 }
 
 module.exports = ParticlesAndAttractors;
 
-},{"./animation":2,"./utils":18}],12:[function(require,module,exports){
+},{"./animation":2,"./utils":20}],14:[function(require,module,exports){
 /*
  * Particles vortex with randomized speed and direction.
  *
@@ -2158,7 +2209,7 @@ class ParticlesVortex extends Animation {
 
 module.exports = ParticlesVortex;
 
-},{"./animation":2,"./noise":10,"./utils":18}],13:[function(require,module,exports){
+},{"./animation":2,"./noise":12,"./utils":20}],15:[function(require,module,exports){
 /*
  * "Particles waves" animation.
  * The effect was achieved by modifying perlin-noise-particles.js.
@@ -2171,13 +2222,13 @@ const Noise = require("./noise");
 const Utils = require("./utils");
 
 class ParticlesStorm extends Animation {
-    constructor(canvas, colors, colorsAlt, 
-                particlePer100PixSq = 48, 
+    constructor(canvas, colors, colorsAlt,
+                particlesDensity = 0.005,
                 noiseScale = 0.001,
                 fadingSpeed = 0.02) {
         super(canvas, colors, colorsAlt, "particles waves", "particles-waves.js");
 
-        this.particlePer100PixSq = particlePer100PixSq;
+        this.particlesDensity = particlesDensity;
         this.noiseScale = noiseScale;
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
@@ -2219,7 +2270,7 @@ class ParticlesStorm extends Animation {
         Utils.clear(this.ctx, this.bgColor);
         this.width = this.ctx.canvas.width;
         this.height = this.ctx.canvas.height;
-        const newParticles = this.width / 100 * this.height / 100 * this.particlePer100PixSq;
+        const newParticles = this.width * this.height * this.particlesDensity;
 
         // Create new particles
         this.particles = [];
@@ -2235,31 +2286,15 @@ class ParticlesStorm extends Animation {
     }
 
     getSettings() {
-        return [{
-            prop: "particlePer100PixSq",
-            type: "int",
-            min: 1,
-            max: 128,
-            toCall: "resize",
-        }, {
-            prop: "noiseScale",
-            type: "float",
-            step: 0.0001,
-            min: 0,
-            max: 0.01,
-        }, {
-            prop: "fadingSpeed",
-            type: "float",
-            step: 0.001,
-            min: 0,
-            max: 0.1,
-        }];
+        return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.01, toCall: "resize"},
+                {prop: "noiseScale", type: "float", step: 0.0001, min: 0, max: 0.01},
+                {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.1}];
     }
 }
 
 module.exports = ParticlesStorm;
 
-},{"./animation":2,"./noise":10,"./utils":18}],14:[function(require,module,exports){
+},{"./animation":2,"./noise":12,"./utils":20}],16:[function(require,module,exports){
 /*
  * Particles moving through Perlin noise.
  *
@@ -2272,14 +2307,14 @@ const Utils = require("./utils");
 
 class PerlinNoiseParticles extends Animation {
     constructor(canvas, colors, colorsAlt,
-                particlePer100PixSq = 4,
+                particlesDensity = 0.0004,
                 noiseScale = 0.001,
                 particlesSpeed = 1,
                 drawNoise = false,
                 fadingSpeed = 0
     ) {
         super(canvas, colors, colorsAlt, "particles moving through Perlin noise", "perlin-noise-particles.js");
-        this.particlePer100PixSq = particlePer100PixSq;
+        this.particlesDensity = particlesDensity;
         this.noiseScale = noiseScale;
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
@@ -2299,14 +2334,17 @@ class PerlinNoiseParticles extends Animation {
         ++this.frame;
         let updates = 1,
             particlesSpeed = this.particlesSpeed;
+
         while(particlesSpeed > 1.0){
             particlesSpeed /= 2;
             updates *= 2;
         }
+
         for (let p of this.particles) {
             p.prevX = p.x;
             p.prevY = p.y;
         }
+
         for(let i = 0; i < updates; ++i) {
             for (let p of this.particles) {
                 const angle = this.noise.perlin2(p.x * this.noiseScale, p.y * this.noiseScale) * 2 * Math.PI / this.noiseScale;
@@ -2327,7 +2365,7 @@ class PerlinNoiseParticles extends Animation {
     }
 
     spawnParticles(x, y, width, height) {
-        let newParticles = width / 100 * height / 100 * this.particlePer100PixSq;
+        let newParticles = width * height * this.particlesDensity;
 
         // Create new particles
         for(let i = 0; i < newParticles; i++){
@@ -2350,8 +2388,8 @@ class PerlinNoiseParticles extends Animation {
         if(this.imageData !== null) this.ctx.putImageData(this.imageData, 0, 0);
 
         // Add particles to new parts of the image
-        let divWidth = this.ctx.canvas.width - this.width;
-        let divHeight = this.ctx.canvas.height - this.height;
+        const divWidth = this.ctx.canvas.width - this.width,
+              divHeight = this.ctx.canvas.height - this.height;
 
         if(divWidth > 0) this.spawnParticles(this.width, 0, divWidth, this.height);
         if(divHeight > 0) this.spawnParticles(0, this.height, this.width, divHeight);
@@ -2378,24 +2416,14 @@ class PerlinNoiseParticles extends Animation {
     }
 
     getSettings() {
-        return [{
-            prop: "particlesSpeed",
-            type: "float",
-            min: 0.25,
-            max: 32,
-        }, {
-            prop: "fadingSpeed",
-            type: "float",
-            step: 0.0001,
-            min: 0,
-            max: 0.01,
-        }];
+        return [{prop: "particlesSpeed", type: "float", min: 0.25, max: 32},
+                {prop: "fadingSpeed", type: "float", step: 0.0001, min: 0, max: 0.01}];
     }
 }
 
 module.exports = PerlinNoiseParticles;
 
-},{"./animation":2,"./noise":10,"./utils":18}],15:[function(require,module,exports){
+},{"./animation":2,"./noise":12,"./utils":20}],17:[function(require,module,exports){
 /*
  * Visualization of different sorting algorithms.
  *
@@ -2598,7 +2626,7 @@ class QuickSort extends SortingAlgorithm{
     }
 }
 
-class HeapSort extends SortingAlgorithm{
+class HeapSort extends SortingAlgorithm{ // TODO
     constructor(arr) {
         super(arr, "heap sort");
     }
@@ -2739,35 +2767,18 @@ class Sorting extends Animation {
     }
 
     getSettings() {
-        return [{
-            prop: "sortingAlgorithm",
-            type: "select",
-            values: this.sortAlgoNames,
-            toCall: "setup",
-        }, {
-            prop: "numElements",
-            type: "int",
-            min: 8,
-            max: 256,
-            toCall: "setup",
-        }, {
-            prop: "speed",
-            type: "float",
-            step: 0.25,
-            min: 0.5,
-            max: 8,
-        }, {
-            prop: "showStats",
-            type: "bool"
-        }];
+        return [{prop: "sortingAlgorithm", type: "select", values: this.sortAlgoNames, toCall: "setup"},
+                {prop: "numElements", type: "int", min: 8, max: 256, toCall: "setup"},
+                {prop: "speed", type: "float", step: 0.25, min: 0.5, max: 8},
+                {prop: "showStats", type: "bool"}];
     }
 }
 
 module.exports = Sorting;
 
-},{"./animation":2,"./utils":18}],16:[function(require,module,exports){
+},{"./animation":2,"./utils":20}],18:[function(require,module,exports){
 /*
- * Shapes moving in a circle.
+ * Shapes moving in a circle/dancing.
  * Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
  *
  * Coded with no external dependencies, using only canvas API.
@@ -2782,6 +2793,8 @@ class SpinningShapes extends Animation {
                  sides = 0,
                  rotateShapes = false,
                  scale = 1,
+                 colorsScale = 1,
+                 colorsShift = "random",
                  rainbowColors = false) {
         super(canvas, colors, colorsAlt, "", "spinning-shapes.js");
 
@@ -2792,12 +2805,14 @@ class SpinningShapes extends Animation {
         this.rotateShapes = rotateShapes;
         this.shapes = shapes;
 
-        this.distBase = 0.6;
-        this.distVar = 0.2;
+        this.distanceBase = 0.6;
+        this.distanceRange = 0.2;
         this.sizeBase = 0.2;
-        this.sizeVar = 0.12;
+        this.sizeRange = 0.12;
 
         this.scale = scale;
+        this.colorsScale = colorsScale;
+        this.colorsShift = this.assignAndCheckIfRandom(colorsShift, Utils.randomChoice([0, 3.14]));
         this.rainbowColors = rainbowColors;
     }
 
@@ -2814,12 +2829,14 @@ class SpinningShapes extends Animation {
 
         for (let i = 0; i < this.shapes; ++i) {
             const theta = i / this.shapes * 2 * Math.PI,
-                  distance = (this.distBase + this.distVar * Math.cos(theta * 6 + Math.cos(theta * 8 + this.time / 2))) * scale,
+                  distance = (this.distanceBase + this.distanceRange * Math.cos(theta * 6 + Math.cos(theta * 8 + this.time / 2))) * scale,
                   x = Math.cos(theta) * distance,
                   y = Math.sin(theta) * distance,
-                  radius = (this.sizeBase + this.sizeVar * Math.cos(theta * 9 - this.time)) * scale;
-            if(this.rainbowColors) this.ctx.strokeStyle = 'hsl(' + (Math.cos(theta * 9 - this.time) + 1) / 2 * 360 + ', 100%, 75%)';
-            else this.ctx.strokeStyle = Utils.lerpColor(this.colorA, this.colorB,(Math.cos(theta * 9 - this.time) + 1) / 2); // New with smooth color transition
+                  theta9 = theta * 9 - this.time,
+                  radius = (this.sizeBase + this.sizeRange * Math.cos(theta9)) * scale,
+                  color = (Math.cos((theta9 + this.colorsShift) * this.colorsScale) + 1) / 2;
+            if(this.rainbowColors) this.ctx.strokeStyle = `hsl(${color * 360}, 100%, 75%)`;
+            else this.ctx.strokeStyle = Utils.lerpColor(this.colorA, this.colorB, color);
             this.ctx.lineWidth = 1;
 
             this.ctx.beginPath();
@@ -2833,38 +2850,23 @@ class SpinningShapes extends Animation {
     }
 
     getSettings() {
-        return [{
-            prop: "sides",
-            type: "int",
-            min: 0,
-            max: 8,
-            toCall: "updateName"
-        }, {
-            prop: "shapes",
-            type: "int",
-            min: 0,
-            max: 2500,
-        }, {
-            prop: "rotateShapes",
-            type: "bool",
-        }, {
-            prop: "scale",
-            type: "float",
-            min: 0.05,
-            max: 1.95,
-            toCall: "resize",
-        }, {
-            prop: "rainbowColors",
-            type: "bool",
-        }];
+        return [{prop: "sides", type: "int", min: 0, max: 8, toCall: "updateName"},
+                {prop: "shapes", type: "int", min: 0, max: 2500},
+                {prop: "rotateShapes", type: "bool" },
+                //{prop: "distanceRange", type: "float", min: 0, max: 1},
+                //{prop: "sizeRange", type: "float", min: 0, max: 1},
+                {prop: "scale", type: "float", min: 0.05, max: 1.95, toCall: "resize"},
+                {prop: "colorsShift", type: "float", min: 0, max: 3.14},
+                {prop: "colorsScale", type: "float", min: 0.05, max: 2},
+                {prop: "rainbowColors", type: "bool"}];
     }
 }
 
 module.exports = SpinningShapes
 
-},{"./animation":2,"./utils":18}],17:[function(require,module,exports){
+},{"./animation":2,"./utils":20}],19:[function(require,module,exports){
 /*
- * Spirograph created with 2-4 random gears.
+ * Spirograph created with 1-5 random gears.
  * See: https://en.wikipedia.org/wiki/Spirograph,
  * and: http://www.eddaardvark.co.uk/v2/spirograph/spirograph2.html (this site is amazing).
  *
@@ -2875,12 +2877,20 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class Spirograph extends Animation {
-    constructor (canvas, colors, colorsAlt, points = 2500, length = 2, gearCount = "random") {
+    constructor (canvas, colors, colorsAlt, 
+                 vertices = 2500, 
+                 length = 2, 
+                 gearCount = "random",
+                 rescaleToFit = true,
+                 scale = 1) {
         super(canvas, colors, colorsAlt, "spirograph", "spirograph.js");
 
-        this.points = points;
+        this.vertices = vertices;
         this.length = length;
         this.maxGears = 5;
+        this.rescaleToFit = rescaleToFit;
+        this.scale = scale;
+
         this.gearCount = this.assignAndCheckIfRandom(gearCount, Utils.randomInt(2, this.maxGears));
         this.gearNames = ["zero", "one", "two", "three", "four", "five"];
         this.updateName();
@@ -2913,15 +2923,20 @@ class Spirograph extends Animation {
     draw() {
         Utils.clear(this.ctx, this.bgColor);
 
+        let scale = 1;
+
         // Normalize size to fit the screen nicely
-        let totalRadius = 0;
-        for(let i = 0; i < this.gearCount; ++i) totalRadius += this.gears[i].radius;
-        const scale = Math.min(this.ctx.canvas.width, this.ctx.canvas.height) / 2 / totalRadius;
+        if(this.rescaleToFit){
+            let totalRadius = 0;
+            for(let i = 0; i < this.gearCount; ++i) totalRadius += this.gears[i].radius;
+            scale = Math.min(this.ctx.canvas.width, this.ctx.canvas.height) / 2 / totalRadius;
+        }
 
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        this.ctx.scale(this.scale, this.scale);
 
         const length = Math.PI * this.length,
-              incr = length / this.points;
+              incr = length / this.vertices;
         let start = this.getXY(0, this.time, scale);
 
         for (let i = 0; i <= length; i += incr) {
@@ -2935,44 +2950,15 @@ class Spirograph extends Animation {
     }
 
     getSettings() {
-        let settings = [{
-            prop: "points",
-            type: "int",
-            min: 100,
-            max: 10000,
-        }, {
-            prop: "length",
-            type: "float",
-            step: 0.25,
-            min: 1,
-            max: 8,
-        }, {
-            prop: "gearCount",
-            type: "int",
-            min: 1,
-            max: this.maxGears,
-            toCall: "updateName"
-        }];
+        let settings = [{prop: "vertices", type: "int", min: 100, max: 10000},
+                        {prop: "length", type: "float", step: 0.25, min: 1, max: 8},
+                        {prop: "gearCount", type: "int", min: 1, max: this.maxGears, toCall: "updateName"},
+                        {prop: "rescaleToFit", type: "bool"},
+                        {prop: "scale", type: "float", min: 0.25, max: 4}];
         for(let i = 0; i < this.maxGears; ++i){
-            settings = settings.concat([{
-                prop: `gears[${i}].radius`,
-                type: "float",
-                step: 0.01,
-                min: 0,
-                max: 100,
-            }, {
-                prop: `gears[${i}].rate`,
-                type: "float",
-                step: 0.01,
-                min: -100,
-                max: 100,
-            }, {
-                prop: `gears[${i}].phase`,
-                type: "float",
-                step: 0.001,
-                min: -0.1,
-                max: 0.1,
-            }]);
+            settings = settings.concat([{prop: `gears[${i}].radius`, type: "float", step: 0.01, min: 0, max: 100},
+                                        {prop: `gears[${i}].rate`, type: "float", step: 0.01, min: -100, max: 100},
+                                        {prop: `gears[${i}].phase`, type: "float", step: 0.001, min: -0.1, max: 0.1}]);
         }
         return settings;
     }
@@ -2980,7 +2966,7 @@ class Spirograph extends Animation {
 
 module.exports = Spirograph
 
-},{"./animation":2,"./utils":18}],18:[function(require,module,exports){
+},{"./animation":2,"./utils":20}],20:[function(require,module,exports){
 module.exports = {
 
     // Randomization helpers
@@ -3224,4 +3210,4 @@ module.exports = {
     }
 };
 
-},{}]},{},[8])
+},{}]},{},[9])

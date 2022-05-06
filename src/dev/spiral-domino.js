@@ -1,11 +1,11 @@
 /*
- * Particles vortex with randomized speed and direction.
+ * Spiral domino animation.
  *
  * Coded with no external dependencies, using only canvas API.
  */
 
-const Animation = require("./animation");
-const Utils = require("./utils");
+const Animation = require("./../animation");
+const Utils = require("./../utils");
 
 class SpiralDomino extends Animation {
     constructor (canvas, colors, colorsAlt){
