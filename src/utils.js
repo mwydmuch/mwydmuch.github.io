@@ -232,8 +232,21 @@ module.exports = {
         return canvas;
     },
 
+    // Misc
     isStrictMode(){
         return ((eval("var __temp = null"), (typeof __temp === "undefined")) ? "strict":  "non-strict");
+    },
+
+    getKeys(dict){
+        let keys = [];
+        for(let key in dict) keys.push(key);
+        return keys;
+    },
+
+    getValues(dict){
+        let values = [];
+        for(let key in dict) values.push(dict[key]);
+        return values;
     },
 
     addMultipleEventListener(element, events, handler) {
