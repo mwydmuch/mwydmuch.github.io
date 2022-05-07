@@ -1,6 +1,7 @@
 /*
  * Recreation of matrix digital rain based on this analysis
  * of the original effect: https://carlnewton.github.io/digital-rain-analysis/
+ * I'm a huge fan of the first movie.
  *
  * Coded with no external dependencies, using only canvas API.
  */

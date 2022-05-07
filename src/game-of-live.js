@@ -1,7 +1,8 @@
 /*
  * Conway's game of life visualization.
  * Cells that "died" in the previous step keep their color to achieve a stable image
- * (flickering is not good for a background image).
+ * since flickering is not good for a background image.
+ * Game of life is one of the first programs I wrote in my life.
  *
  * Coded with no external dependencies, using only canvas API.
  */
