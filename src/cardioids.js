@@ -40,7 +40,7 @@ class Cardioids extends Animation {
     }
 
     draw() {
-        Utils.clear(this.ctx, this.bgColor);
+        this.clear();
 
         this.radius = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3 * this.scale;
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);

@@ -295,7 +295,7 @@ class GradientDescent extends Animation {
     
     // TODO: refactor
     resize() {
-        Utils.clear(this.ctx, this.bgColor);
+        this.clear();
         
         // Create function
         let funcCls = this.funcClasses[this.funcNames.indexOf(this.functionToOptimize)];

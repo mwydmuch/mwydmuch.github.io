@@ -41,7 +41,7 @@ class NeuralNetwork extends Animation {
     }
 
     draw() {
-        Utils.clear(this.ctx, this.bgColor);
+        this.clear();
 
         // Draw connections
         for (let i = 0; i < this.nLayers - 1; i++) {
@@ -113,6 +113,10 @@ class NeuralNetwork extends Animation {
 
         this.update(0);
         this.draw();
+    }
+
+    getSettings() {
+        return [] // TODO: add settings to this animation
     }
 }
 

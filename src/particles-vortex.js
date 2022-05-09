@@ -59,6 +59,10 @@ class ParticlesVortex extends Animation {
 
         this.ctx.resetTransform();
     }
+
+    getSettings() {
+        return [] // TODO: add settings to this animation
+    }
 }
 
 module.exports = ParticlesVortex;

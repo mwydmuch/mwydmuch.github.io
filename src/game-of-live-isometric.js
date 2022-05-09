@@ -119,7 +119,7 @@ class GameOfLifeIsometric extends GameOfLife {
     }
 
     draw() {
-        Utils.clear(this.ctx, this.bgColor);
+        this.clear();
 
         // Draw grid
         if(!this.renderedGrid){

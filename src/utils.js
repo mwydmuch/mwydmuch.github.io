@@ -89,8 +89,22 @@ module.exports = {
         return this.lerpColor(colors[i % colors.length], colors[(i + 1) % colors.length], (t - i * interval) / interval);
     },
 
-    mirrorColorsPallet(colors){
-        let newPallet = colors;
+    // Some basic vec operations
+    createVec2d(x, y){
+        return {x: x, y: y};
+    },
+
+    rotateVec2d(vec, r){
+        const cos = Math.cos(r), sin = Math.sin(r);
+        return {x: vec.x * cos - vec.y * sin, y: vec.x * sin + vec.y * cos};
+    },
+
+    mulVec2d(vec, val){
+        return {x: vec.x * val, y: vec.x * val};
+    },
+
+    distVec2d(vec1, vec2){
+        return Math.sqrt(Math.pow(vec1.x - vec2.x, 2) + Math.pow(vec1.y - vec2.y, 2))
     },
 
     // Easing functions
@@ -191,16 +205,18 @@ module.exports = {
 
     pathShape(ctx, points){
         if(points.length) {
-            ctx.moveTo(points[0][0], points[0][1]);
-            for(let i = 1; i < points.length; ++i) ctx.lineTo(points[i][0], points[i][1]);
+            if(points[0].hasAttribute('x') && points[0].hasAttribute('y')){
+                ctx.moveTo(points[0].x, points[0].y);
+                for (let i = 1; i < points.length; ++i) ctx.lineTo(points[0].x, points[0].y);
+            } else {
+                ctx.moveTo(points[0][0], points[0][1]);
+                for (let i = 1; i < points.length; ++i) ctx.lineTo(points[i][0], points[i][1]);
+            }
         }
     },
 
     pathClosedShape(ctx, points){
-        if(points.length) {
-            this.pathShape(ctx, points);
-            ctx.lineTo(points[0][0], points[0][1]);
-        }
+        if(points.length) this.pathShape(ctx, points.concat(points[0]));
     },
 
     blendColor(ctx, color, alpha = 1.0, globalCompositeOperation = 'source-over'){
@@ -210,15 +226,6 @@ module.exports = {
         ctx.fillStyle = color;
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.restore();
-    },
-
-    createVec2d(x, y){
-        return {x: x, y: y};
-    },
-
-    rotateVec2d(vec, r){
-        const cos = Math.cos(r), sin = Math.sin(r);
-        return {x: vec.x * cos - vec.y * sin, y: vec.x * sin + vec.y * cos};
     },
 
     rgbToHex(r, g, b) {

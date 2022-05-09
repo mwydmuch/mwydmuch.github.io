@@ -86,8 +86,7 @@ class ThreeNPlusOne extends Animation {
 
     resize() {
         this.frame = 0;
-        this.ctx.fillStyle = this.bgColor;
-        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        this.clear();
     }
 
     getSettings() {

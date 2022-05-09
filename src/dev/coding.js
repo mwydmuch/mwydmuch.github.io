@@ -87,7 +87,7 @@ class Coding extends Animation {
     newLine(){
         if(this.line > this.maxLines){
             const shift = (this.maxLines - this.line) * this.lineHeight;
-            Utils.clear(this.ctx, this.bgColor);
+            this.clear();
             if(this.imageData !== null) this.ctx.putImageData(this.imageData, 0, shift);
             this.line = this.maxLines;
         }
@@ -129,7 +129,7 @@ class Coding extends Animation {
     }
 
     resize() {
-        Utils.clear(this.ctx, this.bgColor);
+        this.clear();
         if(this.imageData !== null) this.ctx.putImageData(this.imageData, 0, 0);
         this.maxLines = Math.floor((this.ctx.canvas.height - 2 * this.padding) / this.lineHeight) - 1;
         this.newLine();

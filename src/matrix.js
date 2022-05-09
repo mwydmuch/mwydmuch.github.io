@@ -92,7 +92,7 @@ class Matrix extends Animation {
     }
 
     resize() {
-        Utils.clear(this.ctx, this.bgColor);
+        this.clear();
         if(this.imageData !== null) this.ctx.putImageData(this.imageData, 0, 0);
 
         this.cellHeight = this.dropsSize;

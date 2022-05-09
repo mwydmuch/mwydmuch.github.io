@@ -55,7 +55,7 @@ class ParticlesStorm extends Animation {
     }
 
     resize() {
-        Utils.clear(this.ctx, this.bgColor);
+        this.clear();
         this.width = this.ctx.canvas.width;
         this.height = this.ctx.canvas.height;
         const newParticles = this.width * this.height * this.particlesDensity;

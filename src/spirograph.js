@@ -54,7 +54,7 @@ class Spirograph extends Animation {
     }
 
     draw() {
-        Utils.clear(this.ctx, this.bgColor);
+        this.clear();
 
         let scale = 1;
 

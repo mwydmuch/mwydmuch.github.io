@@ -1,28 +1,100 @@
 /*
-Frozen brush
-
-Makes use of a delaunay algorithm to create crystal-like shapes.
-The delaunay library was developed by Jay LaPorte at https://github.com/ironwallaby/delaunay/blob/master/delaunay.js
-
-Controls:
-	- Drag the mouse.
-    - Press any key to toggle between fill and stroke.
-
-Inspired by:
-	Makio135's sketch www.openprocessing.org/sketch/385808
-
-Author:
-  Jason Labbe
-
-Site:
-  jasonlabbe3d.com
+*
+* Makes use of a delaunay algorithm to create crystal-like shapes.
+* The delaunay library was developed by Jay LaPorte at https://github.com/ironwallaby/delaunay/blob/master/delaunay.js
+*
+* Inspired by: https://openprocessing.org/sketch/413567/
 */
 
-var allParticles = [];
-var maxLevel = 5;
-var useFill = false;
 
-var data = [];
+const Animation = require("./../animation");
+const Utils = require("./../utils");
+const Delaunay = require("./delaunay");
+
+class Cristals extends Animation {
+    constructor(canvas, colors, colorsAlt,
+                charSize = 20,
+                tabSize = 4) {
+        super(canvas, colors, colorsAlt, "Code writing animation", "codding.js");
+
+        this.particles = [];
+        this.maxLevel = 5;
+        this.useFill = false;
+        this.distThr = 75;
+    }
+
+    drawTriangle(p1, p2, p3){
+        // Don't draw triangle if its area is too big.
+        if (Utils.distVec2d(p1, p2) > this.distThr
+            || Utils.distVec2d(p1, p2) > this.distThr
+            || Utils.distVec2d(p1, p2) > this.distThr) return;
+
+        Utils.pathClosedShape(this.ctx, [p1, p2, p3]);
+        const color = `hls(${165+p1.life*1.5}, 360, 360`;
+        if(this.useFill){
+            this.ctx.fillStyle = color;
+            this.ctx.fill();
+        } else {
+            this.ctx.lineWidth = 1;
+            this.ctx.strokeStyle = color;
+            this.ctx.stroke();
+        }
+    }
+
+    createParticle(x, y,)
+
+    draw() {
+        this.fadeOut(0.3);
+
+        for (var i = this.particles.length-1; i > -1; i--) {
+            let p = this.particles[i];
+            ++p.life;
+            p.velX *= 0.9;
+            p.velY *= 0.9;
+
+
+            this.move = function() {
+                this.life++;
+
+
+                // Add friction.
+                this.vel.mult(0.9);
+
+                this.pos.add(this.vel);
+
+                // Spawn a new particle if conditions are met.
+                if (this.life % 10 == 0) {
+                    if (this.level > 0) {
+                        this.level -= 1;
+                        var newParticle = new Particle(this.pos.x, this.pos.y, this.level-1);
+                        this.particles.push(newParticle);
+                    }
+                }
+            }
+
+            if (Utils.magVec2d(this.particles[i].vel < 0.01)) this.particles.splice(i, 1);
+        }
+
+        if (this.particles.length > 0) {
+            // Run script to get points to create triangles with.
+            let data = Delaunay.triangulate(this.particles.map(function(p) {
+                return [p.x, p.y];
+            }));
+
+            // Display triangles individually.
+            for (let i = 0; i < data.length; i += 3) {
+                // Collect particles that make this triangle.
+                const p1 = this.particles[data[i]],
+                      p2 = this.particles[data[i + 1]],
+                      p3 = this.particles[data[i + 2]];
+
+                this.drawTriangle(p1, p2, p3);
+            }
+        }
+    }
+}
+
+module.exports = Cristals;
 
 
 // Moves to a random direction and comes to a stop.
@@ -48,96 +120,8 @@ function Particle(x, y, level) {
             if (this.level > 0) {
                 this.level -= 1;
                 var newParticle = new Particle(this.pos.x, this.pos.y, this.level-1);
-                allParticles.push(newParticle);
+                this.particles.push(newParticle);
             }
         }
     }
-}
-
-
-function setup() {
-    createCanvas(windowWidth, windowHeight);
-
-    colorMode(HSB, 360);
-
-    textAlign(CENTER);
-
-    background(0);
-}
-
-
-function draw() {
-    // Create fade effect.
-    noStroke();
-    fill(0, 30);
-    rect(0, 0, width, height);
-
-    // Move and spawn particles.
-    // Remove any that is below the velocity threshold.
-    for (var i = allParticles.length-1; i > -1; i--) {
-        allParticles[i].move();
-
-        if (allParticles[i].vel.mag() < 0.01) {
-            allParticles.splice(i, 1);
-        }
-    }
-
-    if (allParticles.length > 0) {
-        // Run script to get points to create triangles with.
-        data = Delaunay.triangulate(allParticles.map(function(pt) {
-            return [pt.pos.x, pt.pos.y];
-        }));
-
-        strokeWeight(0.1);
-
-        // Display triangles individually.
-        for (var i = 0; i < data.length; i += 3) {
-            // Collect particles that make this triangle.
-            var p1 = allParticles[data[i]];
-            var p2 = allParticles[data[i+1]];
-            var p3 = allParticles[data[i+2]];
-
-            // Don't draw triangle if its area is too big.
-            var distThresh = 75;
-
-            if (dist(p1.pos.x, p1.pos.y, p2.pos.x, p2.pos.y) > distThresh) {
-                continue;
-            }
-
-            if (dist(p2.pos.x, p2.pos.y, p3.pos.x, p3.pos.y) > distThresh) {
-                continue;
-            }
-
-            if (dist(p1.pos.x, p1.pos.y, p3.pos.x, p3.pos.y) > distThresh) {
-                continue;
-            }
-
-            // Base its hue by the particle's life.
-            if (useFill) {
-                noStroke();
-                fill(165+p1.life*1.5, 360, 360);
-            } else {
-                noFill();
-                stroke(165+p1.life*1.5, 360, 360);
-            }
-
-            triangle(p1.pos.x, p1.pos.y,
-                p2.pos.x, p2.pos.y,
-                p3.pos.x, p3.pos.y);
-        }
-    }
-
-    noStroke();
-    fill(255);
-    text("Click and drag the mouse\nPress any key to change to fill/stroke", width/2, height-50);
-}
-
-
-function mouseDragged() {
-    allParticles.push(new Particle(mouseX, mouseY, maxLevel));
-}
-
-
-function keyPressed() {
-    useFill = ! useFill;
 }
