@@ -87,8 +87,7 @@ class ThreeNPlusOne extends Animation {
 
     resize() {
         this.frame = 0;
-        this.ctx.fillStyle = this.bgColor;
-        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        this.clear();
     }
 
     getSettings() {
@@ -134,6 +133,10 @@ class Animation {
         else return value;
     }
 
+    clear(){
+        Utils.clear(this.ctx, this.bgColor);
+    }
+
     fadeOut(alpha) {  // Commonly used by some animations
         if (alpha <= 0.001 && this.frame % 10 === 0) Utils.blendColor(this.ctx, this.bgColor, alpha * 10, "lighter");
         else if (alpha <= 0.005 && this.frame % 2 === 0) Utils.blendColor(this.ctx, this.bgColor, alpha * 2, "lighter");
@@ -169,7 +172,7 @@ class Animation {
 
 module.exports = Animation;
 
-},{"./utils":20}],3:[function(require,module,exports){
+},{"./utils":19}],3:[function(require,module,exports){
 /*
  * Modified method of L. Cremona for drawing cardioid with a pencil of lines,
  * as described in section "cardioid as envelope of a pencil of lines" of:
@@ -212,7 +215,7 @@ class Cardioids extends Animation {
     }
 
     draw() {
-        Utils.clear(this.ctx, this.bgColor);
+        this.clear();
 
         this.radius = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3 * this.scale;
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
@@ -240,7 +243,7 @@ class Cardioids extends Animation {
 
 module.exports = Cardioids
 
-},{"./animation":2,"./utils":20}],4:[function(require,module,exports){
+},{"./animation":2,"./utils":19}],4:[function(require,module,exports){
 /*
  * Circular waves animation.
  *
@@ -323,55 +326,11 @@ class CircularWaves extends Animation {
 
 module.exports = CircularWaves;
 
-},{"./animation":2,"./noise":12,"./utils":20}],5:[function(require,module,exports){
-/*
- * Spiral domino animation.
- *
- * Coded with no external dependencies, using only canvas API.
- */
-
-const Animation = require("./../animation");
-const Utils = require("./../utils");
-
-class SpiralDomino extends Animation {
-    constructor (canvas, colors, colorsAlt){
-        super(canvas, colors, colorsAlt, "spiral domino", "spiral-domino.js");
-        this.particles = 1000;
-    }
-
-    draw() {
-        Utils.clear(this.ctx, "#FFFFFF");
-
-        const centerX = this.ctx.canvas.width / 2,
-              centerY = this.ctx.canvas.height / 2;
-
-        for(let i = 1; i <= this.particles; i++){
-            const r = 2 * i,
-                  p = 5 * i * Math.PI / 180,
-                  x = centerX + Math.cos(p) * r,
-                  y = centerY + Math.sin(p) * r;
-
-            const r2 = 2 * (i - 1),
-                p2 = 5 * (i - 1) * Math.PI / 180,
-                x2 = centerX + Math.cos(p2) * r2,
-                y2 = centerY + Math.sin(p2) * r2;
-
-            let v = Utils.rotateVec2d(Utils.createVec2d(36, 0), this.time + p);
-
-            Utils.drawLine(this.ctx, x - v.x, y - v.y, x + v.x, y + v.y, this.colorsAlt[0]);
-
-            Utils.drawLine(this.ctx, x2, y2, x, y, this.colors[0]);
-        }
-    }
-}
-
-module.exports = SpiralDomino;
-
-},{"./../animation":2,"./../utils":20}],6:[function(require,module,exports){
+},{"./animation":2,"./noise":11,"./utils":19}],5:[function(require,module,exports){
 /*
  * Conway's game of life visualization with isometric rendering.
  * Cells that "died" in the previous step keep their color to achieve a stable image
- * (flickering is not good for a background image).
+ * since flickering is not good for a background image.
  *
  * Coded with no external dependencies, using only canvas API.
  */
@@ -489,7 +448,7 @@ class GameOfLifeIsometric extends GameOfLife {
     }
 
     draw() {
-        Utils.clear(this.ctx, this.bgColor);
+        this.clear();
 
         // Draw grid
         if(!this.renderedGrid){
@@ -532,11 +491,12 @@ class GameOfLifeIsometric extends GameOfLife {
 
 module.exports = GameOfLifeIsometric;
 
-},{"./game-of-live":7,"./utils":20}],7:[function(require,module,exports){
+},{"./game-of-live":6,"./utils":19}],6:[function(require,module,exports){
 /*
  * Conway's game of life visualization.
  * Cells that "died" in the previous step keep their color to achieve a stable image
- * (flickering is not good for a background image).
+ * since flickering is not good for a background image.
+ * Game of life is one of the first programs I wrote in my life.
  *
  * Coded with no external dependencies, using only canvas API.
  */
@@ -676,7 +636,7 @@ class GameOfLife extends Animation {
 
 module.exports = GameOfLife;
 
-},{"./animation":2}],8:[function(require,module,exports){
+},{"./animation":2}],7:[function(require,module,exports){
 /*
  * Visualization of gradient descent-based optimizers.
  *
@@ -974,7 +934,7 @@ class GradientDescent extends Animation {
     
     // TODO: refactor
     resize() {
-        Utils.clear(this.ctx, this.bgColor);
+        this.clear();
         
         // Create function
         let funcCls = this.funcClasses[this.funcNames.indexOf(this.functionToOptimize)];
@@ -1066,8 +1026,8 @@ class GradientDescent extends Animation {
             if(i !== 0) this.ctx.fillText((-i).toFixed(1), centerX - i * this.scale, height - 22);
         }
         for(let i = 0; i < centerY / this.scale; i += labelsDist){
-            this.ctx.fillText(i.toFixed(1), 10, centerY + i * this.scale);
-            if(i !== 0) this.ctx.fillText((-i).toFixed(1), 10, centerY - i * this.scale);
+            this.ctx.fillText((-i).toFixed(1), 10, centerY + i * this.scale);
+            if(i !== 0) this.ctx.fillText((i).toFixed(1), 10, centerY - i * this.scale);
         }
 
         // Init optimizers
@@ -1119,7 +1079,7 @@ class GradientDescent extends Animation {
 
 module.exports = GradientDescent;
 
-},{"./animation":2,"./utils":20}],9:[function(require,module,exports){
+},{"./animation":2,"./utils":19}],8:[function(require,module,exports){
 'use strict';
 
 // Require
@@ -1142,10 +1102,6 @@ const PerlinNoiseParticles = require("./perlin-noise-particles");
 const Sorting = require("./sorting");
 const SpinningShapes = require("./spinning-shapes");
 const Spirograph = require("./spirograph")
-
-//const Codding = require("./dev/codding");
-
-const SpiralDomino = require("./dev/spiral-domino");
 
 // Globals
 // ---------------------------------------------------------------------------------------------------------------------
@@ -1244,7 +1200,7 @@ let animations = [
     PerlinNoiseParticles,
     Sorting,
     SpinningShapes,
-    Spirograph
+    Spirograph,
 ];
 
 Utils.randomShuffle(animations);
@@ -1390,7 +1346,7 @@ if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
         closeSettings();
     });
 
-    // Events for dragging the background settings panel
+    // Events for dragging the background settings panel, TODO: make it work on mobile
     elemBgSettingsControls.addEventListener('mousedown', function (e) {
         if(e.target !== e.currentTarget) return;
         e.target.classList.add('moving');
@@ -1461,7 +1417,6 @@ function updateSettings(settings){
             let elem = document.getElementById(elemId);
             if(elem) {
                 elem.addEventListener("input", function (e) {
-                    console.log(setting, e.target.value);
                     if (e.target.type === "checkbox") {
                         if (e.target.nextElementSibling) e.target.nextElementSibling.value = e.target.checked;
                         eval(`animation.${setting.prop} = e.target.checked;`);
@@ -1481,10 +1436,11 @@ function updateSettings(settings){
     }
 }
 
-},{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./dev/spiral-domino":5,"./game-of-live":7,"./game-of-live-isometric":6,"./gradient-descent":8,"./matrix":10,"./neural-network":11,"./particles-and-attractors":13,"./particles-vortex":14,"./particles-waves":15,"./perlin-noise-particles":16,"./sorting":17,"./spinning-shapes":18,"./spirograph":19,"./utils":20}],10:[function(require,module,exports){
+},{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./game-of-live":6,"./game-of-live-isometric":5,"./gradient-descent":7,"./matrix":9,"./neural-network":10,"./particles-and-attractors":12,"./particles-vortex":13,"./particles-waves":14,"./perlin-noise-particles":15,"./sorting":16,"./spinning-shapes":17,"./spirograph":18,"./utils":19}],9:[function(require,module,exports){
 /*
  * Recreation of matrix digital rain based on this analysis
  * of the original effect: https://carlnewton.github.io/digital-rain-analysis/
+ * I'm a huge fan of the first movie.
  *
  * Coded with no external dependencies, using only canvas API.
  */
@@ -1575,7 +1531,7 @@ class Matrix extends Animation {
     }
 
     resize() {
-        Utils.clear(this.ctx, this.bgColor);
+        this.clear();
         if(this.imageData !== null) this.ctx.putImageData(this.imageData, 0, 0);
 
         this.cellHeight = this.dropsSize;
@@ -1600,7 +1556,7 @@ class Matrix extends Animation {
 
 module.exports = Matrix;
 
-},{"./animation":2,"./utils":20}],11:[function(require,module,exports){
+},{"./animation":2,"./utils":19}],10:[function(require,module,exports){
 /*
  * Visualization of a simple, fully connected neural network, with random weights,
  * ReLU activations on intermediate layers, and sigmoid output at the last layer.
@@ -1644,7 +1600,7 @@ class NeuralNetwork extends Animation {
     }
 
     draw() {
-        Utils.clear(this.ctx, this.bgColor);
+        this.clear();
 
         // Draw connections
         for (let i = 0; i < this.nLayers - 1; i++) {
@@ -1717,11 +1673,15 @@ class NeuralNetwork extends Animation {
         this.update(0);
         this.draw();
     }
+
+    getSettings() {
+        return [] // TODO: add settings to this animation
+    }
 }
 
 module.exports = NeuralNetwork;
 
-},{"./animation":2,"./utils":20}],12:[function(require,module,exports){
+},{"./animation":2,"./utils":19}],11:[function(require,module,exports){
 /*
  * A speed-improved perlin and simplex noise algorithms for 2D.
  *
@@ -2032,7 +1992,7 @@ module.exports = NeuralNetwork;
 
 })(this);
 
-},{}],13:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /*
  * Very simple particles system with attractors.
  * In this system, distance and momentum are ignored.
@@ -2143,7 +2103,7 @@ class ParticlesAndAttractors extends Animation {
 
 module.exports = ParticlesAndAttractors;
 
-},{"./animation":2,"./utils":20}],14:[function(require,module,exports){
+},{"./animation":2,"./utils":19}],13:[function(require,module,exports){
 /*
  * Particles vortex with randomized speed and direction.
  *
@@ -2205,11 +2165,15 @@ class ParticlesVortex extends Animation {
 
         this.ctx.resetTransform();
     }
+
+    getSettings() {
+        return [] // TODO: add settings to this animation
+    }
 }
 
 module.exports = ParticlesVortex;
 
-},{"./animation":2,"./noise":12,"./utils":20}],15:[function(require,module,exports){
+},{"./animation":2,"./noise":11,"./utils":19}],14:[function(require,module,exports){
 /*
  * "Particles waves" animation.
  * The effect was achieved by modifying perlin-noise-particles.js.
@@ -2267,7 +2231,7 @@ class ParticlesStorm extends Animation {
     }
 
     resize() {
-        Utils.clear(this.ctx, this.bgColor);
+        this.clear();
         this.width = this.ctx.canvas.width;
         this.height = this.ctx.canvas.height;
         const newParticles = this.width * this.height * this.particlesDensity;
@@ -2294,7 +2258,7 @@ class ParticlesStorm extends Animation {
 
 module.exports = ParticlesStorm;
 
-},{"./animation":2,"./noise":12,"./utils":20}],16:[function(require,module,exports){
+},{"./animation":2,"./noise":11,"./utils":19}],15:[function(require,module,exports){
 /*
  * Particles moving through Perlin noise.
  *
@@ -2384,7 +2348,7 @@ class PerlinNoiseParticles extends Animation {
     }
 
     resize() {
-        Utils.clear(this.ctx, this.bgColor);
+        this.clear();
         if(this.imageData !== null) this.ctx.putImageData(this.imageData, 0, 0);
 
         // Add particles to new parts of the image
@@ -2423,7 +2387,7 @@ class PerlinNoiseParticles extends Animation {
 
 module.exports = PerlinNoiseParticles;
 
-},{"./animation":2,"./noise":12,"./utils":20}],17:[function(require,module,exports){
+},{"./animation":2,"./noise":11,"./utils":19}],16:[function(require,module,exports){
 /*
  * Visualization of different sorting algorithms.
  *
@@ -2776,7 +2740,7 @@ class Sorting extends Animation {
 
 module.exports = Sorting;
 
-},{"./animation":2,"./utils":20}],18:[function(require,module,exports){
+},{"./animation":2,"./utils":19}],17:[function(require,module,exports){
 /*
  * Shapes moving in a circle/dancing.
  * Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
@@ -2864,7 +2828,7 @@ class SpinningShapes extends Animation {
 
 module.exports = SpinningShapes
 
-},{"./animation":2,"./utils":20}],19:[function(require,module,exports){
+},{"./animation":2,"./utils":19}],18:[function(require,module,exports){
 /*
  * Spirograph created with 1-5 random gears.
  * See: https://en.wikipedia.org/wiki/Spirograph,
@@ -2921,7 +2885,7 @@ class Spirograph extends Animation {
     }
 
     draw() {
-        Utils.clear(this.ctx, this.bgColor);
+        this.clear();
 
         let scale = 1;
 
@@ -2966,7 +2930,7 @@ class Spirograph extends Animation {
 
 module.exports = Spirograph
 
-},{"./animation":2,"./utils":20}],20:[function(require,module,exports){
+},{"./animation":2,"./utils":19}],19:[function(require,module,exports){
 module.exports = {
 
     // Randomization helpers
@@ -3058,8 +3022,22 @@ module.exports = {
         return this.lerpColor(colors[i % colors.length], colors[(i + 1) % colors.length], (t - i * interval) / interval);
     },
 
-    mirrorColorsPallet(colors){
-        let newPallet = colors;
+    // Some basic vec operations
+    createVec2d(x, y){
+        return {x: x, y: y};
+    },
+
+    rotateVec2d(vec, r){
+        const cos = Math.cos(r), sin = Math.sin(r);
+        return {x: vec.x * cos - vec.y * sin, y: vec.x * sin + vec.y * cos};
+    },
+
+    mulVec2d(vec, val){
+        return {x: vec.x * val, y: vec.x * val};
+    },
+
+    distVec2d(vec1, vec2){
+        return Math.sqrt(Math.pow(vec1.x - vec2.x, 2) + Math.pow(vec1.y - vec2.y, 2))
     },
 
     // Easing functions
@@ -3160,16 +3138,18 @@ module.exports = {
 
     pathShape(ctx, points){
         if(points.length) {
-            ctx.moveTo(points[0][0], points[0][1]);
-            for(let i = 1; i < points.length; ++i) ctx.lineTo(points[i][0], points[i][1]);
+            if(points[0].hasAttribute('x') && points[0].hasAttribute('y')){
+                ctx.moveTo(points[0].x, points[0].y);
+                for (let i = 1; i < points.length; ++i) ctx.lineTo(points[0].x, points[0].y);
+            } else {
+                ctx.moveTo(points[0][0], points[0][1]);
+                for (let i = 1; i < points.length; ++i) ctx.lineTo(points[i][0], points[i][1]);
+            }
         }
     },
 
     pathClosedShape(ctx, points){
-        if(points.length) {
-            this.pathShape(ctx, points);
-            ctx.lineTo(points[0][0], points[0][1]);
-        }
+        if(points.length) this.pathShape(ctx, points.concat(points[0]));
     },
 
     blendColor(ctx, color, alpha = 1.0, globalCompositeOperation = 'source-over'){
@@ -3179,15 +3159,6 @@ module.exports = {
         ctx.fillStyle = color;
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.restore();
-    },
-
-    createVec2d(x, y){
-        return {x: x, y: y};
-    },
-
-    rotateVec2d(vec, r){
-        const cos = Math.cos(r), sin = Math.sin(r);
-        return {x: vec.x * cos - vec.y * sin, y: vec.x * sin + vec.y * cos};
     },
 
     rgbToHex(r, g, b) {
@@ -3201,8 +3172,21 @@ module.exports = {
         return canvas;
     },
 
+    // Misc
     isStrictMode(){
         return ((eval("var __temp = null"), (typeof __temp === "undefined")) ? "strict":  "non-strict");
+    },
+
+    getKeys(dict){
+        let keys = [];
+        for(let key in dict) keys.push(key);
+        return keys;
+    },
+
+    getValues(dict){
+        let values = [];
+        for(let key in dict) values.push(dict[key]);
+        return values;
     },
 
     addMultipleEventListener(element, events, handler) {
@@ -3210,4 +3194,4 @@ module.exports = {
     }
 };
 
-},{}]},{},[9])
+},{}]},{},[8])

@@ -21,10 +21,6 @@ const Sorting = require("./sorting");
 const SpinningShapes = require("./spinning-shapes");
 const Spirograph = require("./spirograph")
 
-//const Codding = require("./dev/codding");
-
-const SpiralDomino = require("./dev/spiral-domino");
-
 // Globals
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -122,7 +118,7 @@ let animations = [
     PerlinNoiseParticles,
     Sorting,
     SpinningShapes,
-    Spirograph
+    Spirograph,
 ];
 
 Utils.randomShuffle(animations);
@@ -268,7 +264,7 @@ if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
         closeSettings();
     });
 
-    // Events for dragging the background settings panel
+    // Events for dragging the background settings panel, TODO: make it work on mobile
     elemBgSettingsControls.addEventListener('mousedown', function (e) {
         if(e.target !== e.currentTarget) return;
         e.target.classList.add('moving');
@@ -339,7 +335,6 @@ function updateSettings(settings){
             let elem = document.getElementById(elemId);
             if(elem) {
                 elem.addEventListener("input", function (e) {
-                    console.log(setting, e.target.value);
                     if (e.target.type === "checkbox") {
                         if (e.target.nextElementSibling) e.target.nextElementSibling.value = e.target.checked;
                         eval(`animation.${setting.prop} = e.target.checked;`);

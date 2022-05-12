@@ -387,8 +387,8 @@ class GradientDescent extends Animation {
             if(i !== 0) this.ctx.fillText((-i).toFixed(1), centerX - i * this.scale, height - 22);
         }
         for(let i = 0; i < centerY / this.scale; i += labelsDist){
-            this.ctx.fillText(i.toFixed(1), 10, centerY + i * this.scale);
-            if(i !== 0) this.ctx.fillText((-i).toFixed(1), 10, centerY - i * this.scale);
+            this.ctx.fillText((-i).toFixed(1), 10, centerY + i * this.scale);
+            if(i !== 0) this.ctx.fillText((i).toFixed(1), 10, centerY - i * this.scale);
         }
 
         // Init optimizers
