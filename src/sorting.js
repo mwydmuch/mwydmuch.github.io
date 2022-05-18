@@ -336,7 +336,7 @@ class Sorting extends Animation {
 
             this.ctx.fillText(`Sorting algorithm: ${this.sortingAlgorithm}`, lineHeight, elementMaxHeight - 3 * lineHeight);
             this.ctx.fillText(`Number of elements: ${this.numElements}`, lineHeight, elementMaxHeight - 2 * lineHeight);
-            this.ctx.fillText(`Number of element comparisons: ${this.cmpCount} / ${this.cmpTotal}`, lineHeight, elementMaxHeight - lineHeight);
+            this.ctx.fillText(`Number of elements comparisons: ${this.cmpCount} / ${this.cmpTotal}`, lineHeight, elementMaxHeight - lineHeight);
         }
     }
 

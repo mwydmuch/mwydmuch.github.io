@@ -17,6 +17,7 @@ const ParticlesAndAttractors = require("./particles-and-attractors");
 const ParticlesVortex = require("./particles-vortex");
 const ParticlesWaves = require("./particles-waves");
 const PerlinNoiseParticles = require("./perlin-noise-particles");
+const ShortestPath = require("./shortest-path")
 const Sorting = require("./sorting");
 const SpinningShapes = require("./spinning-shapes");
 const Spirograph = require("./spirograph")
@@ -116,6 +117,7 @@ let animations = [
     ParticlesVortex,
     ParticlesWaves,
     PerlinNoiseParticles,
+    ShortestPath,
     Sorting,
     SpinningShapes,
     Spirograph,
