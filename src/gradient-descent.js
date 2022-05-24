@@ -408,25 +408,29 @@ class GradientDescent extends Animation {
         const textXOffset = 50;
         const lineHeight = 20;
 
+        this.ctx.font = '14px sans-serif';
+        this.ctx.lineWidth = 2;
+        this.ctx.fillStyle = this.colors[0];
+        this.ctx.strokeStyle = this.bgColor;
+
         this.ctx.fillText(this.func.getName(), textXOffset, textYOffset)
         if(this.func.hasGlobalMin()) {
             textYOffset += lineHeight;
             const globalMin = this.func.getGlobalMin()
-            this.ctx.fillText("Optimum: f(x*) = " + Math.round(this.func.val(globalMin) * 10000) / 10000 + ", at x* =  (" + globalMin[0] + ", " + globalMin[1] + ")", textXOffset, textYOffset);
+            Utils.fillAndStrokeText(this.ctx, `Optimum: f(x*) = ${Math.round(this.func.val(globalMin) * 10000) / 10000}, at x* =  (${globalMin[0]}, ${globalMin[1]})`, textXOffset, textYOffset, 2);
             Utils.fillCircle(this.ctx, centerX + globalMin[0] * this.scale, centerY + -globalMin[1] * this.scale, 2, this.colors[0]);
         }
 
         textYOffset += lineHeight;
-        this.ctx.fillText("Starting point: x0 = (" + start[0] + ", " + start[1] + ")", textXOffset, textYOffset);
+        Utils.fillAndStrokeText(this.ctx, `Starting point: x0 = (${start[0]}, ${start[1]})`, textXOffset, textYOffset);
 
         textYOffset += 2 * lineHeight;
-        this.ctx.fillText("Optimizers:", textXOffset, textYOffset);
+        Utils.fillAndStrokeText(this.ctx, "Optimizers:", textXOffset, textYOffset);
 
         for(let i = 0; i < this.optims.length; ++i){
             textYOffset += lineHeight;
             this.ctx.fillStyle = this.colorsAlt[i];
-            this.ctx.font = '12px sans-serif';
-            this.ctx.fillText("    " + this.optims[i].getName(), textXOffset, textYOffset);
+            Utils.fillAndStrokeText(this.ctx, `${this.optims[i].getName()}`, textXOffset + 20, textYOffset);
             Utils.fillCircle(this.ctx, textXOffset + 3, textYOffset - 4, 3, this.colorsAlt[i]);
         }
 

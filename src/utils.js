@@ -203,6 +203,11 @@ module.exports = {
         ctx.stroke();
     },
 
+    fillAndStrokeText(ctx, text, x, y){
+        ctx.strokeText(text, x, y);
+        ctx.fillText(text, x, y);
+    },
+
     pathShape(ctx, points){
         if(points.length) {
             if(points[0].hasAttribute('x') && points[0].hasAttribute('y')){

@@ -19,7 +19,7 @@ class Animation {
         this.frame = 0;
 
         // Reset text settings
-        this.ctx.font = '12px sans-serif';
+        this.ctx.font = '14px sans-serif';
         this.ctx.textAlign = "left";
         this.ctx.textBaseline = "alphabetic";
     }

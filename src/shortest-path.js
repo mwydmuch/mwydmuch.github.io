@@ -21,13 +21,14 @@ class ShortestPath extends Animation {
     constructor (canvas, colors, colorsAlt,
                  cellSize = 12,
                  searchAlgorithm = "random",
-                 spawnProb = 0.25,
+                 mapAlgorithm = "recursive rooms",
                  showStats = false) {
         super(canvas, colors, colorsAlt, "The shortest path", "shortest-path.js");
         this.cellSize = cellSize;
-        this.spawnProb = spawnProb;
         this.showStats = showStats;
-        
+
+        this.mapAlgorithms = ["random walls", "recursive rooms"]
+        this.mapAlgorithm = this.assignAndCheckIfRandom(mapAlgorithm, Utils.randomChoice(this.mapAlgorithms));
         this.searchAlgorithms = ["BFS", "A*"];
         this.searchAlgorithm = this.assignAndCheckIfRandom(searchAlgorithm, Utils.randomChoice(this.searchAlgorithms));
         this.updateName();
@@ -54,8 +55,12 @@ class ShortestPath extends Animation {
     }
 
     drawSquareCell(x, y, cellPadding){
-        this.ctx.fillRect(x * this.cellSize + cellPadding, y * this.cellSize + cellPadding,
-            this.cellSize - 2 * cellPadding, this.cellSize - 2 * cellPadding);
+        let paddingLeft = this.map[this.getIdx(x - 1, y)] === WALL || x - 1 < 0 ? 0 : cellPadding,
+            paddingRight = this.map[this.getIdx(x + 1, y)] === WALL || x + 1 >= this.mapWidth ? 0 : cellPadding,
+            paddingTop = this.map[this.getIdx(x, y - 1)] === WALL || y - 1 < 0 ? 0 : cellPadding,
+            paddingBottom = this.map[this.getIdx(x, y + 1)] === WALL || y + 1 >= this.mapHeight ? 0 : cellPadding;
+        this.ctx.fillRect(x * this.cellSize + paddingLeft, y * this.cellSize + paddingTop,
+            this.cellSize - paddingLeft - paddingRight, this.cellSize - paddingTop - paddingBottom);
     }
 
     drawCircleCell(x, y, cellPadding){
@@ -141,7 +146,7 @@ class ShortestPath extends Animation {
 
                 if(mapVal === WALL){
                     this.ctx.fillStyle = this.colors[0];
-                    this.drawSquareCell(x, y, 0);
+                    this.drawSquareCell(x, y, this.cellSize / 6);
                 } else if(mapVal === START) {
                     this.ctx.fillStyle = this.colorsAlt[0];
                     this.drawCircleCell(x, y, 1);
@@ -156,21 +161,67 @@ class ShortestPath extends Animation {
                     this.drawCircleCell(x, y, this.cellSize / 4);
                 } else if(mapVal === PATH) {
                     this.ctx.fillStyle = this.colorsAlt[2];
-                    this.drawCircleCell(x, y, 1);
+                    this.drawCircleCell(x, y, this.cellSize / 6);
                 }
             }
         }
 
         if(this.showStats){
             const lineHeight = 20;
-            this.ctx.font = '12px sans-serif';
-            this.ctx.fillStyle = this.colorsAlt[0];
+            this.ctx.font = '14px sans-serif';
+            this.ctx.lineWidth = 2;
+            this.ctx.fillStyle = this.colors[0];
+            this.ctx.strokeStyle = this.bgColor;
 
-            this.ctx.fillText(`Search algorithm: ${this.searchAlgorithm}`, lineHeight, this.ctx.canvas.height - 2 * lineHeight);
-            this.ctx.fillText(`Number of visited nodes: ${this.visited}`, lineHeight, this.ctx.canvas.height - 1 * lineHeight);
+            Utils.fillAndStrokeText(this.ctx, `Search algorithm: ${this.searchAlgorithm}`, lineHeight, this.ctx.canvas.height - 2 * lineHeight);
+            Utils.fillAndStrokeText(this.ctx, `Number of visited nodes: ${this.visited}`, lineHeight, this.ctx.canvas.height - 1 * lineHeight);
         }
 
         if (this.frame >= (this.visited + 300)) this.resize();
+    }
+
+    recursiveMaze(mazeX, mazeY, mazeW, mazeH){
+        const minSize = 9,
+              wallsMinDist = Math.floor(minSize / 3),
+              wallSpawnProb = 1.0 - mazeW / this.mapWidth;
+
+        const mazeEndX = mazeX + mazeW,
+              mazeEndY = mazeY + mazeH;
+
+        const wall1 = mazeW >= minSize && Math.random() > (wallSpawnProb * mazeH / mazeW),
+              wall2 = mazeH >= minSize && Math.random() > wallSpawnProb;
+
+        // let wallX = wall1 ? mazeX + Math.floor(mazeW / 2) : mazeX - 1,
+        //     wallY = wall2 ? mazeY + Math.floor(mazeH / 2) : mazeEndY;
+
+        let wallX, wallY;
+
+        if(wall1) {
+            do wallX = mazeX + Utils.randomInt(wallsMinDist, mazeW - wallsMinDist);
+            while (this.map[this.getIdx(wallX, mazeY - 1)] !== WALL || this.map[this.getIdx(wallX, mazeEndY) !== WALL]);
+        } else wallX = mazeX - 1;
+
+        if(wall2) {
+            do wallY = mazeY + Utils.randomInt(wallsMinDist, mazeH - wallsMinDist);
+            while(this.map[this.getIdx(mazeX - 1, wallY)] !== WALL || this.map[this.getIdx(mazeEndX, wallY)] !== WALL);
+        } else wallY = mazeEndY;
+
+        if(wall1) {
+            for (let y = 0; y < mazeH; ++y) this.map[this.getIdx(wallX, mazeY + y)] = WALL;
+            this.map[this.getIdx(wallX, Utils.randomInt(mazeY, wallY))] = EMPTY;
+            if(wall2) this.map[this.getIdx(wallX, Utils.randomInt(wallY + 1, mazeEndY))] = EMPTY;
+
+            this.recursiveMaze(mazeX, mazeY, wallX - mazeX, wallY - mazeY);
+            this.recursiveMaze(wallX + 1, mazeY, mazeEndX - wallX - 1, wallY - mazeY);
+        }
+        if(wall2){
+            for (let x = 0; x < mazeW; ++x) this.map[this.getIdx(mazeX + x, wallY)] = WALL;
+            if(wall1) this.map[this.getIdx(Utils.randomInt(mazeX, wallX), wallY)] = EMPTY;
+            this.map[this.getIdx(Utils.randomInt(wallX + 1, mazeEndX), wallY)] = EMPTY;
+
+            this.recursiveMaze(mazeX, wallY + 1, wallX - mazeX, mazeEndY - wallY - 1);
+            this.recursiveMaze(wallX + 1, wallY + 1, mazeEndX - wallX - 1, mazeEndY - wallY - 1);
+        }
     }
 
     resize() {
@@ -181,15 +232,20 @@ class ShortestPath extends Animation {
         this.dist = new Array(this.mapSize);
         this.prev = new Array(this.mapSize);
 
-        for (let y = 0; y < this.mapHeight; y++) { // TODO: Generate some more interesting maze
-            for (let x = 0; x < this.mapWidth; x++) {
-                let cellCord = x + y * this.mapWidth;
-                if(x === 0 || x === (this.mapWidth - 1) || y === 0 || y === (this.mapHeight- 1)) this.map[cellCord] = WALL;
-                else this.map[cellCord] = (Math.random() < this.spawnProb) ? WALL : 0;
-                this.dist[cellCord] = -1;
-                this.prev[cellCord] = -1;
+        for (let y = 0; y < this.mapHeight; ++y) {
+            for (let x = 0; x < this.mapWidth; ++x) {
+                const idx = this.getIdx(x, y);
+                if(x === 0 || x === (this.mapWidth - 1) || y === 0 || y === (this.mapHeight - 1)) this.map[idx] = WALL;
+                else this.map[idx] = EMPTY;
+                this.dist[idx] = -1;
+                this.prev[idx] = -1;
             }
         }
+
+        if(this.mapAlgorithm === "random map")
+            this.randomMap(1, 1, this.mapWidth - 2, this.mapHeight - 2);
+        else if(this.mapAlgorithm === "recursive rooms")
+            this.recursiveMaze(1, 1, this.mapWidth - 2, this.mapHeight - 2);
 
         this.frame = 0;
         this.visited = 0;
@@ -206,7 +262,7 @@ class ShortestPath extends Animation {
     }
 
     getSettings() {
-        return [{prop: "cellSize", type: "int", min: 4, max: 32, toCall: "resize"},
+        return [{prop: "cellSize", type: "int", min: 8, max: 32, toCall: "resize"},
                 {prop: "searchAlgorithm", type: "select", values: this.searchAlgorithms, toCall: "resize"},
                 {prop: "showStats", type: "bool"}];
     }
