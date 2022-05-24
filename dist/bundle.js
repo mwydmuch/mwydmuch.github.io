@@ -2474,14 +2474,11 @@ class ShortestPath extends Animation {
     constructor (canvas, colors, colorsAlt,
                  cellSize = 12,
                  searchAlgorithm = "random",
-                 mapAlgorithm = "recursive rooms",
                  showStats = false) {
         super(canvas, colors, colorsAlt, "The shortest path", "shortest-path.js");
         this.cellSize = cellSize;
         this.showStats = showStats;
 
-        this.mapAlgorithms = ["random walls", "recursive rooms"]
-        this.mapAlgorithm = this.assignAndCheckIfRandom(mapAlgorithm, Utils.randomChoice(this.mapAlgorithms));
         this.searchAlgorithms = ["BFS", "A*"];
         this.searchAlgorithm = this.assignAndCheckIfRandom(searchAlgorithm, Utils.randomChoice(this.searchAlgorithms));
         this.updateName();
@@ -2695,10 +2692,7 @@ class ShortestPath extends Animation {
             }
         }
 
-        if(this.mapAlgorithm === "random map")
-            this.randomMap(1, 1, this.mapWidth - 2, this.mapHeight - 2);
-        else if(this.mapAlgorithm === "recursive rooms")
-            this.recursiveMaze(1, 1, this.mapWidth - 2, this.mapHeight - 2);
+        this.recursiveMaze(1, 1, this.mapWidth - 2, this.mapHeight - 2);
 
         this.frame = 0;
         this.visited = 0;
