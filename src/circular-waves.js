@@ -36,24 +36,23 @@ class CircularWaves extends Animation {
         this.fadeOut(this.fadingSpeed);
 
         const zoff = this.frame * 0.005,
-              degPerVertex = 360 / this.vertices;
+              radPerVertex = 2 * Math.PI / this.vertices;
         if(this.rainbowColors) this.ctx.strokeStyle = 'hsl(' + Math.abs(Math.sin(zoff * 5)) * 360 + ', 100%, 50%)';
         else this.ctx.strokeStyle = Utils.lerpColor(this.colorA, this.colorB, Math.abs(Math.sin(zoff * 5)));
 
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
 
         this.ctx.beginPath();
-        for (let a = 0; a <= 360; a += degPerVertex) {
-            const aRad = a * Math.PI / 180,
+        for (let v = 0; v <= this.vertices; ++v) {
+            const aRad = v * radPerVertex,
                   xoff = Math.cos(aRad) * this.noiseScale,
                   yoff = Math.sin(aRad) * this.noiseScale,
-
                   n = this.noise.simplex3(xoff, yoff, zoff),
                   r = Utils.remap(n, -1, 1, this.radiusMin, this.radiusMax),
                   x = r * Math.cos(aRad),
                   y = r * Math.sin(aRad);
 
-            if(a === 0) this.ctx.moveTo(x, y);
+            if(v === 0) this.ctx.moveTo(x, y);
             else this.ctx.lineTo(x, y);
         }
         this.ctx.stroke();

@@ -11,12 +11,11 @@ const Utils = require("./utils");
 class ParticlesVortex extends Animation {
     constructor (canvas, colors, colorsAlt,
                  particles = 1500,
-                 radiusMin = 100,
-                 radiusMax = 200,
-                 speedMin = 25,
-                 speedMax = 50,
-                 rotationSpeedMin = 0.01,
-                 rotationSpeedMax = 0.02,
+                 radius = "random",
+                 speed = "random",
+                 rotationSpeed = "random",
+                 dirX = "random",
+                 dirY = "random",
                  scale = 1
     ){
         super(canvas, colors, colorsAlt, "vortex of particles", "particles-vortex.js");
@@ -25,11 +24,26 @@ class ParticlesVortex extends Animation {
         this.noise.seed(Utils.randomRange(0, 1));
 
         this.particles = particles;
-        this.radius = Utils.randomRange(radiusMin, radiusMax);
-        this.speed = Utils.randomRange(speedMin, speedMax) * Utils.randomChoice([-1, 1]);
-        this.rotationSpeed = Utils.randomRange(rotationSpeedMin, rotationSpeedMax) * Utils.randomChoice([-1, 1]);
-        this.dirX = Utils.randomRange(-0.75, 0.75);
-        this.dirY = Utils.randomRange(-0.75, 0.75);
+
+        this.radiusMin = 50;
+        this.radiusMax = 250;
+        this.radius = this.assignAndCheckIfRandom(radius,
+            Utils.round(Utils.randomRange(this.radiusMin, this.radiusMax), 2));
+
+        this.speedMin = 25;
+        this.speedMax = 50;
+        this.speed = this.assignAndCheckIfRandom(speed,
+            Utils.round(Utils.randomRange(this.speedMin, this.speedMax) * Utils.randomChoice([-1, 1]), 2));
+
+        this.rotationSpeedMin = 0.01;
+        this.rotationSpeedMax = 0.02;
+        this.rotationSpeed = this.assignAndCheckIfRandom(rotationSpeed,
+            Utils.round(Utils.randomRange(this.rotationSpeedMin, this.rotationSpeedMax) * Utils.randomChoice([-1, 1]), 2));
+
+        this.dirMax = 0.75;
+        this.dirX = this.assignAndCheckIfRandom(dirX, Utils.round(Utils.randomRange(-this.dirMax, this.dirMax), 2));
+        this.dirY = this.assignAndCheckIfRandom(dirY, Utils.round(Utils.randomRange(-this.dirMax, this.dirMax), 2));
+
         this.scale = scale;
     }
 
@@ -61,7 +75,12 @@ class ParticlesVortex extends Animation {
     }
 
     getSettings() {
-        return [] // TODO: add settings to this animation
+        return [{prop: "particles", type: "int", min: 1, max: 3000},
+                {prop: "radius", type: "float", min: this.radiusMin, max: this.radiusMax},
+                {prop: "speed", type: "float", min: -this.speedMax, max: this.speedMax},
+                {prop: "rotationSpeed", type: "float", min: -this.rotationSpeedMax, max: this.rotationSpeedMax},
+                {prop: "dirX", type: "float", min: -this.dirMax, max: this.dirMax},
+                {prop: "dirY", type: "float", min: -this.dirMax, max: this.dirMax}];
     }
 }
 

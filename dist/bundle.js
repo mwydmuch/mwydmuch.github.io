@@ -282,24 +282,23 @@ class CircularWaves extends Animation {
         this.fadeOut(this.fadingSpeed);
 
         const zoff = this.frame * 0.005,
-              degPerVertex = 360 / this.vertices;
+              radPerVertex = 2 * Math.PI / this.vertices;
         if(this.rainbowColors) this.ctx.strokeStyle = 'hsl(' + Math.abs(Math.sin(zoff * 5)) * 360 + ', 100%, 50%)';
         else this.ctx.strokeStyle = Utils.lerpColor(this.colorA, this.colorB, Math.abs(Math.sin(zoff * 5)));
 
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
 
         this.ctx.beginPath();
-        for (let a = 0; a <= 360; a += degPerVertex) {
-            const aRad = a * Math.PI / 180,
+        for (let v = 0; v <= this.vertices; ++v) {
+            const aRad = v * radPerVertex,
                   xoff = Math.cos(aRad) * this.noiseScale,
                   yoff = Math.sin(aRad) * this.noiseScale,
-
                   n = this.noise.simplex3(xoff, yoff, zoff),
                   r = Utils.remap(n, -1, 1, this.radiusMin, this.radiusMax),
                   x = r * Math.cos(aRad),
                   y = r * Math.sin(aRad);
 
-            if(a === 0) this.ctx.moveTo(x, y);
+            if(v === 0) this.ctx.moveTo(x, y);
             else this.ctx.lineTo(x, y);
         }
         this.ctx.stroke();
@@ -2124,12 +2123,11 @@ const Utils = require("./utils");
 class ParticlesVortex extends Animation {
     constructor (canvas, colors, colorsAlt,
                  particles = 1500,
-                 radiusMin = 100,
-                 radiusMax = 200,
-                 speedMin = 25,
-                 speedMax = 50,
-                 rotationSpeedMin = 0.01,
-                 rotationSpeedMax = 0.02,
+                 radius = "random",
+                 speed = "random",
+                 rotationSpeed = "random",
+                 dirX = "random",
+                 dirY = "random",
                  scale = 1
     ){
         super(canvas, colors, colorsAlt, "vortex of particles", "particles-vortex.js");
@@ -2138,11 +2136,26 @@ class ParticlesVortex extends Animation {
         this.noise.seed(Utils.randomRange(0, 1));
 
         this.particles = particles;
-        this.radius = Utils.randomRange(radiusMin, radiusMax);
-        this.speed = Utils.randomRange(speedMin, speedMax) * Utils.randomChoice([-1, 1]);
-        this.rotationSpeed = Utils.randomRange(rotationSpeedMin, rotationSpeedMax) * Utils.randomChoice([-1, 1]);
-        this.dirX = Utils.randomRange(-0.75, 0.75);
-        this.dirY = Utils.randomRange(-0.75, 0.75);
+
+        this.radiusMin = 50;
+        this.radiusMax = 250;
+        this.radius = this.assignAndCheckIfRandom(radius,
+            Utils.round(Utils.randomRange(this.radiusMin, this.radiusMax), 2));
+
+        this.speedMin = 25;
+        this.speedMax = 50;
+        this.speed = this.assignAndCheckIfRandom(speed,
+            Utils.round(Utils.randomRange(this.speedMin, this.speedMax) * Utils.randomChoice([-1, 1]), 2));
+
+        this.rotationSpeedMin = 0.01;
+        this.rotationSpeedMax = 0.02;
+        this.rotationSpeed = this.assignAndCheckIfRandom(rotationSpeed,
+            Utils.round(Utils.randomRange(this.rotationSpeedMin, this.rotationSpeedMax) * Utils.randomChoice([-1, 1]), 2));
+
+        this.dirMax = 0.75;
+        this.dirX = this.assignAndCheckIfRandom(dirX, Utils.round(Utils.randomRange(-this.dirMax, this.dirMax), 2));
+        this.dirY = this.assignAndCheckIfRandom(dirY, Utils.round(Utils.randomRange(-this.dirMax, this.dirMax), 2));
+
         this.scale = scale;
     }
 
@@ -2174,7 +2187,12 @@ class ParticlesVortex extends Animation {
     }
 
     getSettings() {
-        return [] // TODO: add settings to this animation
+        return [{prop: "particles", type: "int", min: 1, max: 3000},
+                {prop: "radius", type: "float", min: this.radiusMin, max: this.radiusMax},
+                {prop: "speed", type: "float", min: -this.speedMax, max: this.speedMax},
+                {prop: "rotationSpeed", type: "float", min: -this.rotationSpeedMax, max: this.rotationSpeedMax},
+                {prop: "dirX", type: "float", min: -this.dirMax, max: this.dirMax},
+                {prop: "dirY", type: "float", min: -this.dirMax, max: this.dirMax}];
     }
 }
 
