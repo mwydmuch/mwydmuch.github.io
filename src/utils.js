@@ -209,10 +209,11 @@ module.exports = {
     },
 
     pathShape(ctx, points){
+        console.log(points.length);
         if(points.length) {
             if(points[0].hasOwnProperty('x') && points[0].hasOwnProperty('y')){
                 ctx.moveTo(points[0].x, points[0].y);
-                for (let i = 1; i < points.length; ++i) ctx.lineTo(points[0].x, points[0].y);
+                for (let i = 1; i < points.length; ++i) ctx.lineTo(points[i].x, points[i].y);
             } else {
                 ctx.moveTo(points[0][0], points[0][1]);
                 for (let i = 1; i < points.length; ++i) ctx.lineTo(points[i][0], points[i][1]);
@@ -221,7 +222,7 @@ module.exports = {
     },
 
     pathClosedShape(ctx, points){
-        if(points.length) this.pathShape(ctx, points.concat(points[0]));
+        if(points.length) this.pathShape(ctx, points.concat([points[0]]));
     },
 
     blendColor(ctx, color, alpha = 1.0, globalCompositeOperation = 'source-over'){

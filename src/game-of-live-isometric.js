@@ -11,14 +11,16 @@ const Utils = require("./utils");
 
 class GameOfLifeIsometric extends GameOfLife {
     constructor (canvas, colors, colorsAlt,
-                 cellSize = 12,
+                 cellSize = 14,
                  cellBasePadding = 0,
                  spawnProb = 0.5,
-                 fadeDeadCells = true) {
+                 fadeDeadCells = true,
+                 drawCellsGrid = true) {
         super(canvas, colors, colorsAlt, cellSize, cellBasePadding, spawnProb);
         this.name = "isometric Conway's game of life";
         this.file = "game-of-live-isometric.js";
         this.fadeDeadCells = fadeDeadCells;
+        this.drawCellsGrid = drawCellsGrid;
 
         this.sqrt3 = Math.sqrt(3);
         this.xShift = this.cellSize * this.sqrt3 / 2;
@@ -122,13 +124,15 @@ class GameOfLifeIsometric extends GameOfLife {
         this.clear();
 
         // Draw grid
-        if(!this.renderedGrid){
-            let offCtx = Utils.createOffscreenCanvas(this.ctx.canvas.width, this.ctx.canvas.height).getContext('2d');
-            offCtx.translate(this.ctx.canvas.width / 2, 1/8 * this.ctx.canvas.height);
-            this.drawGrid(offCtx, 0, 0);
-            this.renderedGrid = offCtx.canvas;
+        if(this.drawCellsGrid) {
+            if (!this.renderedGrid) {
+                let offCtx = Utils.createOffscreenCanvas(this.ctx.canvas.width, this.ctx.canvas.height).getContext('2d');
+                offCtx.translate(this.ctx.canvas.width / 2, 1 / 8 * this.ctx.canvas.height);
+                this.drawGrid(offCtx, 0, 0);
+                this.renderedGrid = offCtx.canvas;
+            }
+            this.ctx.drawImage(this.renderedGrid, 0, 0);
         }
-        this.ctx.drawImage(this.renderedGrid, 0, 0);
 
         this.ctx.translate(this.ctx.canvas.width / 2, 1/8 * this.ctx.canvas.height);
 
@@ -156,7 +160,8 @@ class GameOfLifeIsometric extends GameOfLife {
     }
 
     getSettings() {
-        return [{prop: "fadeDeadCells", type: "bool"}];
+        return [{prop: "fadeDeadCells", type: "bool"},
+                {prop: "drawCellsGrid", type: "bool"}];
     }
 }
 
