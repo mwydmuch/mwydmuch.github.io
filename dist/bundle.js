@@ -3204,6 +3204,7 @@ class Spirograph extends Animation {
         this.maxGears = 5;
         this.rescaleToFit = rescaleToFit;
         this.scale = scale;
+        this.speed = 1;
 
         this.gearCount = this.assignAndCheckIfRandom(gearCount, Utils.randomInt(2, this.maxGears));
         this.gearNames = ["zero", "one", "two", "three", "four", "five"];
@@ -3250,12 +3251,12 @@ class Spirograph extends Animation {
         this.ctx.scale(this.scale, this.scale);
 
         const length = Math.PI * this.length,
-              incr = length / this.vertices;
-        let start = this.getXY(0, this.time, scale);
+              lenPerVertex = length / this.vertices;
 
-        for (let i = 0; i <= length; i += incr) {
-            let next = this.getXY(i, this.time, scale);
-            const color = Utils.lerpColor(this.colorA, this.colorB, i / length);
+        let start = this.getXY(0, this.time, scale);
+        for (let i = 1; i < this.vertices; ++i) {
+            let next = this.getXY(i * lenPerVertex, this.time, scale);
+            const color = Utils.lerpColor(this.colorA, this.colorB, i / this.vertices);
             Utils.drawLine(this.ctx, start.x, start.y, next.x, next.y, color, 1);
             start = next;
         }
@@ -3493,7 +3494,7 @@ module.exports = {
 
     pathShape(ctx, points){
         if(points.length) {
-            if(points[0].hasAttribute('x') && points[0].hasAttribute('y')){
+            if(points[0].hasOwnProperty('x') && points[0].hasOwnProperty('y')){
                 ctx.moveTo(points[0].x, points[0].y);
                 for (let i = 1; i < points.length; ++i) ctx.lineTo(points[0].x, points[0].y);
             } else {

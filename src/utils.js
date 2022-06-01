@@ -210,7 +210,7 @@ module.exports = {
 
     pathShape(ctx, points){
         if(points.length) {
-            if(points[0].hasAttribute('x') && points[0].hasAttribute('y')){
+            if(points[0].hasOwnProperty('x') && points[0].hasOwnProperty('y')){
                 ctx.moveTo(points[0].x, points[0].y);
                 for (let i = 1; i < points.length; ++i) ctx.lineTo(points[0].x, points[0].y);
             } else {
