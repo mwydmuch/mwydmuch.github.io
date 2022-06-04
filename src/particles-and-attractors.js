@@ -24,15 +24,15 @@ class ParticlesAndAttractors extends Animation {
         super(canvas, colors, colorsAlt, "system of particles and attractors", "particles-and-attractors.js");
         this.particles = []
         this.numParticles = numParticles;
-        this.particlesSpeed = this.assignAndCheckIfRandom(particlesSpeed, Utils.round(Utils.randomRange(5, 15)));
+        this.particlesSpeed = this.assignIfRandom(particlesSpeed, Utils.round(Utils.randomRange(5, 15)));
         this.fadingSpeed = fadingSpeed;
 
         this.drawAttractors = drawAttractors;
         this.numAttractors = numAttractors;
 
         this.attractorsSystems = ["orbits", "eights"]
-        this.attractorsSystem = this.assignAndCheckIfRandom(attractorsSystem, Utils.randomChoice(this.attractorsSystems));
-        this.attractorsSpeed = this.assignAndCheckIfRandom(attractorsSpeed, Utils.round(Utils.randomRange(0.05, 0.1) * Utils.randomChoice([-1, 1])));
+        this.attractorsSystem = this.assignIfRandom(attractorsSystem, Utils.randomChoice(this.attractorsSystems));
+        this.attractorsSpeed = this.assignIfRandom(attractorsSpeed, Utils.round(Utils.randomRange(0.05, 0.1) * Utils.randomChoice([-1, 1])));
         this.attractorsPosition = 0;
         this.startingPosition = Utils.randomRange(0, 10);
 
@@ -48,8 +48,6 @@ class ParticlesAndAttractors extends Animation {
     }
 
     update(elapsed){
-        this.time += elapsed / 1000;
-        ++this.frame;
         this.attractorsPosition += elapsed / 1000 * this.attractorsSpeed;
     }
 

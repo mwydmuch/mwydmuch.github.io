@@ -228,7 +228,7 @@ class Sorting extends Animation {
 
         this.sortAlgoNames = ["selection sort", "bubble sort", "insertion sort", "quick sort", "merge sort"];
         this.sortAlgoClasses = [SelectionSort, BubbleSort, InsertionSort, QuickSort, MergeSort];
-        this.sortingAlgorithm = this.assignAndCheckIfRandom(sortingAlgorithm, Utils.randomChoice(this.sortAlgoNames));
+        this.sortingAlgorithm = this.assignIfRandom(sortingAlgorithm, Utils.randomChoice(this.sortAlgoNames));
         this.cmpTotal = 0;
         this.cmpCount = 0;
 

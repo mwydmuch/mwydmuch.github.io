@@ -25,7 +25,7 @@ class Spirograph extends Animation {
         this.scale = scale;
         this.speed = 1;
 
-        this.gearCount = this.assignAndCheckIfRandom(gearCount, Utils.randomInt(2, this.maxGears));
+        this.gearCount = this.assignIfRandom(gearCount, Utils.randomInt(2, this.maxGears));
         this.gearNames = ["zero", "one", "two", "three", "four", "five"];
         this.updateName();
         this.gears = [];
@@ -88,7 +88,8 @@ class Spirograph extends Animation {
                         {prop: "length", type: "float", step: 0.25, min: 1, max: 8},
                         {prop: "gearCount", type: "int", min: 1, max: this.maxGears, toCall: "updateName"},
                         {prop: "rescaleToFit", type: "bool"},
-                        {prop: "scale", type: "float", min: 0.25, max: 4}];
+                        {prop: "scale", type: "float", min: 0.25, max: 4},
+                        {prop: "speed", type: "float", step: 0.1, min: -4, max: 4}];
         for(let i = 0; i < this.maxGears; ++i){
             settings = settings.concat([{prop: `gears[${i}].radius`, type: "float", step: 0.01, min: 0, max: 100},
                                         {prop: `gears[${i}].rate`, type: "float", step: 0.01, min: -100, max: 100},

@@ -17,6 +17,7 @@ class Animation {
         this.file = file;
         this.time = 0;
         this.frame = 0;
+        this.speed = 1;
 
         // Reset text settings
         this.ctx.font = '14px sans-serif';
@@ -24,7 +25,7 @@ class Animation {
         this.ctx.textBaseline = "alphabetic";
     }
 
-    assignAndCheckIfRandom(value, random){  // Commonly used by many constructors
+    assignIfRandom(value, random){  // Commonly used by many constructors
         if(value === "random") return random;
         else return value;
     }
@@ -53,7 +54,7 @@ class Animation {
 
     update(elapsed){
         // By default just update timer and frame count
-        this.time += elapsed / 1000;
+        this.time += elapsed / 1000 * this.speed;
         ++this.frame;
     }
 

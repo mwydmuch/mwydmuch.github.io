@@ -33,12 +33,6 @@ class Cardioids extends Animation {
         return Utils.rotateVec2d(Utils.createVec2d(this.radius, 0), Math.PI + angle);
     }
 
-    update(elapsed){
-        this.time += elapsed / 1000;
-        ++this.frame;
-        this.position += elapsed / 1000 * this.speed;
-    }
-
     draw() {
         this.clear();
 
@@ -48,7 +42,7 @@ class Cardioids extends Animation {
 
         for (let i = 0; i <= this.lines; ++i) {
             const a = this.getVec(i),
-                  b = this.getVec(i * this.position);
+                  b = this.getVec(i * this.time);
             let color;
             if(this.rainbowColors) color = 'hsl(' + i / this.lines * 360 + ', 100%, 75%)';
             else color = Utils.lerpColorsPallet([this.colorA, this.colorB, this.colorA], i / this.lines);

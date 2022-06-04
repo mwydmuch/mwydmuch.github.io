@@ -268,7 +268,7 @@ class GradientDescent extends Animation {
     constructor (canvas, colors, colorsAlt, functionToOptimize = "random") {
         super(canvas, colors, colorsAlt, "visualization of gradient descent algorithms", "gradient-descent.js");
         this.funcNames = ["with saddle point", "Beale", "Styblinski-Tang"];
-        this.functionToOptimize = this.assignAndCheckIfRandom(functionToOptimize, Utils.randomChoice(this.funcNames));
+        this.functionToOptimize = this.assignIfRandom(functionToOptimize, Utils.randomChoice(this.funcNames));
         this.funcClasses = [SaddlePointFunc, BealeFunc, StyblinskiTangFunc];
 
         this.scale = 0;

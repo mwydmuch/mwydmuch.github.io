@@ -27,7 +27,7 @@ class ShortestPath extends Animation {
         this.showStats = showStats;
 
         this.searchAlgorithms = ["BFS", "A*"];
-        this.searchAlgorithm = this.assignAndCheckIfRandom(searchAlgorithm, Utils.randomChoice(this.searchAlgorithms));
+        this.searchAlgorithm = this.assignIfRandom(searchAlgorithm, Utils.randomChoice(this.searchAlgorithms));
         this.updateName();
         this.queue = null;
         this.visited = 0;

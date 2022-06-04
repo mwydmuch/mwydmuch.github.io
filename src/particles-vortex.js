@@ -27,22 +27,22 @@ class ParticlesVortex extends Animation {
 
         this.radiusMin = 50;
         this.radiusMax = 250;
-        this.radius = this.assignAndCheckIfRandom(radius,
+        this.radius = this.assignIfRandom(radius,
             Utils.round(Utils.randomRange(this.radiusMin, this.radiusMax), 2));
 
-        this.speedMin = 25;
-        this.speedMax = 50;
-        this.speed = this.assignAndCheckIfRandom(speed,
+        this.speedMin = 0.02;
+        this.speedMax = 0.05;
+        this.speed = this.assignIfRandom(speed,
             Utils.round(Utils.randomRange(this.speedMin, this.speedMax) * Utils.randomChoice([-1, 1]), 2));
 
         this.rotationSpeedMin = 0.01;
         this.rotationSpeedMax = 0.02;
-        this.rotationSpeed = this.assignAndCheckIfRandom(rotationSpeed,
+        this.rotationSpeed = this.assignIfRandom(rotationSpeed,
             Utils.round(Utils.randomRange(this.rotationSpeedMin, this.rotationSpeedMax) * Utils.randomChoice([-1, 1]), 2));
 
         this.dirMax = 0.75;
-        this.dirX = this.assignAndCheckIfRandom(dirX, Utils.round(Utils.randomRange(-this.dirMax, this.dirMax), 2));
-        this.dirY = this.assignAndCheckIfRandom(dirY, Utils.round(Utils.randomRange(-this.dirMax, this.dirMax), 2));
+        this.dirX = this.assignIfRandom(dirX, Utils.round(Utils.randomRange(-this.dirMax, this.dirMax), 2));
+        this.dirY = this.assignIfRandom(dirY, Utils.round(Utils.randomRange(-this.dirMax, this.dirMax), 2));
 
         this.scale = scale;
     }
@@ -55,7 +55,7 @@ class ParticlesVortex extends Animation {
         const offset = Math.min(this.ctx.canvas.width, this.ctx.canvas.height) / 4,
               centerX = this.ctx.canvas.width / 2 + this.dirX * offset,
               centerY = this.ctx.canvas.height / 2 + this.dirY * offset,
-              s = Math.round(this.time * this.speed) / 2;
+              s = Math.round(this.time * 10000) / 10;
 
         this.ctx.translate(centerX, centerY);
         this.ctx.scale(this.scale, this.scale);

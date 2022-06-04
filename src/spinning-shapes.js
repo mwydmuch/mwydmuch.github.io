@@ -21,7 +21,7 @@ class SpinningShapes extends Animation {
 
         this.shapeSides = [0, 1, 2, 3, 4, 5, 6, 8];
         this.shapeNames = ["circles", "points", "lines", "triangles", "rectangles", "pentagons", "hexagons", "octagons"];
-        this.sides = this.assignAndCheckIfRandom(sides, Utils.randomChoice(this.shapeSides));
+        this.sides = this.assignIfRandom(sides, Utils.randomChoice(this.shapeSides));
         this.updateName();
         this.rotateShapes = rotateShapes;
         this.shapes = shapes;
@@ -33,7 +33,7 @@ class SpinningShapes extends Animation {
 
         this.scale = scale;
         this.colorsScale = colorsScale;
-        this.colorsShift = this.assignAndCheckIfRandom(colorsShift, Utils.randomChoice([0, 3.14]));
+        this.colorsShift = this.assignIfRandom(colorsShift, Utils.randomChoice([0, 3.14]));
         this.rainbowColors = rainbowColors;
     }
 
@@ -76,7 +76,8 @@ class SpinningShapes extends Animation {
                 {prop: "rotateShapes", type: "bool" },
                 //{prop: "distanceRange", type: "float", min: 0, max: 1},
                 //{prop: "sizeRange", type: "float", min: 0, max: 1},
-                {prop: "scale", type: "float", min: 0.05, max: 1.95, toCall: "resize"},
+                {prop: "scale", type: "float", min: 0.05, max: 1.95},
+                {prop: "speed", type: "float", step: 0.1, min: -4, max: 4},
                 {prop: "colorsShift", type: "float", min: 0, max: 3.14},
                 {prop: "colorsScale", type: "float", min: 0.05, max: 2},
                 {prop: "rainbowColors", type: "bool"}];

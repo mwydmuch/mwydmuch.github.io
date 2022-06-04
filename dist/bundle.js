@@ -121,6 +121,7 @@ class Animation {
         this.file = file;
         this.time = 0;
         this.frame = 0;
+        this.speed = 1;
 
         // Reset text settings
         this.ctx.font = '14px sans-serif';
@@ -128,7 +129,7 @@ class Animation {
         this.ctx.textBaseline = "alphabetic";
     }
 
-    assignAndCheckIfRandom(value, random){  // Commonly used by many constructors
+    assignIfRandom(value, random){  // Commonly used by many constructors
         if(value === "random") return random;
         else return value;
     }
@@ -157,7 +158,7 @@ class Animation {
 
     update(elapsed){
         // By default just update timer and frame count
-        this.time += elapsed / 1000;
+        this.time += elapsed / 1000 * this.speed;
         ++this.frame;
     }
 
@@ -208,12 +209,6 @@ class Cardioids extends Animation {
         return Utils.rotateVec2d(Utils.createVec2d(this.radius, 0), Math.PI + angle);
     }
 
-    update(elapsed){
-        this.time += elapsed / 1000;
-        ++this.frame;
-        this.position += elapsed / 1000 * this.speed;
-    }
-
     draw() {
         this.clear();
 
@@ -223,7 +218,7 @@ class Cardioids extends Animation {
 
         for (let i = 0; i <= this.lines; ++i) {
             const a = this.getVec(i),
-                  b = this.getVec(i * this.position);
+                  b = this.getVec(i * this.time);
             let color;
             if(this.rainbowColors) color = 'hsl(' + i / this.lines * 360 + ', 100%, 75%)';
             else color = Utils.lerpColorsPallet([this.colorA, this.colorB, this.colorA], i / this.lines);
@@ -911,7 +906,7 @@ class GradientDescent extends Animation {
     constructor (canvas, colors, colorsAlt, functionToOptimize = "random") {
         super(canvas, colors, colorsAlt, "visualization of gradient descent algorithms", "gradient-descent.js");
         this.funcNames = ["with saddle point", "Beale", "Styblinski-Tang"];
-        this.functionToOptimize = this.assignAndCheckIfRandom(functionToOptimize, Utils.randomChoice(this.funcNames));
+        this.functionToOptimize = this.assignIfRandom(functionToOptimize, Utils.randomChoice(this.funcNames));
         this.funcClasses = [SaddlePointFunc, BealeFunc, StyblinskiTangFunc];
 
         this.scale = 0;
@@ -2030,15 +2025,15 @@ class ParticlesAndAttractors extends Animation {
         super(canvas, colors, colorsAlt, "system of particles and attractors", "particles-and-attractors.js");
         this.particles = []
         this.numParticles = numParticles;
-        this.particlesSpeed = this.assignAndCheckIfRandom(particlesSpeed, Utils.round(Utils.randomRange(5, 15)));
+        this.particlesSpeed = this.assignIfRandom(particlesSpeed, Utils.round(Utils.randomRange(5, 15)));
         this.fadingSpeed = fadingSpeed;
 
         this.drawAttractors = drawAttractors;
         this.numAttractors = numAttractors;
 
         this.attractorsSystems = ["orbits", "eights"]
-        this.attractorsSystem = this.assignAndCheckIfRandom(attractorsSystem, Utils.randomChoice(this.attractorsSystems));
-        this.attractorsSpeed = this.assignAndCheckIfRandom(attractorsSpeed, Utils.round(Utils.randomRange(0.05, 0.1) * Utils.randomChoice([-1, 1])));
+        this.attractorsSystem = this.assignIfRandom(attractorsSystem, Utils.randomChoice(this.attractorsSystems));
+        this.attractorsSpeed = this.assignIfRandom(attractorsSpeed, Utils.round(Utils.randomRange(0.05, 0.1) * Utils.randomChoice([-1, 1])));
         this.attractorsPosition = 0;
         this.startingPosition = Utils.randomRange(0, 10);
 
@@ -2054,8 +2049,6 @@ class ParticlesAndAttractors extends Animation {
     }
 
     update(elapsed){
-        this.time += elapsed / 1000;
-        ++this.frame;
         this.attractorsPosition += elapsed / 1000 * this.attractorsSpeed;
     }
 
@@ -2144,22 +2137,22 @@ class ParticlesVortex extends Animation {
 
         this.radiusMin = 50;
         this.radiusMax = 250;
-        this.radius = this.assignAndCheckIfRandom(radius,
+        this.radius = this.assignIfRandom(radius,
             Utils.round(Utils.randomRange(this.radiusMin, this.radiusMax), 2));
 
-        this.speedMin = 25;
-        this.speedMax = 50;
-        this.speed = this.assignAndCheckIfRandom(speed,
+        this.speedMin = 0.02;
+        this.speedMax = 0.05;
+        this.speed = this.assignIfRandom(speed,
             Utils.round(Utils.randomRange(this.speedMin, this.speedMax) * Utils.randomChoice([-1, 1]), 2));
 
         this.rotationSpeedMin = 0.01;
         this.rotationSpeedMax = 0.02;
-        this.rotationSpeed = this.assignAndCheckIfRandom(rotationSpeed,
+        this.rotationSpeed = this.assignIfRandom(rotationSpeed,
             Utils.round(Utils.randomRange(this.rotationSpeedMin, this.rotationSpeedMax) * Utils.randomChoice([-1, 1]), 2));
 
         this.dirMax = 0.75;
-        this.dirX = this.assignAndCheckIfRandom(dirX, Utils.round(Utils.randomRange(-this.dirMax, this.dirMax), 2));
-        this.dirY = this.assignAndCheckIfRandom(dirY, Utils.round(Utils.randomRange(-this.dirMax, this.dirMax), 2));
+        this.dirX = this.assignIfRandom(dirX, Utils.round(Utils.randomRange(-this.dirMax, this.dirMax), 2));
+        this.dirY = this.assignIfRandom(dirY, Utils.round(Utils.randomRange(-this.dirMax, this.dirMax), 2));
 
         this.scale = scale;
     }
@@ -2172,7 +2165,7 @@ class ParticlesVortex extends Animation {
         const offset = Math.min(this.ctx.canvas.width, this.ctx.canvas.height) / 4,
               centerX = this.ctx.canvas.width / 2 + this.dirX * offset,
               centerY = this.ctx.canvas.height / 2 + this.dirY * offset,
-              s = Math.round(this.time * this.speed) / 2;
+              s = Math.round(this.time * 10000) / 10;
 
         this.ctx.translate(centerX, centerY);
         this.ctx.scale(this.scale, this.scale);
@@ -2503,7 +2496,7 @@ class ShortestPath extends Animation {
         this.showStats = showStats;
 
         this.searchAlgorithms = ["BFS", "A*"];
-        this.searchAlgorithm = this.assignAndCheckIfRandom(searchAlgorithm, Utils.randomChoice(this.searchAlgorithms));
+        this.searchAlgorithm = this.assignIfRandom(searchAlgorithm, Utils.randomChoice(this.searchAlgorithms));
         this.updateName();
         this.queue = null;
         this.visited = 0;
@@ -2971,7 +2964,7 @@ class Sorting extends Animation {
 
         this.sortAlgoNames = ["selection sort", "bubble sort", "insertion sort", "quick sort", "merge sort"];
         this.sortAlgoClasses = [SelectionSort, BubbleSort, InsertionSort, QuickSort, MergeSort];
-        this.sortingAlgorithm = this.assignAndCheckIfRandom(sortingAlgorithm, Utils.randomChoice(this.sortAlgoNames));
+        this.sortingAlgorithm = this.assignIfRandom(sortingAlgorithm, Utils.randomChoice(this.sortAlgoNames));
         this.cmpTotal = 0;
         this.cmpCount = 0;
 
@@ -3119,7 +3112,7 @@ class SpinningShapes extends Animation {
 
         this.shapeSides = [0, 1, 2, 3, 4, 5, 6, 8];
         this.shapeNames = ["circles", "points", "lines", "triangles", "rectangles", "pentagons", "hexagons", "octagons"];
-        this.sides = this.assignAndCheckIfRandom(sides, Utils.randomChoice(this.shapeSides));
+        this.sides = this.assignIfRandom(sides, Utils.randomChoice(this.shapeSides));
         this.updateName();
         this.rotateShapes = rotateShapes;
         this.shapes = shapes;
@@ -3131,7 +3124,7 @@ class SpinningShapes extends Animation {
 
         this.scale = scale;
         this.colorsScale = colorsScale;
-        this.colorsShift = this.assignAndCheckIfRandom(colorsShift, Utils.randomChoice([0, 3.14]));
+        this.colorsShift = this.assignIfRandom(colorsShift, Utils.randomChoice([0, 3.14]));
         this.rainbowColors = rainbowColors;
     }
 
@@ -3174,7 +3167,8 @@ class SpinningShapes extends Animation {
                 {prop: "rotateShapes", type: "bool" },
                 //{prop: "distanceRange", type: "float", min: 0, max: 1},
                 //{prop: "sizeRange", type: "float", min: 0, max: 1},
-                {prop: "scale", type: "float", min: 0.05, max: 1.95, toCall: "resize"},
+                {prop: "scale", type: "float", min: 0.05, max: 1.95},
+                {prop: "speed", type: "float", step: 0.1, min: -4, max: 4},
                 {prop: "colorsShift", type: "float", min: 0, max: 3.14},
                 {prop: "colorsScale", type: "float", min: 0.05, max: 2},
                 {prop: "rainbowColors", type: "bool"}];
@@ -3211,7 +3205,7 @@ class Spirograph extends Animation {
         this.scale = scale;
         this.speed = 1;
 
-        this.gearCount = this.assignAndCheckIfRandom(gearCount, Utils.randomInt(2, this.maxGears));
+        this.gearCount = this.assignIfRandom(gearCount, Utils.randomInt(2, this.maxGears));
         this.gearNames = ["zero", "one", "two", "three", "four", "five"];
         this.updateName();
         this.gears = [];
@@ -3274,7 +3268,8 @@ class Spirograph extends Animation {
                         {prop: "length", type: "float", step: 0.25, min: 1, max: 8},
                         {prop: "gearCount", type: "int", min: 1, max: this.maxGears, toCall: "updateName"},
                         {prop: "rescaleToFit", type: "bool"},
-                        {prop: "scale", type: "float", min: 0.25, max: 4}];
+                        {prop: "scale", type: "float", min: 0.25, max: 4},
+                        {prop: "speed", type: "float", step: 0.1, min: -4, max: 4}];
         for(let i = 0; i < this.maxGears; ++i){
             settings = settings.concat([{prop: `gears[${i}].radius`, type: "float", step: 0.01, min: 0, max: 100},
                                         {prop: `gears[${i}].rate`, type: "float", step: 0.01, min: -100, max: 100},
