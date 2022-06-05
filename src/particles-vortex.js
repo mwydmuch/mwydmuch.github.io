@@ -16,8 +16,7 @@ class ParticlesVortex extends Animation {
                  rotationSpeed = "random",
                  dirX = "random",
                  dirY = "random",
-                 scale = 1
-    ){
+                 scale = 1){
         super(canvas, colors, colorsAlt, "vortex of particles", "particles-vortex.js");
 
         this.noise = Noise.noise;

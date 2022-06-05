@@ -216,8 +216,7 @@ class Sorting extends Animation {
                  swapDuration = 0.25,
                  speed = 1,
                  showNumbers = false,
-                 showStats = false
-        ) {
+                 showStats = false) {
         super(canvas, colors, colorsAlt, "Sorting algorithm visualization", "sorting.js");
         this.numElements = numElements;
         this.elementPadding = elementPadding;

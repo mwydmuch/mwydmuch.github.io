@@ -18,18 +18,17 @@ class ParticlesStorm extends Animation {
 
         this.particlesDensity = particlesDensity;
         this.noiseScale = noiseScale;
+        this.fadingSpeed = fadingSpeed;
+
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
-        this.fadingSpeed = fadingSpeed;
         this.particles = [];
-        
         this.width = 0;
         this.height = 0;
     }
 
     update(elapsed) {
-        this.time += elapsed / 1000;
-        ++this.frame;
+        super.update(elapsed);
 
         for(let p of this.particles){
             const theta = this.noise.perlin3(p.x * this.noiseScale * 2,

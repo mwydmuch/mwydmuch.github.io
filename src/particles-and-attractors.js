@@ -19,8 +19,8 @@ class ParticlesAndAttractors extends Animation {
                  attractorsSystem = "random",
                  attractorsSpeed = "random",
                  drawAttractors = false,
-                 scale = 1
-    ) {
+                 scale = 1,
+                 rainbowColors = false) {
         super(canvas, colors, colorsAlt, "system of particles and attractors", "particles-and-attractors.js");
         this.particles = []
         this.numParticles = numParticles;
@@ -37,6 +37,7 @@ class ParticlesAndAttractors extends Animation {
         this.startingPosition = Utils.randomRange(0, 10);
 
         this.scale = scale;
+        this.rainbowColors = rainbowColors;
 
         this.setup();
     }
@@ -48,6 +49,7 @@ class ParticlesAndAttractors extends Animation {
     }
 
     update(elapsed){
+        super.update(elapsed);
         this.attractorsPosition += elapsed / 1000 * this.attractorsSpeed;
     }
 
@@ -70,6 +72,8 @@ class ParticlesAndAttractors extends Animation {
                 attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * Math.sin(p * Math.PI / 2) * s, 0), p * i));
         }
 
+        const color = this.rainbowColors ? `hsl(${this.time / 5 * 360}, 100%, 75%)` : this.colors[0];
+
         for (let p of this.particles) {
             let d = 0
             for (let a of attractors) d += Math.atan2(a.y - p.y, a.x - p.x);
@@ -78,7 +82,7 @@ class ParticlesAndAttractors extends Animation {
             p.x += Math.cos(d) * this.particlesSpeed;
             p.y += Math.sin(d) * this.particlesSpeed;
 
-            Utils.drawLine(this.ctx, prevX, prevY, p.x, p.y, this.colors[0]);
+            Utils.drawLine(this.ctx, prevX, prevY, p.x, p.y, color);
         }
 
         if(this.drawAttractors)
@@ -100,7 +104,8 @@ class ParticlesAndAttractors extends Animation {
                 {prop: "numAttractors", type: "int", min: 3, max: 7},
                 {prop: "attractorsSpeed", type: "float", min: -0.2, max: 0.2},
                 {prop: "drawAttractors", type: "bool"},
-                {prop: "scale", type: "float", min: 0.05, max: 1.95}];
+                {prop: "scale", type: "float", min: 0.05, max: 1.95},
+                {prop: "rainbowColors", type: "bool"}];
     }
 }
 

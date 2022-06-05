@@ -14,8 +14,7 @@ class ThreeNPlusOne extends Animation {
                 evenAngle = 8,
                 oddAngle = -20,
                 drawNumbers = false,
-                scale = 1
-    ) {
+                scale = 1) {
         super(canvas, colors, colorsAlt, "3n + 1 (Collatz Conjecture) visualization", "3n+1.js");
         this.length = length;
         this.evenAngle = evenAngle;
@@ -256,8 +255,7 @@ class CircularWaves extends Animation {
                 radiusScaleMin = 0.4,
                 radiusScaleMax = 1.2,
                 fadingSpeed = 0.001,
-                rainbowColors = false
-    ) {
+                rainbowColors = false) {
         super(canvas, colors, colorsAlt, "circular waves", "circular-waves.js");
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
@@ -569,8 +567,7 @@ class GameOfLife extends Animation {
     }
 
     draw() {
-        this.ctx.fillStyle = this.bgColor;
-        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        this.clear();
 
         if(this.cellShape === "square") this.drawCell = this.drawSquareCell;
         else this.drawCell = this.drawCircleCell;
@@ -2020,8 +2017,8 @@ class ParticlesAndAttractors extends Animation {
                  attractorsSystem = "random",
                  attractorsSpeed = "random",
                  drawAttractors = false,
-                 scale = 1
-    ) {
+                 scale = 1,
+                 rainbowColors = false) {
         super(canvas, colors, colorsAlt, "system of particles and attractors", "particles-and-attractors.js");
         this.particles = []
         this.numParticles = numParticles;
@@ -2038,6 +2035,7 @@ class ParticlesAndAttractors extends Animation {
         this.startingPosition = Utils.randomRange(0, 10);
 
         this.scale = scale;
+        this.rainbowColors = rainbowColors;
 
         this.setup();
     }
@@ -2049,6 +2047,7 @@ class ParticlesAndAttractors extends Animation {
     }
 
     update(elapsed){
+        super.update(elapsed);
         this.attractorsPosition += elapsed / 1000 * this.attractorsSpeed;
     }
 
@@ -2071,6 +2070,8 @@ class ParticlesAndAttractors extends Animation {
                 attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * Math.sin(p * Math.PI / 2) * s, 0), p * i));
         }
 
+        const color = this.rainbowColors ? `hsl(${this.time / 5 * 360}, 100%, 75%)` : this.colors[0];
+
         for (let p of this.particles) {
             let d = 0
             for (let a of attractors) d += Math.atan2(a.y - p.y, a.x - p.x);
@@ -2079,7 +2080,7 @@ class ParticlesAndAttractors extends Animation {
             p.x += Math.cos(d) * this.particlesSpeed;
             p.y += Math.sin(d) * this.particlesSpeed;
 
-            Utils.drawLine(this.ctx, prevX, prevY, p.x, p.y, this.colors[0]);
+            Utils.drawLine(this.ctx, prevX, prevY, p.x, p.y, color);
         }
 
         if(this.drawAttractors)
@@ -2101,7 +2102,8 @@ class ParticlesAndAttractors extends Animation {
                 {prop: "numAttractors", type: "int", min: 3, max: 7},
                 {prop: "attractorsSpeed", type: "float", min: -0.2, max: 0.2},
                 {prop: "drawAttractors", type: "bool"},
-                {prop: "scale", type: "float", min: 0.05, max: 1.95}];
+                {prop: "scale", type: "float", min: 0.05, max: 1.95},
+                {prop: "rainbowColors", type: "bool"}];
     }
 }
 
@@ -2126,8 +2128,7 @@ class ParticlesVortex extends Animation {
                  rotationSpeed = "random",
                  dirX = "random",
                  dirY = "random",
-                 scale = 1
-    ){
+                 scale = 1){
         super(canvas, colors, colorsAlt, "vortex of particles", "particles-vortex.js");
 
         this.noise = Noise.noise;
@@ -2217,18 +2218,17 @@ class ParticlesStorm extends Animation {
 
         this.particlesDensity = particlesDensity;
         this.noiseScale = noiseScale;
+        this.fadingSpeed = fadingSpeed;
+
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
-        this.fadingSpeed = fadingSpeed;
         this.particles = [];
-        
         this.width = 0;
         this.height = 0;
     }
 
     update(elapsed) {
-        this.time += elapsed / 1000;
-        ++this.frame;
+        super.update(elapsed);
 
         for(let p of this.particles){
             const theta = this.noise.perlin3(p.x * this.noiseScale * 2,
@@ -2298,8 +2298,7 @@ class PerlinNoiseParticles extends Animation {
                 noiseScale = 0.001,
                 particlesSpeed = 1,
                 drawNoise = false,
-                fadingSpeed = 0
-    ) {
+                fadingSpeed = 0) {
         super(canvas, colors, colorsAlt, "particles moving through Perlin noise", "perlin-noise-particles.js");
         this.particlesDensity = particlesDensity;
         this.noiseScale = noiseScale;
@@ -2952,8 +2951,7 @@ class Sorting extends Animation {
                  swapDuration = 0.25,
                  speed = 1,
                  showNumbers = false,
-                 showStats = false
-        ) {
+                 showStats = false) {
         super(canvas, colors, colorsAlt, "Sorting algorithm visualization", "sorting.js");
         this.numElements = numElements;
         this.elementPadding = elementPadding;

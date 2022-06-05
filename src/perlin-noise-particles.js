@@ -14,8 +14,7 @@ class PerlinNoiseParticles extends Animation {
                 noiseScale = 0.001,
                 particlesSpeed = 1,
                 drawNoise = false,
-                fadingSpeed = 0
-    ) {
+                fadingSpeed = 0) {
         super(canvas, colors, colorsAlt, "particles moving through Perlin noise", "perlin-noise-particles.js");
         this.particlesDensity = particlesDensity;
         this.noiseScale = noiseScale;

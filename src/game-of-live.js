@@ -76,8 +76,7 @@ class GameOfLife extends Animation {
     }
 
     draw() {
-        this.ctx.fillStyle = this.bgColor;
-        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        this.clear();
 
         if(this.cellShape === "square") this.drawCell = this.drawSquareCell;
         else this.drawCell = this.drawCircleCell;

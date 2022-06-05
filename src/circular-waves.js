@@ -15,8 +15,7 @@ class CircularWaves extends Animation {
                 radiusScaleMin = 0.4,
                 radiusScaleMax = 1.2,
                 fadingSpeed = 0.001,
-                rainbowColors = false
-    ) {
+                rainbowColors = false) {
         super(canvas, colors, colorsAlt, "circular waves", "circular-waves.js");
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
