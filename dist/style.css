@@ -123,7 +123,7 @@ ul {
   box-sizing: border-box;
   border-radius: 100%;
   border: double 4px transparent;
-  background-image: linear-gradient(180deg, #0058B5 0%, #0058B5 40%, #F6CE00 60%, #F6CE00 100%);
+  background-image: conic-gradient(from 190deg, #F6CE00 0deg, #F6CE00 70deg, #0058B5 90deg, #0058B5 160deg, #FE0000 180deg, #FD8C00 210deg, #FFE500 240deg, #119F0B 270deg, #0644B3 300deg, #C22EDC 330deg, #F6CE00 360deg);
   background-origin: border-box;
   height: 100%;
 }

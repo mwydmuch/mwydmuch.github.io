@@ -21,7 +21,13 @@
 //@main-gradient: linear-gradient(135deg, #38575A, #43696B);
 @main-gradient: linear-gradient(135deg, #0058B5, #0070b5);
 @ua-gradient: linear-gradient(180deg, #0058B5 0%, #0058B5 40%, #F6CE00 60%, #F6CE00 100%);
-@ua-pl-gradient: conic-gradient(from 10deg, #0058B5 0deg, #0058B5 70deg, #F6CE00 90deg, #F6CE00 160deg, #E52C2C 180deg, #E52C2C 250deg, #FFFFFF 270deg, #FFFFFF 340deg, #0058B5 360deg);
+@ua-pl-gradient: conic-gradient(from 10deg,
+#0058B5 0deg, #0058B5 70deg, #F6CE00 90deg, #F6CE00 160deg, #E52C2C 180deg,
+#E52C2C 250deg, #FFFFFF 270deg, #FFFFFF 340deg, #0058B5 360deg);
+@ua-pride-gradient: conic-gradient(from 190deg,
+#F6CE00 0deg, #F6CE00 70deg, #0058B5 90deg, #0058B5 160deg,
+#FE0000 180deg, #FD8C00 210deg, #FFE500 240deg,
+#119F0B 270deg, #0644B3 300deg, #C22EDC 330deg, #F6CE00 360deg);
 
 // Other colors
 @mlinpl-red: #E52C2C;
@@ -176,8 +182,9 @@ ul{
       border-radius: 100%;
       border: double @global-border-width transparent;
       //background-image: @main-gradient;
-      background-image: @ua-gradient;
+      //background-image: @ua-gradient;
       //background-image: @ua-pl-gradient;
+      background-image: @ua-pride-gradient;
       background-origin: border-box;
       height: 100%;
     }
