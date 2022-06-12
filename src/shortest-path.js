@@ -23,7 +23,7 @@ class ShortestPath extends Animation {
                  searchAlgorithm = "random",
                  speed = 1,
                  showStats = false) {
-        super(canvas, colors, colorsAlt, "The shortest path", "shortest-path.js");
+        super(canvas, colors, colorsAlt, "finding the shortest path", "shortest-path.js");
         this.cellSize = cellSize;
         this.speed = speed;
         this.showStats = showStats;
@@ -42,7 +42,7 @@ class ShortestPath extends Animation {
     }
 
     updateName(){
-        this.name = `Finding the shortest path using ${this.searchAlgorithm} algorithm`;
+        this.name = `finding the shortest path using ${this.searchAlgorithm} algorithm`;
     }
 
     getIdx(x, y){

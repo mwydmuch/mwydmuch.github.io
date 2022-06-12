@@ -12,7 +12,7 @@ class SineWaves extends Animation {
                 cellSize = 48,
                 cellMargin = 12,
                 rotateCells = false) {
-        super(canvas, colors, colorsAlt, "Grid of sine waves", "sine-waves.js");
+        super(canvas, colors, colorsAlt, "grid of sine waves", "sine-waves.js");
         this.cellSize = cellSize;
         this.cellMargin = cellMargin;
         this.rotateCells = rotateCells;

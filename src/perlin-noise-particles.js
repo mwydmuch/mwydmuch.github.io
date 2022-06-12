@@ -13,14 +13,12 @@ class PerlinNoiseParticles extends Animation {
                 particlesDensity = 0.0004,
                 noiseScale = 0.001,
                 particlesSpeed = 1,
-                drawNoise = false,
                 fadingSpeed = 0) {
         super(canvas, colors, colorsAlt, "particles moving through Perlin noise", "perlin-noise-particles.js");
         this.particlesDensity = particlesDensity;
         this.noiseScale = noiseScale;
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
-        this.drawNoise = drawNoise;
 
         this.particlesSpeed = particlesSpeed;
         this.fadingSpeed = fadingSpeed;
@@ -85,11 +83,19 @@ class PerlinNoiseParticles extends Animation {
         }
     }
 
+    reset(){
+        this.clear();
+        this.particles = []
+        this.width = this.ctx.canvas.width;
+        this.height = this.ctx.canvas.height;
+        this.spawnParticles(0, 0, this.width, this.height);
+    }
+
     resize() {
         this.clear();
         if(this.imageData !== null) this.ctx.putImageData(this.imageData, 0, 0);
 
-        // Add particles to new parts of the image
+        // Add particles to the new parts of the canvas.
         const divWidth = this.ctx.canvas.width - this.width,
               divHeight = this.ctx.canvas.height - this.height;
 
@@ -97,28 +103,20 @@ class PerlinNoiseParticles extends Animation {
         if(divHeight > 0) this.spawnParticles(0, this.height, this.width, divHeight);
         if(divWidth > 0 || divHeight > 0) this.spawnParticles(this.width, this.height, divWidth, divHeight);
 
-        this.width = Math.max(this.ctx.canvas.width, this.width);
-        this.height = Math.max(this.ctx.canvas.height, this.height);
+        this.width = this.ctx.canvas.width;
+        this.height = this.ctx.canvas.height;
 
-        // Visualize Perlin noise
-        if(this.drawNoise) {
-            const gridWidth = this.ctx.canvas.width * this.noiseScale,
-                  gridHeight = this.ctx.canvas.height * this.noiseScale,
-                  pixelSize = 10,
-                  numPixels = gridWidth / this.ctx.canvas.width * pixelSize;
-
-            for (let y = 0; y < gridHeight; y += numPixels) {
-                for (let x = 0; x < gridWidth; x += numPixels) {
-                    let v = Math.floor(this.noise.perlin2(x, y) * 250);
-                    this.ctx.fillStyle = 'hsl(' + v + ',50%,50%)';
-                    this.ctx.fillRect(x / gridWidth * this.ctx.canvas.width, y / gridHeight * this.ctx.canvas.height, pixelSize, pixelSize);
-                }
-            }
-        }
+        // Remove particles that are out of bounds of the new canvas to improve performance.
+        const width = this.width,
+              height = this.height;
+        this.particles = this.particles.filter(function(p){
+            return !(p.x < 0 || p.x > width || p.y < 0 || p.y > height);
+        });
     }
 
     getSettings() {
-        return [{prop: "particlesSpeed", type: "float", min: 0.25, max: 32},
+        return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.002, toCall: "reset"},
+                {prop: "particlesSpeed", type: "float", min: 0.25, max: 32},
                 {prop: "fadingSpeed", type: "float", step: 0.0001, min: 0, max: 0.01}];
     }
 }

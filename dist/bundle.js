@@ -172,7 +172,7 @@ class Animation {
 
 module.exports = Animation;
 
-},{"./utils":21}],3:[function(require,module,exports){
+},{"./utils":24}],3:[function(require,module,exports){
 /*
  * Modified method of L. Cremona for drawing cardioid with a pencil of lines,
  * as described in section "cardioid as envelope of a pencil of lines" of:
@@ -237,7 +237,7 @@ class Cardioids extends Animation {
 
 module.exports = Cardioids
 
-},{"./animation":2,"./utils":21}],4:[function(require,module,exports){
+},{"./animation":2,"./utils":24}],4:[function(require,module,exports){
 /*
  * Circular waves animation.
  *
@@ -318,7 +318,253 @@ class CircularWaves extends Animation {
 
 module.exports = CircularWaves;
 
-},{"./animation":2,"./noise":11,"./utils":21}],5:[function(require,module,exports){
+},{"./animation":2,"./noise":13,"./utils":24}],5:[function(require,module,exports){
+/*
+ * This is just a quick little implementation of Delaunay Triangulation in JavaScript.
+ * It was mostly ported from Paul Bourke's C implementation,
+ * but I referenced some bits from another JavaScript implementation
+ * and rewrote a bunch of things in ways more amenable to fast JavaScript execution.
+ *
+ * Source: https://github.com/darkskyapp/delaunay-fast
+ */
+
+var Delaunay;
+
+(function() {
+    "use strict";
+
+    var EPSILON = 1.0 / 1048576.0;
+
+    function supertriangle(vertices) {
+        var xmin = Number.POSITIVE_INFINITY,
+            ymin = Number.POSITIVE_INFINITY,
+            xmax = Number.NEGATIVE_INFINITY,
+            ymax = Number.NEGATIVE_INFINITY,
+            i, dx, dy, dmax, xmid, ymid;
+
+        for(i = vertices.length; i--; ) {
+            if(vertices[i][0] < xmin) xmin = vertices[i][0];
+            if(vertices[i][0] > xmax) xmax = vertices[i][0];
+            if(vertices[i][1] < ymin) ymin = vertices[i][1];
+            if(vertices[i][1] > ymax) ymax = vertices[i][1];
+        }
+
+        dx = xmax - xmin;
+        dy = ymax - ymin;
+        dmax = Math.max(dx, dy);
+        xmid = xmin + dx * 0.5;
+        ymid = ymin + dy * 0.5;
+
+        return [
+            [xmid - 20 * dmax, ymid -      dmax],
+            [xmid            , ymid + 20 * dmax],
+            [xmid + 20 * dmax, ymid -      dmax]
+        ];
+    }
+
+    function circumcircle(vertices, i, j, k) {
+        var x1 = vertices[i][0],
+            y1 = vertices[i][1],
+            x2 = vertices[j][0],
+            y2 = vertices[j][1],
+            x3 = vertices[k][0],
+            y3 = vertices[k][1],
+            fabsy1y2 = Math.abs(y1 - y2),
+            fabsy2y3 = Math.abs(y2 - y3),
+            xc, yc, m1, m2, mx1, mx2, my1, my2, dx, dy;
+
+        /* Check for coincident points */
+        if(fabsy1y2 < EPSILON && fabsy2y3 < EPSILON)
+            throw new Error("Eek! Coincident points!");
+
+        if(fabsy1y2 < EPSILON) {
+            m2  = -((x3 - x2) / (y3 - y2));
+            mx2 = (x2 + x3) / 2.0;
+            my2 = (y2 + y3) / 2.0;
+            xc  = (x2 + x1) / 2.0;
+            yc  = m2 * (xc - mx2) + my2;
+        }
+
+        else if(fabsy2y3 < EPSILON) {
+            m1  = -((x2 - x1) / (y2 - y1));
+            mx1 = (x1 + x2) / 2.0;
+            my1 = (y1 + y2) / 2.0;
+            xc  = (x3 + x2) / 2.0;
+            yc  = m1 * (xc - mx1) + my1;
+        }
+
+        else {
+            m1  = -((x2 - x1) / (y2 - y1));
+            m2  = -((x3 - x2) / (y3 - y2));
+            mx1 = (x1 + x2) / 2.0;
+            mx2 = (x2 + x3) / 2.0;
+            my1 = (y1 + y2) / 2.0;
+            my2 = (y2 + y3) / 2.0;
+            xc  = (m1 * mx1 - m2 * mx2 + my2 - my1) / (m1 - m2);
+            yc  = (fabsy1y2 > fabsy2y3) ?
+                m1 * (xc - mx1) + my1 :
+                m2 * (xc - mx2) + my2;
+        }
+
+        dx = x2 - xc;
+        dy = y2 - yc;
+        return {i: i, j: j, k: k, x: xc, y: yc, r: dx * dx + dy * dy};
+    }
+
+    function dedup(edges) {
+        var i, j, a, b, m, n;
+
+        for(j = edges.length; j; ) {
+            b = edges[--j];
+            a = edges[--j];
+
+            for(i = j; i; ) {
+                n = edges[--i];
+                m = edges[--i];
+
+                if((a === m && b === n) || (a === n && b === m)) {
+                    edges.splice(j, 2);
+                    edges.splice(i, 2);
+                    break;
+                }
+            }
+        }
+    }
+
+    Delaunay = {
+        triangulate: function(vertices, key) {
+            var n = vertices.length,
+                i, j, indices, st, open, closed, edges, dx, dy, a, b, c;
+
+            /* Bail if there aren't enough vertices to form any triangles. */
+            if(n < 3)
+                return [];
+
+            /* Slice out the actual vertices from the passed objects. (Duplicate the
+             * array even if we don't, though, since we need to make a supertriangle
+             * later on!) */
+            vertices = vertices.slice(0);
+
+            if(key)
+                for(i = n; i--; )
+                    vertices[i] = vertices[i][key];
+
+            /* Make an array of indices into the vertex array, sorted by the
+             * vertices' x-position. Force stable sorting by comparing indices if
+             * the x-positions are equal. */
+            indices = new Array(n);
+
+            for(i = n; i--; )
+                indices[i] = i;
+
+            indices.sort(function(i, j) {
+                var diff = vertices[j][0] - vertices[i][0];
+                return diff !== 0 ? diff : i - j;
+            });
+
+            /* Next, find the vertices of the supertriangle (which contains all other
+             * triangles), and append them onto the end of a (copy of) the vertex
+             * array. */
+            st = supertriangle(vertices);
+            vertices.push(st[0], st[1], st[2]);
+
+            /* Initialize the open list (containing the supertriangle and nothing
+             * else) and the closed list (which is empty since we havn't processed
+             * any triangles yet). */
+            open   = [circumcircle(vertices, n + 0, n + 1, n + 2)];
+            closed = [];
+            edges  = [];
+
+            /* Incrementally add each vertex to the mesh. */
+            for(i = indices.length; i--; edges.length = 0) {
+                c = indices[i];
+
+                /* For each open triangle, check to see if the current point is
+                 * inside it's circumcircle. If it is, remove the triangle and add
+                 * it's edges to an edge list. */
+                for(j = open.length; j--; ) {
+                    /* If this point is to the right of this triangle's circumcircle,
+                     * then this triangle should never get checked again. Remove it
+                     * from the open list, add it to the closed list, and skip. */
+                    dx = vertices[c][0] - open[j].x;
+                    if(dx > 0.0 && dx * dx > open[j].r) {
+                        closed.push(open[j]);
+                        open.splice(j, 1);
+                        continue;
+                    }
+
+                    /* If we're outside the circumcircle, skip this triangle. */
+                    dy = vertices[c][1] - open[j].y;
+                    if(dx * dx + dy * dy - open[j].r > EPSILON)
+                        continue;
+
+                    /* Remove the triangle and add it's edges to the edge list. */
+                    edges.push(
+                        open[j].i, open[j].j,
+                        open[j].j, open[j].k,
+                        open[j].k, open[j].i
+                    );
+                    open.splice(j, 1);
+                }
+
+                /* Remove any doubled edges. */
+                dedup(edges);
+
+                /* Add a new triangle for each edge. */
+                for(j = edges.length; j; ) {
+                    b = edges[--j];
+                    a = edges[--j];
+                    open.push(circumcircle(vertices, a, b, c));
+                }
+            }
+
+            /* Copy any remaining open triangles to the closed list, and then
+             * remove any triangles that share a vertex with the supertriangle,
+             * building a list of triplets that represent triangles. */
+            for(i = open.length; i--; )
+                closed.push(open[i]);
+            open.length = 0;
+
+            for(i = closed.length; i--; )
+                if(closed[i].i < n && closed[i].j < n && closed[i].k < n)
+                    open.push(closed[i].i, closed[i].j, closed[i].k);
+
+            /* Yay, we're done! */
+            return open;
+        },
+        contains: function(tri, p) {
+            /* Bounding box test first, for quick rejections. */
+            if((p[0] < tri[0][0] && p[0] < tri[1][0] && p[0] < tri[2][0]) ||
+                (p[0] > tri[0][0] && p[0] > tri[1][0] && p[0] > tri[2][0]) ||
+                (p[1] < tri[0][1] && p[1] < tri[1][1] && p[1] < tri[2][1]) ||
+                (p[1] > tri[0][1] && p[1] > tri[1][1] && p[1] > tri[2][1]))
+                return null;
+
+            var a = tri[1][0] - tri[0][0],
+                b = tri[2][0] - tri[0][0],
+                c = tri[1][1] - tri[0][1],
+                d = tri[2][1] - tri[0][1],
+                i = a * d - b * c;
+
+            /* Degenerate tri. */
+            if(i === 0.0)
+                return null;
+
+            var u = (d * (p[0] - tri[0][0]) - b * (p[1] - tri[0][1])) / i,
+                v = (a * (p[1] - tri[0][1]) - c * (p[0] - tri[0][0])) / i;
+
+            /* If we're outside the tri, fail. */
+            if(u < 0.0 || v < 0.0 || (u + v) > 1.0)
+                return null;
+
+            return [u, v];
+        }
+    };
+
+    if(typeof module !== "undefined")
+        module.exports = Delaunay;
+})();
+},{}],6:[function(require,module,exports){
 /*
  * Conway's game of life visualization with isometric rendering.
  * Cells that "died" in the previous step keep their color to achieve a stable image
@@ -488,7 +734,7 @@ class GameOfLifeIsometric extends GameOfLife {
 
 module.exports = GameOfLifeIsometric;
 
-},{"./game-of-live":6,"./utils":21}],6:[function(require,module,exports){
+},{"./game-of-live":7,"./utils":24}],7:[function(require,module,exports){
 /*
  * Conway's game of life visualization.
  * Cells that "died" in the previous step keep their color to achieve a stable image
@@ -632,7 +878,7 @@ class GameOfLife extends Animation {
 
 module.exports = GameOfLife;
 
-},{"./animation":2}],7:[function(require,module,exports){
+},{"./animation":2}],8:[function(require,module,exports){
 /*
  * Visualization of gradient descent-based optimizers.
  *
@@ -1079,7 +1325,7 @@ class GradientDescent extends Animation {
 
 module.exports = GradientDescent;
 
-},{"./animation":2,"./utils":21}],8:[function(require,module,exports){
+},{"./animation":2,"./utils":24}],9:[function(require,module,exports){
 'use strict';
 
 // Require
@@ -1094,12 +1340,14 @@ const GameOfLife = require("./game-of-live");
 const GameOfLifeIsometric = require("./game-of-live-isometric");
 const GradientDescent = require("./gradient-descent");
 const Matrix = require("./matrix");
+const Network = require("./network");
 const NeuralNetwork = require("./neural-network");
 const ParticlesAndAttractors = require("./particles-and-attractors");
 const ParticlesVortex = require("./particles-vortex");
 const ParticlesWaves = require("./particles-waves");
 const PerlinNoiseParticles = require("./perlin-noise-particles");
 const ShortestPath = require("./shortest-path")
+const SineWaves = require("./sine-waves")
 const Sorting = require("./sorting");
 const SpinningShapes = require("./spinning-shapes");
 const Spirograph = require("./spirograph")
@@ -1195,6 +1443,7 @@ let animations = [
     GameOfLifeIsometric,
     GradientDescent,
     Matrix,
+    Network,
     NeuralNetwork,
     ParticlesAndAttractors,
     ParticlesVortex,
@@ -1204,6 +1453,7 @@ let animations = [
     Sorting,
     SpinningShapes,
     Spirograph,
+    SineWaves
 ];
 
 Utils.randomShuffle(animations);
@@ -1439,7 +1689,7 @@ function updateSettings(settings){
     }
 }
 
-},{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./game-of-live":6,"./game-of-live-isometric":5,"./gradient-descent":7,"./matrix":9,"./neural-network":10,"./particles-and-attractors":12,"./particles-vortex":13,"./particles-waves":14,"./perlin-noise-particles":15,"./shortest-path":17,"./sorting":18,"./spinning-shapes":19,"./spirograph":20,"./utils":21}],9:[function(require,module,exports){
+},{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./game-of-live":7,"./game-of-live-isometric":6,"./gradient-descent":8,"./matrix":10,"./network":11,"./neural-network":12,"./particles-and-attractors":14,"./particles-vortex":15,"./particles-waves":16,"./perlin-noise-particles":17,"./shortest-path":19,"./sine-waves":20,"./sorting":21,"./spinning-shapes":22,"./spirograph":23,"./utils":24}],10:[function(require,module,exports){
 /*
  * Recreation of matrix digital rain based on this analysis
  * of the original effect: https://carlnewton.github.io/digital-rain-analysis/
@@ -1559,7 +1809,150 @@ class Matrix extends Animation {
 
 module.exports = Matrix;
 
-},{"./animation":2,"./utils":21}],10:[function(require,module,exports){
+},{"./animation":2,"./utils":24}],11:[function(require,module,exports){
+/*
+ * Delaunay triangulation algorithm for cloud of moving particles
+ * Creates to create network-like structure.
+ *
+ * Source of Delaunay triangulation implementation:
+ * https://github.com/darkskyapp/delaunay-fast
+ */
+
+const Animation = require("./animation");
+const Utils = require("./utils");
+const Delaunay = require("./delaunay");
+
+class Network extends Animation {
+    constructor(canvas, colors, colorsAlt,
+                particlesDensity = 0.0002,
+                fillTriangles = true,
+                drawParticles = true,
+                distanceThreshold = 125) {
+        super(canvas, colors, colorsAlt, 'Delaunay triangulation for a cloud of particles', "network.js");
+
+        this.particlesDensity = particlesDensity;
+        this.fillTriangles = fillTriangles;
+        this.drawParticles = drawParticles;
+        this.distanceThreshold = distanceThreshold;
+
+        this.width = 0;
+        this.height = 0;
+        this.particles = [];
+    }
+
+    drawTriangle(p1, p2, p3){
+        // Don't draw triangle if its area is too big.
+        const maxDist = Math.max(Utils.distVec2d(p1, p2), Utils.distVec2d(p1, p2), Utils.distVec2d(p2, p3));
+        if (maxDist > this.distanceThreshold) return;
+
+        this.ctx.beginPath();
+        Utils.pathClosedShape(this.ctx, [p1, p2, p3]);
+        const color = Utils.lerpColor(p1.color, this.bgColor, Utils.easeInSine(maxDist / this.distanceThreshold));
+        if(this.fillTriangles){
+            this.ctx.fillStyle = color;
+            this.ctx.fill();
+        } else {
+            this.ctx.lineWidth = 1;
+            this.ctx.strokeStyle = color;
+            this.ctx.stroke();
+        }
+    }
+
+    update(elapsed){
+        super.update(elapsed);
+        for(let p of this.particles){
+            // Making it time independent requires better collision checking
+            // what is no worth the effort for such animation.
+            p.x += p.velX * this.speed;
+            p.y += p.velY * this.speed;
+
+            if(p.x < 0 || p.x > this.width) p.velX *= -1;
+            if(p.y < 0 || p.y > this.height) p.velY *= -1;
+        }
+    }
+
+    draw() {
+        this.fadeOut(this.fadingSpeed);
+        if (this.particles.length > 0) {
+            // Run script to get points to create triangles with.
+            let data = Delaunay.triangulate(this.particles.map(function(p) {
+                return [p.x, p.y];
+            }));
+
+            // Display triangles individually.
+            for (let i = 0; i < data.length; i += 3) {
+                // Collect particles that make this triangle.
+                const p1 = this.particles[data[i]],
+                      p2 = this.particles[data[i + 1]],
+                      p3 = this.particles[data[i + 2]];
+
+                this.drawTriangle(p1, p2, p3);
+            }
+        }
+        if(this.drawParticles) {
+            for (let p of this.particles) {
+                this.ctx.fillStyle = p.color;
+                this.ctx.fillRect(p.x, p.y, 1, 1);
+            }
+        }
+    }
+
+    spawnParticles(x, y, width, height) {
+        let newParticles = width * height * this.particlesDensity;
+
+        // Create new particles
+        for(let i = 0; i < newParticles; i++){
+            this.particles.push({
+                x: Math.random() * width + x,
+                y: Math.random() * height + y,
+                velY: Math.random() * 2 - 1,
+                velX: Math.random() * 2 - 1,
+                color: Utils.randomChoice(this.colors)
+            });
+        }
+    }
+
+    reset(){
+        this.particles = []
+        this.width = this.ctx.canvas.width;
+        this.height = this.ctx.canvas.height;
+        this.spawnParticles(0, 0, this.width, this.height);
+    }
+
+    resize() {
+        this.clear();
+
+        // Add particles to the new parts of the canvas.
+        const divWidth = this.ctx.canvas.width - this.width,
+              divHeight = this.ctx.canvas.height - this.height;
+
+        if(divWidth > 0) this.spawnParticles(this.width, 0, divWidth, this.height);
+        if(divHeight > 0) this.spawnParticles(0, this.height, this.width, divHeight);
+        if(divWidth > 0 || divHeight > 0) this.spawnParticles(this.width, this.height, divWidth, divHeight);
+
+        this.width = this.ctx.canvas.width;
+        this.height = this.ctx.canvas.height;
+
+        // Remove particles that are out of bounds of the new canvas to improve performance.
+        const width = this.width,
+              height = this.height;
+        this.particles = this.particles.filter(function(p){
+            return !(p.x < 0 || p.x > width || p.y < 0 || p.y > height);
+        });
+    }
+
+    getSettings() {
+        return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.002, toCall: "reset"},
+                {prop: "fillTriangles", type: "bool"},
+                {prop: "drawParticles", type: "bool"},
+                {prop: "distanceThreshold", type: "int", min: 0, max: 200},
+                {prop: "speed", type: "float", step: 0.1, min: -4, max: 4}];
+    }
+}
+
+module.exports = Network;
+
+},{"./animation":2,"./delaunay":5,"./utils":24}],12:[function(require,module,exports){
 /*
  * Visualization of a simple, fully connected neural network, with random weights,
  * ReLU activations on intermediate layers, and sigmoid output at the last layer.
@@ -1684,7 +2077,7 @@ class NeuralNetwork extends Animation {
 
 module.exports = NeuralNetwork;
 
-},{"./animation":2,"./utils":21}],11:[function(require,module,exports){
+},{"./animation":2,"./utils":24}],13:[function(require,module,exports){
 /*
  * A speed-improved perlin and simplex noise algorithms for 2D.
  *
@@ -1995,7 +2388,7 @@ module.exports = NeuralNetwork;
 
 })(this);
 
-},{}],12:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /*
  * Very simple particles system with attractors.
  * In this system, distance and momentum are ignored.
@@ -2109,7 +2502,7 @@ class ParticlesAndAttractors extends Animation {
 
 module.exports = ParticlesAndAttractors;
 
-},{"./animation":2,"./utils":21}],13:[function(require,module,exports){
+},{"./animation":2,"./utils":24}],15:[function(require,module,exports){
 /*
  * Particles vortex with randomized speed and direction.
  *
@@ -2197,7 +2590,7 @@ class ParticlesVortex extends Animation {
 
 module.exports = ParticlesVortex;
 
-},{"./animation":2,"./noise":11,"./utils":21}],14:[function(require,module,exports){
+},{"./animation":2,"./noise":13,"./utils":24}],16:[function(require,module,exports){
 /*
  * "Particles waves" animation.
  * The effect was achieved by modifying perlin-noise-particles.js.
@@ -2281,7 +2674,7 @@ class ParticlesStorm extends Animation {
 
 module.exports = ParticlesStorm;
 
-},{"./animation":2,"./noise":11,"./utils":21}],15:[function(require,module,exports){
+},{"./animation":2,"./noise":13,"./utils":24}],17:[function(require,module,exports){
 /*
  * Particles moving through Perlin noise.
  *
@@ -2297,14 +2690,12 @@ class PerlinNoiseParticles extends Animation {
                 particlesDensity = 0.0004,
                 noiseScale = 0.001,
                 particlesSpeed = 1,
-                drawNoise = false,
                 fadingSpeed = 0) {
         super(canvas, colors, colorsAlt, "particles moving through Perlin noise", "perlin-noise-particles.js");
         this.particlesDensity = particlesDensity;
         this.noiseScale = noiseScale;
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
-        this.drawNoise = drawNoise;
 
         this.particlesSpeed = particlesSpeed;
         this.fadingSpeed = fadingSpeed;
@@ -2369,11 +2760,19 @@ class PerlinNoiseParticles extends Animation {
         }
     }
 
+    reset(){
+        this.clear();
+        this.particles = []
+        this.width = this.ctx.canvas.width;
+        this.height = this.ctx.canvas.height;
+        this.spawnParticles(0, 0, this.width, this.height);
+    }
+
     resize() {
         this.clear();
         if(this.imageData !== null) this.ctx.putImageData(this.imageData, 0, 0);
 
-        // Add particles to new parts of the image
+        // Add particles to the new parts of the canvas.
         const divWidth = this.ctx.canvas.width - this.width,
               divHeight = this.ctx.canvas.height - this.height;
 
@@ -2381,37 +2780,30 @@ class PerlinNoiseParticles extends Animation {
         if(divHeight > 0) this.spawnParticles(0, this.height, this.width, divHeight);
         if(divWidth > 0 || divHeight > 0) this.spawnParticles(this.width, this.height, divWidth, divHeight);
 
-        this.width = Math.max(this.ctx.canvas.width, this.width);
-        this.height = Math.max(this.ctx.canvas.height, this.height);
+        this.width = this.ctx.canvas.width;
+        this.height = this.ctx.canvas.height;
 
-        // Visualize Perlin noise
-        if(this.drawNoise) {
-            const gridWidth = this.ctx.canvas.width * this.noiseScale,
-                  gridHeight = this.ctx.canvas.height * this.noiseScale,
-                  pixelSize = 10,
-                  numPixels = gridWidth / this.ctx.canvas.width * pixelSize;
-
-            for (let y = 0; y < gridHeight; y += numPixels) {
-                for (let x = 0; x < gridWidth; x += numPixels) {
-                    let v = Math.floor(this.noise.perlin2(x, y) * 250);
-                    this.ctx.fillStyle = 'hsl(' + v + ',50%,50%)';
-                    this.ctx.fillRect(x / gridWidth * this.ctx.canvas.width, y / gridHeight * this.ctx.canvas.height, pixelSize, pixelSize);
-                }
-            }
-        }
+        // Remove particles that are out of bounds of the new canvas to improve performance.
+        const width = this.width,
+              height = this.height;
+        this.particles = this.particles.filter(function(p){
+            return !(p.x < 0 || p.x > width || p.y < 0 || p.y > height);
+        });
     }
 
     getSettings() {
-        return [{prop: "particlesSpeed", type: "float", min: 0.25, max: 32},
+        return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.002, toCall: "reset"},
+                {prop: "particlesSpeed", type: "float", min: 0.25, max: 32},
                 {prop: "fadingSpeed", type: "float", step: 0.0001, min: 0, max: 0.01}];
     }
 }
 
 module.exports = PerlinNoiseParticles;
 
-},{"./animation":2,"./noise":11,"./utils":21}],16:[function(require,module,exports){
+},{"./animation":2,"./noise":13,"./utils":24}],18:[function(require,module,exports){
 /*
- * Simple and efficient implementation of a queue, with naive priority option (this part is not efficient).
+ * Simple and efficient implementation of a queue, with naive priority option
+ * (this part is not efficient, but for animation purposes, it doesn't have to).
  */
 
 class Queue {
@@ -2465,7 +2857,7 @@ class Queue {
 
 module.exports = Queue;
 
-},{}],17:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /*
  * Animation showing process of finding the shortest path
  * in the grid world by BFS or A* algorithm.
@@ -2489,9 +2881,11 @@ class ShortestPath extends Animation {
     constructor (canvas, colors, colorsAlt,
                  cellSize = 12,
                  searchAlgorithm = "random",
+                 speed = 1,
                  showStats = false) {
-        super(canvas, colors, colorsAlt, "The shortest path", "shortest-path.js");
+        super(canvas, colors, colorsAlt, "finding the shortest path", "shortest-path.js");
         this.cellSize = cellSize;
+        this.speed = speed;
         this.showStats = showStats;
 
         this.searchAlgorithms = ["BFS", "A*"];
@@ -2508,7 +2902,7 @@ class ShortestPath extends Animation {
     }
 
     updateName(){
-        this.name = `Finding the shortest path using ${this.searchAlgorithm} algorithm`;
+        this.name = `finding the shortest path using ${this.searchAlgorithm} algorithm`;
     }
 
     getIdx(x, y){
@@ -2543,21 +2937,18 @@ class ShortestPath extends Animation {
         this.ctx.stroke();
     }
 
-    update(elapsed){
-        ++this.frame;
-        this.getIdx(Utils.randomInt(1, this.mapWidth - 1), Utils.randomInt(1, this.mapHeight - 1));
-
+    expandNextNode(){
         const item = this.queue.pop();
         if(item === null) return;
 
         ++this.visited;
         const idx = item.key,
-              pos = this.getXY(idx),
-              mapVal = this.map[idx],
-              nextIdxs = [this.getIdx(pos.x - 1, pos.y),
-                          this.getIdx(pos.x, pos.y - 1),
-                          this.getIdx(pos.x + 1, pos.y),
-                          this.getIdx(pos.x, pos.y + 1)];
+            pos = this.getXY(idx),
+            mapVal = this.map[idx],
+            nextIdxs = [this.getIdx(pos.x - 1, pos.y),
+                this.getIdx(pos.x, pos.y - 1),
+                this.getIdx(pos.x + 1, pos.y),
+                this.getIdx(pos.x, pos.y + 1)];
 
         if(mapVal !== START && mapVal !== GOAL) this.map[idx] = VISITED;
         else if(mapVal === GOAL){
@@ -2576,14 +2967,21 @@ class ShortestPath extends Animation {
                 if(this.searchAlgorithm === "BFS") this.queue.push({key: nextIdx, value: this.dist[idx] + 1});
                 else if(this.searchAlgorithm === "A*"){
                     const goalPos = this.getXY(this.goalIdx),
-                          nodePos = this.getXY(nextIdx),
-                          minDist = Math.abs(goalPos.x - nodePos.x) + Math.abs(goalPos.y - nodePos.y);
+                        nodePos = this.getXY(nextIdx),
+                        minDist = Math.abs(goalPos.x - nodePos.x) + Math.abs(goalPos.y - nodePos.y);
                     this.queue.push({key: nextIdx, value: this.dist[idx] + 1 + minDist});
                 }
                 if(nextMapVal !== GOAL) this.map[nextIdx] = INQ;
                 this.dist[nextIdx] = this.dist[idx] + 1;
                 this.prev[nextIdx] = idx;
             }
+        }
+    }
+
+    update(elapsed) {
+        for (let i = 0; i < this.speed; ++i){
+            this.expandNextNode();
+            ++this.frame;
         }
     }
 
@@ -2724,15 +3122,102 @@ class ShortestPath extends Animation {
     }
 
     getSettings() {
-        return [{prop: "cellSize", type: "int", min: 8, max: 32, toCall: "resize"},
-                {prop: "searchAlgorithm", type: "select", values: this.searchAlgorithms, toCall: "resize"},
+        return [{prop: "searchAlgorithm", type: "select", values: this.searchAlgorithms, toCall: "resize"},
+                {prop: "cellSize", type: "int", min: 8, max: 32, toCall: "resize"},
+                {prop: "speed", type: "int", min: 1, max: 32},
                 {prop: "showStats", type: "bool"}];
     }
 }
 
 module.exports = ShortestPath;
 
-},{"./animation":2,"./queue":16,"./utils":21}],18:[function(require,module,exports){
+},{"./animation":2,"./queue":18,"./utils":24}],20:[function(require,module,exports){
+/*
+ * Grid of sine waves.
+ *
+ * Coded with no external dependencies, using only canvas API.
+ */
+
+const Animation = require("./animation");
+const Utils = require("./utils");
+
+class SineWaves extends Animation {
+    constructor(canvas, colors, colorsAlt,
+                cellSize = 48,
+                cellMargin = 12,
+                rotateCells = false) {
+        super(canvas, colors, colorsAlt, "grid of sine waves", "sine-waves.js");
+        this.cellSize = cellSize;
+        this.cellMargin = cellMargin;
+        this.rotateCells = rotateCells;
+        this.speed = 0.5;
+
+        this.gridWidth = 0;
+        this.gridHeight = 0;
+        this.waves = [];
+    }
+
+    drawWave(x, y, freq, amp, phase) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(x - this.cellSize / 2, y + Math.sin(phase) * amp);
+        for (let i = 0; i < this.cellSize; ++i) {
+            this.ctx.lineTo(x - this.cellSize / 2 + i, y + Math.sin(i / this.cellSize * 2 * Math.PI * freq + phase) * amp);
+        }
+        this.ctx.stroke();
+    }
+
+    draw() {
+        this.clear();
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeStyle = this.colors[0];
+
+        const wavesToDraw = this.gridCellsWidth * this.gridCellsHeight;
+
+        if(!this.rotateCells) this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        for(let i = 0; i < wavesToDraw; ++i){
+            const x = this.cellMargin + (i % this.gridCellsWidth) * this.cellTotalSize - this.gridWidth / 2 + this.cellSize / 2,
+                  y = this.cellMargin + Math.floor(i / this.gridCellsWidth) * this.cellTotalSize - this.gridHeight / 2 + this.cellSize / 2,
+                  w = this.waves[i];
+            this.ctx.strokeStyle = w.color;
+            if(this.rotateCells) {
+                this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+                this.ctx.translate(x, y);
+                this.ctx.rotate(w.rotation * 2 * Math.PI);
+                this.drawWave(0, 0, w.freq, this.cellSize * w.noise * 0.5, w.noise * Math.PI + this.time * Math.PI);
+                this.ctx.resetTransform();
+            } else this.drawWave(x, y, w.freq, this.cellSize * w.noise * 0.5, w.noise * Math.PI + this.time * Math.PI);
+        }
+        if(!this.rotateCells) this.ctx.resetTransform();
+    }
+
+    resize() {
+        this.cellTotalSize = this.cellMargin + this.cellSize;
+        this.gridCellsWidth = Math.floor((this.ctx.canvas.width - this.cellMargin) / this.cellTotalSize);
+        this.gridCellsHeight = Math.floor((this.ctx.canvas.height - this.cellMargin) / this.cellTotalSize);
+        this.gridWidth = this.cellMargin + this.gridCellsWidth * this.cellTotalSize;
+        this.gridHeight = this.cellMargin + this.gridCellsHeight * this.cellTotalSize;
+
+        const newWaves = Math.max(0, this.gridWidth * this.gridHeight - this.waves.length);
+        for(let i = 0; i < newWaves; ++i){
+            this.waves.push({
+                freq: Math.pow(2, Math.random() * 8) * Utils.randomChoice([-1, 1]),
+                noise: Math.random(),
+                rotation: Math.random(),
+                color: Utils.randomChoice(this.colors)
+            });
+        }
+    }
+
+    getSettings() {
+        return [{prop: "cellSize", type: "int", min: 16, max: 256, toCall: "resize"},
+                {prop: "cellMargin", type: "int", min: 8, max: 32, toCall: "resize"},
+                {prop: "rotateCells", type: "bool"},
+                {prop: "speed", type: "float", step: 0.1, min: -4, max: 4}];
+    }
+}
+
+module.exports = SineWaves;
+},{"./animation":2,"./utils":24}],21:[function(require,module,exports){
 /*
  * Visualization of different sorting algorithms.
  *
@@ -2839,7 +3324,7 @@ class BubbleSort extends SortingAlgorithm{
     }
 }
 
-class SelectionSort extends SortingAlgorithm{
+class SelectionSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Selection_sort
     constructor(arr) {
         super(arr, "selection sort");
     }
@@ -2854,7 +3339,7 @@ class SelectionSort extends SortingAlgorithm{
     }
 }
 
-class InsertionSort extends SortingAlgorithm{
+class InsertionSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Insertion_sort
     constructor(arr) {
         super(arr, "insertion sort");
     }
@@ -2940,6 +3425,26 @@ class HeapSort extends SortingAlgorithm{ // TODO
         super(arr, "heap sort");
     }
 }
+
+class GnomeSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Gnome_sort
+    constructor(arr) {
+        super(arr, "gnome sort");
+    }
+
+    sort(){
+        const n = this.arr.length;
+        let pos = 0;
+        while(pos < n){
+            if(pos == 0 || this.comp(arr, pos, pos-1) >= 0) ++pos;
+            else{
+                this.swap(arr, pos, pos - 1);
+                --pos;
+            }
+        }
+    }
+}
+
+
 
 
 class Sorting extends Animation {
@@ -3086,7 +3591,7 @@ class Sorting extends Animation {
 
 module.exports = Sorting;
 
-},{"./animation":2,"./utils":21}],19:[function(require,module,exports){
+},{"./animation":2,"./utils":24}],22:[function(require,module,exports){
 /*
  * Shapes moving in a circle/dancing.
  * Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
@@ -3175,7 +3680,7 @@ class SpinningShapes extends Animation {
 
 module.exports = SpinningShapes
 
-},{"./animation":2,"./utils":21}],20:[function(require,module,exports){
+},{"./animation":2,"./utils":24}],23:[function(require,module,exports){
 /*
  * Spirograph created with 1-5 random gears.
  * See: https://en.wikipedia.org/wiki/Spirograph,
@@ -3279,7 +3784,7 @@ class Spirograph extends Animation {
 
 module.exports = Spirograph
 
-},{"./animation":2,"./utils":21}],21:[function(require,module,exports){
+},{"./animation":2,"./utils":24}],24:[function(require,module,exports){
 module.exports = {
 
     // Randomization helpers
@@ -3491,7 +3996,6 @@ module.exports = {
     },
 
     pathShape(ctx, points){
-        console.log(points.length);
         if(points.length) {
             if(points[0].hasOwnProperty('x') && points[0].hasOwnProperty('y')){
                 ctx.moveTo(points[0].x, points[0].y);
@@ -3549,4 +4053,4 @@ module.exports = {
     }
 };
 
-},{}]},{},[8])
+},{}]},{},[9])

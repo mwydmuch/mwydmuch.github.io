@@ -1,11 +1,10 @@
 /*
- * Work in progress.
+ * Delaunay triangulation algorithm for cloud of moving particles
+ * Creates to create network-like structure.
  *
- * Makes use of a delaunay algorithm to create network-like structure.
- *
- * Coded with no external dependencies, using only canvas API.
+ * Source of Delaunay triangulation implementation:
+ * https://github.com/darkskyapp/delaunay-fast
  */
-
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -13,17 +12,19 @@ const Delaunay = require("./delaunay");
 
 class Network extends Animation {
     constructor(canvas, colors, colorsAlt,
-                particlesDensity = 0.0005,
+                particlesDensity = 0.0002,
                 fillTriangles = true,
                 drawParticles = true,
-                distanceThreshold = 75) {
-        super(canvas, colors, colorsAlt, "Network", "network.js");
+                distanceThreshold = 125) {
+        super(canvas, colors, colorsAlt, 'Delaunay triangulation for a cloud of particles', "network.js");
 
         this.particlesDensity = particlesDensity;
         this.fillTriangles = fillTriangles;
         this.drawParticles = drawParticles;
         this.distanceThreshold = distanceThreshold;
 
+        this.width = 0;
+        this.height = 0;
         this.particles = [];
     }
 
@@ -46,9 +47,12 @@ class Network extends Animation {
     }
 
     update(elapsed){
+        super.update(elapsed);
         for(let p of this.particles){
-            p.x += p.velX * elapsed / 1000 * this.speed;
-            p.y += p.velY * elapsed / 1000 * this.speed;
+            // Making it time independent requires better collision checking
+            // what is no worth the effort for such animation.
+            p.x += p.velX * this.speed;
+            p.y += p.velY * this.speed;
 
             if(p.x < 0 || p.x > this.width) p.velX *= -1;
             if(p.y < 0 || p.y > this.height) p.velY *= -1;
@@ -81,29 +85,52 @@ class Network extends Animation {
         }
     }
 
-    resize() {
-        this.clear();
-        this.width = this.ctx.canvas.width;
-        this.height = this.ctx.canvas.height;
-        const newParticles = this.width * this.height * this.particlesDensity;
+    spawnParticles(x, y, width, height) {
+        let newParticles = width * height * this.particlesDensity;
 
         // Create new particles
-        this.particles = [];
         for(let i = 0; i < newParticles; i++){
-            const particleX = Math.random() * this.width,
-                  particleY = Math.random() * this.height;
             this.particles.push({
-                x: particleX,
-                y: particleY,
-                velY: Math.random() * 60 - 30,
-                velX: Math.random() * 60 - 30,
+                x: Math.random() * width + x,
+                y: Math.random() * height + y,
+                velY: Math.random() * 2 - 1,
+                velX: Math.random() * 2 - 1,
                 color: Utils.randomChoice(this.colors)
             });
         }
     }
 
+    reset(){
+        this.particles = []
+        this.width = this.ctx.canvas.width;
+        this.height = this.ctx.canvas.height;
+        this.spawnParticles(0, 0, this.width, this.height);
+    }
+
+    resize() {
+        this.clear();
+
+        // Add particles to the new parts of the canvas.
+        const divWidth = this.ctx.canvas.width - this.width,
+              divHeight = this.ctx.canvas.height - this.height;
+
+        if(divWidth > 0) this.spawnParticles(this.width, 0, divWidth, this.height);
+        if(divHeight > 0) this.spawnParticles(0, this.height, this.width, divHeight);
+        if(divWidth > 0 || divHeight > 0) this.spawnParticles(this.width, this.height, divWidth, divHeight);
+
+        this.width = this.ctx.canvas.width;
+        this.height = this.ctx.canvas.height;
+
+        // Remove particles that are out of bounds of the new canvas to improve performance.
+        const width = this.width,
+              height = this.height;
+        this.particles = this.particles.filter(function(p){
+            return !(p.x < 0 || p.x > width || p.y < 0 || p.y > height);
+        });
+    }
+
     getSettings() {
-        return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.002, toCall: "resize"},
+        return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.002, toCall: "reset"},
                 {prop: "fillTriangles", type: "bool"},
                 {prop: "drawParticles", type: "bool"},
                 {prop: "distanceThreshold", type: "int", min: 0, max: 200},
