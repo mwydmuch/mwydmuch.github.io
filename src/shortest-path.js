@@ -21,9 +21,11 @@ class ShortestPath extends Animation {
     constructor (canvas, colors, colorsAlt,
                  cellSize = 12,
                  searchAlgorithm = "random",
+                 speed = 1,
                  showStats = false) {
         super(canvas, colors, colorsAlt, "The shortest path", "shortest-path.js");
         this.cellSize = cellSize;
+        this.speed = speed;
         this.showStats = showStats;
 
         this.searchAlgorithms = ["BFS", "A*"];
@@ -75,21 +77,18 @@ class ShortestPath extends Animation {
         this.ctx.stroke();
     }
 
-    update(elapsed){
-        ++this.frame;
-        this.getIdx(Utils.randomInt(1, this.mapWidth - 1), Utils.randomInt(1, this.mapHeight - 1));
-
+    expandNextNode(){
         const item = this.queue.pop();
         if(item === null) return;
 
         ++this.visited;
         const idx = item.key,
-              pos = this.getXY(idx),
-              mapVal = this.map[idx],
-              nextIdxs = [this.getIdx(pos.x - 1, pos.y),
-                          this.getIdx(pos.x, pos.y - 1),
-                          this.getIdx(pos.x + 1, pos.y),
-                          this.getIdx(pos.x, pos.y + 1)];
+            pos = this.getXY(idx),
+            mapVal = this.map[idx],
+            nextIdxs = [this.getIdx(pos.x - 1, pos.y),
+                this.getIdx(pos.x, pos.y - 1),
+                this.getIdx(pos.x + 1, pos.y),
+                this.getIdx(pos.x, pos.y + 1)];
 
         if(mapVal !== START && mapVal !== GOAL) this.map[idx] = VISITED;
         else if(mapVal === GOAL){
@@ -108,14 +107,21 @@ class ShortestPath extends Animation {
                 if(this.searchAlgorithm === "BFS") this.queue.push({key: nextIdx, value: this.dist[idx] + 1});
                 else if(this.searchAlgorithm === "A*"){
                     const goalPos = this.getXY(this.goalIdx),
-                          nodePos = this.getXY(nextIdx),
-                          minDist = Math.abs(goalPos.x - nodePos.x) + Math.abs(goalPos.y - nodePos.y);
+                        nodePos = this.getXY(nextIdx),
+                        minDist = Math.abs(goalPos.x - nodePos.x) + Math.abs(goalPos.y - nodePos.y);
                     this.queue.push({key: nextIdx, value: this.dist[idx] + 1 + minDist});
                 }
                 if(nextMapVal !== GOAL) this.map[nextIdx] = INQ;
                 this.dist[nextIdx] = this.dist[idx] + 1;
                 this.prev[nextIdx] = idx;
             }
+        }
+    }
+
+    update(elapsed) {
+        for (let i = 0; i < this.speed; ++i){
+            this.expandNextNode();
+            ++this.frame;
         }
     }
 
@@ -256,8 +262,9 @@ class ShortestPath extends Animation {
     }
 
     getSettings() {
-        return [{prop: "cellSize", type: "int", min: 8, max: 32, toCall: "resize"},
-                {prop: "searchAlgorithm", type: "select", values: this.searchAlgorithms, toCall: "resize"},
+        return [{prop: "searchAlgorithm", type: "select", values: this.searchAlgorithms, toCall: "resize"},
+                {prop: "cellSize", type: "int", min: 8, max: 32, toCall: "resize"},
+                {prop: "speed", type: "int", min: 1, max: 32},
                 {prop: "showStats", type: "bool"}];
     }
 }

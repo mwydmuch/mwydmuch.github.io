@@ -209,7 +209,6 @@ module.exports = {
     },
 
     pathShape(ctx, points){
-        console.log(points.length);
         if(points.length) {
             if(points[0].hasOwnProperty('x') && points[0].hasOwnProperty('y')){
                 ctx.moveTo(points[0].x, points[0].y);

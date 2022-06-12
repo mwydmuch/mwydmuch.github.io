@@ -104,7 +104,7 @@ class BubbleSort extends SortingAlgorithm{
     }
 }
 
-class SelectionSort extends SortingAlgorithm{
+class SelectionSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Selection_sort
     constructor(arr) {
         super(arr, "selection sort");
     }
@@ -119,7 +119,7 @@ class SelectionSort extends SortingAlgorithm{
     }
 }
 
-class InsertionSort extends SortingAlgorithm{
+class InsertionSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Insertion_sort
     constructor(arr) {
         super(arr, "insertion sort");
     }
@@ -205,6 +205,26 @@ class HeapSort extends SortingAlgorithm{ // TODO
         super(arr, "heap sort");
     }
 }
+
+class GnomeSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Gnome_sort
+    constructor(arr) {
+        super(arr, "gnome sort");
+    }
+
+    sort(){
+        const n = this.arr.length;
+        let pos = 0;
+        while(pos < n){
+            if(pos == 0 || this.comp(arr, pos, pos-1) >= 0) ++pos;
+            else{
+                this.swap(arr, pos, pos - 1);
+                --pos;
+            }
+        }
+    }
+}
+
+
 
 
 class Sorting extends Animation {
