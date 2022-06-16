@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * Shapes moving in a circle/dancing.
  * Based on: https://observablehq.com/@rreusser/instanced-webgl-circles

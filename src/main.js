@@ -18,11 +18,11 @@ const ParticlesAndAttractors = require("./particles-and-attractors");
 const ParticlesVortex = require("./particles-vortex");
 const ParticlesWaves = require("./particles-waves");
 const PerlinNoiseParticles = require("./perlin-noise-particles");
-const ShortestPath = require("./shortest-path")
-const SineWaves = require("./sine-waves")
+const ShortestPath = require("./shortest-path");
+const SineWaves = require("./sine-waves");
 const Sorting = require("./sorting");
 const SpinningShapes = require("./spinning-shapes");
-const Spirograph = require("./spirograph")
+const Spirograph = require("./spirograph");
 
 
 // Globals
@@ -36,18 +36,7 @@ var needResize = false;
 var framesInterval = 0;
 var then = 0;
 var paused = false;
-
-/*
-const colors = [ // Old color palette
-    "#1ABFB2",
-    "#54ABA4",
-    "#639598",
-    "#678786",
-    "#92ABA1",
-    "#A5BFBC",
-    "#C5D1D2",
-]
- */
+const parallaxRatio = 1.0;
 
 // const colors = [ // Green palette
 //     "#349BA9",
@@ -56,7 +45,7 @@ const colors = [ // Old color palette
 //     "#AEEABF",
 //     "#73D4AD",
 //     "#41B8AD",
-// ]
+// ];
 
 const colors = [ // UA palette
     "#0058B5",
@@ -65,7 +54,7 @@ const colors = [ // UA palette
     "#03b2d9",
     "#007fb5",
     "#03609a",
-]
+];
 
 // const colorsAlt = [ // Alt palette
 //     "#4E2463",
@@ -102,6 +91,7 @@ const elemBgPlayPause = document.getElementById("background-play-pause");
 const elemBgSettings = document.getElementById("background-settings");
 const elemBgSettingsControls = document.getElementById("background-settings-controls");
 const elemBgSettingsClose = document.getElementById("background-settings-close");
+const elemBgStats = document.getElementById("background-stats");
 
 
 // Create animation and init animation loop
@@ -145,6 +135,10 @@ function updateAnimation(animation) {
 
 updateAnimation(animation);
 
+function bgParallax() {
+    let scroll = window.pageYOffset / (container.offsetHeight - window.innerHeight) * (container.offsetHeight - canvas.height);
+    canvas.style.transform = 'translateY(' + scroll + 'px)';
+}
 
 function render() {
     if(paused) return;
@@ -154,17 +148,18 @@ function render() {
 
     // Limit framerate
     requestAnimationFrame(render);
-    if (timeElapsed < framesInterval) return;
+    if (timeElapsed <= framesInterval) return;
     then = now;
 
     // Detect container size change
-    const width  = Math.max(container.offsetWidth, window.innerWidth),
-          height = Math.max(container.offsetHeight, window.innerHeight);
+    const width  = Math.max(parallaxRatio * container.offsetWidth, window.innerWidth),
+          height = Math.max(parallaxRatio * container.offsetHeight, window.innerHeight);
     if(width !== lastWidth || height !== lastHeight) needResize = true;
     else if (needResize){
         canvas.width = width;
         canvas.height = height;
         animation.resize();
+        bgParallax();
         needResize = false;
     }
     lastHeight = height;
@@ -172,6 +167,11 @@ function render() {
 
     animation.update(timeElapsed);
     animation.draw();
+
+    if(elemBgStats)
+        elemBgStats.innerHTML = `frame time: ${timeElapsed}</br>
+                                fps: ${Math.round(1000 / timeElapsed)}</br>
+                                canvas size: ${width} x ${height}`;
 
     // Limit framerate (alt. way)
     /*
@@ -182,6 +182,26 @@ function render() {
 }
 
 render();
+
+
+// Parallax effect
+// ---------------------------------------------------------------------------------------------------------------------
+
+if(parallaxRatio !== 1) {
+    window.addEventListener('scroll', bgParallax);
+
+    // function throttleCalls(func, wait) {
+    //     let then = Date.now();
+    //     return function() {
+    //         if (then + wait < Date.now()) {
+    //             func();
+    //             then = Date.now();
+    //         }
+    //     }
+    // }
+    //
+    // window.addEventListener('scroll', throttleCalls(bgParallax, 1000/60));
+}
 
 
 // Controls functions

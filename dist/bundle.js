@@ -1,4 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
+
 /*
  * 3n + 1 (Collatz Conjecture) visualization.
  * Inspired by Veritasium video: https://www.youtube.com/watch?v=094y1Z2wpJg
@@ -101,6 +103,8 @@ class ThreeNPlusOne extends Animation {
 module.exports = ThreeNPlusOne;
 
 },{"./animation":2}],2:[function(require,module,exports){
+'use strict';
+
 /*
  * Base class for all the background animations.
  */
@@ -173,6 +177,8 @@ class Animation {
 module.exports = Animation;
 
 },{"./utils":24}],3:[function(require,module,exports){
+'use strict';
+
 /*
  * Modified method of L. Cremona for drawing cardioid with a pencil of lines,
  * as described in section "cardioid as envelope of a pencil of lines" of:
@@ -238,6 +244,8 @@ class Cardioids extends Animation {
 module.exports = Cardioids
 
 },{"./animation":2,"./utils":24}],4:[function(require,module,exports){
+'use strict';
+
 /*
  * Circular waves animation.
  *
@@ -319,6 +327,8 @@ class CircularWaves extends Animation {
 module.exports = CircularWaves;
 
 },{"./animation":2,"./noise":13,"./utils":24}],5:[function(require,module,exports){
+'use strict';
+
 /*
  * This is just a quick little implementation of Delaunay Triangulation in JavaScript.
  * It was mostly ported from Paul Bourke's C implementation,
@@ -565,6 +575,8 @@ var Delaunay;
         module.exports = Delaunay;
 })();
 },{}],6:[function(require,module,exports){
+'use strict';
+
 /*
  * Conway's game of life visualization with isometric rendering.
  * Cells that "died" in the previous step keep their color to achieve a stable image
@@ -735,6 +747,8 @@ class GameOfLifeIsometric extends GameOfLife {
 module.exports = GameOfLifeIsometric;
 
 },{"./game-of-live":7,"./utils":24}],7:[function(require,module,exports){
+'use strict';
+
 /*
  * Conway's game of life visualization.
  * Cells that "died" in the previous step keep their color to achieve a stable image
@@ -879,6 +893,8 @@ class GameOfLife extends Animation {
 module.exports = GameOfLife;
 
 },{"./animation":2}],8:[function(require,module,exports){
+'use strict';
+
 /*
  * Visualization of gradient descent-based optimizers.
  *
@@ -1346,11 +1362,11 @@ const ParticlesAndAttractors = require("./particles-and-attractors");
 const ParticlesVortex = require("./particles-vortex");
 const ParticlesWaves = require("./particles-waves");
 const PerlinNoiseParticles = require("./perlin-noise-particles");
-const ShortestPath = require("./shortest-path")
-const SineWaves = require("./sine-waves")
+const ShortestPath = require("./shortest-path");
+const SineWaves = require("./sine-waves");
 const Sorting = require("./sorting");
 const SpinningShapes = require("./spinning-shapes");
-const Spirograph = require("./spirograph")
+const Spirograph = require("./spirograph");
 
 
 // Globals
@@ -1364,18 +1380,7 @@ var needResize = false;
 var framesInterval = 0;
 var then = 0;
 var paused = false;
-
-/*
-const colors = [ // Old color palette
-    "#1ABFB2",
-    "#54ABA4",
-    "#639598",
-    "#678786",
-    "#92ABA1",
-    "#A5BFBC",
-    "#C5D1D2",
-]
- */
+const parallaxRatio = 1.0;
 
 // const colors = [ // Green palette
 //     "#349BA9",
@@ -1384,7 +1389,7 @@ const colors = [ // Old color palette
 //     "#AEEABF",
 //     "#73D4AD",
 //     "#41B8AD",
-// ]
+// ];
 
 const colors = [ // UA palette
     "#0058B5",
@@ -1393,7 +1398,7 @@ const colors = [ // UA palette
     "#03b2d9",
     "#007fb5",
     "#03609a",
-]
+];
 
 // const colorsAlt = [ // Alt palette
 //     "#4E2463",
@@ -1430,6 +1435,7 @@ const elemBgPlayPause = document.getElementById("background-play-pause");
 const elemBgSettings = document.getElementById("background-settings");
 const elemBgSettingsControls = document.getElementById("background-settings-controls");
 const elemBgSettingsClose = document.getElementById("background-settings-close");
+const elemBgStats = document.getElementById("background-stats");
 
 
 // Create animation and init animation loop
@@ -1473,6 +1479,10 @@ function updateAnimation(animation) {
 
 updateAnimation(animation);
 
+function bgParallax() {
+    let scroll = window.pageYOffset / (container.offsetHeight - window.innerHeight) * (container.offsetHeight - canvas.height);
+    canvas.style.transform = 'translateY(' + scroll + 'px)';
+}
 
 function render() {
     if(paused) return;
@@ -1482,17 +1492,18 @@ function render() {
 
     // Limit framerate
     requestAnimationFrame(render);
-    if (timeElapsed < framesInterval) return;
+    if (timeElapsed <= framesInterval) return;
     then = now;
 
     // Detect container size change
-    const width  = Math.max(container.offsetWidth, window.innerWidth),
-          height = Math.max(container.offsetHeight, window.innerHeight);
+    const width  = Math.max(parallaxRatio * container.offsetWidth, window.innerWidth),
+          height = Math.max(parallaxRatio * container.offsetHeight, window.innerHeight);
     if(width !== lastWidth || height !== lastHeight) needResize = true;
     else if (needResize){
         canvas.width = width;
         canvas.height = height;
         animation.resize();
+        bgParallax();
         needResize = false;
     }
     lastHeight = height;
@@ -1500,6 +1511,11 @@ function render() {
 
     animation.update(timeElapsed);
     animation.draw();
+
+    if(elemBgStats)
+        elemBgStats.innerHTML = `frame time: ${timeElapsed}</br>
+                                fps: ${Math.round(1000 / timeElapsed)}</br>
+                                canvas size: ${width} x ${height}`;
 
     // Limit framerate (alt. way)
     /*
@@ -1510,6 +1526,26 @@ function render() {
 }
 
 render();
+
+
+// Parallax effect
+// ---------------------------------------------------------------------------------------------------------------------
+
+if(parallaxRatio !== 1) {
+    window.addEventListener('scroll', bgParallax);
+
+    // function throttleCalls(func, wait) {
+    //     let then = Date.now();
+    //     return function() {
+    //         if (then + wait < Date.now()) {
+    //             func();
+    //             then = Date.now();
+    //         }
+    //     }
+    // }
+    //
+    // window.addEventListener('scroll', throttleCalls(bgParallax, 1000/60));
+}
 
 
 // Controls functions
@@ -1690,6 +1726,8 @@ function updateSettings(settings){
 }
 
 },{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./game-of-live":7,"./game-of-live-isometric":6,"./gradient-descent":8,"./matrix":10,"./network":11,"./neural-network":12,"./particles-and-attractors":14,"./particles-vortex":15,"./particles-waves":16,"./perlin-noise-particles":17,"./shortest-path":19,"./sine-waves":20,"./sorting":21,"./spinning-shapes":22,"./spirograph":23,"./utils":24}],10:[function(require,module,exports){
+'use strict';
+
 /*
  * Recreation of matrix digital rain based on this analysis
  * of the original effect: https://carlnewton.github.io/digital-rain-analysis/
@@ -1810,6 +1848,8 @@ class Matrix extends Animation {
 module.exports = Matrix;
 
 },{"./animation":2,"./utils":24}],11:[function(require,module,exports){
+'use strict';
+
 /*
  * Delaunay triangulation algorithm for cloud of moving particles
  * Creates to create network-like structure.
@@ -1953,6 +1993,8 @@ class Network extends Animation {
 module.exports = Network;
 
 },{"./animation":2,"./delaunay":5,"./utils":24}],12:[function(require,module,exports){
+'use strict';
+
 /*
  * Visualization of a simple, fully connected neural network, with random weights,
  * ReLU activations on intermediate layers, and sigmoid output at the last layer.
@@ -2078,6 +2120,8 @@ class NeuralNetwork extends Animation {
 module.exports = NeuralNetwork;
 
 },{"./animation":2,"./utils":24}],13:[function(require,module,exports){
+'use strict';
+
 /*
  * A speed-improved perlin and simplex noise algorithms for 2D.
  *
@@ -2389,6 +2433,8 @@ module.exports = NeuralNetwork;
 })(this);
 
 },{}],14:[function(require,module,exports){
+'use strict';
+
 /*
  * Very simple particles system with attractors.
  * In this system, distance and momentum are ignored.
@@ -2503,6 +2549,8 @@ class ParticlesAndAttractors extends Animation {
 module.exports = ParticlesAndAttractors;
 
 },{"./animation":2,"./utils":24}],15:[function(require,module,exports){
+'use strict';
+
 /*
  * Particles vortex with randomized speed and direction.
  *
@@ -2591,6 +2639,8 @@ class ParticlesVortex extends Animation {
 module.exports = ParticlesVortex;
 
 },{"./animation":2,"./noise":13,"./utils":24}],16:[function(require,module,exports){
+'use strict';
+
 /*
  * "Particles waves" animation.
  * The effect was achieved by modifying perlin-noise-particles.js.
@@ -2675,6 +2725,8 @@ class ParticlesStorm extends Animation {
 module.exports = ParticlesStorm;
 
 },{"./animation":2,"./noise":13,"./utils":24}],17:[function(require,module,exports){
+'use strict';
+
 /*
  * Particles moving through Perlin noise.
  *
@@ -2801,6 +2853,8 @@ class PerlinNoiseParticles extends Animation {
 module.exports = PerlinNoiseParticles;
 
 },{"./animation":2,"./noise":13,"./utils":24}],18:[function(require,module,exports){
+'use strict';
+
 /*
  * Simple and efficient implementation of a queue, with naive priority option
  * (this part is not efficient, but for animation purposes, it doesn't have to).
@@ -2858,6 +2912,8 @@ class Queue {
 module.exports = Queue;
 
 },{}],19:[function(require,module,exports){
+'use strict';
+
 /*
  * Animation showing process of finding the shortest path
  * in the grid world by BFS or A* algorithm.
@@ -3132,6 +3188,8 @@ class ShortestPath extends Animation {
 module.exports = ShortestPath;
 
 },{"./animation":2,"./queue":18,"./utils":24}],20:[function(require,module,exports){
+'use strict';
+
 /*
  * Grid of sine waves.
  *
@@ -3218,6 +3276,8 @@ class SineWaves extends Animation {
 
 module.exports = SineWaves;
 },{"./animation":2,"./utils":24}],21:[function(require,module,exports){
+'use strict';
+
 /*
  * Visualization of different sorting algorithms.
  *
@@ -3592,6 +3652,8 @@ class Sorting extends Animation {
 module.exports = Sorting;
 
 },{"./animation":2,"./utils":24}],22:[function(require,module,exports){
+'use strict';
+
 /*
  * Shapes moving in a circle/dancing.
  * Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
@@ -3681,6 +3743,8 @@ class SpinningShapes extends Animation {
 module.exports = SpinningShapes
 
 },{"./animation":2,"./utils":24}],23:[function(require,module,exports){
+'use strict';
+
 /*
  * Spirograph created with 1-5 random gears.
  * See: https://en.wikipedia.org/wiki/Spirograph,
@@ -3785,6 +3849,8 @@ class Spirograph extends Animation {
 module.exports = Spirograph
 
 },{"./animation":2,"./utils":24}],24:[function(require,module,exports){
+'use strict';
+
 module.exports = {
 
     // Randomization helpers
@@ -3858,7 +3924,7 @@ module.exports = {
 
     // Based on: https://gist.github.com/rosszurowski/67f04465c424a9bc0dae
     lerpColor(a, b, t) {
-        const ah = parseInt(a.replace('#', '0x'), 16);
+        const ah = parseInt(a.replace('#', '0x'), 16),
               ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
               bh = parseInt(b.replace('#', '0x'), 16),
               br = bh >> 16, bg = bh >> 8 & 0xff, bb = bh & 0xff,

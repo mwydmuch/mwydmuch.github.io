@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * This is just a quick little implementation of Delaunay Triangulation in JavaScript.
  * It was mostly ported from Paul Bourke's C implementation,

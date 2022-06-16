@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * Very simple particles system with attractors.
  * In this system, distance and momentum are ignored.

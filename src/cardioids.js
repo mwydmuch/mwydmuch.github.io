@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * Modified method of L. Cremona for drawing cardioid with a pencil of lines,
  * as described in section "cardioid as envelope of a pencil of lines" of:

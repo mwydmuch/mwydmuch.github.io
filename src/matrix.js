@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * Recreation of matrix digital rain based on this analysis
  * of the original effect: https://carlnewton.github.io/digital-rain-analysis/

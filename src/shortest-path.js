@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * Animation showing process of finding the shortest path
  * in the grid world by BFS or A* algorithm.

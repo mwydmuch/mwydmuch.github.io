@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
 
     // Randomization helpers
@@ -71,7 +73,7 @@ module.exports = {
 
     // Based on: https://gist.github.com/rosszurowski/67f04465c424a9bc0dae
     lerpColor(a, b, t) {
-        const ah = parseInt(a.replace('#', '0x'), 16);
+        const ah = parseInt(a.replace('#', '0x'), 16),
               ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
               bh = parseInt(b.replace('#', '0x'), 16),
               br = bh >> 16, bg = bh >> 8 & 0xff, bb = bh & 0xff,

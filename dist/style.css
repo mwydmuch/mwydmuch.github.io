@@ -38,47 +38,56 @@ p {
   white-space: nowrap;
 }
 .reverse,
-.reverse-red,
-.reverse-purple,
-.reverse-blue {
+.reverse-mlinpl-red,
+.reverse-mlinpl-purple,
+.reverse-put-blue,
+.reverse-yahoo-purple {
   color: #FFFFFF;
   padding: 0.05rem 0.25rem;
   margin: 0 0.05rem;
   white-space: nowrap;
 }
 .reverse a,
-.reverse-red a,
-.reverse-purple a,
-.reverse-blue a,
+.reverse-mlinpl-red a,
+.reverse-mlinpl-purple a,
+.reverse-put-blue a,
+.reverse-yahoo-purple a,
 .reverse a:link,
-.reverse-red a:link,
-.reverse-purple a:link,
-.reverse-blue a:link,
+.reverse-mlinpl-red a:link,
+.reverse-mlinpl-purple a:link,
+.reverse-put-blue a:link,
+.reverse-yahoo-purple a:link,
 .reverse a:visited,
-.reverse-red a:visited,
-.reverse-purple a:visited,
-.reverse-blue a:visited,
+.reverse-mlinpl-red a:visited,
+.reverse-mlinpl-purple a:visited,
+.reverse-put-blue a:visited,
+.reverse-yahoo-purple a:visited,
 .reverse a:hover,
-.reverse-red a:hover,
-.reverse-purple a:hover,
-.reverse-blue a:hover,
+.reverse-mlinpl-red a:hover,
+.reverse-mlinpl-purple a:hover,
+.reverse-put-blue a:hover,
+.reverse-yahoo-purple a:hover,
 .reverse a:active,
-.reverse-red a:active,
-.reverse-purple a:active,
-.reverse-blue a:active {
+.reverse-mlinpl-red a:active,
+.reverse-mlinpl-purple a:active,
+.reverse-put-blue a:active,
+.reverse-yahoo-purple a:active {
   color: #FFFFFF;
 }
 .reverse {
   background-image: linear-gradient(135deg, #0058B5, #0070b5);
 }
-.reverse-red {
+.reverse-mlinpl-red {
   background-image: linear-gradient(135deg, #E52C2C, #F13F3F);
 }
-.reverse-purple {
-  background: #7F4FB2;
+.reverse-mlinpl-purple {
+  background-image: linear-gradient(135deg, #7F4FB2, #A069D7);
 }
-.reverse-blue {
-  background: #006991;
+.reverse-put-blue {
+  background-image: linear-gradient(135deg, #006991, #168FBD);
+}
+.reverse-yahoo-purple {
+  background-image: linear-gradient(135deg, #6000D3, #7E17Ef);
 }
 .accordion-body {
   margin-left: 0.4rem;
@@ -329,6 +338,12 @@ ul {
   padding: 0.25rem;
   cursor: move;
   transition: opacity 0.5s;
+}
+#footer #background-settings-controls #background-stats {
+  cursor: default;
+  text-align: left;
+  border-top: 1px solid #FFFFFF;
+  margin-top: 0.1rem;
 }
 #footer #background-settings-controls #background-settings-controls-list {
   cursor: default;

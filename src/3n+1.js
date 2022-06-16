@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * 3n + 1 (Collatz Conjecture) visualization.
  * Inspired by Veritasium video: https://www.youtube.com/watch?v=094y1Z2wpJg

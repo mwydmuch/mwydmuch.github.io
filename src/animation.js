@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * Base class for all the background animations.
  */

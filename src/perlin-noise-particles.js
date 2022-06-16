@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * Particles moving through Perlin noise.
  *

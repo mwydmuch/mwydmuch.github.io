@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * "Particles waves" animation.
  * The effect was achieved by modifying perlin-noise-particles.js.

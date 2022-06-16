@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * Particles vortex with randomized speed and direction.
  *

@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * Conway's game of life visualization.
  * Cells that "died" in the previous step keep their color to achieve a stable image

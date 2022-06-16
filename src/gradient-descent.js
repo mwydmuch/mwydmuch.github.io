@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * Visualization of gradient descent-based optimizers.
  *

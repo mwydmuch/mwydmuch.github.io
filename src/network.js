@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * Delaunay triangulation algorithm for cloud of moving particles
  * Creates to create network-like structure.

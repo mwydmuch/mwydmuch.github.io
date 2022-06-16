@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * Visualization of different sorting algorithms.
  *

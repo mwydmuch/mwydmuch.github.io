@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * Spirograph created with 1-5 random gears.
  * See: https://en.wikipedia.org/wiki/Spirograph,
