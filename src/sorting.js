@@ -86,16 +86,16 @@ class SortingAlgorithm {
     }
 }
 
-class BubbleSort extends SortingAlgorithm{
+class BubbleSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Bubble_sort
     constructor(arr) {
         super(arr, "bubble sort");
     }
 
     sort(){
         const n = this.arr.length;
-        for (let i = 0; i < n; i++) {
+        for (let i = 0; i < n; ++i) {
             let sorted = true;
-            for (let j = 0; j < n - 1 - i; j++) {
+            for (let j = 0; j < n - 1 - i; ++j) {
                 if (this.comp(this.arr, j, j + 1) > 0){
                     this.swap(this.arr, j, j + 1);
                     sorted = false;
@@ -113,9 +113,9 @@ class SelectionSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/S
 
     sort(){
         const n = this.arr.length;
-        for (let i = 0; i < n; i++) {
+        for (let i = 0; i < n; ++i) {
             let m = i;
-            for (let j = i; j < n; j++) if (this.comp(this.arr, m, j) > 0) m = j;
+            for (let j = i; j < n; ++j) if (this.comp(this.arr, m, j) > 0) m = j;
             if (i !== m) this.swap(this.arr, i, m);
         }
     }
@@ -128,7 +128,7 @@ class InsertionSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/I
 
     sort(){
         const n = this.arr.length;
-        for (let i = 1; i < n; i++) {
+        for (let i = 1; i < n; ++i) {
             let j = i;
             while (j > 0 && this.comp(this.arr, j, j - 1) < 0) {
                 this.swap(this.arr, j, j - 1);
@@ -138,7 +138,7 @@ class InsertionSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/I
     }
 }
 
-class MergeSort extends SortingAlgorithm{
+class MergeSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Merge_sort
     constructor(arr) {
         super(arr, "merge sort");
     }
@@ -163,7 +163,7 @@ class MergeSort extends SortingAlgorithm{
 
         let newOrder = [],
             oldOrder = [];
-        for(let i = l; i <= e; ++i) oldOrder.push(i);
+        for (let i = l; i <= e; ++i) oldOrder.push(i);
         while (l <= m && r <= e) {
             if(this.comp(this.arr, l, r) < 0) newOrder.push(l++);
             else newOrder.push(r++);
@@ -174,7 +174,7 @@ class MergeSort extends SortingAlgorithm{
     }
 }
 
-class QuickSort extends SortingAlgorithm{
+class QuickSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Quicksort
     constructor(arr) {
         super(arr, "quick sort");
     }
@@ -194,17 +194,39 @@ class QuickSort extends SortingAlgorithm{
     partition(l, r) {
         const p = this.arr[Math.floor((r + l) / 2)];
         while (l <= r) {
-            while(this.compVal(this.arr[l], p) < 0) l++;
-            while(this.compVal(this.arr[r], p) > 0) r--;
+            while(this.compVal(this.arr[l], p) < 0) ++l;
+            while(this.compVal(this.arr[r], p) > 0) --r;
             if (l <= r) this.swap(this.arr, l++, r--);
         }
         return l;
     }
 }
 
-class HeapSort extends SortingAlgorithm{ // TODO
+class HeapSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Heapsort
     constructor(arr) {
         super(arr, "heap sort");
+    }
+
+    sort(){
+        for (let i = Math.floor((this.arr.length - 1) / 2); i >= 0; --i) this.heapify(this.arr.length, i);
+
+        for (let i = this.arr.length - 1; i > 0; --i) {
+            this.swap(this.arr, 0, i);
+            this.heapify(i, 0);
+        }
+    }
+
+    heapify(n, i){
+        let max = i,
+            left = 2 * i + 1,
+            right = 2 * i + 2;
+
+        if (left < n && this.comp(this.arr, left, max) > 0) max = left;
+        if (right < n && this.comp(this.arr, right, max) > 0) max = right;
+        if (max !== i) {
+            this.swap(this.arr, i, max);
+            this.heapify(n, max);
+        }
     }
 }
 
@@ -217,9 +239,9 @@ class GnomeSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Gnome
         const n = this.arr.length;
         let pos = 0;
         while(pos < n){
-            if(pos == 0 || this.comp(arr, pos, pos-1) >= 0) ++pos;
+            if(pos === 0 || this.comp(this.arr, pos, pos - 1) >= 0) ++pos;
             else{
-                this.swap(arr, pos, pos - 1);
+                this.swap(this.arr, pos, pos - 1);
                 --pos;
             }
         }
@@ -227,12 +249,40 @@ class GnomeSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Gnome
 }
 
 
+class ShakerSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Cocktail_shaker_sort
+    constructor(arr) {
+        super(arr, "shaker sort");
+    }
+
+    sort(){
+        const n = this.arr.length;
+        for (let i = 0; i < n - 1; ++i) {
+            let sorted = true;
+            for (let j = 0; j < n - 1 - i; ++j) {
+                if (this.comp(this.arr, j, j + 1) > 0){
+                    this.swap(this.arr, j, j + 1);
+                    sorted = false;
+                }
+            }
+            if(sorted) break;
+
+            sorted = true;
+            for (let j = n - 2 - i; j > i ; --j) {
+                if (this.comp(this.arr, j, j - 1) < 0){
+                    this.swap(this.arr, j, j - 1);
+                    sorted = false;
+                }
+            }
+            if(sorted) break;
+        }
+    }
+}
 
 
 class Sorting extends Animation {
     constructor (canvas, colors, colorsAlt,
                  sortingAlgorithm = "random",
-                 numElements = 100,
+                 numElements = 96,
                  elementPadding = 2,
                  cmpDuration = 0.25,
                  swapDuration = 0.25,
@@ -247,8 +297,10 @@ class Sorting extends Animation {
         this.speed = speed;
         this.showStats = showStats;
 
-        this.sortAlgoNames = ["selection sort", "bubble sort", "insertion sort", "quick sort", "merge sort"];
-        this.sortAlgoClasses = [SelectionSort, BubbleSort, InsertionSort, QuickSort, MergeSort];
+        this.sortAlgoNames = ["selection sort", "bubble sort", "insertion sort",
+            "quick sort", "merge sort", "heap sort", "gnome sort", "shaker sort"];
+        this.sortAlgoClasses = [SelectionSort, BubbleSort, InsertionSort,
+            QuickSort, MergeSort, HeapSort, GnomeSort, ShakerSort];
         this.sortingAlgorithm = this.assignIfRandom(sortingAlgorithm, Utils.randomChoice(this.sortAlgoNames));
         this.cmpTotal = 0;
         this.cmpCount = 0;
@@ -275,6 +327,14 @@ class Sorting extends Animation {
 
         this.cmpTotal = sortAlgo.cmpCount;
         this.cmpCount = 0;
+
+        // Validate sorting
+        // for(let i = 1; i < this.elements.length; ++i){
+        //     if(this.elements[i - 1] > this.elements[i]){
+        //         console.log("Not sorted!");
+        //         break;
+        //     }
+        // }
     }
 
     update(elapsed){
@@ -362,6 +422,8 @@ class Sorting extends Animation {
             Utils.fillAndStrokeText(this.ctx,`Number of elements comparisons: ${this.cmpCount} / ${this.cmpTotal}`, lineHeight, elementMaxHeight - lineHeight);
         }
     }
+
+
 
     getSettings() {
         return [{prop: "sortingAlgorithm", type: "select", values: this.sortAlgoNames, toCall: "setup"},
