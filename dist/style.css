@@ -28,6 +28,20 @@ h6 {
 p {
   margin: 0.25rem;
 }
+ol,
+ul {
+  margin: 0.25rem 0.75rem;
+}
+ol li,
+ul li {
+  margin-top: 0.25rem;
+}
+ol ol,
+ul ol,
+ol ul,
+ul ul {
+  margin: 0 0.75rem;
+}
 .inline {
   display: inline;
 }
@@ -101,11 +115,16 @@ ul {
   list-style-type: square;
   margin-left: 1rem;
 }
-.month-year-date-li {
+.date-li {
   text-indent: -3.6rem;
   padding-left: 3.6rem;
 }
-.month-year-date-li i {
+.date-li .date-span {
+  width: 3.6rem;
+  display: inline-block;
+  padding-left: 3.6rem;
+}
+.date-li i {
   text-indent: 0;
 }
 #background {
@@ -132,7 +151,7 @@ ul {
   box-sizing: border-box;
   border-radius: 100%;
   border: double 4px transparent;
-  background-image: conic-gradient(from 190deg, #F6CE00 0deg, #F6CE00 70deg, #0058B5 90deg, #0058B5 160deg, #FE0000 180deg, #FD8C00 210deg, #FFE500 240deg, #119F0B 270deg, #0644B3 300deg, #C22EDC 330deg, #F6CE00 360deg);
+  background-image: linear-gradient(180deg, #0058B5 0%, #0058B5 40%, #F6CE00 60%, #F6CE00 100%);
   background-origin: border-box;
   height: 100%;
 }
@@ -350,6 +369,7 @@ ul {
   text-align: left;
   border-top: 1px solid #FFFFFF;
   margin-top: 0.1rem;
+  white-space: nowrap;
 }
 #footer #background-settings-controls #background-settings-controls-list .setting-name {
   width: 8rem;
