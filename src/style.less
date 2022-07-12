@@ -259,7 +259,7 @@ ul{
   }
 }
 
-@grayscale: 0%;
+@grayscale: 100%;
 @fade-show-values: 0, 10;
 
 @keyframes fade-out-animation {
@@ -291,18 +291,30 @@ ul{
 
 each(@fade-show-values, {
   .keyframes(%("fade-to-%s-animation", @value), {
-    from {opacity: 100%; filter: grayscale(0%);}
-    to {opacity: percentage(@value / 100); filter: grayscale(@grayscale);}
+    from {
+      opacity: 100%;
+      //filter: grayscale(0%);
+    }
+    to {
+      opacity: percentage(@value / 100);
+      //filter: grayscale(@grayscale);
+    }
   });
 
   .keyframes(%("show-from-%s-animation", @value), {
-    from {opacity: percentage(@value / 100); filter: grayscale(@grayscale);}
-    to {opacity: 100%; filter: grayscale(0%);}
+    from {
+      opacity: percentage(@value / 100);
+      //filter: grayscale(@grayscale);
+    }
+    to {
+      opacity: 100%;
+      //filter: grayscale(0%);
+    }
   });
 
   .faded-@{value} {
     opacity: percentage(@value / 100);
-    filter: grayscale(@grayscale);
+    //filter: grayscale(@grayscale);
   }
 
   .fade-to-@{value} {
@@ -310,7 +322,7 @@ each(@fade-show-values, {
     animation-duration: @global-animation-duration;
     animation-timing-function: ease;
     opacity: percentage(@value / 100);
-    filter: grayscale(@grayscale);
+    //filter: grayscale(@grayscale);
   }
 
   .show-from-@{value}{
@@ -318,7 +330,7 @@ each(@fade-show-values, {
     animation-duration: @global-animation-duration;
     animation-timing-function: ease;
     opacity: 100%;
-    filter: grayscale(0%);
+    //filter: grayscale(0%);
   }
 });
 

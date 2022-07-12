@@ -220,78 +220,64 @@ ul {
 @keyframes "fade-to-0-animation" {
   from {
     opacity: 100%;
-    filter: grayscale(0%);
   }
   to {
     opacity: 0%;
-    filter: grayscale(0%);
   }
 }
 @keyframes "show-from-0-animation" {
   from {
     opacity: 0%;
-    filter: grayscale(0%);
   }
   to {
     opacity: 100%;
-    filter: grayscale(0%);
   }
 }
 .faded-0 {
   opacity: 0%;
-  filter: grayscale(0%);
 }
 .fade-to-0 {
   animation: "fade-to-0-animation";
   animation-duration: 0.5s;
   animation-timing-function: ease;
   opacity: 0%;
-  filter: grayscale(0%);
 }
 .show-from-0 {
   animation: "show-from-0-animation";
   animation-duration: 0.5s;
   animation-timing-function: ease;
   opacity: 100%;
-  filter: grayscale(0%);
 }
 @keyframes "fade-to-10-animation" {
   from {
     opacity: 100%;
-    filter: grayscale(0%);
   }
   to {
     opacity: 10%;
-    filter: grayscale(0%);
   }
 }
 @keyframes "show-from-10-animation" {
   from {
     opacity: 10%;
-    filter: grayscale(0%);
   }
   to {
     opacity: 100%;
-    filter: grayscale(0%);
   }
 }
 .faded-10 {
   opacity: 10%;
-  filter: grayscale(0%);
 }
 .fade-to-10 {
   animation: "fade-to-10-animation";
   animation-duration: 0.5s;
   animation-timing-function: ease;
   opacity: 10%;
-  filter: grayscale(0%);
 }
 .show-from-10 {
   animation: "show-from-10-animation";
   animation-duration: 0.5s;
   animation-timing-function: ease;
   opacity: 100%;
-  filter: grayscale(0%);
 }
 @keyframes hue-animation {
   0% {
