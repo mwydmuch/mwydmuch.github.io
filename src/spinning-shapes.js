@@ -40,11 +40,11 @@ class SpinningShapes extends Animation {
     }
 
     updateName(){
-        this.name = this.shapeNames[this.shapeSides.indexOf(this.sides)] + " moving in a circle";
+        this.name = this.shapeNames[this.shapeSides.indexOf(this.sides)] + " \"dancing\" in a circle";
     }
 
     draw() {
-        Utils.clear(this.ctx, "#FFFFFF");
+        this.clear();
 
         const scale = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3 * this.scale;
 

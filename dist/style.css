@@ -11,7 +11,7 @@ a:link,
 a:visited,
 a:hover,
 a:active {
-  color: #f6bd00;
+  color: #F6BD00;
   font-weight: 700;
   cursor: pointer;
 }
@@ -51,57 +51,117 @@ ul ul {
 .nowrap {
   white-space: nowrap;
 }
-.reverse,
-.reverse-mlinpl-red,
-.reverse-mlinpl-purple,
-.reverse-put-blue,
+.reverse-main {
+  color: #FFFFFF;
+  padding: 0.05rem 0.25rem;
+  margin: 0 0.05rem;
+  white-space: nowrap;
+  background-image: linear-gradient(135deg, #F6CE00, #ffd811);
+}
+.reverse-main a,
+.reverse-main a:link,
+.reverse-main a:visited,
+.reverse-main a:hover,
+.reverse-main a:active {
+  color: #FFFFFF;
+}
+.reverse-second {
+  color: #FFFFFF;
+  padding: 0.05rem 0.25rem;
+  margin: 0 0.05rem;
+  white-space: nowrap;
+  background-image: linear-gradient(135deg, #0058B5, #0064cf);
+}
+.reverse-second a,
+.reverse-second a:link,
+.reverse-second a:visited,
+.reverse-second a:hover,
+.reverse-second a:active {
+  color: #FFFFFF;
+}
+.reverse-mlinpl-red {
+  color: #FFFFFF;
+  padding: 0.05rem 0.25rem;
+  margin: 0 0.05rem;
+  white-space: nowrap;
+  background-image: linear-gradient(135deg, #E52C2C, #e84343);
+}
+.reverse-mlinpl-red a,
+.reverse-mlinpl-red a:link,
+.reverse-mlinpl-red a:visited,
+.reverse-mlinpl-red a:hover,
+.reverse-mlinpl-red a:active {
+  color: #FFFFFF;
+}
+.reverse-mlinpl-purple {
+  color: #FFFFFF;
+  padding: 0.05rem 0.25rem;
+  margin: 0 0.05rem;
+  white-space: nowrap;
+  background-image: linear-gradient(135deg, #7F4FB2, #8c61ba);
+}
+.reverse-mlinpl-purple a,
+.reverse-mlinpl-purple a:link,
+.reverse-mlinpl-purple a:visited,
+.reverse-mlinpl-purple a:hover,
+.reverse-mlinpl-purple a:active {
+  color: #FFFFFF;
+}
+.reverse-put-blue {
+  color: #FFFFFF;
+  padding: 0.05rem 0.25rem;
+  margin: 0 0.05rem;
+  white-space: nowrap;
+  background-image: linear-gradient(135deg, #006991, #007bab);
+}
+.reverse-put-blue a,
+.reverse-put-blue a:link,
+.reverse-put-blue a:visited,
+.reverse-put-blue a:hover,
+.reverse-put-blue a:active {
+  color: #FFFFFF;
+}
 .reverse-yahoo-purple {
   color: #FFFFFF;
   padding: 0.05rem 0.25rem;
   margin: 0 0.05rem;
   white-space: nowrap;
+  background-image: linear-gradient(135deg, #6000D3, #6c00ec);
 }
-.reverse a,
-.reverse-mlinpl-red a,
-.reverse-mlinpl-purple a,
-.reverse-put-blue a,
 .reverse-yahoo-purple a,
-.reverse a:link,
-.reverse-mlinpl-red a:link,
-.reverse-mlinpl-purple a:link,
-.reverse-put-blue a:link,
 .reverse-yahoo-purple a:link,
-.reverse a:visited,
-.reverse-mlinpl-red a:visited,
-.reverse-mlinpl-purple a:visited,
-.reverse-put-blue a:visited,
 .reverse-yahoo-purple a:visited,
-.reverse a:hover,
-.reverse-mlinpl-red a:hover,
-.reverse-mlinpl-purple a:hover,
-.reverse-put-blue a:hover,
 .reverse-yahoo-purple a:hover,
-.reverse a:active,
-.reverse-mlinpl-red a:active,
-.reverse-mlinpl-purple a:active,
-.reverse-put-blue a:active,
 .reverse-yahoo-purple a:active {
   color: #FFFFFF;
 }
-.reverse {
-  background-image: linear-gradient(135deg, #0058B5, #0070b5);
+.reverse-vizdoom-red {
+  color: #FFFFFF;
+  padding: 0.05rem 0.25rem;
+  margin: 0 0.05rem;
+  white-space: nowrap;
+  background-image: linear-gradient(135deg, #8B0000, #a40000);
 }
-.reverse-mlinpl-red {
-  background-image: linear-gradient(135deg, #E52C2C, #F13F3F);
+.reverse-vizdoom-red a,
+.reverse-vizdoom-red a:link,
+.reverse-vizdoom-red a:visited,
+.reverse-vizdoom-red a:hover,
+.reverse-vizdoom-red a:active {
+  color: #FFFFFF;
 }
-.reverse-mlinpl-purple {
-  background-image: linear-gradient(135deg, #7F4FB2, #A069D7);
+.reverse-openai-blue {
+  color: #FFFFFF;
+  padding: 0.05rem 0.25rem;
+  margin: 0 0.05rem;
+  white-space: nowrap;
+  background-image: linear-gradient(135deg, #21AEB9, #25c2cf);
 }
-.reverse-put-blue {
-  background-image: linear-gradient(135deg, #006991, #168FBD);
-}
-.reverse-yahoo-purple {
-  background-image: linear-gradient(135deg, #6000D3, #7E17Ef);
+.reverse-openai-blue a,
+.reverse-openai-blue a:link,
+.reverse-openai-blue a:visited,
+.reverse-openai-blue a:hover,
+.reverse-openai-blue a:active {
+  color: #FFFFFF;
 }
 .accordion-body {
   margin-left: 0.4rem;
@@ -320,7 +380,7 @@ ul {
   padding: 0 0.25rem;
   margin: 0 0.1rem;
   display: inline-block;
-  background-image: linear-gradient(135deg, #0058B5, #0070b5);
+  background-image: linear-gradient(135deg, #0058B5, #0064cf);
 }
 #footer #background-controls a,
 #footer #background-settings-controls a,

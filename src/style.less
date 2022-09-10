@@ -5,37 +5,31 @@
 @background: #FFFFFF;
 @main-text: #252525;
 //@main: #43696B;
-//@main-light: #43696B;
+//@main-second: #43696B;
 
 //@main-gradient: linear-gradient(135deg, #349BA9, #AEEABF);
 //@main-gradient: linear-gradient(135deg, #38575A, #43696B);
 
 // Ukraine colors
-@main: #F6CE00;
-@main-light: #f6bd00;
+@ua-yellow: #F6CE00;
+@ua-blue: #0058B5;
+@ua-flag-gradient: linear-gradient(180deg, @ua-blue 0%, @ua-blue 40%, @ua-yellow 60%, @ua-yellow 100%);
 
-@main-gradient: linear-gradient(135deg, #0058B5, #0070b5);
+@main: @ua-yellow;
+@main-second: #F6BD00;
+@second: @ua-blue;
+@main-gradient: linear-gradient(135deg, @second, lighten(@second, 5%));
 
-// Additional photo border gardients
-@ua-gradient: linear-gradient(180deg, #0058B5 0%, #0058B5 40%, #F6CE00 60%, #F6CE00 100%);
-@ua-pl-gradient: conic-gradient(from 10deg,
-#0058B5 0deg, #0058B5 70deg, #F6CE00 90deg, #F6CE00 160deg, #E52C2C 180deg,
-#E52C2C 250deg, #FFFFFF 270deg, #FFFFFF 340deg, #0058B5 360deg);
-@ua-pride-gradient: conic-gradient(from 190deg,
-#F6CE00 0deg, #F6CE00 70deg, #0058B5 90deg, #0058B5 160deg,
-#FE0000 180deg, #FD8C00 210deg, #FFE500 240deg,
-#119F0B 270deg, #0644B3 300deg, #C22EDC 330deg, #F6CE00 360deg);
 
 // Other colors and gradients
 @mlinpl-red: #E52C2C;
 @mlinpl-purple: #7F4FB2;
 @put-blue: #006991;
 @yahoo-purple: #6000D3;
+@vizdoom-red: #8B0000;
+@openai-blue: #21AEB9;
+@color-names: main, second, mlinpl-red, mlinpl-purple, put-blue, yahoo-purple, vizdoom-red, openai-blue;
 
-@mlinpl-red-gradient: linear-gradient(135deg, #E52C2C, #F13F3F);
-@mlinpl-purple-gradient: linear-gradient(135deg, #7F4FB2, #A069D7);
-@put-blue-gradient: linear-gradient(135deg, #006991, #168FBD);
-@yahoo-purple-gradient: linear-gradient(135deg, #6000D3, #7E17Ef);
 
 // Others
 @font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -57,11 +51,10 @@ body {
 }
 
 a, a:link, a:visited, a:hover, a:active {
-  color: @main-light;
+  color: @main-second;
   font-weight: 700;
   cursor: pointer;
 }
-
 
 // Typography
 // ---------------------------------------------------------------------------------------------------------------------
@@ -101,45 +94,22 @@ ol, ul {
   white-space: nowrap;
 }
 
-.reverse,
-.reverse-mlinpl-red,
-.reverse-mlinpl-purple,
-.reverse-put-blue,
-.reverse-yahoo-purple{
-  color: @background;
-  padding: 0.05rem 0.25rem;
-  margin: 0 0.05rem;
-  white-space: nowrap;
+// Generate reverse spans for all colors
+each(@color-names, {
+  @gradient-var:~"@@{color-names}-gradient";
 
-  a, a:link, a:visited, a:hover, a:active {
+  .reverse-@{value}{
     color: @background;
+    padding: 0.05rem 0.25rem;
+    margin: 0 0.05rem;
+    white-space: nowrap;
+    background-image: linear-gradient(135deg, @@value, lighten(@@value, 5%));
+
+    a, a:link, a:visited, a:hover, a:active {
+      color: @background;
+    }
   }
-}
-
-.reverse{
-  //background: @main;
-  background-image: @main-gradient;
-}
-
-.reverse-mlinpl-red{
-  //background: @mlinpl-red;
-  background-image: @mlinpl-red-gradient
-}
-
-.reverse-mlinpl-purple{
-  //background: @mlinpl-purple;
-  background-image: @mlinpl-purple-gradient
-}
-
-.reverse-put-blue{
-  //background: @put-blue;
-  background-image: @put-blue-gradient
-}
-
-.reverse-yahoo-purple{
-  //background: @yahoo-purple;
-  background-image: @yahoo-purple-gradient
-}
+});
 
 .accordion-body{
   margin-left: 0.4rem;
@@ -213,7 +183,7 @@ ul{
       border-radius: 100%;
       border: double @global-border-width transparent;
       //background-image: @main-gradient;
-      background-image: @ua-gradient;
+      background-image: @ua-flag-gradient;
       background-origin: border-box;
       height: 100%;
     }
