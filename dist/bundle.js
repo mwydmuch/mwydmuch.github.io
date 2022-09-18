@@ -1436,38 +1436,45 @@ const elemBgSettings = document.getElementById("background-settings");
 const elemBgSettingsControls = document.getElementById("background-settings-controls");
 const elemBgSettingsClose = document.getElementById("background-settings-close");
 const elemBgStats = document.getElementById("background-stats");
+const elemBgAnimationSelect = document.getElementById("background-settings-animation-select");
 
 
 // Create animation and init animation loop
 // ---------------------------------------------------------------------------------------------------------------------
 
 let animations = [
-    ThreeNPlusOne,
-    Cardioids,
-    CircularWaves,
-    GameOfLife,
-    GameOfLifeIsometric,
-    GradientDescent,
-    Matrix,
-    Network,
-    NeuralNetwork,
-    ParticlesAndAttractors,
-    ParticlesVortex,
-    ParticlesWaves,
-    PerlinNoiseParticles,
-    ShortestPath,
-    Sorting,
-    SpinningShapes,
-    Spirograph,
-    SineWaves
+    {class: ThreeNPlusOne, name: "3N+1"},
+    {class: Cardioids, name: "cardioids"},
+    {class: CircularWaves, name: "circular waves"},
+    {class: GameOfLife, name: "game of live"},
+    {class: GameOfLifeIsometric, name: "isometric game of life"},
+    {class: GradientDescent, name: "gradient descent"},
+    {class: Matrix, name: "matrix rain"},
+    {class: Network, name: "network"},
+    {class: NeuralNetwork, name: "neural network"},
+    {class: ParticlesAndAttractors, name: "particles and attractors"},
+    {class: ParticlesVortex, name: "particles vortex"},
+    {class: ParticlesWaves, name: "particles waves"},
+    {class: PerlinNoiseParticles, name: "perlin noise"},
+    {class: ShortestPath, name: "shortest"},
+    {class: Sorting, name: "sorting"},
+    {class: SpinningShapes, name: "spinning shapes"},
+    {class: Spirograph, name: "spirograph"},
+    {class: SineWaves, name: "sine waves"}
 ];
 
-Utils.randomShuffle(animations);
+const animationCount = animations.length;
+let animationId = Utils.randomInt(0, animationCount),
+    animation = null,
+    order = Array.from({length: animationCount}, (x, i) => i);
 
-let animationId = 0;
-let animation = new animations[animationId](canvas, colors, colorsAlt);
+Utils.randomShuffle(order);
+for(let i = 0; i < animationCount; ++i) animations[i].next = order[i];
 
-function updateAnimation(animation) {
+
+function updateAnimation(newAnimationId) {
+    animationId = newAnimationId;
+    animation = new animations[animationId].class(canvas, colors, colorsAlt);
     let fps = animation.getFPS();
     framesInterval = 1000 / fps;
     then = Date.now();
@@ -1475,13 +1482,6 @@ function updateAnimation(animation) {
     elemBgCode.href = animation.getCodeUrl();
     updateSettings(animation.getSettings());
     animation.resize();
-}
-
-updateAnimation(animation);
-
-function bgParallax() {
-    let scroll = window.pageYOffset / (container.offsetHeight - window.innerHeight) * (container.offsetHeight - canvas.height);
-    canvas.style.transform = 'translateY(' + scroll + 'px)';
 }
 
 function render() {
@@ -1503,7 +1503,6 @@ function render() {
         canvas.width = width;
         canvas.height = height;
         animation.resize();
-        bgParallax();
         needResize = false;
     }
     lastHeight = height;
@@ -1525,27 +1524,9 @@ function render() {
      */
 }
 
+updateAnimation(animationId);
 render();
 
-
-// Parallax effect
-// ---------------------------------------------------------------------------------------------------------------------
-
-if(parallaxRatio !== 1) {
-    window.addEventListener('scroll', bgParallax);
-
-    // function throttleCalls(func, wait) {
-    //     let then = Date.now();
-    //     return function() {
-    //         if (then + wait < Date.now()) {
-    //             func();
-    //             then = Date.now();
-    //         }
-    //     }
-    // }
-    //
-    // window.addEventListener('scroll', throttleCalls(bgParallax, 1000/60));
-}
 
 
 // Controls functions
@@ -1591,17 +1572,14 @@ if(elemBgShow) {
 
 if(elemBgNext) {
     elemBgNext.addEventListener("click", function () {
-        animationId = (animationId + 1) % animations.length;
-        animation = new animations[animationId](canvas, colors, colorsAlt);
-        updateAnimation(animation);
+        updateAnimation(animations[animationId].next);
         play();
     });
 }
 
 if(elemBgReset) {
     elemBgReset.addEventListener("click", function () {
-        animation = new animations[animationId](canvas, colors, colorsAlt);
-        updateAnimation(animation);
+        updateAnimation(animationId);
         play();
     });
 }
@@ -1635,6 +1613,11 @@ if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
         closeSettings();
     });
 
+    // Animation selection option
+    elemBgAnimationSelect.addEventListener("input", function (e) {
+        updateAnimation(parseInt(e.target.value));
+    });
+
     // Events for dragging the background settings panel, TODO: make it work on mobile
     elemBgSettingsControls.addEventListener('mousedown', function (e) {
         if(e.target !== e.currentTarget) return;
@@ -1656,6 +1639,17 @@ if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
 }
 
 function updateSettings(settings){
+    // Update list of animations
+    let animationSelectOptions = "";
+    for(let i = 0; i < animations.length; ++i){
+        const name = animations[i].name;
+        if(animations[animationId].name === name)
+            animationSelectOptions += `<option selected value="${i}">${name}</option>`
+        else animationSelectOptions += `<option value="${i}">${name}</option>`
+    }
+    elemBgAnimationSelect.innerHTML = animationSelectOptions;
+
+    // Update list of animations options
     let elemBgSettingsList = document.getElementById("background-settings-controls-list");
     if(elemBgSettingsControls && elemBgSettingsList) {
         elemBgSettingsList.innerHTML = "";
@@ -3565,7 +3559,6 @@ class Sorting extends Animation {
                  cmpDuration = 0.25,
                  swapDuration = 0.25,
                  speed = 1,
-                 showNumbers = false,
                  showStats = false) {
         super(canvas, colors, colorsAlt, "Sorting algorithm visualization", "sorting.js");
         this.numElements = numElements;
@@ -3580,6 +3573,10 @@ class Sorting extends Animation {
         this.sortAlgoClasses = [SelectionSort, BubbleSort, InsertionSort,
             QuickSort, MergeSort, HeapSort, GnomeSort, ShakerSort];
         this.sortingAlgorithm = this.assignIfRandom(sortingAlgorithm, Utils.randomChoice(this.sortAlgoNames));
+
+        this.initialOrderTypes = ["random", "sorted", "reverse sorted", "evens then odds"];
+        this.initialOrder = "random";
+
         this.cmpTotal = 0;
         this.cmpCount = 0;
 
@@ -3587,19 +3584,28 @@ class Sorting extends Animation {
     }
 
     setup(){
+        const valMax = this.numElements;
         this.animQueue = new AnimationQueue();
 
-        // Randomize elements
+        // Initial order of values
+        let values = Array.from({length: valMax}, (x, i) => i + 1);
+
+        if(this.initialOrder === "random") Utils.randomShuffle(values);
+        else if(this.initialOrder === "reverse sorted") values = values.reverse();
+        else if(this.initialOrder === "evens then odds")
+            values = values.sort((a, b) => (a % 2 + a / (valMax + 1) - (b % 2 + b / (valMax + 1))));
+
+        // Create elements
         this.elements = [];
-        for(let i = 0; i < this.numElements; ++i){
-            const val = Utils.randomRange(0, 1),
-                  color = Utils.lerpColor(this.colors[0], this.colors[this.colors.length - 1], val);
+        for(let i = 0; i < valMax; ++i){
+            const val = values[i] / valMax,
+                  color = Utils.lerpColor(this.colors[0], this.colors[2], val);
             this.elements.push({val: val, pos: i, color: color, z: 0})
         }
 
         // Sort
-        let sortAlgoCls = this.sortAlgoClasses[this.sortAlgoNames.indexOf(this.sortingAlgorithm)];
-        let sortAlgo = new sortAlgoCls(this.elements);
+        let sortAlgoCls = this.sortAlgoClasses[this.sortAlgoNames.indexOf(this.sortingAlgorithm)],
+            sortAlgo = new sortAlgoCls(this.elements);
         this.moves = sortAlgo.getMoves();
         this.name = sortAlgo.getName() + " algorithm visualization";
 
@@ -3675,7 +3681,7 @@ class Sorting extends Animation {
     }
 
     draw() {
-        Utils.clear(this.ctx, "#FFFFFF");
+        this.clear();
 
         const elementMaxHeight = this.ctx.canvas.height,
               elementWidth = this.ctx.canvas.width / this.numElements;
@@ -3701,10 +3707,9 @@ class Sorting extends Animation {
         }
     }
 
-
-
     getSettings() {
-        return [{prop: "sortingAlgorithm", type: "select", values: this.sortAlgoNames, toCall: "setup"},
+        return [{prop: "initialOrder", type: "select", values: this.initialOrderTypes, toCall: "setup"},
+                {prop: "sortingAlgorithm", type: "select", values: this.sortAlgoNames, toCall: "setup"},
                 {prop: "numElements", type: "int", min: 8, max: 256, toCall: "setup"},
                 {prop: "speed", type: "float", step: 0.25, min: 0.5, max: 8},
                 {prop: "showStats", type: "bool"}];
@@ -3914,7 +3919,6 @@ module.exports = Spirograph
 'use strict';
 
 module.exports = {
-
     // Randomization helpers
     randomRange(min, max) {
         return Math.random() * (max - min) + min;

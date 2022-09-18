@@ -287,7 +287,6 @@ class Sorting extends Animation {
                  cmpDuration = 0.25,
                  swapDuration = 0.25,
                  speed = 1,
-                 showNumbers = false,
                  showStats = false) {
         super(canvas, colors, colorsAlt, "Sorting algorithm visualization", "sorting.js");
         this.numElements = numElements;
@@ -302,6 +301,10 @@ class Sorting extends Animation {
         this.sortAlgoClasses = [SelectionSort, BubbleSort, InsertionSort,
             QuickSort, MergeSort, HeapSort, GnomeSort, ShakerSort];
         this.sortingAlgorithm = this.assignIfRandom(sortingAlgorithm, Utils.randomChoice(this.sortAlgoNames));
+
+        this.initialOrderTypes = ["random", "sorted", "reverse sorted", "evens then odds"];
+        this.initialOrder = "random";
+
         this.cmpTotal = 0;
         this.cmpCount = 0;
 
@@ -309,19 +312,28 @@ class Sorting extends Animation {
     }
 
     setup(){
+        const valMax = this.numElements;
         this.animQueue = new AnimationQueue();
 
-        // Randomize elements
+        // Initial order of values
+        let values = Array.from({length: valMax}, (x, i) => i + 1);
+
+        if(this.initialOrder === "random") Utils.randomShuffle(values);
+        else if(this.initialOrder === "reverse sorted") values = values.reverse();
+        else if(this.initialOrder === "evens then odds")
+            values = values.sort((a, b) => (a % 2 + a / (valMax + 1) - (b % 2 + b / (valMax + 1))));
+
+        // Create elements
         this.elements = [];
-        for(let i = 0; i < this.numElements; ++i){
-            const val = Utils.randomRange(0, 1),
-                  color = Utils.lerpColor(this.colors[0], this.colors[this.colors.length - 1], val);
+        for(let i = 0; i < valMax; ++i){
+            const val = values[i] / valMax,
+                  color = Utils.lerpColor(this.colors[0], this.colors[2], val);
             this.elements.push({val: val, pos: i, color: color, z: 0})
         }
 
         // Sort
-        let sortAlgoCls = this.sortAlgoClasses[this.sortAlgoNames.indexOf(this.sortingAlgorithm)];
-        let sortAlgo = new sortAlgoCls(this.elements);
+        let sortAlgoCls = this.sortAlgoClasses[this.sortAlgoNames.indexOf(this.sortingAlgorithm)],
+            sortAlgo = new sortAlgoCls(this.elements);
         this.moves = sortAlgo.getMoves();
         this.name = sortAlgo.getName() + " algorithm visualization";
 
@@ -397,7 +409,7 @@ class Sorting extends Animation {
     }
 
     draw() {
-        Utils.clear(this.ctx, "#FFFFFF");
+        this.clear();
 
         const elementMaxHeight = this.ctx.canvas.height,
               elementWidth = this.ctx.canvas.width / this.numElements;
@@ -423,10 +435,9 @@ class Sorting extends Animation {
         }
     }
 
-
-
     getSettings() {
-        return [{prop: "sortingAlgorithm", type: "select", values: this.sortAlgoNames, toCall: "setup"},
+        return [{prop: "initialOrder", type: "select", values: this.initialOrderTypes, toCall: "setup"},
+                {prop: "sortingAlgorithm", type: "select", values: this.sortAlgoNames, toCall: "setup"},
                 {prop: "numElements", type: "int", min: 8, max: 256, toCall: "setup"},
                 {prop: "speed", type: "float", step: 0.25, min: 0.5, max: 8},
                 {prop: "showStats", type: "bool"}];

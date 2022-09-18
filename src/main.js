@@ -92,38 +92,45 @@ const elemBgSettings = document.getElementById("background-settings");
 const elemBgSettingsControls = document.getElementById("background-settings-controls");
 const elemBgSettingsClose = document.getElementById("background-settings-close");
 const elemBgStats = document.getElementById("background-stats");
+const elemBgAnimationSelect = document.getElementById("background-settings-animation-select");
 
 
 // Create animation and init animation loop
 // ---------------------------------------------------------------------------------------------------------------------
 
 let animations = [
-    ThreeNPlusOne,
-    Cardioids,
-    CircularWaves,
-    GameOfLife,
-    GameOfLifeIsometric,
-    GradientDescent,
-    Matrix,
-    Network,
-    NeuralNetwork,
-    ParticlesAndAttractors,
-    ParticlesVortex,
-    ParticlesWaves,
-    PerlinNoiseParticles,
-    ShortestPath,
-    Sorting,
-    SpinningShapes,
-    Spirograph,
-    SineWaves
+    {class: ThreeNPlusOne, name: "3N+1"},
+    {class: Cardioids, name: "cardioids"},
+    {class: CircularWaves, name: "circular waves"},
+    {class: GameOfLife, name: "game of live"},
+    {class: GameOfLifeIsometric, name: "isometric game of life"},
+    {class: GradientDescent, name: "gradient descent"},
+    {class: Matrix, name: "matrix rain"},
+    {class: Network, name: "network"},
+    {class: NeuralNetwork, name: "neural network"},
+    {class: ParticlesAndAttractors, name: "particles and attractors"},
+    {class: ParticlesVortex, name: "particles vortex"},
+    {class: ParticlesWaves, name: "particles waves"},
+    {class: PerlinNoiseParticles, name: "perlin noise"},
+    {class: ShortestPath, name: "shortest"},
+    {class: Sorting, name: "sorting"},
+    {class: SpinningShapes, name: "spinning shapes"},
+    {class: Spirograph, name: "spirograph"},
+    {class: SineWaves, name: "sine waves"}
 ];
 
-Utils.randomShuffle(animations);
+const animationCount = animations.length;
+let animationId = Utils.randomInt(0, animationCount),
+    animation = null,
+    order = Array.from({length: animationCount}, (x, i) => i);
 
-let animationId = 0;
-let animation = new animations[animationId](canvas, colors, colorsAlt);
+Utils.randomShuffle(order);
+for(let i = 0; i < animationCount; ++i) animations[i].next = order[i];
 
-function updateAnimation(animation) {
+
+function updateAnimation(newAnimationId) {
+    animationId = newAnimationId;
+    animation = new animations[animationId].class(canvas, colors, colorsAlt);
     let fps = animation.getFPS();
     framesInterval = 1000 / fps;
     then = Date.now();
@@ -131,13 +138,6 @@ function updateAnimation(animation) {
     elemBgCode.href = animation.getCodeUrl();
     updateSettings(animation.getSettings());
     animation.resize();
-}
-
-updateAnimation(animation);
-
-function bgParallax() {
-    let scroll = window.pageYOffset / (container.offsetHeight - window.innerHeight) * (container.offsetHeight - canvas.height);
-    canvas.style.transform = 'translateY(' + scroll + 'px)';
 }
 
 function render() {
@@ -159,7 +159,6 @@ function render() {
         canvas.width = width;
         canvas.height = height;
         animation.resize();
-        bgParallax();
         needResize = false;
     }
     lastHeight = height;
@@ -181,27 +180,9 @@ function render() {
      */
 }
 
+updateAnimation(animationId);
 render();
 
-
-// Parallax effect
-// ---------------------------------------------------------------------------------------------------------------------
-
-if(parallaxRatio !== 1) {
-    window.addEventListener('scroll', bgParallax);
-
-    // function throttleCalls(func, wait) {
-    //     let then = Date.now();
-    //     return function() {
-    //         if (then + wait < Date.now()) {
-    //             func();
-    //             then = Date.now();
-    //         }
-    //     }
-    // }
-    //
-    // window.addEventListener('scroll', throttleCalls(bgParallax, 1000/60));
-}
 
 
 // Controls functions
@@ -247,17 +228,14 @@ if(elemBgShow) {
 
 if(elemBgNext) {
     elemBgNext.addEventListener("click", function () {
-        animationId = (animationId + 1) % animations.length;
-        animation = new animations[animationId](canvas, colors, colorsAlt);
-        updateAnimation(animation);
+        updateAnimation(animations[animationId].next);
         play();
     });
 }
 
 if(elemBgReset) {
     elemBgReset.addEventListener("click", function () {
-        animation = new animations[animationId](canvas, colors, colorsAlt);
-        updateAnimation(animation);
+        updateAnimation(animationId);
         play();
     });
 }
@@ -291,6 +269,11 @@ if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
         closeSettings();
     });
 
+    // Animation selection option
+    elemBgAnimationSelect.addEventListener("input", function (e) {
+        updateAnimation(parseInt(e.target.value));
+    });
+
     // Events for dragging the background settings panel, TODO: make it work on mobile
     elemBgSettingsControls.addEventListener('mousedown', function (e) {
         if(e.target !== e.currentTarget) return;
@@ -312,6 +295,17 @@ if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
 }
 
 function updateSettings(settings){
+    // Update list of animations
+    let animationSelectOptions = "";
+    for(let i = 0; i < animations.length; ++i){
+        const name = animations[i].name;
+        if(animations[animationId].name === name)
+            animationSelectOptions += `<option selected value="${i}">${name}</option>`
+        else animationSelectOptions += `<option value="${i}">${name}</option>`
+    }
+    elemBgAnimationSelect.innerHTML = animationSelectOptions;
+
+    // Update list of animations options
     let elemBgSettingsList = document.getElementById("background-settings-controls-list");
     if(elemBgSettingsControls && elemBgSettingsList) {
         elemBgSettingsList.innerHTML = "";

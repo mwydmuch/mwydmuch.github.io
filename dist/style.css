@@ -404,36 +404,30 @@ ul {
   cursor: move;
   transition: opacity 0.5s;
 }
-#footer #background-settings-controls #background-stats {
-  cursor: default;
-  text-align: left;
-  border-top: 1px solid #FFFFFF;
-  margin-top: 0.1rem;
-}
-#footer #background-settings-controls #background-settings-controls-list {
+#footer #background-settings-controls .settings-section {
   cursor: default;
   text-align: left;
   border-top: 1px solid #FFFFFF;
   margin-top: 0.1rem;
   white-space: nowrap;
 }
-#footer #background-settings-controls #background-settings-controls-list .setting-name {
+#footer #background-settings-controls .settings-section .setting-name {
   width: 8rem;
   display: inline-block;
 }
-#footer #background-settings-controls #background-settings-controls-list .setting-input {
+#footer #background-settings-controls .settings-section .setting-input {
   width: 5.25rem;
   height: 0.5rem;
   margin: 0 0.25rem;
   display: inline-block;
 }
-#footer #background-settings-controls #background-settings-controls-list .setting-select {
+#footer #background-settings-controls .settings-section .setting-select {
   width: 8rem;
   height: 1rem;
   margin: 0 0.25rem;
   display: inline-block;
 }
-#footer #background-settings-controls #background-settings-controls-list .setting-value {
+#footer #background-settings-controls .settings-section .setting-value {
   text-align: center;
   width: 2.25rem;
   display: inline-block;
