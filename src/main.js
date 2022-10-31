@@ -30,13 +30,13 @@ const Spirograph = require("./spirograph");
 
 const canvas = document.getElementById("background");
 const container = document.getElementById("container");
-var lastWidth = 0;
-var lastHeight = 0;
-var needResize = false;
-var framesInterval = 0;
-var then = 0;
-var paused = false;
-const parallaxRatio = 1.0;
+let lastWidth = 0,
+    lastHeight = 0,
+    needResize = false,
+    framesInterval = 0,
+    then = 0,
+    paused = false,
+    refresh = false;
 
 // const colors = [ // Green palette
 //     "#349BA9",
@@ -99,7 +99,7 @@ const elemBgAnimationSelect = document.getElementById("background-settings-anima
 // ---------------------------------------------------------------------------------------------------------------------
 
 let animations = [
-    {class: ThreeNPlusOne, name: "3N+1"},
+    {class: ThreeNPlusOne, name: "3n+1"},
     {class: Cardioids, name: "cardioids"},
     {class: CircularWaves, name: "circular waves"},
     {class: GameOfLife, name: "game of live"},
@@ -125,8 +125,7 @@ let animationId = Utils.randomInt(0, animationCount),
     order = Array.from({length: animationCount}, (x, i) => i);
 
 Utils.randomShuffle(order);
-for(let i = 0; i < animationCount; ++i) animations[i].next = order[i];
-
+for(let i = 0; i < animationCount; ++i) animations[order[i]].next = order[(i + 1) % animationCount];
 
 function updateAnimation(newAnimationId) {
     animationId = newAnimationId;
@@ -134,10 +133,8 @@ function updateAnimation(newAnimationId) {
     let fps = animation.getFPS();
     framesInterval = 1000 / fps;
     then = Date.now();
-    elemBgName.innerHTML = animation.getName();
-    elemBgCode.href = animation.getCodeUrl();
-    updateSettings(animation.getSettings());
     animation.resize();
+    updateUI();
 }
 
 function render() {
@@ -152,8 +149,8 @@ function render() {
     then = now;
 
     // Detect container size change
-    const width  = Math.max(parallaxRatio * container.offsetWidth, window.innerWidth),
-          height = Math.max(parallaxRatio * container.offsetHeight, window.innerHeight);
+    const width  = Math.max(container.offsetWidth, window.innerWidth),
+          height = Math.max(container.offsetHeight, window.innerHeight);
     if(width !== lastWidth || height !== lastHeight) needResize = true;
     else if (needResize){
         canvas.width = width;
@@ -167,22 +164,30 @@ function render() {
     animation.update(timeElapsed);
     animation.draw();
 
-    if(elemBgStats)
+    if(elemBgStats) {
         elemBgStats.innerHTML = `frame time: ${timeElapsed}</br>
                                 fps: ${Math.round(1000 / timeElapsed)}</br>
                                 canvas size: ${width} x ${height}`;
-
-    // Limit framerate (alt. way)
-    /*
-    setTimeout(() => {
-        requestAnimationFrame(render);
-    }, framesInterval);
-     */
+    }
 }
 
 updateAnimation(animationId);
 render();
 
+
+// Support for mouse click (WIP)
+// function getCursorPosition(canvas, event) {
+//     const rect = canvas.getBoundingClientRect(),
+//           x = event.clientX - rect.left,
+//           y = event.clientY - rect.top;
+//     return {x: x, y: y};
+// }
+//
+// canvas.addEventListener('click', function(e) {
+//     const cords = getCursorPosition(canvas, e);
+//     console.log(`click!: ${cords.x}, ${cords.y}`)
+//     animation.mouseAction(getCursorPosition(canvas, e));
+// });
 
 
 // Controls functions
@@ -294,7 +299,11 @@ if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
     });
 }
 
-function updateSettings(settings){
+function updateUI(){
+    // Update basic controls
+    if(elemBgName) elemBgName.innerHTML = animation.getName();
+    if(elemBgCode) elemBgCode.href = animation.getCodeUrl();
+
     // Update list of animations
     let animationSelectOptions = "";
     for(let i = 0; i < animations.length; ++i){
@@ -306,6 +315,7 @@ function updateSettings(settings){
     elemBgAnimationSelect.innerHTML = animationSelectOptions;
 
     // Update list of animations options
+    const settings = animation.getSettings();
     let elemBgSettingsList = document.getElementById("background-settings-controls-list");
     if(elemBgSettingsControls && elemBgSettingsList) {
         elemBgSettingsList.innerHTML = "";

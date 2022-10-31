@@ -67,6 +67,10 @@ class Animation {
     getSettings() {
         return [] // By default there is no settings
     }
+
+    mouseAction(cords) {
+        // By default do nothing
+    }
 }
 
 module.exports = Animation;

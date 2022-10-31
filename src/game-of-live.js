@@ -57,8 +57,8 @@ class GameOfLife extends Animation {
                       + this.isAlive(x, y + 1)
                       + this.isAlive(x + 1, y + 1);
                 const cellIdx = this.getIdx(x, y);
-                if (numAlive == 2 && this.grid[cellIdx] >= 1) this.gridNextState[cellIdx] = this.grid[cellIdx] + 1;
-                else if (numAlive == 3) this.gridNextState[cellIdx] = Math.max(1, this.grid[cellIdx] + 1);
+                if (numAlive === 2 && this.grid[cellIdx] >= 1) this.gridNextState[cellIdx] = this.grid[cellIdx] + 1;
+                else if (numAlive === 3) this.gridNextState[cellIdx] = Math.max(1, this.grid[cellIdx] + 1);
                 else this.gridNextState[cellIdx] = Math.min(0, this.grid[cellIdx] - 1);
             }
         }
@@ -116,7 +116,7 @@ class GameOfLife extends Animation {
 
         for (let y = 0; y < newGridHeight; y++) {
             for (let x = 0; x < newGridWidth; x++) {
-                let cellCord = x + y * newGridWidth;
+                const cellCord = x + y * newGridWidth;
                 if(x < this.gridWidth && y < this.gridHeight) newGrid[cellCord] = this.grid[this.getIdx(x, y)];
                 else newGrid[cellCord] = (Math.random() < this.spawnProb) ? 1 : -99999;
             }
@@ -138,6 +138,14 @@ class GameOfLife extends Animation {
         return [{prop: "cellSize", type: "int", min: 4, max: 32, toCall: "resize"},
                 {prop: "cellShape", type: "select", values: ["square", "circle"]},
                 {prop: "deadCellsFadingSteps", type: "int", min: 0, max: 8}];
+    }
+
+    mouseAction(cords) {
+        // const x = Math.floor(cords.x / this.cellSize),
+        //       y = Math.floor(cords.y / this.cellSize),
+        //       cellCord = x + y * this.gridWidth;
+        // this.grid[cellCord] = 1;
+        // this.draw();
     }
 }
 
