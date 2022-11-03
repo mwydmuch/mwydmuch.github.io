@@ -163,6 +163,20 @@ ul ul {
 .reverse-openai-blue a:active {
   color: #FFFFFF;
 }
+.reverse-farama-green {
+  color: #FFFFFF;
+  padding: 0.05rem 0.25rem;
+  margin: 0 0.05rem;
+  white-space: nowrap;
+  background-image: linear-gradient(135deg, #05505B, #066573);
+}
+.reverse-farama-green a,
+.reverse-farama-green a:link,
+.reverse-farama-green a:visited,
+.reverse-farama-green a:hover,
+.reverse-farama-green a:active {
+  color: #FFFFFF;
+}
 .accordion-body {
   margin-left: 0.4rem;
 }
