@@ -8,13 +8,14 @@
  */
 
 const Animation = require("./animation");
+const Utils = require("./utils");
 
 class ThreeNPlusOne extends Animation {
     constructor(canvas, colors, colorsAlt,
                 length = 30,
                 evenAngle = 8,
                 oddAngle = -20,
-                drawNumbers = false,
+                drawNumbers = true,
                 scale = 1) {
         super(canvas, colors, colorsAlt, "3n + 1 (Collatz Conjecture) visualization", "3n+1.js");
         this.length = length;
@@ -29,15 +30,18 @@ class ThreeNPlusOne extends Animation {
     update(elapsed){
         let n = this.seqences.length + 1;
         let sequence = [n];
-        while(n !== 1){
-            if(n % 2) n = 3 * n + 1;
+        while (n !== 1) {
+            if (n % 2) n = 3 * n + 1;
             else n /= 2;
             sequence.push(n);
+            if(n < this.seqences.length) this.seqences[n - 1] = null;
         }
         this.seqences.push(sequence);
     }
 
     drawSequence(sequence) {
+        if(sequence === null) return;
+
         let x = 0, y = 0,
             angle = 270 * Math.PI / 180;
         const color = this.colors[this.frame % this.colors.length];
@@ -47,11 +51,11 @@ class ThreeNPlusOne extends Animation {
         this.ctx.font = '12px sans-serif';
         this.ctx.fillStyle = color;
 
+        this.ctx.beginPath();
+        this.ctx.moveTo(x, y);
         for(let i = sequence.length - 2; i >= 0; --i){
-            this.ctx.beginPath();
-            this.ctx.moveTo(x, y);
-
-            if(sequence[i] % 2) angle += this.oddAngleRad;
+            const val = sequence[i];
+            if(val % 2) angle += this.oddAngleRad;
             else angle += this.evenAngleRad;
 
             if(this.drawNumbers){
@@ -59,7 +63,7 @@ class ThreeNPlusOne extends Animation {
                       cos = Math.sin(angle);
                 x += this.length / 2 * sin;
                 y += this.length / 2 * cos;
-                this.ctx.fillText(sequence[i], x + 10, y);
+                this.ctx.fillText(val, x + 10, y);
                 x += this.length / 2 * sin;
                 y += this.length / 2 * cos;
             } else {
@@ -67,8 +71,8 @@ class ThreeNPlusOne extends Animation {
                 y += this.length * Math.sin(angle);
             }
             this.ctx.lineTo(x, y);
-            this.ctx.stroke();
         }
+        this.ctx.stroke();
     }
 
     draw() {
