@@ -22,7 +22,7 @@ const EMPTY = 0,
 class ShortestPath extends Animation {
     constructor (canvas, colors, colorsAlt,
                  cellSize = 12,
-                 searchAlgorithm = "random",
+                 searchAlgorithm = "A*", //"random",
                  speed = 1,
                  showStats = false) {
         super(canvas, colors, colorsAlt, "finding the shortest path", "shortest-path.js");

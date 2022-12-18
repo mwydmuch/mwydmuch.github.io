@@ -117,7 +117,8 @@ class PerlinNoiseParticles extends Animation {
     }
 
     getSettings() {
-        return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.002, toCall: "reset"},
+        return [{prop: "noiseScale", type: "float", step: 0.001, min: 0.001, max: 0.01, toCall: "reset"},
+                {prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.002, toCall: "reset"},
                 {prop: "particlesSpeed", type: "float", min: 0.25, max: 32},
                 {prop: "fadingSpeed", type: "float", step: 0.0001, min: 0, max: 0.01}];
     }

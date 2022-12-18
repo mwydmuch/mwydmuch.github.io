@@ -8,7 +8,7 @@
  * Coded with no external dependencies, using only canvas API.
  */
 
-const GameOfLife = require("./game-of-live");
+const GameOfLife = require("./game-of-life");
 const Utils = require("./utils");
 
 class GameOfLifeIsometric extends GameOfLife {
@@ -20,7 +20,7 @@ class GameOfLifeIsometric extends GameOfLife {
                  drawCellsGrid = true) {
         super(canvas, colors, colorsAlt, cellSize, cellBasePadding, spawnProb);
         this.name = "isometric Conway's game of life";
-        this.file = "game-of-live-isometric.js";
+        this.file = "game-of-life-isometric.js";
         this.fadeDeadCells = fadeDeadCells;
         this.drawCellsGrid = drawCellsGrid;
 

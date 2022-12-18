@@ -593,7 +593,7 @@ var Delaunay;
  * Coded with no external dependencies, using only canvas API.
  */
 
-const GameOfLife = require("./game-of-live");
+const GameOfLife = require("./game-of-life");
 const Utils = require("./utils");
 
 class GameOfLifeIsometric extends GameOfLife {
@@ -605,7 +605,7 @@ class GameOfLifeIsometric extends GameOfLife {
                  drawCellsGrid = true) {
         super(canvas, colors, colorsAlt, cellSize, cellBasePadding, spawnProb);
         this.name = "isometric Conway's game of life";
-        this.file = "game-of-live-isometric.js";
+        this.file = "game-of-life-isometric.js";
         this.fadeDeadCells = fadeDeadCells;
         this.drawCellsGrid = drawCellsGrid;
 
@@ -754,7 +754,7 @@ class GameOfLifeIsometric extends GameOfLife {
 
 module.exports = GameOfLifeIsometric;
 
-},{"./game-of-live":7,"./utils":24}],7:[function(require,module,exports){
+},{"./game-of-life":7,"./utils":24}],7:[function(require,module,exports){
 'use strict';
 
 /*
@@ -775,7 +775,7 @@ class GameOfLife extends Animation {
                  spawnProb= 0.5,
                  cellShape = "square",
                  deadCellsFadingSteps = 5) {
-        super(canvas, colors, colorsAlt, "Conway's game of life", "game-of-live.js");
+        super(canvas, colors, colorsAlt, "Conway's game of life", "game-of-life.js");
         this.cellSize = cellSize;
         this.cellBasePadding = cellPadding;
         this.spawnProb = spawnProb;
@@ -1368,8 +1368,8 @@ const Utils = require("./utils");
 const ThreeNPlusOne = require("./3n+1");
 const Cardioids = require("./cardioids");
 const CircularWaves = require("./circular-waves");
-const GameOfLife = require("./game-of-live");
-const GameOfLifeIsometric = require("./game-of-live-isometric");
+const GameOfLife = require("./game-of-life");
+const GameOfLifeIsometric = require("./game-of-life-isometric");
 const GradientDescent = require("./gradient-descent");
 const Matrix = require("./matrix");
 const Network = require("./network");
@@ -1755,7 +1755,7 @@ function updateUI(){
     }
 }
 
-},{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./game-of-live":7,"./game-of-live-isometric":6,"./gradient-descent":8,"./matrix":10,"./network":11,"./neural-network":12,"./particles-and-attractors":14,"./particles-vortex":15,"./particles-waves":16,"./perlin-noise-particles":17,"./shortest-path":19,"./sine-waves":20,"./sorting":21,"./spinning-shapes":22,"./spirograph":23,"./utils":24}],10:[function(require,module,exports){
+},{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./game-of-life":7,"./game-of-life-isometric":6,"./gradient-descent":8,"./matrix":10,"./network":11,"./neural-network":12,"./particles-and-attractors":14,"./particles-vortex":15,"./particles-waves":16,"./perlin-noise-particles":17,"./shortest-path":19,"./sine-waves":20,"./sorting":21,"./spinning-shapes":22,"./spirograph":23,"./utils":24}],10:[function(require,module,exports){
 'use strict';
 
 /*
@@ -2747,7 +2747,7 @@ class ParticlesStorm extends Animation {
 
     getSettings() {
         return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.01, toCall: "resize"},
-                {prop: "noiseScale", type: "float", step: 0.0001, min: 0, max: 0.01},
+                {prop: "noiseScale", type: "float", step: 0.001, min: 0.001, max: 0.01},
                 {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.1}];
     }
 }
@@ -2874,7 +2874,8 @@ class PerlinNoiseParticles extends Animation {
     }
 
     getSettings() {
-        return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.002, toCall: "reset"},
+        return [{prop: "noiseScale", type: "float", step: 0.001, min: 0.001, max: 0.01, toCall: "reset"},
+                {prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.002, toCall: "reset"},
                 {prop: "particlesSpeed", type: "float", min: 0.25, max: 32},
                 {prop: "fadingSpeed", type: "float", step: 0.0001, min: 0, max: 0.01}];
     }

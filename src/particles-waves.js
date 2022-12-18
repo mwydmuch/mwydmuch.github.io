@@ -76,7 +76,7 @@ class ParticlesStorm extends Animation {
 
     getSettings() {
         return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.01, toCall: "resize"},
-                {prop: "noiseScale", type: "float", step: 0.0001, min: 0, max: 0.01},
+                {prop: "noiseScale", type: "float", step: 0.001, min: 0.001, max: 0.01},
                 {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.1}];
     }
 }

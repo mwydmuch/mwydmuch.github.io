@@ -18,7 +18,7 @@ class GameOfLife extends Animation {
                  spawnProb= 0.5,
                  cellShape = "square",
                  deadCellsFadingSteps = 5) {
-        super(canvas, colors, colorsAlt, "Conway's game of life", "game-of-live.js");
+        super(canvas, colors, colorsAlt, "Conway's game of life", "game-of-life.js");
         this.cellSize = cellSize;
         this.cellBasePadding = cellPadding;
         this.spawnProb = spawnProb;
