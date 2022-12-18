@@ -16,7 +16,7 @@ class ThreeNPlusOne extends Animation {
                 length = 30,
                 evenAngle = 8,
                 oddAngle = -20,
-                drawNumbers = true,
+                drawNumbers = false,
                 scale = 1) {
         super(canvas, colors, colorsAlt, "3n + 1 (Collatz Conjecture) visualization", "3n+1.js");
         this.length = length;
@@ -1468,7 +1468,7 @@ let animations = [
     {class: GradientDescent, name: "gradient descent"},
     {class: Matrix, name: "matrix rain"},
     {class: Network, name: "network"},
-    {class: NeuralNetwork, name: "neural network"},
+    //{class: NeuralNetwork, name: "neural network"},
     {class: ParticlesAndAttractors, name: "particles and attractors"},
     {class: ParticlesVortex, name: "particles vortex"},
     {class: ParticlesWaves, name: "particles waves"},

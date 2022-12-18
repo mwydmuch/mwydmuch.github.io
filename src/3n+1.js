@@ -15,7 +15,7 @@ class ThreeNPlusOne extends Animation {
                 length = 30,
                 evenAngle = 8,
                 oddAngle = -20,
-                drawNumbers = true,
+                drawNumbers = false,
                 scale = 1) {
         super(canvas, colors, colorsAlt, "3n + 1 (Collatz Conjecture) visualization", "3n+1.js");
         this.length = length;

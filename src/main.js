@@ -108,7 +108,7 @@ let animations = [
     {class: GradientDescent, name: "gradient descent"},
     {class: Matrix, name: "matrix rain"},
     {class: Network, name: "network"},
-    {class: NeuralNetwork, name: "neural network"},
+    //{class: NeuralNetwork, name: "neural network"},
     {class: ParticlesAndAttractors, name: "particles and attractors"},
     {class: ParticlesVortex, name: "particles vortex"},
     {class: ParticlesWaves, name: "particles waves"},
