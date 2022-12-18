@@ -106,7 +106,7 @@ class ThreeNPlusOne extends Animation {
 
 module.exports = ThreeNPlusOne;
 
-},{"./animation":2,"./utils":24}],2:[function(require,module,exports){
+},{"./animation":2,"./utils":25}],2:[function(require,module,exports){
 'use strict';
 
 /*
@@ -184,7 +184,7 @@ class Animation {
 
 module.exports = Animation;
 
-},{"./utils":24}],3:[function(require,module,exports){
+},{"./utils":25}],3:[function(require,module,exports){
 'use strict';
 
 /*
@@ -251,7 +251,7 @@ class Cardioids extends Animation {
 
 module.exports = Cardioids
 
-},{"./animation":2,"./utils":24}],4:[function(require,module,exports){
+},{"./animation":2,"./utils":25}],4:[function(require,module,exports){
 'use strict';
 
 /*
@@ -334,7 +334,7 @@ class CircularWaves extends Animation {
 
 module.exports = CircularWaves;
 
-},{"./animation":2,"./noise":13,"./utils":24}],5:[function(require,module,exports){
+},{"./animation":2,"./noise":13,"./utils":25}],5:[function(require,module,exports){
 'use strict';
 
 /*
@@ -754,7 +754,7 @@ class GameOfLifeIsometric extends GameOfLife {
 
 module.exports = GameOfLifeIsometric;
 
-},{"./game-of-life":7,"./utils":24}],7:[function(require,module,exports){
+},{"./game-of-life":7,"./utils":25}],7:[function(require,module,exports){
 'use strict';
 
 /*
@@ -1357,7 +1357,7 @@ class GradientDescent extends Animation {
 
 module.exports = GradientDescent;
 
-},{"./animation":2,"./utils":24}],9:[function(require,module,exports){
+},{"./animation":2,"./utils":25}],9:[function(require,module,exports){
 'use strict';
 
 // Require
@@ -1378,6 +1378,7 @@ const ParticlesAndAttractors = require("./particles-and-attractors");
 const ParticlesVortex = require("./particles-vortex");
 const ParticlesWaves = require("./particles-waves");
 const PerlinNoiseParticles = require("./perlin-noise-particles");
+const Quadtree = require("./quadtree");
 const ShortestPath = require("./shortest-path");
 const SineWaves = require("./sine-waves");
 const Sorting = require("./sorting");
@@ -1472,6 +1473,7 @@ let animations = [
     {class: ParticlesVortex, name: "particles vortex"},
     {class: ParticlesWaves, name: "particles waves"},
     {class: PerlinNoiseParticles, name: "perlin noise"},
+    {class: Quadtree, name: "quadtree"},
     {class: ShortestPath, name: "shortest path"},
     {class: Sorting, name: "sorting"},
     {class: SpinningShapes, name: "spinning shapes"},
@@ -1755,7 +1757,7 @@ function updateUI(){
     }
 }
 
-},{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./game-of-life":7,"./game-of-life-isometric":6,"./gradient-descent":8,"./matrix":10,"./network":11,"./neural-network":12,"./particles-and-attractors":14,"./particles-vortex":15,"./particles-waves":16,"./perlin-noise-particles":17,"./shortest-path":19,"./sine-waves":20,"./sorting":21,"./spinning-shapes":22,"./spirograph":23,"./utils":24}],10:[function(require,module,exports){
+},{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./game-of-life":7,"./game-of-life-isometric":6,"./gradient-descent":8,"./matrix":10,"./network":11,"./neural-network":12,"./particles-and-attractors":14,"./particles-vortex":15,"./particles-waves":16,"./perlin-noise-particles":17,"./quadtree":18,"./shortest-path":20,"./sine-waves":21,"./sorting":22,"./spinning-shapes":23,"./spirograph":24,"./utils":25}],10:[function(require,module,exports){
 'use strict';
 
 /*
@@ -1877,7 +1879,7 @@ class Matrix extends Animation {
 
 module.exports = Matrix;
 
-},{"./animation":2,"./utils":24}],11:[function(require,module,exports){
+},{"./animation":2,"./utils":25}],11:[function(require,module,exports){
 'use strict';
 
 /*
@@ -2022,7 +2024,7 @@ class Network extends Animation {
 
 module.exports = Network;
 
-},{"./animation":2,"./delaunay":5,"./utils":24}],12:[function(require,module,exports){
+},{"./animation":2,"./delaunay":5,"./utils":25}],12:[function(require,module,exports){
 'use strict';
 
 /*
@@ -2149,7 +2151,7 @@ class NeuralNetwork extends Animation {
 
 module.exports = NeuralNetwork;
 
-},{"./animation":2,"./utils":24}],13:[function(require,module,exports){
+},{"./animation":2,"./utils":25}],13:[function(require,module,exports){
 'use strict';
 
 /*
@@ -2578,7 +2580,7 @@ class ParticlesAndAttractors extends Animation {
 
 module.exports = ParticlesAndAttractors;
 
-},{"./animation":2,"./utils":24}],15:[function(require,module,exports){
+},{"./animation":2,"./utils":25}],15:[function(require,module,exports){
 'use strict';
 
 /*
@@ -2668,7 +2670,7 @@ class ParticlesVortex extends Animation {
 
 module.exports = ParticlesVortex;
 
-},{"./animation":2,"./noise":13,"./utils":24}],16:[function(require,module,exports){
+},{"./animation":2,"./noise":13,"./utils":25}],16:[function(require,module,exports){
 'use strict';
 
 /*
@@ -2754,7 +2756,7 @@ class ParticlesStorm extends Animation {
 
 module.exports = ParticlesStorm;
 
-},{"./animation":2,"./noise":13,"./utils":24}],17:[function(require,module,exports){
+},{"./animation":2,"./noise":13,"./utils":25}],17:[function(require,module,exports){
 'use strict';
 
 /*
@@ -2883,7 +2885,112 @@ class PerlinNoiseParticles extends Animation {
 
 module.exports = PerlinNoiseParticles;
 
-},{"./animation":2,"./noise":13,"./utils":24}],18:[function(require,module,exports){
+},{"./animation":2,"./noise":13,"./utils":25}],18:[function(require,module,exports){
+'use strict';
+
+/*
+ * Visualization of quadtree algorithm.
+ * See: https://en.wikipedia.org/wiki/Quadtree
+ *
+ * Coded with no external dependencies, using only canvas API.
+ */
+
+const Animation = require("./animation");
+const Utils = require("./utils");
+const Noise = require("./noise");
+
+class Quadtree extends Animation {
+    constructor(canvas, colors, colorsAlt,
+                maxPointsInNode = 1,
+                pointsDensity = 9,
+                drawPoints = false,
+                noiseScale = 0.001) {
+        super(canvas, colors, colorsAlt, "Quadtree visualization", "quadtree.js");
+        this.pointsDensity = pointsDensity; // 
+
+        this.noiseScale = noiseScale;
+        this.noise = Noise.noise;
+        this.noise.seed(Utils.randomRange(0, 1));
+        
+        this.width = 0;
+        this.height = 0;
+
+        this.drawPoints = drawPoints;
+        this.maxPointsInNode = maxPointsInNode;
+    }
+
+    generatePoints(){
+        let points = [];
+        const maxRectSize = Math.max(this.width, this.height),
+              spacing = maxRectSize / Math.pow(2, this.pointsDensity),
+              spacingHalf = spacing / 2,
+              noiseThr = spacing / maxRectSize;
+        for(let x = -spacing / 2; x < this.width; x += spacing){
+            for (let y = -spacing / 2; y < this.height; y += spacing){
+                const noiseVal = this.noise.perlin3(x * this.noiseScale, y * this.noiseScale, this.time * 0.05);
+                if(Math.abs(noiseVal) <= noiseThr){
+                    points.push({
+                        x: Utils.randomRange(x - spacingHalf, x + spacingHalf),
+                        y: Utils.randomRange(y - spacingHalf, y + spacingHalf)
+                    });
+                }
+            }
+        }
+        return points;
+    }
+
+    quadTree(x, y, size, points){
+        const sizeHalf = size / 2,
+              sizeQuar = size / 4;
+        if (points.length <= this.maxPointsInNode) {
+            this.ctx.strokeRect(x - sizeHalf, y - sizeHalf, size, size);
+        } else {
+            let nwPoints = [],
+                nePoints = [],
+                swPoints = [],
+                sePoints = [];
+            for(let p of points){
+                if(p.x < x && p.y >= y) nwPoints.push(p);
+                else if(p.x >= x && p.y >= y) nePoints.push(p);
+                else if(p.x >= x && p.y < y) sePoints.push(p);
+                else if(p.x < x && p.y < y) swPoints.push(p);
+            }
+            this.quadTree(x + sizeQuar, y + sizeQuar, sizeHalf, nePoints);
+            this.quadTree(x + sizeQuar, y - sizeQuar, sizeHalf, sePoints);
+            this.quadTree(x - sizeQuar, y + sizeQuar, sizeHalf, nwPoints);
+            this.quadTree(x - sizeQuar, y - sizeQuar, sizeHalf, swPoints);
+        }
+    }
+
+    draw() {
+        Utils.clear(this.ctx, "#FFFFFF");
+
+        this.width = this.ctx.canvas.width,
+        this.height = this.ctx.canvas.height;
+
+        let maxRectSize = Math.max(this.width, this.height),
+            points = this.generatePoints();
+
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeStyle = this.colors[0];
+        this.quadTree(this.width / 2, this.height / 2, maxRectSize, points);
+
+        if(this.drawPoints)
+            for(let p of points) Utils.fillCircle(this.ctx, p.x, p.y, 2, this.colorsAlt[1]);
+    }
+
+
+    getSettings() {
+        return [{prop: "maxPointsInNode", type: "int", min: 1, max: 16},
+                {prop: "noiseScale", type: "float", step: 0.0001, min: 0.0005, max: 0.0015},
+                {prop: "pointsDensity", type: "int", min: 1, max: 10},
+                {prop: "drawPoints", type: "bool"}];
+    }
+}
+
+module.exports = Quadtree;
+
+},{"./animation":2,"./noise":13,"./utils":25}],19:[function(require,module,exports){
 'use strict';
 
 /*
@@ -2942,7 +3049,7 @@ class Queue {
 
 module.exports = Queue;
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 'use strict';
 
 /*
@@ -3218,7 +3325,7 @@ class ShortestPath extends Animation {
 
 module.exports = ShortestPath;
 
-},{"./animation":2,"./queue":18,"./utils":24}],20:[function(require,module,exports){
+},{"./animation":2,"./queue":19,"./utils":25}],21:[function(require,module,exports){
 'use strict';
 
 /*
@@ -3306,7 +3413,7 @@ class SineWaves extends Animation {
 }
 
 module.exports = SineWaves;
-},{"./animation":2,"./utils":24}],21:[function(require,module,exports){
+},{"./animation":2,"./utils":25}],22:[function(require,module,exports){
 'use strict';
 
 /*
@@ -3755,7 +3862,7 @@ class Sorting extends Animation {
 
 module.exports = Sorting;
 
-},{"./animation":2,"./utils":24}],22:[function(require,module,exports){
+},{"./animation":2,"./utils":25}],23:[function(require,module,exports){
 'use strict';
 
 /*
@@ -3846,7 +3953,7 @@ class SpinningShapes extends Animation {
 
 module.exports = SpinningShapes
 
-},{"./animation":2,"./utils":24}],23:[function(require,module,exports){
+},{"./animation":2,"./utils":25}],24:[function(require,module,exports){
 'use strict';
 
 /*
@@ -3952,7 +4059,7 @@ class Spirograph extends Animation {
 
 module.exports = Spirograph
 
-},{"./animation":2,"./utils":24}],24:[function(require,module,exports){
+},{"./animation":2,"./utils":25}],25:[function(require,module,exports){
 'use strict';
 
 module.exports = {
