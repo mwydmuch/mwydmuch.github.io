@@ -102,7 +102,7 @@ let animations = [
     {class: ThreeNPlusOne, name: "3n+1"},
     {class: Cardioids, name: "cardioids"},
     {class: CircularWaves, name: "circular waves"},
-    {class: GameOfLife, name: "game of live"},
+    {class: GameOfLife, name: "game of life"},
     {class: GameOfLifeIsometric, name: "isometric game of life"},
     {class: GradientDescent, name: "gradient descent"},
     {class: Matrix, name: "matrix rain"},
@@ -112,7 +112,7 @@ let animations = [
     {class: ParticlesVortex, name: "particles vortex"},
     {class: ParticlesWaves, name: "particles waves"},
     {class: PerlinNoiseParticles, name: "perlin noise"},
-    {class: ShortestPath, name: "shortest"},
+    {class: ShortestPath, name: "shortest path"},
     {class: Sorting, name: "sorting"},
     {class: SpinningShapes, name: "spinning shapes"},
     {class: Spirograph, name: "spirograph"},
@@ -126,6 +126,16 @@ let animationId = Utils.randomInt(0, animationCount),
 
 Utils.randomShuffle(order);
 for(let i = 0; i < animationCount; ++i) animations[order[i]].next = order[(i + 1) % animationCount];
+
+
+// Get animation from url search params
+const urlParams = new URLSearchParams(window.location.search);
+if(urlParams.has("animation")){
+    const animationParam = urlParams.get("animation").replaceAll("-", " ");
+    for(let i = 0; i < animationCount; ++i){
+        if(animationParam === animations[i].name) animationId = i;
+    }
+}
 
 function updateAnimation(newAnimationId) {
     animationId = newAnimationId;
