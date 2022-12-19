@@ -435,6 +435,10 @@ class Sorting extends Animation {
         }
     }
 
+    restart() {
+        this.setup();
+    }
+
     getSettings() {
         return [{prop: "initialOrder", type: "select", values: this.initialOrderTypes, toCall: "setup"},
                 {prop: "sortingAlgorithm", type: "select", values: this.sortAlgoNames, toCall: "setup"},

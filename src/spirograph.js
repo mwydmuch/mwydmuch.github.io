@@ -30,6 +30,10 @@ class Spirograph extends Animation {
         this.gearCount = this.assignIfRandom(gearCount, Utils.randomInt(2, this.maxGears));
         this.gearNames = ["zero", "one", "two", "three", "four", "five"];
         this.updateName();
+        this.setup();
+    }
+
+    setup(){
         this.gears = [];
         for (let i = 0; i < this.maxGears; ++i) {
             this.gears.push({

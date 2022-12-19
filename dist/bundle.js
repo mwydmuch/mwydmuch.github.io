@@ -9,7 +9,6 @@
  */
 
 const Animation = require("./animation");
-const Utils = require("./utils");
 
 class ThreeNPlusOne extends Animation {
     constructor(canvas, colors, colorsAlt,
@@ -95,6 +94,11 @@ class ThreeNPlusOne extends Animation {
         this.clear();
     }
 
+    restart(){
+        this.seqences = [];
+        super.restart();
+    }
+
     getSettings() {
         return [{prop: "length", type: "int", min: 1, max: 100, toCall: "resize"},
                 {prop: "evenAngle", type: "int", min: -45, max: 45, toCall: "resize"},
@@ -106,7 +110,7 @@ class ThreeNPlusOne extends Animation {
 
 module.exports = ThreeNPlusOne;
 
-},{"./animation":2,"./utils":25}],2:[function(require,module,exports){
+},{"./animation":2}],2:[function(require,module,exports){
 'use strict';
 
 /*
@@ -171,6 +175,12 @@ class Animation {
 
     resize(){
         // By default do nothing
+    }
+
+    restart() {
+        this.time = 0;
+        this.frame = 0;
+        this.resize();
     }
 
     getSettings() {
@@ -319,7 +329,7 @@ class CircularWaves extends Animation {
         this.radiusMin = Math.min(this.ctx.canvas.width, this.ctx.canvas.height) / 2 * this.radiusScaleMin;
         this.radiusMax = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 2 * this.radiusScaleMax;
         if(this.radiusMin > this.radiusMax) [this.radiusMin, this.radiusMax] = [this.radiusMax, this.radiusMin];
-        Utils.clear(this.ctx, "#FFFFFF");
+        this.clear();
     }
 
     getSettings() {
@@ -891,6 +901,12 @@ class GameOfLife extends Animation {
         this.resizeGrid(newGridWidth, newGridHeight);
     }
 
+    restart(){
+        this.gridWidth = 0;
+        this.gridHeight = 0;
+        super.restart();
+    }
+
     getSettings() {
         return [{prop: "cellSize", type: "int", min: 4, max: 32, toCall: "resize"},
                 {prop: "cellShape", type: "select", values: ["square", "circle"]},
@@ -1396,25 +1412,15 @@ let lastWidth = 0,
     needResize = false,
     framesInterval = 0,
     then = 0,
-    paused = false,
-    refresh = false;
+    paused = false;
 
-// const colors = [ // Green palette
-//     "#349BA9",
-//     "#41B8AD",
-//     "#73D4AD",
-//     "#AEEABF",
-//     "#73D4AD",
-//     "#41B8AD",
-// ];
-
-const colors = [ // UA palette
-    "#0058B5",
-    "#0070b5",
-    "#0193c9",
-    "#03b2d9",
-    "#007fb5",
-    "#03609a",
+const colors = [ // Green palette
+    "#349BA9",
+    "#41B8AD",
+    "#73D4AD",
+    "#AEEABF",
+    "#73D4AD",
+    "#41B8AD",
 ];
 
 // const colorsAlt = [ // Alt palette
@@ -1429,13 +1435,13 @@ const colors = [ // UA palette
 
 const colorsAlt = [ // Alt palette
     "#602180",
-    "#b6245c",
-    "#e14f3b",
-    "#ec8c4d",
-    "#fff202",
-    "#99f32b",
-    "#106aa6",
-    "#283b93",
+    "#B6245C",
+    "#E14F3B",
+    "#EC8C4D",
+    "#FFF202",
+    "#99F32B",
+    "#106AA6",
+    "#283B93",
 ];
 
 
@@ -1445,9 +1451,11 @@ const colorsAlt = [ // Alt palette
 const content = document.getElementById("content");
 const elemBgShow = document.getElementById("background-show");
 const elemBgName = document.getElementById("background-name");
+const elemBgPrev = document.getElementById("background-previous");
 const elemBgNext = document.getElementById("background-next");
 const elemBgCode = document.getElementById("background-code");
 const elemBgReset = document.getElementById("background-reset");
+const elemBgRestart = document.getElementById("background-restart");
 const elemBgPlayPause = document.getElementById("background-play-pause");
 const elemBgSettings = document.getElementById("background-settings");
 const elemBgSettingsControls = document.getElementById("background-settings-controls");
@@ -1487,8 +1495,10 @@ let animationId = Utils.randomInt(0, animationCount),
     order = Array.from({length: animationCount}, (x, i) => i);
 
 Utils.randomShuffle(order);
-for(let i = 0; i < animationCount; ++i) animations[order[i]].next = order[(i + 1) % animationCount];
-
+for(let i = 0; i < animationCount; ++i){
+    animations[order[i]].prev = order[(i + animationCount - 1) % animationCount];
+    animations[order[i]].next = order[(i + 1) % animationCount];
+}
 
 // Get animation from url search params
 const urlParams = new URLSearchParams(window.location.search);
@@ -1603,6 +1613,13 @@ if(elemBgShow) {
     });
 }
 
+if(elemBgPrev) {
+    elemBgPrev.addEventListener("click", function () {
+        updateAnimation(animations[animationId].prev);
+        play();
+    });
+}
+
 if(elemBgNext) {
     elemBgNext.addEventListener("click", function () {
         updateAnimation(animations[animationId].next);
@@ -1613,6 +1630,13 @@ if(elemBgNext) {
 if(elemBgReset) {
     elemBgReset.addEventListener("click", function () {
         updateAnimation(animationId);
+        play();
+    });
+}
+
+if(elemBgRestart) {
+    elemBgRestart.addEventListener("click", function () {
+        animation.restart();
         play();
     });
 }
@@ -1870,6 +1894,12 @@ class Matrix extends Animation {
         }
     }
 
+    restart(){
+        this.drops = [];
+        this.resize();
+        this.clear();
+    }
+
     getSettings() {
         return [{prop: "dropsSize", type: "int", min: 8, max: 64, toCall: "resize"},
                 {prop: "dropsSpeed", type: "float", min: 0, max: 1},
@@ -1898,7 +1928,7 @@ class Network extends Animation {
     constructor(canvas, colors, colorsAlt,
                 particlesDensity = 0.0002,
                 fillTriangles = true,
-                drawParticles = true,
+                drawParticles = false,
                 distanceThreshold = 125) {
         super(canvas, colors, colorsAlt, 'Delaunay triangulation for a cloud of particles', "network.js");
 
@@ -1961,11 +1991,9 @@ class Network extends Animation {
                 this.drawTriangle(p1, p2, p3);
             }
         }
+
         if(this.drawParticles) {
-            for (let p of this.particles) {
-                this.ctx.fillStyle = p.color;
-                this.ctx.fillRect(p.x, p.y, 1, 1);
-            }
+            for (let p of this.particles) Utils.fillCircle(this.ctx, p.x, p.y, 2, p.color);
         }
     }
 
@@ -1984,7 +2012,7 @@ class Network extends Animation {
         }
     }
 
-    reset(){
+    restart(){
         this.particles = []
         this.width = this.ctx.canvas.width;
         this.height = this.ctx.canvas.height;
@@ -2014,7 +2042,7 @@ class Network extends Animation {
     }
 
     getSettings() {
-        return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.002, toCall: "reset"},
+        return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.002, toCall: "restart"},
                 {prop: "fillTriangles", type: "bool"},
                 {prop: "drawParticles", type: "bool"},
                 {prop: "distanceThreshold", type: "int", min: 0, max: 200},
@@ -2562,7 +2590,13 @@ class ParticlesAndAttractors extends Animation {
     }
 
     resize() {
-        Utils.clear(this.ctx, "#FFFFFF");
+        this.clear();
+    }
+
+    restart() {
+        super.restart();
+        this.attractorsPosition = 0;
+        this.setup();
     }
 
     getSettings() {
@@ -2745,6 +2779,10 @@ class ParticlesStorm extends Animation {
                 color: Utils.lerpColor(this.colorA, this.colorB, particleX / this.width)
             });
         }
+    }
+
+    reset(){
+
     }
 
     getSettings() {
@@ -3851,6 +3889,10 @@ class Sorting extends Animation {
         }
     }
 
+    restart() {
+        this.setup();
+    }
+
     getSettings() {
         return [{prop: "initialOrder", type: "select", values: this.initialOrderTypes, toCall: "setup"},
                 {prop: "sortingAlgorithm", type: "select", values: this.sortAlgoNames, toCall: "setup"},
@@ -3877,8 +3919,8 @@ const Utils = require("./utils");
 
 class SpinningShapes extends Animation {
     constructor (canvas, colors, colorsAlt, 
-                 shapes = 500, 
-                 sides = 0,
+                 shapes = 500,
+                 vertices = 0,
                  rotateShapes = false,
                  scale = 1,
                  colorsScale = 1,
@@ -3886,9 +3928,8 @@ class SpinningShapes extends Animation {
                  rainbowColors = false) {
         super(canvas, colors, colorsAlt, "", "spinning-shapes.js");
 
-        this.shapeSides = [0, 1, 2, 3, 4, 5, 6, 8];
-        this.shapeNames = ["circles", "points", "lines", "triangles", "rectangles", "pentagons", "hexagons", "octagons"];
-        this.sides = this.assignIfRandom(sides, Utils.randomChoice(this.shapeSides));
+        this.shapeNames = ["circles", "points", "lines", "triangles", "rectangles", "pentagons", "hexagons", "heptagons", "octagons"];
+        this.vertices = this.assignIfRandom(vertices, Utils.randomInt(0, 8));
         this.updateName();
         this.rotateShapes = rotateShapes;
         this.shapes = shapes;
@@ -3905,7 +3946,7 @@ class SpinningShapes extends Animation {
     }
 
     updateName(){
-        this.name = this.shapeNames[this.shapeSides.indexOf(this.sides)] + " \"dancing\" in a circle";
+        this.name = this.shapeNames[this.vertices] + " \"dancing\" in a circle";
     }
 
     draw() {
@@ -3928,9 +3969,9 @@ class SpinningShapes extends Animation {
             this.ctx.lineWidth = 1;
 
             this.ctx.beginPath();
-            if(this.sides === 0) Utils.pathCircle(this.ctx, x, y, radius);
-            if(this.sides === 1) Utils.pathCircle(this.ctx, x, y, 1);
-            else Utils.pathPolygon(this.ctx, x, y, radius, this.sides, theta * this.rotateShapes);
+            if(this.vertices === 0) Utils.pathCircle(this.ctx, x, y, radius);
+            if(this.vertices === 1) Utils.pathCircle(this.ctx, x, y, 1);
+            else Utils.pathPolygon(this.ctx, x, y, radius, this.vertices, theta * this.rotateShapes);
             this.ctx.stroke();
         }
 
@@ -3938,7 +3979,7 @@ class SpinningShapes extends Animation {
     }
 
     getSettings() {
-        return [{prop: "sides", type: "int", min: 0, max: 8, toCall: "updateName"},
+        return [{prop: "vertices", type: "int", min: 0, max: 8, toCall: "updateName"},
                 {prop: "shapes", type: "int", min: 0, max: 2500},
                 {prop: "rotateShapes", type: "bool" },
                 //{prop: "distanceRange", type: "float", min: 0, max: 1},
@@ -3986,6 +4027,10 @@ class Spirograph extends Animation {
         this.gearCount = this.assignIfRandom(gearCount, Utils.randomInt(2, this.maxGears));
         this.gearNames = ["zero", "one", "two", "three", "four", "five"];
         this.updateName();
+        this.setup();
+    }
+
+    setup(){
         this.gears = [];
         for (let i = 0; i < this.maxGears; ++i) {
             this.gears.push({

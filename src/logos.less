@@ -1,0 +1,194 @@
+@font-face {
+  font-family: 'DooM';
+  src:  url('../assets/DooM.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.vizdoom-logo {
+  display: block;
+  width: 430px;
+  height: 80px;
+  font-size: 56px;
+
+  .text{
+    font-family: 'DooM';
+    color: #8b0000 !important;
+    letter-spacing: -1px;
+    transform: scaleX(0.85);
+    text-transform: uppercase;
+    paint-order: stroke fill;
+    -webkit-text-stroke: 6px #5b0000;
+    //text-shadow: 6px 6px 0 #252d35;
+    text-shadow:
+              -3px -3px #5b0000, 3px -3px #5b0000, -3px 3px #5b0000, 3px 3px #5b0000,
+              -3px -2px #5b0000, 3px -2px #5b0000, -3px 2px #5b0000, 3px 2px #5b0000,
+              -2px -3px #5b0000, 2px -3px #5b0000, -2px 3px #5b0000, 2px 3px #5b0000,
+              -3px -1px #5b0000, 3px -1px #5b0000, -3px 1px #5b0000, 3px 1px #5b0000,
+              -1px -3px #5b0000, 1px -3px #5b0000, -1px 3px #5b0000, 1px 3px #5b0000,
+              -3px -2.5px #5b0000, 3px -2.5px #5b0000, -3px 2.5px #5b0000, 3px 2.5px #5b0000,
+              -2.5px -3px #5b0000, 2.5px -3px #5b0000, -2.5px 3px #5b0000, 2.5px 3px #5b0000,
+              -3px -1.5px #5b0000, 3px -1.5px #5b0000, -3px 1.5px #5b0000, 3px 1.5px #5b0000,
+              -1.5px -3px #5b0000, 1.5px -3px #5b0000, -1.5px 3px #5b0000, 1.5px 3px #5b0000,
+              -3px -0.5px #5b0000, 3px -0.5px #5b0000, -3px 0.5px #5b0000, 3px 0.5px #5b0000,
+              -0.5px -3px #5b0000, 0.5px -3px #5b0000, -0.5px 3px #5b0000, 0.5px 3px #5b0000,
+              3px 0 #5b0000,-3px 0 #5b0000,0 3px #5b0000,0 -3px #5b0000,
+              6px 6px #252d35;
+
+    .eye-letter{
+      color: black !important;
+    }
+  }
+
+  .eye {
+    top: -65px;
+    left: 226px;
+    height: 43px;
+    width: 43px;
+
+    position: relative;
+    border-radius: 100%;
+    background: radial-gradient(ellipse at center, #ef7627 0, #d70000 15%, #8b0000 30%, #5b0000 40%, #000 70%);
+
+    .ref-1, .ref-2, .ref-3 {
+      border-radius: 100%;
+      display: block;
+      position: absolute;
+      background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 70%);
+    }
+
+    .ref-1 {
+      height: 5px;
+      width: 5px;
+      top: 4px;
+      left: 28px;
+    }
+
+    .ref-2 {
+      height: 10px;
+      width: 10px;
+      top: 8px;
+      left: 32px;
+    }
+
+    .ref-3 {
+      height: 5px;
+      width: 5px;
+      top: 16px;
+      left: 24px;
+    }
+  }
+}
+
+@font-face {
+  font-family: 'Campus';
+  src: url('../assets/Campus.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.napkinxc-logo {
+  display: block;
+  font-family: 'Campus';
+  font-size: 56px;
+
+  .napkin{
+    letter-spacing: -1px;
+    text-shadow: -3px 2px #004c63, -3px 1px #004c63;
+    color: #007497;
+    top: -7px;
+    position: relative;
+  }
+
+  .xc{
+    letter-spacing: 2px;
+    color: #007497;
+    text-shadow: -2px -2px #00607c,3px 2px #004c63,2px -3px #00394a;
+    margin-left: 2px;
+  }
+}
+
+
+@font-face {
+  font-family: 'ViceCity';
+  src: url('../assets/ViceCity.otf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+.extremetext-logo {
+  display: block;
+  font-size: 56px;
+  font-family: 'ViceCity';
+  font-weight: 700;
+
+  .extreme{
+    font-style: italic;
+    color: #dc005c;
+    text-shadow: 2px 0 #e3327c, 4px 0 #ed7fad, 8px 0 #f8ccde;
+  }
+
+  .x-letter, .t-letter{
+    font-size: 64px;
+    top: 5px;
+    display: inline-block;
+    position: relative;
+    font-style: initial;
+    z-index: -1;
+  }
+
+  .x-letter{
+    left: 3px;
+  }
+
+  .text{
+    color: #6001D2;
+    text-shadow: 2px 0 #7f33db, 4px 0 #af80e8, 8px 0 #dfccf6;
+  }
+}
+
+
+.extremetext2-logo {
+  display: block;
+  font-size: 56px;
+  font-family: 'ViceCity';
+  font-weight: 700;
+
+  .extreme{
+    font-style: italic;
+    color: #dc005c;
+    text-shadow: 2px 0 #e3327c,
+      4px -1px #ed7fad, 4px 0 #ed7fad, 4px 1px #ed7fad,
+      8px -2px #f8ccde, 8px -1px #f8ccde, 8px 0 #f8ccde, 8px 1px #f8ccde, 8px 2px #f8ccde;
+
+  }
+
+  .x-letter, .t-letter, .digit-2{
+    font-size: 64px;
+    top: 5px;
+    display: inline-block;
+    position: relative;
+    font-style: initial;
+    z-index: -1;
+  }
+
+  .x-letter{
+    left: 3px;
+  }
+
+  .digit-2{
+    left: 4px;
+    color: #ffae42;
+    text-shadow: 2px 0 #ffbe67,
+      4px -1px #ffd6a0, 4px 0 #ffd6a0, 4px 1px #ffd6a0,
+      8px -2px #ffeed9, 8px -1px #ffeed9, 8px 0 #ffeed9, 8px 1px #ffeed9, 8px 2px #ffeed9;
+  }
+
+  .text{
+    color: #6001D2;
+    text-shadow: 2px 0 #7f33db,
+      4px -1px #af80e8, 4px 0 #af80e8, 4px 1px #af80e8,
+      8px -2px #dfccf6, 8px -1px #dfccf6, 8px 0 #dfccf6, 8px 1px #dfccf6, 8px 2px #dfccf6;
+  }
+}

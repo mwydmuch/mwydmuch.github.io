@@ -64,6 +64,12 @@ class Animation {
         // By default do nothing
     }
 
+    restart() {
+        this.time = 0;
+        this.frame = 0;
+        this.resize();
+    }
+
     getSettings() {
         return [] // By default there is no settings
     }

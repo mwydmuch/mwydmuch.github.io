@@ -12,8 +12,8 @@ const Utils = require("./utils");
 
 class SpinningShapes extends Animation {
     constructor (canvas, colors, colorsAlt, 
-                 shapes = 500, 
-                 sides = 0,
+                 shapes = 500,
+                 vertices = 0,
                  rotateShapes = false,
                  scale = 1,
                  colorsScale = 1,
@@ -21,9 +21,8 @@ class SpinningShapes extends Animation {
                  rainbowColors = false) {
         super(canvas, colors, colorsAlt, "", "spinning-shapes.js");
 
-        this.shapeSides = [0, 1, 2, 3, 4, 5, 6, 8];
-        this.shapeNames = ["circles", "points", "lines", "triangles", "rectangles", "pentagons", "hexagons", "octagons"];
-        this.sides = this.assignIfRandom(sides, Utils.randomChoice(this.shapeSides));
+        this.shapeNames = ["circles", "points", "lines", "triangles", "rectangles", "pentagons", "hexagons", "heptagons", "octagons"];
+        this.vertices = this.assignIfRandom(vertices, Utils.randomInt(0, 8));
         this.updateName();
         this.rotateShapes = rotateShapes;
         this.shapes = shapes;
@@ -40,7 +39,7 @@ class SpinningShapes extends Animation {
     }
 
     updateName(){
-        this.name = this.shapeNames[this.shapeSides.indexOf(this.sides)] + " \"dancing\" in a circle";
+        this.name = this.shapeNames[this.vertices] + " \"dancing\" in a circle";
     }
 
     draw() {
@@ -63,9 +62,9 @@ class SpinningShapes extends Animation {
             this.ctx.lineWidth = 1;
 
             this.ctx.beginPath();
-            if(this.sides === 0) Utils.pathCircle(this.ctx, x, y, radius);
-            if(this.sides === 1) Utils.pathCircle(this.ctx, x, y, 1);
-            else Utils.pathPolygon(this.ctx, x, y, radius, this.sides, theta * this.rotateShapes);
+            if(this.vertices === 0) Utils.pathCircle(this.ctx, x, y, radius);
+            if(this.vertices === 1) Utils.pathCircle(this.ctx, x, y, 1);
+            else Utils.pathPolygon(this.ctx, x, y, radius, this.vertices, theta * this.rotateShapes);
             this.ctx.stroke();
         }
 
@@ -73,7 +72,7 @@ class SpinningShapes extends Animation {
     }
 
     getSettings() {
-        return [{prop: "sides", type: "int", min: 0, max: 8, toCall: "updateName"},
+        return [{prop: "vertices", type: "int", min: 0, max: 8, toCall: "updateName"},
                 {prop: "shapes", type: "int", min: 0, max: 2500},
                 {prop: "rotateShapes", type: "bool" },
                 //{prop: "distanceRange", type: "float", min: 0, max: 1},

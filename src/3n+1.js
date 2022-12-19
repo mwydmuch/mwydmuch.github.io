@@ -8,7 +8,6 @@
  */
 
 const Animation = require("./animation");
-const Utils = require("./utils");
 
 class ThreeNPlusOne extends Animation {
     constructor(canvas, colors, colorsAlt,
@@ -92,6 +91,11 @@ class ThreeNPlusOne extends Animation {
     resize() {
         this.frame = 0;
         this.clear();
+    }
+
+    restart(){
+        this.seqences = [];
+        super.restart();
     }
 
     getSettings() {

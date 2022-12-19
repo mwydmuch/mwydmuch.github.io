@@ -134,6 +134,12 @@ class GameOfLife extends Animation {
         this.resizeGrid(newGridWidth, newGridHeight);
     }
 
+    restart(){
+        this.gridWidth = 0;
+        this.gridHeight = 0;
+        super.restart();
+    }
+
     getSettings() {
         return [{prop: "cellSize", type: "int", min: 4, max: 32, toCall: "resize"},
                 {prop: "cellShape", type: "select", values: ["square", "circle"]},

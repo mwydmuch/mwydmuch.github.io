@@ -95,7 +95,13 @@ class ParticlesAndAttractors extends Animation {
     }
 
     resize() {
-        Utils.clear(this.ctx, "#FFFFFF");
+        this.clear();
+    }
+
+    restart() {
+        super.restart();
+        this.attractorsPosition = 0;
+        this.setup();
     }
 
     getSettings() {

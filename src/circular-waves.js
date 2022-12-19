@@ -65,7 +65,7 @@ class CircularWaves extends Animation {
         this.radiusMin = Math.min(this.ctx.canvas.width, this.ctx.canvas.height) / 2 * this.radiusScaleMin;
         this.radiusMax = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 2 * this.radiusScaleMax;
         if(this.radiusMin > this.radiusMax) [this.radiusMin, this.radiusMax] = [this.radiusMax, this.radiusMin];
-        Utils.clear(this.ctx, "#FFFFFF");
+        this.clear();
     }
 
     getSettings() {

@@ -11,7 +11,7 @@ a:link,
 a:visited,
 a:hover,
 a:active {
-  color: #F6BD00;
+  color: #43696B;
   font-weight: 700;
   cursor: pointer;
 }
@@ -56,7 +56,7 @@ ul ul {
   padding: 0.05rem 0.25rem;
   margin: 0 0.05rem;
   white-space: nowrap;
-  background-image: linear-gradient(135deg, #F6CE00, #ffd811);
+  background-image: linear-gradient(135deg, #43696B, #4d787b);
 }
 .reverse-main a,
 .reverse-main a:link,
@@ -70,7 +70,7 @@ ul ul {
   padding: 0.05rem 0.25rem;
   margin: 0 0.05rem;
   white-space: nowrap;
-  background-image: linear-gradient(135deg, #0058B5, #0064cf);
+  background-image: linear-gradient(135deg, #43696B, #4d787b);
 }
 .reverse-second a,
 .reverse-second a:link,
@@ -177,6 +177,20 @@ ul ul {
 .reverse-farama-green a:active {
   color: #FFFFFF;
 }
+.reverse-ua-gradient {
+  color: #FFFFFF;
+  padding: 0.05rem 0.25rem;
+  margin: 0 0.05rem;
+  white-space: nowrap;
+  background-image: linear-gradient(180deg, #0058B5 0%, #0058B5 40%, #F6CE00 60%, #F6CE00 100%);
+}
+.reverse-ua-gradient a,
+.reverse-ua-gradient a:link,
+.reverse-ua-gradient a:visited,
+.reverse-ua-gradient a:hover,
+.reverse-ua-gradient a:active {
+  color: #FFFFFF;
+}
 .accordion-body {
   margin-left: 0.4rem;
 }
@@ -225,7 +239,7 @@ ul {
   box-sizing: border-box;
   border-radius: 100%;
   border: double 4px transparent;
-  background-image: linear-gradient(180deg, #0058B5 0%, #0058B5 40%, #F6CE00 60%, #F6CE00 100%);
+  background-image: linear-gradient(135deg, #38575A, #43696B);
   background-origin: border-box;
   height: 100%;
 }
@@ -240,8 +254,8 @@ ul {
 }
 #me #profiles .profile-link {
   padding: 0.15rem 0.5rem;
-  border: 2px solid #F6CE00;
-  color: #F6CE00;
+  border: 2px solid #43696B;
+  color: #43696B;
   background: none;
   transition: background 0.5s, color 0.5s;
   transition-timing-function: ease;
@@ -250,7 +264,7 @@ ul {
   margin: 0.15rem 0.25rem;
 }
 #me #profiles .profile-link:hover {
-  background: #F6CE00;
+  background: #43696B;
   color: #FFFFFF;
 }
 @keyframes fade-out-animation {
@@ -394,7 +408,7 @@ ul {
   padding: 0 0.25rem;
   margin: 0 0.1rem;
   display: inline-block;
-  background-image: linear-gradient(135deg, #0058B5, #0064cf);
+  background-image: linear-gradient(135deg, #38575A, #43696B);
 }
 #footer #background-controls a,
 #footer #background-settings-controls a,
@@ -422,28 +436,29 @@ ul {
   cursor: default;
   text-align: left;
   border-top: 1px solid #FFFFFF;
-  margin-top: 0.1rem;
   white-space: nowrap;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
 }
 #footer #background-settings-controls .settings-section .setting-name {
-  width: 8rem;
+  width: 9rem;
   display: inline-block;
 }
 #footer #background-settings-controls .settings-section .setting-input {
-  width: 5.25rem;
+  width: 6rem;
   height: 0.5rem;
   margin: 0 0.25rem;
   display: inline-block;
 }
 #footer #background-settings-controls .settings-section .setting-select {
-  width: 8rem;
+  width: 9rem;
   height: 1rem;
   margin: 0 0.25rem;
   display: inline-block;
 }
 #footer #background-settings-controls .settings-section .setting-value {
   text-align: center;
-  width: 2.25rem;
+  width: 2.5rem;
   display: inline-block;
 }
 #footer #background-settings-controls #background-settings-close {

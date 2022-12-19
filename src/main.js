@@ -36,25 +36,15 @@ let lastWidth = 0,
     needResize = false,
     framesInterval = 0,
     then = 0,
-    paused = false,
-    refresh = false;
+    paused = false;
 
-// const colors = [ // Green palette
-//     "#349BA9",
-//     "#41B8AD",
-//     "#73D4AD",
-//     "#AEEABF",
-//     "#73D4AD",
-//     "#41B8AD",
-// ];
-
-const colors = [ // UA palette
-    "#0058B5",
-    "#0070b5",
-    "#0193c9",
-    "#03b2d9",
-    "#007fb5",
-    "#03609a",
+const colors = [ // Green palette
+    "#349BA9",
+    "#41B8AD",
+    "#73D4AD",
+    "#AEEABF",
+    "#73D4AD",
+    "#41B8AD",
 ];
 
 // const colorsAlt = [ // Alt palette
@@ -69,13 +59,13 @@ const colors = [ // UA palette
 
 const colorsAlt = [ // Alt palette
     "#602180",
-    "#b6245c",
-    "#e14f3b",
-    "#ec8c4d",
-    "#fff202",
-    "#99f32b",
-    "#106aa6",
-    "#283b93",
+    "#B6245C",
+    "#E14F3B",
+    "#EC8C4D",
+    "#FFF202",
+    "#99F32B",
+    "#106AA6",
+    "#283B93",
 ];
 
 
@@ -85,9 +75,11 @@ const colorsAlt = [ // Alt palette
 const content = document.getElementById("content");
 const elemBgShow = document.getElementById("background-show");
 const elemBgName = document.getElementById("background-name");
+const elemBgPrev = document.getElementById("background-previous");
 const elemBgNext = document.getElementById("background-next");
 const elemBgCode = document.getElementById("background-code");
 const elemBgReset = document.getElementById("background-reset");
+const elemBgRestart = document.getElementById("background-restart");
 const elemBgPlayPause = document.getElementById("background-play-pause");
 const elemBgSettings = document.getElementById("background-settings");
 const elemBgSettingsControls = document.getElementById("background-settings-controls");
@@ -127,8 +119,10 @@ let animationId = Utils.randomInt(0, animationCount),
     order = Array.from({length: animationCount}, (x, i) => i);
 
 Utils.randomShuffle(order);
-for(let i = 0; i < animationCount; ++i) animations[order[i]].next = order[(i + 1) % animationCount];
-
+for(let i = 0; i < animationCount; ++i){
+    animations[order[i]].prev = order[(i + animationCount - 1) % animationCount];
+    animations[order[i]].next = order[(i + 1) % animationCount];
+}
 
 // Get animation from url search params
 const urlParams = new URLSearchParams(window.location.search);
@@ -243,6 +237,13 @@ if(elemBgShow) {
     });
 }
 
+if(elemBgPrev) {
+    elemBgPrev.addEventListener("click", function () {
+        updateAnimation(animations[animationId].prev);
+        play();
+    });
+}
+
 if(elemBgNext) {
     elemBgNext.addEventListener("click", function () {
         updateAnimation(animations[animationId].next);
@@ -253,6 +254,13 @@ if(elemBgNext) {
 if(elemBgReset) {
     elemBgReset.addEventListener("click", function () {
         updateAnimation(animationId);
+        play();
+    });
+}
+
+if(elemBgRestart) {
+    elemBgRestart.addEventListener("click", function () {
+        animation.restart();
         play();
     });
 }

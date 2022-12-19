@@ -110,6 +110,12 @@ class Matrix extends Animation {
         }
     }
 
+    restart(){
+        this.drops = [];
+        this.resize();
+        this.clear();
+    }
+
     getSettings() {
         return [{prop: "dropsSize", type: "int", min: 8, max: 64, toCall: "resize"},
                 {prop: "dropsSpeed", type: "float", min: 0, max: 1},

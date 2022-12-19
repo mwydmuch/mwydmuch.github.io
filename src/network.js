@@ -16,7 +16,7 @@ class Network extends Animation {
     constructor(canvas, colors, colorsAlt,
                 particlesDensity = 0.0002,
                 fillTriangles = true,
-                drawParticles = true,
+                drawParticles = false,
                 distanceThreshold = 125) {
         super(canvas, colors, colorsAlt, 'Delaunay triangulation for a cloud of particles', "network.js");
 
@@ -79,11 +79,9 @@ class Network extends Animation {
                 this.drawTriangle(p1, p2, p3);
             }
         }
+
         if(this.drawParticles) {
-            for (let p of this.particles) {
-                this.ctx.fillStyle = p.color;
-                this.ctx.fillRect(p.x, p.y, 1, 1);
-            }
+            for (let p of this.particles) Utils.fillCircle(this.ctx, p.x, p.y, 2, p.color);
         }
     }
 
@@ -102,7 +100,7 @@ class Network extends Animation {
         }
     }
 
-    reset(){
+    restart(){
         this.particles = []
         this.width = this.ctx.canvas.width;
         this.height = this.ctx.canvas.height;
@@ -132,7 +130,7 @@ class Network extends Animation {
     }
 
     getSettings() {
-        return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.002, toCall: "reset"},
+        return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.002, toCall: "restart"},
                 {prop: "fillTriangles", type: "bool"},
                 {prop: "drawParticles", type: "bool"},
                 {prop: "distanceThreshold", type: "int", min: 0, max: 200},
