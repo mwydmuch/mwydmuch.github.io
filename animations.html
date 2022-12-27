@@ -36,22 +36,30 @@
     <div id="background-controls">
       <div>Animation: <span id="background-name"></span></div>
       <div>
-        <span class="nowrap">[<a id="background-code"><i class="fas fa-file-code"></i> code</a>]</span>
-        <span class="nowrap">[<a id="background-play-pause"><i class="fas fa-pause"></i> pause</a>]</span>
-        <span class="nowrap">[<a id="background-reset"><i class="fas fa-redo"></i> reset</a>]</span>
         <span class="nowrap">[<a id="background-settings"><i class="fas fa-cog"></i> settings</a>]</span>
-        <span class="nowrap">[<a id="background-next"><i class="fas fa-step-forward"></i> change</a>]</span>
       </div>
     </div>
-    <div id="background-settings-controls" style="left: 10px; top: 10px;">
+    <div id="background-settings-controls" style="left: 10px; top: 10px; display: block;">
       ANIMATION SETTINGS <span id="background-settings-close">[<i class="fas fa-close"></i>]</span>
       <div id="background-settings-controls-global-list" class="settings-section">
         <div>
-          <span class="setting-name">animation = </span><select class="setting-select" name="animation" id="background-settings-animation-select"></select>
+          <span class="setting-name">background = </span><span class="nowrap setting-value-control"><select class="setting-select" name="animation" id="background-settings-animation-select"></select></span>
+        </div>
+        <div>
+          <span class="nowrap">[<a id="background-play-pause"><i class="fas fa-pause"></i> pause</a>]</span>
+          <span class="nowrap">[<a id="background-restart"><i class="fas fa-backward-step"></i> restart</a>]</span>
+          <span class="nowrap">[<a id="background-previous"><i class="fas fa-backward-fast"></i> prev.</a>]</span>
+          <span class="nowrap">[<a id="background-reset"><i class="fas fa-rotate-left"></i> reset</a>]</span>
+          <span class="nowrap">[<a id="background-next"><i class="fas fa-forward-fast"></i> next</a>]</span>
+          <span class="nowrap">[<a id="background-code"><i class="fas fa-file-code"></i> code</a>]</span>
         </div>
       </div>
+      <div id="background-description" class="settings-section"></div>
       <div id="background-settings-controls-list" class="settings-section"></div>
       <!--          <div id="background-stats" class="settings-section"></div>-->
+    </div>
+    <div>
+      This animation was <i class="fa fa-code"></i> with <i class="fa fa-keyboard"></i> by <a href="index.html">Marek Wydmuch</a>
     </div>
   </div>
 </div>

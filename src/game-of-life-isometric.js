@@ -1,12 +1,14 @@
 'use strict';
 
-/*
- * Conway's game of life visualization with isometric rendering.
- * Cells that "died" in the previous step keep their color to achieve a stable image
- * since flickering is not good for a background image.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "isometric Conway's game of life",
+      FILE = "game-of-life-isometric.js",
+      DESC = `
+Conway's game of life visualization with isometric rendering.
+Cells that "died" in the previous step keep their color to achieve a stable image
+since flickering is not good for a background image.
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const GameOfLife = require("./game-of-life");
 const Utils = require("./utils");
@@ -17,10 +19,12 @@ class GameOfLifeIsometric extends GameOfLife {
                  cellBasePadding = 0,
                  spawnProb = 0.5,
                  fadeDeadCells = true,
-                 drawCellsGrid = true) {
-        super(canvas, colors, colorsAlt, cellSize, cellBasePadding, spawnProb);
-        this.name = "isometric Conway's game of life";
-        this.file = "game-of-life-isometric.js";
+                 drawCellsGrid = true,
+                 loopGrid = true) {
+        super(canvas, colors, colorsAlt, cellSize, cellBasePadding, spawnProb, loopGrid);
+        this.name = NAME;
+        this.file = FILE;
+        this.description = DESC;
         this.fadeDeadCells = fadeDeadCells;
         this.drawCellsGrid = drawCellsGrid;
 
@@ -162,7 +166,8 @@ class GameOfLifeIsometric extends GameOfLife {
     }
 
     getSettings() {
-        return [{prop: "fadeDeadCells", type: "bool"},
+        return [{prop: "loopGrid", type: "bool"},
+                {prop: "fadeDeadCells", type: "bool"},
                 {prop: "drawCellsGrid", type: "bool"}];
     }
 }

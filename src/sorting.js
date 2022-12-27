@@ -1,10 +1,12 @@
 'use strict';
 
-/*
- * Visualization of different sorting algorithms.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "sorting algorithm visualization",
+      FILE = "sorting.js",
+      DESC = `
+Visualization of different sorting algorithms.
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -288,7 +290,8 @@ class Sorting extends Animation {
                  swapDuration = 0.25,
                  speed = 1,
                  showStats = false) {
-        super(canvas, colors, colorsAlt, "Sorting algorithm visualization", "sorting.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+
         this.numElements = numElements;
         this.elementPadding = elementPadding;
         this.cmpDuration = cmpDuration;

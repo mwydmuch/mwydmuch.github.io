@@ -1,12 +1,15 @@
 'use strict';
 
-/*
- * Recreation of matrix digital rain based on this analysis
- * of the original effect: https://carlnewton.github.io/digital-rain-analysis/
- * I'm a huge fan of the first movie.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "Matrix digital rain",
+      FILE = "matrix.js",
+      DESC = `
+Recreation of matrix digital rain based on this analysis
+of the original effect: https://carlnewton.github.io/digital-rain-analysis/
+I'm a huge fan of the first movie.
+ 
+Coded with no external dependencies, using only canvas API.
+`;
+
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -16,7 +19,8 @@ class Matrix extends Animation {
                 dropsSize = 20,
                 dropsSpeed = 0.6,
                 fadingSpeed = 0.01) {
-        super(canvas, colors, colorsAlt, "Matrix digital rain", "matrix.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+
         this.dropsSize = dropsSize;
         this.dropsSpeed = dropsSpeed;
         this.fadingSpeed = fadingSpeed;

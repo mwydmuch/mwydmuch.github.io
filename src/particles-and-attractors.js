@@ -1,13 +1,15 @@
 'use strict';
 
-/*
- * Very simple particles system with attractors.
- * In this system, distance and momentum are ignored.
- * The new velocity vector of a particle is calculated as the sum of angles
- * between the particle and all attractors (see line 51+).
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "system of particles and attractors",
+      FILE = "particles-and-attractors.js",
+      DESC = `
+Very simple particles system with attractors.
+In this system, distance and momentum are ignored.
+The new velocity vector of a particle is calculated as the sum of angles
+between the particle and all attractors (see line 51+).
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -23,7 +25,8 @@ class ParticlesAndAttractors extends Animation {
                  drawAttractors = false,
                  scale = 1,
                  rainbowColors = false) {
-        super(canvas, colors, colorsAlt, "system of particles and attractors", "particles-and-attractors.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+
         this.particles = []
         this.numParticles = numParticles;
         this.particlesSpeed = this.assignIfRandom(particlesSpeed, Utils.round(Utils.randomRange(5, 15)));

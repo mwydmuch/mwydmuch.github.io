@@ -1,12 +1,16 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
-/*
- * 3n + 1 (Collatz Conjecture) visualization.
- * Inspired by Veritasium video: https://www.youtube.com/watch?v=094y1Z2wpJg
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "3n + 1 (Collatz Conjecture) visualization",
+      FILE = "3n+1.js",
+      DESC = `
+3n + 1 (Collatz Conjecture) visualization.
+Inspired by Veritasium video: 
+https://www.youtube.com/watch?v=094y1Z2wpJg
+
+Coded with no external dependencies, using only canvas API.
+`;
+
 
 const Animation = require("./animation");
 
@@ -17,7 +21,7 @@ class ThreeNPlusOne extends Animation {
                 oddAngle = -20,
                 drawNumbers = false,
                 scale = 1) {
-        super(canvas, colors, colorsAlt, "3n + 1 (Collatz Conjecture) visualization", "3n+1.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
         this.length = length;
         this.evenAngle = evenAngle;
         this.oddAngle = oddAngle;
@@ -120,7 +124,10 @@ module.exports = ThreeNPlusOne;
 const Utils = require("./utils");
 
 class Animation {
-    constructor(canvas, colors, colorsAlt, name, file) {
+    constructor(canvas, colors, colorsAlt,
+                name = "",
+                file = "",
+                description = "") {
         this.ctx = canvas.getContext("2d", { alpha: false });
         this.bgColor = "#FFFFFF";
         this.colors = colors;
@@ -130,6 +137,7 @@ class Animation {
 
         this.name = name;
         this.file = file;
+        this.description = description;
         this.time = 0;
         this.frame = 0;
         this.speed = 1;
@@ -145,7 +153,7 @@ class Animation {
         else return value;
     }
 
-    clear(){
+    clear(){  // Clear background
         Utils.clear(this.ctx, this.bgColor);
     }
 
@@ -165,6 +173,10 @@ class Animation {
 
     getCodeUrl(){
         return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/src/" + this.file;
+    }
+
+    getDescription(){
+        return this.description;
     }
 
     update(elapsed){
@@ -197,15 +209,18 @@ module.exports = Animation;
 },{"./utils":25}],3:[function(require,module,exports){
 'use strict';
 
-/*
- * Modified method of L. Cremona for drawing cardioid with a pencil of lines,
- * as described in section "cardioid as envelope of a pencil of lines" of:
- * https://en.wikipedia.org/wiki/Cardioid
- * Here the shift of the second point is determined by time passed
- * from the beginning of the animation.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "cardioids with a pencil of lines",
+      FILE = "cardioids.js",
+      DESC = `
+Modified method of L. Cremona for drawing cardioid with a pencil of lines,
+as described in section "cardioid as envelope of a pencil of lines" of:
+https://en.wikipedia.org/wiki/Cardioid
+
+Here the shift of the second point is determined by time passed
+from the beginning of the animation.
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -216,15 +231,13 @@ class Cardioids extends Animation {
                  scale = 1.0,
                  speed = 0.05,
                  rainbowColors = false) {
-        super(canvas, colors, colorsAlt, "cardioids with a pencil of lines", "cardioids.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
 
         this.lines = lines;
         this.scale = scale;
         this.speed = speed;
         this.rainbowColors = rainbowColors;
-
         this.radius = 0;
-        this.position = 0;
     }
 
     getVec(i){
@@ -264,11 +277,13 @@ module.exports = Cardioids
 },{"./animation":2,"./utils":25}],4:[function(require,module,exports){
 'use strict';
 
-/*
- * Circular waves animation.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "circular waves",
+      FILE = "circular-waves.js",
+      DESC = `
+Circular waves animation.
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Noise = require("./noise");
@@ -282,7 +297,7 @@ class CircularWaves extends Animation {
                 radiusScaleMax = 1.2,
                 fadingSpeed = 0.001,
                 rainbowColors = false) {
-        super(canvas, colors, colorsAlt, "circular waves", "circular-waves.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
 
@@ -595,13 +610,15 @@ var Delaunay;
 },{}],6:[function(require,module,exports){
 'use strict';
 
-/*
- * Conway's game of life visualization with isometric rendering.
- * Cells that "died" in the previous step keep their color to achieve a stable image
- * since flickering is not good for a background image.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "isometric Conway's game of life",
+      FILE = "game-of-life-isometric.js",
+      DESC = `
+Conway's game of life visualization with isometric rendering.
+Cells that "died" in the previous step keep their color to achieve a stable image
+since flickering is not good for a background image.
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const GameOfLife = require("./game-of-life");
 const Utils = require("./utils");
@@ -612,10 +629,12 @@ class GameOfLifeIsometric extends GameOfLife {
                  cellBasePadding = 0,
                  spawnProb = 0.5,
                  fadeDeadCells = true,
-                 drawCellsGrid = true) {
-        super(canvas, colors, colorsAlt, cellSize, cellBasePadding, spawnProb);
-        this.name = "isometric Conway's game of life";
-        this.file = "game-of-life-isometric.js";
+                 drawCellsGrid = true,
+                 loopGrid = true) {
+        super(canvas, colors, colorsAlt, cellSize, cellBasePadding, spawnProb, loopGrid);
+        this.name = NAME;
+        this.file = FILE;
+        this.description = DESC;
         this.fadeDeadCells = fadeDeadCells;
         this.drawCellsGrid = drawCellsGrid;
 
@@ -757,7 +776,8 @@ class GameOfLifeIsometric extends GameOfLife {
     }
 
     getSettings() {
-        return [{prop: "fadeDeadCells", type: "bool"},
+        return [{prop: "loopGrid", type: "bool"},
+                {prop: "fadeDeadCells", type: "bool"},
                 {prop: "drawCellsGrid", type: "bool"}];
     }
 }
@@ -767,14 +787,16 @@ module.exports = GameOfLifeIsometric;
 },{"./game-of-life":7,"./utils":25}],7:[function(require,module,exports){
 'use strict';
 
-/*
- * Conway's game of life visualization.
- * Cells that "died" in the previous step keep their color to achieve a stable image
- * since flickering is not good for a background image.
- * Game of life is one of the first programs I wrote in my life.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "Conway's game of life",
+      FILE = "game-of-life.js",
+      DESC = `
+Conway's game of life visualization.
+Cells that "died" in the previous step keep their color to achieve a stable image
+since flickering is not good for a background image.
+Game of life is one of the first programs I wrote in my life.
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 
@@ -784,14 +806,17 @@ class GameOfLife extends Animation {
                  cellPadding = 1,
                  spawnProb= 0.5,
                  cellShape = "square",
-                 deadCellsFadingSteps = 5) {
-        super(canvas, colors, colorsAlt, "Conway's game of life", "game-of-life.js");
+                 deadCellsFadingSteps = 5,
+                 loopGrid = true) {
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        
         this.cellSize = cellSize;
         this.cellBasePadding = cellPadding;
         this.spawnProb = spawnProb;
         this.cellShape = cellShape;
         this.deadCellsFadingSteps = deadCellsFadingSteps;
-
+        this.loopGrid = loopGrid;
+        
         this.gridWidth = 0;
         this.gridHeight = 0;
         this.grid = null;
@@ -807,9 +832,11 @@ class GameOfLife extends Animation {
     }
 
     isAlive(x, y) {
-        // if (x < 0 || x >= this.gridWidth || y < 0 || y >= this.gridHeight) return 0;
-        // else return (this.getVal(x, y) >= 1) ? 1 : 0;
-        return (this.getVal(x % this.gridWidth, y % this.gridHeight) >= 1) ? 1 : 0;
+        if(!this.loopGrid) {
+            if (x < 0 || x >= this.gridWidth || y < 0 || y >= this.gridHeight) return 0;
+            else return (this.getVal(x, y) >= 1) ? 1 : 0;
+        }
+        else return (this.getVal(x % this.gridWidth, y % this.gridHeight) >= 1) ? 1 : 0;
     }
 
     update(elapsed){
@@ -908,7 +935,8 @@ class GameOfLife extends Animation {
     }
 
     getSettings() {
-        return [{prop: "cellSize", type: "int", min: 4, max: 32, toCall: "resize"},
+        return [{prop: "loopGrid", type: "bool"},
+                {prop: "cellSize", type: "int", min: 4, max: 32, toCall: "resize"},
                 {prop: "cellShape", type: "select", values: ["square", "circle"]},
                 {prop: "deadCellsFadingSteps", type: "int", min: 0, max: 8}];
     }
@@ -927,11 +955,14 @@ module.exports = GameOfLife;
 },{"./animation":2}],8:[function(require,module,exports){
 'use strict';
 
-/*
- * Visualization of gradient descent-based optimizers.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "visualization of gradient descent algorithms",
+      FILE = "gradient-descent.js",
+      DESC = `
+Visualization of gradient descent-based optimizers.
+
+Coded with no external dependencies, using only canvas API.
+`;
+
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -1195,7 +1226,7 @@ class StyblinskiTangFunc extends Func{
 
 class GradientDescent extends Animation {
     constructor (canvas, colors, colorsAlt, functionToOptimize = "random") {
-        super(canvas, colors, colorsAlt, "visualization of gradient descent algorithms", "gradient-descent.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
         this.funcNames = ["with saddle point", "Beale", "Styblinski-Tang"];
         this.functionToOptimize = this.assignIfRandom(functionToOptimize, Utils.randomChoice(this.funcNames));
         this.funcClasses = [SaddlePointFunc, BealeFunc, StyblinskiTangFunc];
@@ -1451,6 +1482,7 @@ const colorsAlt = [ // Alt palette
 const content = document.getElementById("content");
 const elemBgShow = document.getElementById("background-show");
 const elemBgName = document.getElementById("background-name");
+const elemBgDesc = document.getElementById("background-description");
 const elemBgPrev = document.getElementById("background-previous");
 const elemBgNext = document.getElementById("background-next");
 const elemBgCode = document.getElementById("background-code");
@@ -1695,10 +1727,22 @@ if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
     });
 }
 
+function processDescription(description){
+    // Replace new lines \n with </br>
+    description = description.trim().replaceAll("\n\n", "</p><p>");
+    description = '<p>' + description + '</p>';
+
+    // Wrap urls into <a> tag
+    const urlRegex = /(.*)(https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*))(.*)/g
+    description = description.replaceAll(urlRegex, '\$1<a href="\$2">\$2</a>\$3');
+    return description;
+}
+
 function updateUI(){
     // Update basic controls
     if(elemBgName) elemBgName.innerHTML = animation.getName();
     if(elemBgCode) elemBgCode.href = animation.getCodeUrl();
+    if(elemBgDesc) elemBgDesc.innerHTML = processDescription(animation.getDescription());
 
     // Update list of animations
     let animationSelectOptions = "";
@@ -1725,14 +1769,13 @@ function updateUI(){
                 elemId = setting.prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls",
                 name = setting.prop.split(/(?=[A-Z])/).join(' ').toLowerCase();
 
-            let optionControls = '<div><span class="setting-name">' + name + ' = </span>'
+            let optionControls = `<div><span class="setting-name">${name}</span><span class="nowrap setting-value-control">`;
 
             if(["int", "float", "bool"].includes(setting['type'])) {
                 let inputType = "range";
                 if(setting.type === "bool") inputType = "checkbox";
 
-                optionControls += `<span class="nowrap"><input type="${inputType}" class="setting-input"` +
-                    ` name="${setting.prop}" id="${elemId}" value="${value}"`;
+                optionControls += `<input type="${inputType}" class="setting-input" name="${setting.prop}" id="${elemId}" value="${value}"`;
 
                 if(["int", "float"].includes(setting.type)) {
                     if(setting.step) optionControls += ` step="${setting.step}"`;
@@ -1784,13 +1827,16 @@ function updateUI(){
 },{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./game-of-life":7,"./game-of-life-isometric":6,"./gradient-descent":8,"./matrix":10,"./network":11,"./neural-network":12,"./particles-and-attractors":14,"./particles-vortex":15,"./particles-waves":16,"./perlin-noise-particles":17,"./quadtree":18,"./shortest-path":20,"./sine-waves":21,"./sorting":22,"./spinning-shapes":23,"./spirograph":24,"./utils":25}],10:[function(require,module,exports){
 'use strict';
 
-/*
- * Recreation of matrix digital rain based on this analysis
- * of the original effect: https://carlnewton.github.io/digital-rain-analysis/
- * I'm a huge fan of the first movie.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "Matrix digital rain",
+      FILE = "matrix.js",
+      DESC = `
+Recreation of matrix digital rain based on this analysis
+of the original effect: https://carlnewton.github.io/digital-rain-analysis/
+I'm a huge fan of the first movie.
+ 
+Coded with no external dependencies, using only canvas API.
+`;
+
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -1800,7 +1846,8 @@ class Matrix extends Animation {
                 dropsSize = 20,
                 dropsSpeed = 0.6,
                 fadingSpeed = 0.01) {
-        super(canvas, colors, colorsAlt, "Matrix digital rain", "matrix.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+
         this.dropsSize = dropsSize;
         this.dropsSpeed = dropsSpeed;
         this.fadingSpeed = fadingSpeed;
@@ -1912,13 +1959,15 @@ module.exports = Matrix;
 },{"./animation":2,"./utils":25}],11:[function(require,module,exports){
 'use strict';
 
-/*
- * Delaunay triangulation algorithm for cloud of moving particles
- * Creates to create network-like structure.
- *
- * Source of Delaunay triangulation implementation:
- * https://github.com/darkskyapp/delaunay-fast
- */
+const NAME = "Delaunay triangulation for a cloud of particles",
+      FILE = "network.js",
+      DESC = `
+Delaunay triangulation algorithm for cloud of moving particles
+Applied to create network-like structure.
+
+Source of Delaunay triangulation implementation:
+https://github.com/darkskyapp/delaunay-fast
+`;
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -1930,7 +1979,7 @@ class Network extends Animation {
                 fillTriangles = true,
                 drawParticles = false,
                 distanceThreshold = 125) {
-        super(canvas, colors, colorsAlt, 'Delaunay triangulation for a cloud of particles', "network.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
 
         this.particlesDensity = particlesDensity;
         this.fillTriangles = fillTriangles;
@@ -2056,6 +2105,8 @@ module.exports = Network;
 'use strict';
 
 /*
+ * Temporarily disabled, this old animation needs some improvement.
+ *
  * Visualization of a simple, fully connected neural network, with random weights,
  * ReLU activations on intermediate layers, and sigmoid output at the last layer.
  *
@@ -2495,14 +2546,16 @@ module.exports = NeuralNetwork;
 },{}],14:[function(require,module,exports){
 'use strict';
 
-/*
- * Very simple particles system with attractors.
- * In this system, distance and momentum are ignored.
- * The new velocity vector of a particle is calculated as the sum of angles
- * between the particle and all attractors (see line 51+).
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "system of particles and attractors",
+      FILE = "particles-and-attractors.js",
+      DESC = `
+Very simple particles system with attractors.
+In this system, distance and momentum are ignored.
+The new velocity vector of a particle is calculated as the sum of angles
+between the particle and all attractors (see line 51+).
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -2518,7 +2571,8 @@ class ParticlesAndAttractors extends Animation {
                  drawAttractors = false,
                  scale = 1,
                  rainbowColors = false) {
-        super(canvas, colors, colorsAlt, "system of particles and attractors", "particles-and-attractors.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+
         this.particles = []
         this.numParticles = numParticles;
         this.particlesSpeed = this.assignIfRandom(particlesSpeed, Utils.round(Utils.randomRange(5, 15)));
@@ -2617,11 +2671,13 @@ module.exports = ParticlesAndAttractors;
 },{"./animation":2,"./utils":25}],15:[function(require,module,exports){
 'use strict';
 
-/*
- * Particles vortex with randomized speed and direction.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "vortex of particles",
+      FILE = "particles-vortex.js",
+      DESC = `
+Particles vortex with randomized speed and direction.
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Noise = require("./noise");
@@ -2636,7 +2692,7 @@ class ParticlesVortex extends Animation {
                  dirX = "random",
                  dirY = "random",
                  scale = 1){
-        super(canvas, colors, colorsAlt, "vortex of particles", "particles-vortex.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
 
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
@@ -2707,12 +2763,14 @@ module.exports = ParticlesVortex;
 },{"./animation":2,"./noise":13,"./utils":25}],16:[function(require,module,exports){
 'use strict';
 
-/*
- * "Particles waves" animation.
- * The effect was achieved by modifying perlin-noise-particles.js.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "particles waves",
+      FILE = "particles-waves.js",
+      DESC = `
+"Particles waves" animation.
+The effect was achieved by modifying perlin-noise-particles.js.
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Noise = require("./noise");
@@ -2723,7 +2781,7 @@ class ParticlesStorm extends Animation {
                 particlesDensity = 0.005,
                 noiseScale = 0.001,
                 fadingSpeed = 0.02) {
-        super(canvas, colors, colorsAlt, "particles waves", "particles-waves.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
 
         this.particlesDensity = particlesDensity;
         this.noiseScale = noiseScale;
@@ -2797,11 +2855,13 @@ module.exports = ParticlesStorm;
 },{"./animation":2,"./noise":13,"./utils":25}],17:[function(require,module,exports){
 'use strict';
 
-/*
- * Particles moving through Perlin noise.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "particles moving through Perlin noise",
+      FILE = "perlin-noise-particles.js",
+      DESC = `
+Particles moving through Perlin noise.
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Noise = require("./noise");
@@ -2813,7 +2873,8 @@ class PerlinNoiseParticles extends Animation {
                 noiseScale = 0.001,
                 particlesSpeed = 1,
                 fadingSpeed = 0) {
-        super(canvas, colors, colorsAlt, "particles moving through Perlin noise", "perlin-noise-particles.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+
         this.particlesDensity = particlesDensity;
         this.noiseScale = noiseScale;
         this.noise = Noise.noise;
@@ -2926,12 +2987,14 @@ module.exports = PerlinNoiseParticles;
 },{"./animation":2,"./noise":13,"./utils":25}],18:[function(require,module,exports){
 'use strict';
 
-/*
- * Visualization of quadtree algorithm.
- * See: https://en.wikipedia.org/wiki/Quadtree
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "quadtree visualization",
+      FILE = "quadtree.js",
+      DESC = `
+Visualization of quadtree algorithm.
+See: https://en.wikipedia.org/wiki/Quadtree
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -2943,8 +3006,8 @@ class Quadtree extends Animation {
                 pointsDensity = 9,
                 drawPoints = false,
                 noiseScale = 0.001) {
-        super(canvas, colors, colorsAlt, "Quadtree visualization", "quadtree.js");
-        this.pointsDensity = pointsDensity; // 
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        this.pointsDensity = pointsDensity;
 
         this.noiseScale = noiseScale;
         this.noise = Noise.noise;
@@ -3033,7 +3096,7 @@ module.exports = Quadtree;
 
 /*
  * Simple and efficient implementation of a queue, with naive priority option
- * (this part is not efficient, but for animation purposes, it doesn't have to).
+ * (the priority part is not efficient, but for animation purpose it doesn't have to).
  */
 
 class Queue {
@@ -3090,12 +3153,14 @@ module.exports = Queue;
 },{}],20:[function(require,module,exports){
 'use strict';
 
-/*
- * Animation showing process of finding the shortest path
- * in the grid world by BFS or A* algorithm.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "finding the shortest path",
+      FILE = "shortest-path.js",
+      DESC = `
+Animation showing process of finding the shortest path
+in the grid world by BFS or A* algorithm.
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -3115,7 +3180,7 @@ class ShortestPath extends Animation {
                  searchAlgorithm = "A*", //"random",
                  speed = 1,
                  showStats = false) {
-        super(canvas, colors, colorsAlt, "finding the shortest path", "shortest-path.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
         this.cellSize = cellSize;
         this.speed = speed;
         this.showStats = showStats;
@@ -3366,11 +3431,15 @@ module.exports = ShortestPath;
 },{"./animation":2,"./queue":19,"./utils":25}],21:[function(require,module,exports){
 'use strict';
 
-/*
- * Grid of sine waves.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "grid of sine waves",
+      FILE = "sine-waves.js",
+      DESC = `
+Grid of random sine waves.
+The interesting "effects" for some waves is the artifact of drawing procedure
+that draw lines between coordinates that are evenly distributed on the x-axis.
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -3380,7 +3449,8 @@ class SineWaves extends Animation {
                 cellSize = 48,
                 cellMargin = 12,
                 rotateCells = false) {
-        super(canvas, colors, colorsAlt, "grid of sine waves", "sine-waves.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+
         this.cellSize = cellSize;
         this.cellMargin = cellMargin;
         this.rotateCells = rotateCells;
@@ -3454,11 +3524,13 @@ module.exports = SineWaves;
 },{"./animation":2,"./utils":25}],22:[function(require,module,exports){
 'use strict';
 
-/*
- * Visualization of different sorting algorithms.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "sorting algorithm visualization",
+      FILE = "sorting.js",
+      DESC = `
+Visualization of different sorting algorithms.
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -3742,7 +3814,8 @@ class Sorting extends Animation {
                  swapDuration = 0.25,
                  speed = 1,
                  showStats = false) {
-        super(canvas, colors, colorsAlt, "Sorting algorithm visualization", "sorting.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+
         this.numElements = numElements;
         this.elementPadding = elementPadding;
         this.cmpDuration = cmpDuration;
@@ -3907,12 +3980,14 @@ module.exports = Sorting;
 },{"./animation":2,"./utils":25}],23:[function(require,module,exports){
 'use strict';
 
-/*
- * Shapes moving in a circle/dancing.
- * Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "shapes dancing in a circle",
+      FILE = "spinning-shapes.js",
+      DESC = `
+Shapes moving/"dancing" in a circle.
+Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
+ 
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -3926,7 +4001,7 @@ class SpinningShapes extends Animation {
                  colorsScale = 1,
                  colorsShift = "random",
                  rainbowColors = false) {
-        super(canvas, colors, colorsAlt, "", "spinning-shapes.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
 
         this.shapeNames = ["circles", "points", "lines", "triangles", "rectangles", "pentagons", "hexagons", "heptagons", "octagons"];
         this.vertices = this.assignIfRandom(vertices, Utils.randomInt(0, 8));
@@ -3997,13 +4072,15 @@ module.exports = SpinningShapes
 },{"./animation":2,"./utils":25}],24:[function(require,module,exports){
 'use strict';
 
-/*
- * Spirograph created with 1-5 random gears.
- * See: https://en.wikipedia.org/wiki/Spirograph,
- * and: http://www.eddaardvark.co.uk/v2/spirograph/spirograph2.html (this site is amazing).
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "spirograph",
+      FILE = "spirograph.js",
+      DESC = `
+Spirograph created with 1-5 random gears.
+See: https://en.wikipedia.org/wiki/Spirograph,
+and: http://www.eddaardvark.co.uk/v2/spirograph/spirograph2.html (this site is amazing).
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -4015,7 +4092,7 @@ class Spirograph extends Animation {
                  gearCount = "random",
                  rescaleToFit = true,
                  scale = 1) {
-        super(canvas, colors, colorsAlt, "spirograph", "spirograph.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
 
         this.vertices = vertices;
         this.length = length;
@@ -4107,8 +4184,11 @@ module.exports = Spirograph
 },{"./animation":2,"./utils":25}],25:[function(require,module,exports){
 'use strict';
 
-module.exports = {
+/*
+ * Module with some commonly used functions
+ */
 
+module.exports = {
     // Randomization helpers
     randomRange(min, max) {
         return Math.random() * (max - min) + min;

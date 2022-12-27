@@ -1,11 +1,13 @@
 'use strict';
 
-/*
- * Shapes moving in a circle/dancing.
- * Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "shapes dancing in a circle",
+      FILE = "spinning-shapes.js",
+      DESC = `
+Shapes moving/"dancing" in a circle.
+Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
+ 
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -19,7 +21,7 @@ class SpinningShapes extends Animation {
                  colorsScale = 1,
                  colorsShift = "random",
                  rainbowColors = false) {
-        super(canvas, colors, colorsAlt, "", "spinning-shapes.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
 
         this.shapeNames = ["circles", "points", "lines", "triangles", "rectangles", "pentagons", "hexagons", "heptagons", "octagons"];
         this.vertices = this.assignIfRandom(vertices, Utils.randomInt(0, 8));

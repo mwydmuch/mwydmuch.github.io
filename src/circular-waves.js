@@ -1,10 +1,12 @@
 'use strict';
 
-/*
- * Circular waves animation.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "circular waves",
+      FILE = "circular-waves.js",
+      DESC = `
+Circular waves animation.
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Noise = require("./noise");
@@ -18,7 +20,7 @@ class CircularWaves extends Animation {
                 radiusScaleMax = 1.2,
                 fadingSpeed = 0.001,
                 rainbowColors = false) {
-        super(canvas, colors, colorsAlt, "circular waves", "circular-waves.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
 

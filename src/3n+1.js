@@ -1,11 +1,15 @@
 'use strict';
 
-/*
- * 3n + 1 (Collatz Conjecture) visualization.
- * Inspired by Veritasium video: https://www.youtube.com/watch?v=094y1Z2wpJg
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "3n + 1 (Collatz Conjecture) visualization",
+      FILE = "3n+1.js",
+      DESC = `
+3n + 1 (Collatz Conjecture) visualization.
+Inspired by Veritasium video: 
+https://www.youtube.com/watch?v=094y1Z2wpJg
+
+Coded with no external dependencies, using only canvas API.
+`;
+
 
 const Animation = require("./animation");
 
@@ -16,7 +20,7 @@ class ThreeNPlusOne extends Animation {
                 oddAngle = -20,
                 drawNumbers = false,
                 scale = 1) {
-        super(canvas, colors, colorsAlt, "3n + 1 (Collatz Conjecture) visualization", "3n+1.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
         this.length = length;
         this.evenAngle = evenAngle;
         this.oddAngle = oddAngle;

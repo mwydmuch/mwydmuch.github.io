@@ -1,12 +1,14 @@
 'use strict';
 
-/*
- * Delaunay triangulation algorithm for cloud of moving particles
- * Creates to create network-like structure.
- *
- * Source of Delaunay triangulation implementation:
- * https://github.com/darkskyapp/delaunay-fast
- */
+const NAME = "Delaunay triangulation for a cloud of particles",
+      FILE = "network.js",
+      DESC = `
+Delaunay triangulation algorithm for cloud of moving particles
+Applied to create network-like structure.
+
+Source of Delaunay triangulation implementation:
+https://github.com/darkskyapp/delaunay-fast
+`;
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -18,7 +20,7 @@ class Network extends Animation {
                 fillTriangles = true,
                 drawParticles = false,
                 distanceThreshold = 125) {
-        super(canvas, colors, colorsAlt, 'Delaunay triangulation for a cloud of particles', "network.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
 
         this.particlesDensity = particlesDensity;
         this.fillTriangles = fillTriangles;

@@ -1,13 +1,15 @@
 'use strict';
 
-/*
- * Conway's game of life visualization.
- * Cells that "died" in the previous step keep their color to achieve a stable image
- * since flickering is not good for a background image.
- * Game of life is one of the first programs I wrote in my life.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "Conway's game of life",
+      FILE = "game-of-life.js",
+      DESC = `
+Conway's game of life visualization.
+Cells that "died" in the previous step keep their color to achieve a stable image
+since flickering is not good for a background image.
+Game of life is one of the first programs I wrote in my life.
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 
@@ -17,14 +19,17 @@ class GameOfLife extends Animation {
                  cellPadding = 1,
                  spawnProb= 0.5,
                  cellShape = "square",
-                 deadCellsFadingSteps = 5) {
-        super(canvas, colors, colorsAlt, "Conway's game of life", "game-of-life.js");
+                 deadCellsFadingSteps = 5,
+                 loopGrid = true) {
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        
         this.cellSize = cellSize;
         this.cellBasePadding = cellPadding;
         this.spawnProb = spawnProb;
         this.cellShape = cellShape;
         this.deadCellsFadingSteps = deadCellsFadingSteps;
-
+        this.loopGrid = loopGrid;
+        
         this.gridWidth = 0;
         this.gridHeight = 0;
         this.grid = null;
@@ -40,9 +45,11 @@ class GameOfLife extends Animation {
     }
 
     isAlive(x, y) {
-        // if (x < 0 || x >= this.gridWidth || y < 0 || y >= this.gridHeight) return 0;
-        // else return (this.getVal(x, y) >= 1) ? 1 : 0;
-        return (this.getVal(x % this.gridWidth, y % this.gridHeight) >= 1) ? 1 : 0;
+        if(!this.loopGrid) {
+            if (x < 0 || x >= this.gridWidth || y < 0 || y >= this.gridHeight) return 0;
+            else return (this.getVal(x, y) >= 1) ? 1 : 0;
+        }
+        else return (this.getVal(x % this.gridWidth, y % this.gridHeight) >= 1) ? 1 : 0;
     }
 
     update(elapsed){
@@ -141,7 +148,8 @@ class GameOfLife extends Animation {
     }
 
     getSettings() {
-        return [{prop: "cellSize", type: "int", min: 4, max: 32, toCall: "resize"},
+        return [{prop: "loopGrid", type: "bool"},
+                {prop: "cellSize", type: "int", min: 4, max: 32, toCall: "resize"},
                 {prop: "cellShape", type: "select", values: ["square", "circle"]},
                 {prop: "deadCellsFadingSteps", type: "int", min: 0, max: 8}];
     }

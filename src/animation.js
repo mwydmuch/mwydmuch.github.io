@@ -7,7 +7,10 @@
 const Utils = require("./utils");
 
 class Animation {
-    constructor(canvas, colors, colorsAlt, name, file) {
+    constructor(canvas, colors, colorsAlt,
+                name = "",
+                file = "",
+                description = "") {
         this.ctx = canvas.getContext("2d", { alpha: false });
         this.bgColor = "#FFFFFF";
         this.colors = colors;
@@ -17,6 +20,7 @@ class Animation {
 
         this.name = name;
         this.file = file;
+        this.description = description;
         this.time = 0;
         this.frame = 0;
         this.speed = 1;
@@ -32,7 +36,7 @@ class Animation {
         else return value;
     }
 
-    clear(){
+    clear(){  // Clear background
         Utils.clear(this.ctx, this.bgColor);
     }
 
@@ -52,6 +56,10 @@ class Animation {
 
     getCodeUrl(){
         return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/src/" + this.file;
+    }
+
+    getDescription(){
+        return this.description;
     }
 
     update(elapsed){

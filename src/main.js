@@ -75,6 +75,7 @@ const colorsAlt = [ // Alt palette
 const content = document.getElementById("content");
 const elemBgShow = document.getElementById("background-show");
 const elemBgName = document.getElementById("background-name");
+const elemBgDesc = document.getElementById("background-description");
 const elemBgPrev = document.getElementById("background-previous");
 const elemBgNext = document.getElementById("background-next");
 const elemBgCode = document.getElementById("background-code");
@@ -319,10 +320,22 @@ if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
     });
 }
 
+function processDescription(description){
+    // Replace new lines \n with </br>
+    description = description.trim().replaceAll("\n\n", "</p><p>");
+    description = '<p>' + description + '</p>';
+
+    // Wrap urls into <a> tag
+    const urlRegex = /(.*)(https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*))(.*)/g
+    description = description.replaceAll(urlRegex, '\$1<a href="\$2">\$2</a>\$3');
+    return description;
+}
+
 function updateUI(){
     // Update basic controls
     if(elemBgName) elemBgName.innerHTML = animation.getName();
     if(elemBgCode) elemBgCode.href = animation.getCodeUrl();
+    if(elemBgDesc) elemBgDesc.innerHTML = processDescription(animation.getDescription());
 
     // Update list of animations
     let animationSelectOptions = "";
@@ -349,14 +362,13 @@ function updateUI(){
                 elemId = setting.prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls",
                 name = setting.prop.split(/(?=[A-Z])/).join(' ').toLowerCase();
 
-            let optionControls = '<div><span class="setting-name">' + name + ' = </span>'
+            let optionControls = `<div><span class="setting-name">${name}</span><span class="nowrap setting-value-control">`;
 
             if(["int", "float", "bool"].includes(setting['type'])) {
                 let inputType = "range";
                 if(setting.type === "bool") inputType = "checkbox";
 
-                optionControls += `<span class="nowrap"><input type="${inputType}" class="setting-input"` +
-                    ` name="${setting.prop}" id="${elemId}" value="${value}"`;
+                optionControls += `<input type="${inputType}" class="setting-input" name="${setting.prop}" id="${elemId}" value="${value}"`;
 
                 if(["int", "float"].includes(setting.type)) {
                     if(setting.step) optionControls += ` step="${setting.step}"`;

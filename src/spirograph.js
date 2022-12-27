@@ -1,12 +1,14 @@
 'use strict';
 
-/*
- * Spirograph created with 1-5 random gears.
- * See: https://en.wikipedia.org/wiki/Spirograph,
- * and: http://www.eddaardvark.co.uk/v2/spirograph/spirograph2.html (this site is amazing).
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "spirograph",
+      FILE = "spirograph.js",
+      DESC = `
+Spirograph created with 1-5 random gears.
+See: https://en.wikipedia.org/wiki/Spirograph,
+and: http://www.eddaardvark.co.uk/v2/spirograph/spirograph2.html (this site is amazing).
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -18,7 +20,7 @@ class Spirograph extends Animation {
                  gearCount = "random",
                  rescaleToFit = true,
                  scale = 1) {
-        super(canvas, colors, colorsAlt, "spirograph", "spirograph.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
 
         this.vertices = vertices;
         this.length = length;

@@ -1,10 +1,12 @@
 'use strict';
 
-/*
- * Particles moving through Perlin noise.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "particles moving through Perlin noise",
+      FILE = "perlin-noise-particles.js",
+      DESC = `
+Particles moving through Perlin noise.
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Noise = require("./noise");
@@ -16,7 +18,8 @@ class PerlinNoiseParticles extends Animation {
                 noiseScale = 0.001,
                 particlesSpeed = 1,
                 fadingSpeed = 0) {
-        super(canvas, colors, colorsAlt, "particles moving through Perlin noise", "perlin-noise-particles.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+
         this.particlesDensity = particlesDensity;
         this.noiseScale = noiseScale;
         this.noise = Noise.noise;

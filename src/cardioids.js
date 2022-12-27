@@ -1,14 +1,17 @@
 'use strict';
 
-/*
- * Modified method of L. Cremona for drawing cardioid with a pencil of lines,
- * as described in section "cardioid as envelope of a pencil of lines" of:
- * https://en.wikipedia.org/wiki/Cardioid
- * Here the shift of the second point is determined by time passed
- * from the beginning of the animation.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "cardioids with a pencil of lines",
+      FILE = "cardioids.js",
+      DESC = `
+Modified method of L. Cremona for drawing cardioid with a pencil of lines,
+as described in section "cardioid as envelope of a pencil of lines" of:
+https://en.wikipedia.org/wiki/Cardioid
+
+Here the shift of the second point is determined by time passed
+from the beginning of the animation.
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -19,15 +22,13 @@ class Cardioids extends Animation {
                  scale = 1.0,
                  speed = 0.05,
                  rainbowColors = false) {
-        super(canvas, colors, colorsAlt, "cardioids with a pencil of lines", "cardioids.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
 
         this.lines = lines;
         this.scale = scale;
         this.speed = speed;
         this.rainbowColors = rainbowColors;
-
         this.radius = 0;
-        this.position = 0;
     }
 
     getVec(i){

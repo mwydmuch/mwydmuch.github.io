@@ -1,11 +1,13 @@
 'use strict';
 
-/*
- * Visualization of quadtree algorithm.
- * See: https://en.wikipedia.org/wiki/Quadtree
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "quadtree visualization",
+      FILE = "quadtree.js",
+      DESC = `
+Visualization of quadtree algorithm.
+See: https://en.wikipedia.org/wiki/Quadtree
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -17,8 +19,8 @@ class Quadtree extends Animation {
                 pointsDensity = 9,
                 drawPoints = false,
                 noiseScale = 0.001) {
-        super(canvas, colors, colorsAlt, "Quadtree visualization", "quadtree.js");
-        this.pointsDensity = pointsDensity; // 
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        this.pointsDensity = pointsDensity;
 
         this.noiseScale = noiseScale;
         this.noise = Noise.noise;

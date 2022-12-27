@@ -2,7 +2,7 @@
 
 /*
  * Simple and efficient implementation of a queue, with naive priority option
- * (this part is not efficient, but for animation purposes, it doesn't have to).
+ * (the priority part is not efficient, but for animation purpose it doesn't have to).
  */
 
 class Queue {

@@ -1,10 +1,13 @@
 'use strict';
 
-/*
- * Visualization of gradient descent-based optimizers.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "visualization of gradient descent algorithms",
+      FILE = "gradient-descent.js",
+      DESC = `
+Visualization of gradient descent-based optimizers.
+
+Coded with no external dependencies, using only canvas API.
+`;
+
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -268,7 +271,7 @@ class StyblinskiTangFunc extends Func{
 
 class GradientDescent extends Animation {
     constructor (canvas, colors, colorsAlt, functionToOptimize = "random") {
-        super(canvas, colors, colorsAlt, "visualization of gradient descent algorithms", "gradient-descent.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
         this.funcNames = ["with saddle point", "Beale", "Styblinski-Tang"];
         this.functionToOptimize = this.assignIfRandom(functionToOptimize, Utils.randomChoice(this.funcNames));
         this.funcClasses = [SaddlePointFunc, BealeFunc, StyblinskiTangFunc];

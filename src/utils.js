@@ -1,7 +1,10 @@
 'use strict';
 
-module.exports = {
+/*
+ * Module with some commonly used functions
+ */
 
+module.exports = {
     // Randomization helpers
     randomRange(min, max) {
         return Math.random() * (max - min) + min;

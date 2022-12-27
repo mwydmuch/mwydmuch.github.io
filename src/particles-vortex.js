@@ -1,10 +1,12 @@
 'use strict';
 
-/*
- * Particles vortex with randomized speed and direction.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "vortex of particles",
+      FILE = "particles-vortex.js",
+      DESC = `
+Particles vortex with randomized speed and direction.
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Noise = require("./noise");
@@ -19,7 +21,7 @@ class ParticlesVortex extends Animation {
                  dirX = "random",
                  dirY = "random",
                  scale = 1){
-        super(canvas, colors, colorsAlt, "vortex of particles", "particles-vortex.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
 
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));

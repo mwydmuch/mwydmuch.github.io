@@ -1,11 +1,13 @@
 'use strict';
 
-/*
- * Animation showing process of finding the shortest path
- * in the grid world by BFS or A* algorithm.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "finding the shortest path",
+      FILE = "shortest-path.js",
+      DESC = `
+Animation showing process of finding the shortest path
+in the grid world by BFS or A* algorithm.
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -25,7 +27,7 @@ class ShortestPath extends Animation {
                  searchAlgorithm = "A*", //"random",
                  speed = 1,
                  showStats = false) {
-        super(canvas, colors, colorsAlt, "finding the shortest path", "shortest-path.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
         this.cellSize = cellSize;
         this.speed = speed;
         this.showStats = showStats;

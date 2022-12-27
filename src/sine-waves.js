@@ -1,10 +1,14 @@
 'use strict';
 
-/*
- * Grid of sine waves.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "grid of sine waves",
+      FILE = "sine-waves.js",
+      DESC = `
+Grid of random sine waves.
+The interesting "effects" for some waves is the artifact of drawing procedure
+that draw lines between coordinates that are evenly distributed on the x-axis.
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -14,7 +18,8 @@ class SineWaves extends Animation {
                 cellSize = 48,
                 cellMargin = 12,
                 rotateCells = false) {
-        super(canvas, colors, colorsAlt, "grid of sine waves", "sine-waves.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+
         this.cellSize = cellSize;
         this.cellMargin = cellMargin;
         this.rotateCells = rotateCells;

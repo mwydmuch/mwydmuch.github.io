@@ -1,11 +1,13 @@
 'use strict';
 
-/*
- * "Particles waves" animation.
- * The effect was achieved by modifying perlin-noise-particles.js.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "particles waves",
+      FILE = "particles-waves.js",
+      DESC = `
+"Particles waves" animation.
+The effect was achieved by modifying perlin-noise-particles.js.
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Noise = require("./noise");
@@ -16,7 +18,7 @@ class ParticlesStorm extends Animation {
                 particlesDensity = 0.005,
                 noiseScale = 0.001,
                 fadingSpeed = 0.02) {
-        super(canvas, colors, colorsAlt, "particles waves", "particles-waves.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
 
         this.particlesDensity = particlesDensity;
         this.noiseScale = noiseScale;
