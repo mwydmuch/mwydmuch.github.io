@@ -22,6 +22,7 @@ class GameOfLifeIsometric extends GameOfLife {
                  drawCellsGrid = true,
                  loopGrid = true) {
         super(canvas, colors, colorsAlt, cellSize, cellBasePadding, spawnProb, loopGrid);
+
         this.name = NAME;
         this.file = FILE;
         this.description = DESC;

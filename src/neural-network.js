@@ -20,10 +20,8 @@ class NeuralNetwork extends Animation {
 
         this.baseNodeSize = 3;
         this.baseLineSize = 1;
-    }
 
-    getFPS(){
-        return 1.5; // Override default framerate
+        this.fps = 1.5; // Override default framerate
     }
 
     update(timeElapsed){

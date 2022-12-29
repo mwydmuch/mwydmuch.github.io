@@ -12,23 +12,32 @@ class Animation {
                 file = "",
                 description = "") {
         this.ctx = canvas.getContext("2d", { alpha: false });
+
+        // Colors variables
         this.bgColor = "#FFFFFF";
         this.colors = colors;
         this.colorsAlt = colorsAlt;
         this.colorA = colors[0];
         this.colorB = colors[3];
 
+        // Basic info
         this.name = name;
         this.file = file;
         this.description = description;
+
+        // Time variables
         this.time = 0;
         this.frame = 0;
         this.speed = 1;
+        this.fps = 30;
 
         // Reset text settings
         this.ctx.font = '14px sans-serif';
         this.ctx.textAlign = "left";
         this.ctx.textBaseline = "alphabetic";
+
+        // Debug flag
+        this.debug = false;
     }
 
     assignIfRandom(value, random){  // Commonly used by many constructors
@@ -47,7 +56,7 @@ class Animation {
     }
 
     getFPS(){
-        return 30;
+        return this.fps;
     }
 
     getName(){

@@ -19,7 +19,7 @@ class Queue {
     }
 
     push(elem){
-        if (this.size === this.array.length) {
+        if (this.size >= this.array.length) {
             let newArray = new Array(this.size * 2);
             for (let i = 0; i < this.size; i++) newArray[i] = this.array[(this.first + i) % this.size];
             this.first = 0;
@@ -30,7 +30,7 @@ class Queue {
         ++this.size;
 
         if(this.priorityQueue && this.size > 1){
-            for(let i = this.size - 1; i >= 0; --i){
+            for(let i = this.size - 1; i > 0; --i){
                 let elemIdx = this.getArrayIdx(i);
                 let nextIdx = this.getArrayIdx(i - 1);
                 if(this.elemComperator(this.array[elemIdx], this.array[nextIdx]))

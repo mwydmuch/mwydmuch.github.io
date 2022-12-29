@@ -380,8 +380,7 @@ class Sorting extends Animation {
                     return time >= duration;
                 });
             }
-
-            if(s[0] === "swap") {
+            else if(s[0] === "swap") {
                 let e1 = s[1], e2 = s[2];
                 let pos1 = [],
                     pos2 = [],

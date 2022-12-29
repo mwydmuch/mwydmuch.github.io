@@ -12,21 +12,23 @@ Coded with no external dependencies, using only canvas API.
 `;
 
 const Animation = require("./animation");
+const Utils = require("./utils");
 
 class GameOfLife extends Animation {
     constructor (canvas, colors, colorsAlt,
                  cellSize = 12,
                  cellPadding = 1,
                  spawnProb= 0.5,
-                 cellShape = "square",
-                 deadCellsFadingSteps = 5,
-                 loopGrid = true) {
+                 loopGrid = true,
+                 cellStyle = "random",
+                 deadCellsFadingSteps = 5) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
         
         this.cellSize = cellSize;
         this.cellBasePadding = cellPadding;
         this.spawnProb = spawnProb;
-        this.cellShape = cellShape;
+        this.cellStyles = ["square", "circle"];
+        this.cellStyle = this.assignIfRandom(cellStyle, Utils.randomChoice(this.cellStyles));
         this.deadCellsFadingSteps = deadCellsFadingSteps;
         this.loopGrid = loopGrid;
         
@@ -87,7 +89,7 @@ class GameOfLife extends Animation {
     draw() {
         this.clear();
 
-        if(this.cellShape === "square") this.drawCell = this.drawSquareCell;
+        if(this.cellStyle === "square") this.drawCell = this.drawSquareCell;
         else this.drawCell = this.drawCircleCell;
 
         const maxPadding = this.cellSize / 2 - this.cellBasePadding,
@@ -150,7 +152,7 @@ class GameOfLife extends Animation {
     getSettings() {
         return [{prop: "loopGrid", type: "bool"},
                 {prop: "cellSize", type: "int", min: 4, max: 32, toCall: "resize"},
-                {prop: "cellShape", type: "select", values: ["square", "circle"]},
+                {prop: "cellStyle", type: "select", values: this.cellStyles},
                 {prop: "deadCellsFadingSteps", type: "int", min: 0, max: 8}];
     }
 
