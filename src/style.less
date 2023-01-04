@@ -277,14 +277,14 @@ each(@fade-show-values, {
       //filter: grayscale(0%);
     }
     to {
-      opacity: percentage(@value / 100);
+      opacity: percentage((@value / 100));
       //filter: grayscale(@grayscale);
     }
   });
 
   .keyframes(%("show-from-%s-animation", @value), {
     from {
-      opacity: percentage(@value / 100);
+      opacity: percentage((@value / 100));
       //filter: grayscale(@grayscale);
     }
     to {
@@ -294,7 +294,7 @@ each(@fade-show-values, {
   });
 
   .faded-@{value} {
-    opacity: percentage(@value / 100);
+    opacity: percentage((@value / 100));
     //filter: grayscale(@grayscale);
   }
 
@@ -302,7 +302,7 @@ each(@fade-show-values, {
     animation: %("fade-to-%s-animation", @value);
     animation-duration: @global-animation-duration;
     animation-timing-function: ease;
-    opacity: percentage(@value / 100);
+    opacity: percentage((@value / 100));
     //filter: grayscale(@grayscale);
   }
 
