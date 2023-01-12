@@ -215,12 +215,15 @@ ul {
 .date-li i {
   text-indent: 0;
 }
-#background {
+.background {
   position: absolute;
   top: 0;
   left: 0;
   z-index: -1;
   overflow: hidden;
+}
+.animation-container {
+  position: relative;
 }
 #me {
   text-align: center;
@@ -367,29 +370,6 @@ ul {
   animation-timing-function: ease;
   opacity: 100%;
 }
-@keyframes hue-animation {
-  0% {
-    filter: hue-rotate(0deg);
-  }
-  25% {
-    filter: hue-rotate(20deg);
-  }
-  50% {
-    filter: hue-rotate(0deg);
-  }
-  75% {
-    filter: hue-rotate(-20deg);
-  }
-  100% {
-    filter: hue-rotate(0deg);
-  }
-}
-.hue-change {
-  animation: hue-animation;
-  animation-duration: 5s;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-}
 .hide {
   display: none;
 }
@@ -422,7 +402,7 @@ ul {
 #background-settings-controls a:active {
   color: #FFFFFF;
 }
-#background-settings-controls {
+.floating-controls {
   position: fixed;
   top: 10px;
   left: 10px;
@@ -430,6 +410,8 @@ ul {
   z-index: 1000;
   padding: 0.25rem;
   cursor: move;
+}
+#background-settings-controls {
   transition: opacity 0.5s;
   width: 19rem;
   max-height: 100%;
@@ -455,6 +437,7 @@ ul {
   height: 0.5rem;
   margin-right: 0.25rem;
   display: inline-block;
+  text-align: center;
 }
 #background-settings-controls .settings-section .setting-value-control .setting-select {
   width: 9rem;
@@ -471,4 +454,34 @@ ul {
   float: right;
   cursor: pointer;
   margin-left: 0.5rem;
+}
+.slider::-webkit-slider-thumb,
+.slider::-moz-range-thumb {
+  background: linear-gradient(135deg, #38575A, #43696B);
+  border: 2px solid #FFFFFF;
+}
+.form-checkbox input:checked + .form-icon,
+.form-radio input:checked + .form-icon,
+.form-switch input:checked + .form-icon {
+  background: linear-gradient(135deg, #38575A, #43696B);
+  border: 2px solid #FFFFFF;
+}
+.form-checkbox input:focus + .form-icon,
+.form-radio input:focus + .form-icon,
+.form-switch input:focus + .form-icon {
+  border-color: #43696B;
+}
+.form-checkbox,
+.form-radio,
+.form-switch {
+  padding: 0;
+  margin: 0;
+  min-height: 0;
+}
+.form-checkbox .form-icon,
+.form-radio .form-icon {
+  left: unset;
+  top: unset;
+  margin-left: -0.4rem;
+  margin-top: -0.15rem;
 }

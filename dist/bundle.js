@@ -1419,6 +1419,8 @@ module.exports = GradientDescent;
 },{"./animation":2,"./utils":25}],9:[function(require,module,exports){
 'use strict';
 
+// TODO: Refactor/wrap this code into animation/background controller class/module
+
 // Require
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -1636,7 +1638,6 @@ if(elemBgShow) {
         content.classList.remove("fade-out");
         content.classList.add("fade-in");
         canvas.classList.remove("show-from-10");
-        //canvas.classList.remove("hue-change");
         canvas.classList.add("fade-to-10");
         elemBgShow.innerHTML = "<i class=\"fas fa-eye\"></i> show";
     }
@@ -1646,7 +1647,6 @@ if(elemBgShow) {
         content.classList.add("fade-out");
         canvas.classList.remove("faded-10");
         canvas.classList.remove("fade-to-10");
-        //canvas.classList.add("hue-change");
         canvas.classList.add("show-from-10");
         elemBgShow.innerHTML = "<i class=\"fas fa-eye-slash\"></i> hide";
     }
@@ -1784,20 +1784,20 @@ function updateUI(){
             let optionControls = `<div><span class="setting-name">${name}</span><span class="nowrap setting-value-control">`;
 
             if(["int", "float", "bool"].includes(setting['type'])) {
-                let inputType = "range";
-                if(setting.type === "bool") inputType = "checkbox";
-
-                optionControls += `<input type="${inputType}" class="setting-input" name="${setting.prop}" id="${elemId}" value="${value}"`;
-
+                // Set proper input parameters
+                let inputParams = `name="${setting.prop}" id="${elemId}" value="${value}"`;
                 if(["int", "float"].includes(setting.type)) {
-                    if(setting.step) optionControls += ` step="${setting.step}"`;
-                    else if(setting.type === "float") optionControls += ' step="0.01"';
-                    else optionControls += ' step="1"';
-                    optionControls += ` min="${setting["min"]}" max="${setting["max"]}"`;
+                    if(setting.step) inputParams += ` step="${setting.step}"`;
+                    else if(setting.type === "float") inputParams += ' step="0.01"';
+                    else inputParams += ' step="1"';
+                    inputParams += ` min="${setting["min"]}" max="${setting["max"]}"`;
                 }
-
-                if(setting.type === "bool" && value) optionControls += ' checked';
-                optionControls += `>[<output class="setting-value">${value}</output>]`;
+                if(setting.type === "bool" && value) inputParams += ' checked';
+                
+                // Add proper elements
+                if(setting.type === "bool") optionControls += `<label class="form-checkbox setting-input"><input type="checkbox" ${inputParams}><i class="form-icon"></i></label>`
+                else optionControls += `<input type="range" class="setting-input slider" ${inputParams}">`;
+                optionControls += `[<output class="setting-value">${value}</output>]`;
             }
             if(setting.type === 'select') {
                 optionControls += `<select class="setting-select" name="${setting.prop}" id="${elemId}">`;
@@ -1818,10 +1818,11 @@ function updateUI(){
             if(elem) {
                 elem.addEventListener("input", function (e) {
                     if (e.target.type === "checkbox") {
-                        if (e.target.nextElementSibling) e.target.nextElementSibling.value = e.target.checked;
+                        if (e.target.parentNode.nextElementSibling.type === "output")
+                            e.target.parentNode.nextElementSibling.value = e.target.checked;
                         eval(`animation.${setting.prop} = e.target.checked;`);
                     } else {
-                        if (e.target.nextElementSibling) e.target.nextElementSibling.value = e.target.value;
+                        if(e.target.nextElementSibling.type === "output") e.target.nextElementSibling.value = e.target.value;
                         let value = e.target.value;
                         if (setting.type === "int") value = parseInt(e.target.value);
                         else if (setting.type === "float") value = parseFloat(e.target.value);
