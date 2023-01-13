@@ -37,6 +37,7 @@
 @global-radius: 4px;
 @global-border-width: 4px;
 @global-animation-duration: 0.5s;
+@bold-font: 700;
 
 
 // Base Styles
@@ -53,7 +54,7 @@ body {
 
 a, a:link, a:visited, a:hover, a:active {
   color: @second;
-  font-weight: 700;
+  font-weight: @bold-font;
   cursor: pointer;
 }
 
@@ -127,6 +128,7 @@ each(@color-names, {
 
 .accordion-body{
   margin-left: 0.4rem;
+  transition: max-height 0.5s !important;
 }
 
 .accordion input:checked~.accordion-body, .accordion[open] .accordion-body{
@@ -209,11 +211,11 @@ ul{
   }
 
   #about {
-    font-weight: 700;
+    font-weight: @bold-font;
   }
 
   #profiles{
-    font-weight: 700;
+    font-weight: @bold-font;
 
     .profile-link{
       padding: .15rem .5rem;
@@ -344,8 +346,7 @@ each(@fade-show-values, {
 
 #background-controls, #background-settings-controls {
   color: @background;
-  padding: 0 0.25rem;
-  margin: 0 0.1rem;
+  padding: 0.1rem 0.25rem;
   display: inline-block;
   //background: @main;
   background-image: @main-gradient;
@@ -361,7 +362,6 @@ each(@fade-show-values, {
   left: 10px;
   display: none;
   z-index: 1000;
-  padding: 0.25rem;
   cursor: move;
 }
 
@@ -370,13 +370,30 @@ each(@fade-show-values, {
   width: 19rem;
   max-height: 100%;
   overflow: auto;
+  font-size: 0.7rem;
+
+  .accordion {
+    text-align: left;
+
+    .accordion-header {
+      border-top: 1px solid @background;
+      padding: 0.1rem 0;
+      //font-weight: @bold-font;
+    }
+
+    .accordion-body {
+      padding: 0;
+      margin-left: 0;
+      margin-bottom: 0;
+    }
+  }
 
   .settings-section{
     cursor: default;
     text-align: left;
     border-top: 1px solid @background;
-    padding-top: 0.25rem;
-    padding-bottom: 0.25rem;
+    margin: 0.1rem 0;
+    padding: 0.25rem 0;
     width: 100%;
     white-space: normal;
 
@@ -410,6 +427,15 @@ each(@fade-show-values, {
         display: inline-block;
       }
     }
+  }
+
+  #background-description {
+    text-align: justify;
+  }
+
+  #background-settings-home {
+    float: left;
+    margin-right: 0.5rem;
   }
 
   #background-settings-close {

@@ -193,6 +193,7 @@ ul ul {
 }
 .accordion-body {
   margin-left: 0.4rem;
+  transition: max-height 0.5s !important;
 }
 .accordion input:checked ~ .accordion-body,
 .accordion[open] .accordion-body {
@@ -385,8 +386,7 @@ ul {
 #background-controls,
 #background-settings-controls {
   color: #FFFFFF;
-  padding: 0 0.25rem;
-  margin: 0 0.1rem;
+  padding: 0.1rem 0.25rem;
   display: inline-block;
   background-image: linear-gradient(135deg, #38575A, #43696B);
 }
@@ -408,7 +408,6 @@ ul {
   left: 10px;
   display: none;
   z-index: 1000;
-  padding: 0.25rem;
   cursor: move;
 }
 #background-settings-controls {
@@ -416,13 +415,26 @@ ul {
   width: 19rem;
   max-height: 100%;
   overflow: auto;
+  font-size: 0.7rem;
+}
+#background-settings-controls .accordion {
+  text-align: left;
+}
+#background-settings-controls .accordion .accordion-header {
+  border-top: 1px solid #FFFFFF;
+  padding: 0.1rem 0;
+}
+#background-settings-controls .accordion .accordion-body {
+  padding: 0;
+  margin-left: 0;
+  margin-bottom: 0;
 }
 #background-settings-controls .settings-section {
   cursor: default;
   text-align: left;
   border-top: 1px solid #FFFFFF;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
+  margin: 0.1rem 0;
+  padding: 0.25rem 0;
   width: 100%;
   white-space: normal;
 }
@@ -450,6 +462,13 @@ ul {
   text-align: center;
   width: 2.5rem;
   display: inline-block;
+}
+#background-settings-controls #background-description {
+  text-align: justify;
+}
+#background-settings-controls #background-settings-home {
+  float: left;
+  margin-right: 0.5rem;
 }
 #background-settings-controls #background-settings-close {
   float: right;

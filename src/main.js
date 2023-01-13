@@ -33,12 +33,16 @@ const Spirograph = require("./spirograph");
 
 const canvas = document.getElementById("background");
 const container = document.getElementById("container");
-let lastWidth = 0,
-    lastHeight = 0,
-    needResize = false,
-    framesInterval = 0,
+let framesInterval = 0,
     then = 0,
-    paused = false;
+    paused = false,
+    width = 0,
+    height = 0,
+    lastWidth = 0,
+    lastHeight = 0,
+    resizeMode = "fit",
+    fixedWidth = 512,
+    fixedHeight = 512;
 
 const colors = [ // Green palette
     "#349BA9",
@@ -146,6 +150,8 @@ function updateAnimation(newAnimationId) {
     updateUI();
 }
 
+
+
 function render() {
     if(paused) return;
 
@@ -158,15 +164,26 @@ function render() {
     then = now;
 
     // Detect container size change
-    const width  = Math.max(container.offsetWidth, window.innerWidth),
-          height = Math.max(container.offsetHeight, window.innerHeight);
-    if(width !== lastWidth || height !== lastHeight) needResize = true;
-    else if (needResize){
-        canvas.width = width;
-        canvas.height = height;
-        animation.resize();
-        needResize = false;
+    width = Math.max(container.offsetWidth, window.innerWidth);
+    height = Math.max(container.offsetHeight, window.innerHeight);
+    if(resizeMode === "fit"){
+        if(width !== lastWidth || height !== lastHeight){
+            canvas.width = width;
+            canvas.height = height;
+            animation.resize();
+        } 
+    } else {
+        if(canvas.width !== fixedWidth || height !== fixedHeight){
+            canvas.width = fixedWidth;
+            canvas.height = fixedHeight;
+            animation.resize();
+        } 
+        if(width !== lastWidth || height !== lastHeight){
+            canvas.style.top = `${(height - fixedHeight) / 2}px`;
+            canvas.style.left = `${(width - fixedWidth) / 2}px`;
+        }
     }
+
     lastHeight = height;
     lastWidth = width;
 

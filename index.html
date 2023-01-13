@@ -30,11 +30,13 @@
 <!-- Animated background -->
 <canvas id="background" class="background faded-10"> </canvas>
 
-<!-- Primary Page Layout -->
+<!-- Primary page layout -->
 <div id="container" class="container grid-lg">
   <div class="columns">
     <div class="column">
       <div id="content">
+
+        <!-- Header/title -->
         <div id="me">
           <div id="photo" class="section">
             <img alt="Marek Wydmuch" src="assets/me.jpg"/>
@@ -64,6 +66,7 @@
           </div>
         </div>
 
+        <!-- Main content -->
         <div>
           <p>
             These are some of the things I've made and done:
@@ -269,6 +272,8 @@
           </div>
         </div>
       </div>
+
+      <!-- Footer -->
       <div id="footer">
         <div id="background-controls">
           <div>Background: <span id="background-name"></span></div>
@@ -278,31 +283,55 @@
 <!--            <span class="nowrap">[<a href="animations.html"><i class="fas fa-images"></i> gallery</a>]</span>-->
           </div>
         </div>
-        <div id="background-settings-controls" class="floating-controls" style="left: 10px; top: 10px; display: none;">
-          BACKGROUND SETTINGS <span id="background-settings-close">[<i class="fas fa-close"></i>]</span>
-          <div id="background-settings-controls-global-list" class="settings-section">
-            <div>
-              <span class="setting-name">background = </span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="animation" id="background-settings-animation-select"></select></span>
-            </div>
-            <div>
-              <span class="nowrap">[<a id="background-play-pause"><i class="fas fa-pause"></i> pause</a>]</span>
-              <span class="nowrap">[<a id="background-restart"><i class="fas fa-backward-step"></i> restart</a>]</span>
-              <span class="nowrap">[<a id="background-previous"><i class="fas fa-backward-fast"></i> prev.</a>]</span>
-              <span class="nowrap">[<a id="background-reset"><i class="fas fa-rotate-left"></i> reset</a>]</span>
-              <span class="nowrap">[<a id="background-next"><i class="fas fa-forward-fast"></i> next</a>]</span>
-              <span class="nowrap">[<a id="background-code"><i class="fas fa-file-code"></i> code</a>]</span>
-            </div>
-          </div>
-<!--          <div id="background-description" class="settings-section"></div>-->
-          <div id="background-settings-controls-list" class="settings-section"></div>
-<!--          <div id="background-stats" class="settings-section"></div>-->
-        </div>
         <div>
           This website was <i class="fa fa-code"></i> with <i class="fa fa-keyboard"></i> by me :)
         </div>
       </div>
+
     </div>
   </div>
+</div>
+
+<!-- Animation settings panel -->
+<div id="background-settings-controls" class="floating-controls" style="left: 10px; top: 10px; display: none;">
+  <!-- <a href="index.html" id="background-settings-home">[<i class="fas fa-home"></i> home]</a> -->
+  BACKGROUND SETTINGS <span id="background-settings-close">[<i class="fas fa-close"></i>]</span>
+  <div id="background-settings-controls-global-list" class="settings-section">
+    <div>
+      <span class="setting-name">animation = </span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="animation" id="background-settings-animation-select"></select></span>
+    </div>
+    <div>
+      <span class="setting-name">size = </span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="animation-size" id="background-settings-animation-size-select">
+        <option value="fit">fit</option>
+        <option value="512x512">512x512</option>
+        <option value="1024x1024">1024x1024</option>
+        <option value="1280x720">1280x720</option>
+      </select></span>
+    </div>
+    <div>
+      <span class="nowrap">[<a id="background-play-pause"><i class="fas fa-pause"></i> pause</a>]</span>
+      <span class="nowrap">[<a id="background-restart"><i class="fas fa-backward-step"></i> restart</a>]</span>
+      <span class="nowrap">[<a id="background-previous"><i class="fas fa-backward-fast"></i> prev.</a>]</span>
+      <span class="nowrap">[<a id="background-reset"><i class="fas fa-rotate-left"></i> reset</a>]</span>
+      <span class="nowrap">[<a id="background-next"><i class="fas fa-forward-fast"></i> next</a>]</span>
+      <span class="nowrap">[<a id="background-code"><i class="fas fa-file-code"></i> code</a>]</span>
+    </div>
+  </div>
+  <div class="accordion">
+    <input id="background-description-accordion" type="checkbox" name="accordion-checkbox" hidden>
+    <label class="accordion-header c-hand" for="background-description-accordion"><i class="icon icon-arrow-right mr-1"></i>Animation description</label>
+    <div class="accordion-body justify">
+      <div id="background-description" class="settings-section"></div>
+    </div>
+  </div>
+  <div class="accordion"> 
+    <input id="background-settings-controls-accordion" type="checkbox" name="accordion-checkbox" hidden>
+    <label class="accordion-header c-hand" for="background-settings-controls-accordion"><i class="icon icon-arrow-right mr-1"></i>Animation settings</label>
+    <div class="accordion-body justify">
+      <div id="background-settings-controls-list" class="settings-section"></div>
+    </div>
+  </div>
+  <!-- <div id="background-stats" class="settings-section"></div> -->
 </div>
 
 <!-- Main script -->
