@@ -440,10 +440,11 @@ ul {
   text-align: center;
 }
 #background-settings-controls .settings-section .setting-value-control .setting-select {
-  width: 9rem;
+  width: 9.15rem;
   height: 1rem;
   display: inline-block;
   float: right;
+  color: #252525;
 }
 #background-settings-controls .settings-section .setting-value-control .setting-value {
   text-align: center;
@@ -484,4 +485,13 @@ ul {
   top: unset;
   margin-left: -0.4rem;
   margin-top: -0.15rem;
+}
+.form-select:focus {
+  border-color: #43696B;
+  font-size: unset;
+}
+.form-select {
+  padding: 0 0 0 0.25rem;
+  line-height: 1rem;
+  font-size: unset;
 }

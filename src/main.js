@@ -381,7 +381,7 @@ function updateUI(){
                 optionControls += `[<output class="setting-value">${value}</output>]`;
             }
             if(setting.type === 'select') {
-                optionControls += `<select class="setting-select" name="${setting.prop}" id="${elemId}">`;
+                optionControls += `<select class="form-select setting-select" name="${setting.prop}" id="${elemId}">`;
                 for(let v of setting['values']) {
                     if(v === value) optionControls += `<option selected value="${v}">${v}</option>`;
                     else optionControls += `<option value="${v}">${v}</option>`;

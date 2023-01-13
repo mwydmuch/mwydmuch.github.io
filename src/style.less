@@ -397,10 +397,11 @@ each(@fade-show-values, {
       }
 
       .setting-select {
-        width: 9rem;
+        width: 9.15rem;
         height: 1rem;
         display: inline-block;
         float: right;
+        color: @main-text;
       }
 
       .setting-value {
@@ -447,4 +448,15 @@ each(@fade-show-values, {
   top: unset;
   margin-left: -0.4rem;
   margin-top: -0.15rem;
+}
+
+.form-select:focus {
+  border-color: @main;
+  font-size: unset;
+}
+
+.form-select {
+  padding: 0 0 0 0.25rem;
+  line-height: 1rem;
+  font-size: unset;
 }
