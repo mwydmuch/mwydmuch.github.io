@@ -1570,21 +1570,10 @@ function updateAnimation(newAnimationId) {
 }
 
 
-
-function render() {
-    if(paused) return;
-
-    const now = Date.now(),
-          timeElapsed = now - then;
-
-    // Limit framerate
-    requestAnimationFrame(render);
-    if (timeElapsed <= framesInterval) return;
-    then = now;
-
-    // Detect container size change
-    width = Math.max(container.offsetWidth, window.innerWidth);
-    height = Math.max(container.offsetHeight, window.innerHeight);
+function checkResize() {
+    // Detect container size change here for smooth resizing
+    width = Math.max(container.offsetWidth, window.innerWidth - canvas.offsetLeft);
+    height = Math.max(container.offsetHeight, window.innerHeight - canvas.offsetTop);
     if(resizeMode === "fit"){
         if(width !== lastWidth || height !== lastHeight){
             canvas.width = width;
@@ -1605,6 +1594,20 @@ function render() {
 
     lastHeight = height;
     lastWidth = width;
+}
+
+function render() {
+    if(paused) return;
+
+    const now = Date.now(),
+          timeElapsed = now - then;
+
+    // Limit framerate
+    requestAnimationFrame(render);
+    if (timeElapsed <= framesInterval) return;
+    then = now;
+
+    checkResize();
 
     animation.update(timeElapsed);
     animation.draw();
@@ -3564,9 +3567,15 @@ class ShortestPath extends Animation {
         this.recursiveMaze(1, 1, this.mapWidth - 2, this.mapHeight - 2);
         this.startIdx = 0;
         this.goalIdx = 0;
+
+        // Generate random start position that is not a wall
         while(this.map[this.startIdx] === WALL)
             this.startIdx = this.getIdx(Utils.randomInt(1, this.mapWidth - 1), Utils.randomInt(1, this.mapHeight - 1));
-        while(this.map[this.goalIdx] === WALL)
+            
+        // Generate random goal position that is not a wall and is far away from the start position
+        const startNode = this.getXY(this.startIdx),
+              minDistance = (this.mapHeight + this.mapWidth) / 6;
+        while(this.map[this.goalIdx] === WALL || this.minDistance(this.getXY(this.goalIdx), startNode) < minDistance)
             this.goalIdx = this.getIdx(Utils.randomInt(1, this.mapWidth - 1), Utils.randomInt(1, this.mapHeight - 1));
 
         this.restart();

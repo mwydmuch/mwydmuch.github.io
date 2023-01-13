@@ -163,8 +163,6 @@ ul{
 
 .background {
   position: absolute;
-  top: 0;
-  left: 0;
   z-index: -1;
   overflow: hidden;
 }
@@ -344,7 +342,7 @@ each(@fade-show-values, {
 // Background/animation settings
 // ---------------------------------------------------------------------------------------------------------------------
 
-#background-controls, #background-settings-controls {
+#background-controls, #background-settings-controls, #background-controls-bar {
   color: @background;
   padding: 0.1rem 0.25rem;
   display: inline-block;
@@ -354,6 +352,10 @@ each(@fade-show-values, {
   a, a:link, a:visited, a:hover, a:active {
     color: @background;
   }
+}
+
+#background-controls-bar {
+  width: 100%;
 }
 
 .floating-controls {

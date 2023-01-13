@@ -151,21 +151,10 @@ function updateAnimation(newAnimationId) {
 }
 
 
-
-function render() {
-    if(paused) return;
-
-    const now = Date.now(),
-          timeElapsed = now - then;
-
-    // Limit framerate
-    requestAnimationFrame(render);
-    if (timeElapsed <= framesInterval) return;
-    then = now;
-
-    // Detect container size change
-    width = Math.max(container.offsetWidth, window.innerWidth);
-    height = Math.max(container.offsetHeight, window.innerHeight);
+function checkResize() {
+    // Detect container size change here for smooth resizing
+    width = Math.max(container.offsetWidth, window.innerWidth - canvas.offsetLeft);
+    height = Math.max(container.offsetHeight, window.innerHeight - canvas.offsetTop);
     if(resizeMode === "fit"){
         if(width !== lastWidth || height !== lastHeight){
             canvas.width = width;
@@ -186,6 +175,20 @@ function render() {
 
     lastHeight = height;
     lastWidth = width;
+}
+
+function render() {
+    if(paused) return;
+
+    const now = Date.now(),
+          timeElapsed = now - then;
+
+    // Limit framerate
+    requestAnimationFrame(render);
+    if (timeElapsed <= framesInterval) return;
+    then = now;
+
+    checkResize();
 
     animation.update(timeElapsed);
     animation.draw();

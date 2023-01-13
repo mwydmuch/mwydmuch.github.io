@@ -218,8 +218,6 @@ ul {
 }
 .background {
   position: absolute;
-  top: 0;
-  left: 0;
   z-index: -1;
   overflow: hidden;
 }
@@ -384,7 +382,8 @@ ul {
   font-size: 0.7rem;
 }
 #background-controls,
-#background-settings-controls {
+#background-settings-controls,
+#background-controls-bar {
   color: #FFFFFF;
   padding: 0.1rem 0.25rem;
   display: inline-block;
@@ -392,15 +391,23 @@ ul {
 }
 #background-controls a,
 #background-settings-controls a,
+#background-controls-bar a,
 #background-controls a:link,
 #background-settings-controls a:link,
+#background-controls-bar a:link,
 #background-controls a:visited,
 #background-settings-controls a:visited,
+#background-controls-bar a:visited,
 #background-controls a:hover,
 #background-settings-controls a:hover,
+#background-controls-bar a:hover,
 #background-controls a:active,
-#background-settings-controls a:active {
+#background-settings-controls a:active,
+#background-controls-bar a:active {
   color: #FFFFFF;
+}
+#background-controls-bar {
+  width: 100%;
 }
 .floating-controls {
   position: fixed;

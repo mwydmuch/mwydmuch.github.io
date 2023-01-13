@@ -383,9 +383,15 @@ class ShortestPath extends Animation {
         this.recursiveMaze(1, 1, this.mapWidth - 2, this.mapHeight - 2);
         this.startIdx = 0;
         this.goalIdx = 0;
+
+        // Generate random start position that is not a wall
         while(this.map[this.startIdx] === WALL)
             this.startIdx = this.getIdx(Utils.randomInt(1, this.mapWidth - 1), Utils.randomInt(1, this.mapHeight - 1));
-        while(this.map[this.goalIdx] === WALL)
+            
+        // Generate random goal position that is not a wall and is far away from the start position
+        const startNode = this.getXY(this.startIdx),
+              minDistance = (this.mapHeight + this.mapWidth) / 6;
+        while(this.map[this.goalIdx] === WALL || this.minDistance(this.getXY(this.goalIdx), startNode) < minDistance)
             this.goalIdx = this.getIdx(Utils.randomInt(1, this.mapWidth - 1), Utils.randomInt(1, this.mapHeight - 1));
 
         this.restart();
