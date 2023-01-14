@@ -307,8 +307,9 @@ if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
 
     // Show/hide the background settings panel
     elemBgSettings.addEventListener("click", function () {
-        if (elemBgSettingsControls.classList.contains("fade-in")) closeSettings();
-        else showSettings();
+        if (elemBgSettingsControls.classList.contains("fade-out") || 
+            elemBgSettingsControls.style.display === "none") showSettings();
+        else closeSettings();
     });
 
     elemBgSettingsClose.addEventListener("click", function () {
@@ -419,11 +420,12 @@ function updateUI(){
             if(elem) {
                 elem.addEventListener("input", function (e) {
                     if (e.target.type === "checkbox") {
-                        if (e.target.parentNode.nextElementSibling.type === "output")
+                        if (e.target.parentNode.nextElementSibling !== null && 
+                            e.target.parentNode.nextElementSibling.type === "output")
                             e.target.parentNode.nextElementSibling.value = e.target.checked;
                         eval(`animation.${setting.prop} = e.target.checked;`);
                     } else {
-                        if(e.target.nextElementSibling.type === "output") e.target.nextElementSibling.value = e.target.value;
+                        if(e.target.nextElementSibling !== null && e.target.nextElementSibling.type === "output") e.target.nextElementSibling.value = e.target.value;
                         let value = e.target.value;
                         if (setting.type === "int") value = parseInt(e.target.value);
                         else if (setting.type === "float") value = parseFloat(e.target.value);

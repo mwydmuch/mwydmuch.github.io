@@ -461,7 +461,6 @@ ul {
 #background-settings-controls .settings-section .setting-value-control .setting-select {
   width: 9.15rem;
   height: 1rem;
-  display: inline-block;
   float: right;
   color: #252525;
 }

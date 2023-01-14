@@ -30,9 +30,9 @@ class ThreeNPlusOne extends Animation {
         this.seqences = [];
     }
 
-    update(elapsed){
-        let n = this.seqences.length + 1;
-        let sequence = [n];
+    generateNextSequence(){
+        let n = this.seqences.length + 1,
+            sequence = [n];
         while (n !== 1) {
             if (n % 2) n = 3 * n + 1;
             else n /= 2;
@@ -40,6 +40,10 @@ class ThreeNPlusOne extends Animation {
             if(n < this.seqences.length) this.seqences[n - 1] = null;
         }
         this.seqences.push(sequence);
+    }
+
+    update(elapsed){
+        for (let i = 0; i < this.speed; ++i) this.generateNextSequence();
     }
 
     drawSequence(sequence) {
@@ -106,6 +110,7 @@ class ThreeNPlusOne extends Animation {
         return [{prop: "length", type: "int", min: 1, max: 100, toCall: "resize"},
                 {prop: "evenAngle", type: "int", min: -45, max: 45, toCall: "resize"},
                 {prop: "oddAngle", type: "int", min: -45, max: 45, toCall: "resize"},
+                {prop: "speed", type: "int", min: 1, max: 16},
                 {prop: "drawNumbers", type: "bool", toCall: "resize"},
                 {prop: "scale", type: "float", min: 0.05, max: 1.95, toCall: "resize"}];
     }
