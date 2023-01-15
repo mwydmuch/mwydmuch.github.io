@@ -4,8 +4,15 @@ const NAME = "isometric Conway's game of life",
       FILE = "game-of-life-isometric.js",
       DESC = `
 Conway's game of life visualization with isometric rendering.
-Cells that "died" in the previous step keep their color to achieve a stable image
-since flickering is not good for a background image.
+You can read about the game of life on
+[Wikipedia](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
+Game of life is one of the first programs I wrote in my life.
+
+As in the top-down version, cells leave 
+a trace for a few steps after they die to achieve a nice effect.
+Especially, cells that died in the previous step keep the appearance 
+of the life cell resulting in a stable image 
+since flickering is not that good for a background image.
 
 Coded with no external dependencies, using only canvas API.
 `;

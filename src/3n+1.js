@@ -4,8 +4,14 @@ const NAME = "3n + 1 (Collatz Conjecture) visualization",
       FILE = "3n+1.js",
       DESC = `
 3n + 1 (Collatz Conjecture) visualization.
-Inspired by Veritasium video: 
-https://www.youtube.com/watch?v=094y1Z2wpJg
+Inspired by this Veritasium's [video](https://www.youtube.com/watch?v=094y1Z2wpJg).
+You can also read about the conjecture on [Wikipedia](https://en.wikipedia.org/wiki/Collatz_conjecture).
+
+Each tic Collatz sequence is generated for the next number.
+Following the generated sequence from its end (1), 
+for each number, the line is drawn from the point of the previous line's end.
+The next line is drawn at the angle of the previous line, rotated by the angle 
+that depends if the following number in the sequence is even or odd.
 
 Coded with no external dependencies, using only canvas API.
 `;

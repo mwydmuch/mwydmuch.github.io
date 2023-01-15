@@ -3,11 +3,15 @@
 const NAME = "Delaunay triangulation for a cloud of particles",
       FILE = "network.js",
       DESC = `
-Delaunay triangulation algorithm for cloud of moving particles
-Applied to create network-like structure.
+In this animation, the Delaunay triangulation algorithm 
+is applied to a set of moving particles (points).
+Then if the edge length between two points is below a threshold value,
+a line is drawn between them, creating a network-like structure.
 
-Source of Delaunay triangulation implementation:
-https://github.com/darkskyapp/delaunay-fast
+You can read about the Delaunay triangulation on [Wikipedia](https://en.wikipedia.org/wiki/Delaunay_triangulation)
+
+Source of Delaunay triangulation implementation used in this animation
+can be found in this [GitHub repository](https://github.com/darkskyapp/delaunay-fast).
 `;
 
 const Animation = require("./animation");

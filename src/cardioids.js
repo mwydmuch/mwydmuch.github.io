@@ -4,11 +4,15 @@ const NAME = "cardioids with a pencil of lines",
       FILE = "cardioids.js",
       DESC = `
 Modified method of L. Cremona for drawing cardioid with a pencil of lines,
-as described in section "cardioid as envelope of a pencil of lines" of:
-https://en.wikipedia.org/wiki/Cardioid
+as described in section "cardioid as envelope of a pencil of lines" 
+of this Wikipedia [article](https://en.wikipedia.org/wiki/Cardioid).
 
-Here the shift of the second point is determined by time passed
+Here the shift of the second point for each line is determined by time passed
 from the beginning of the animation.
+
+To see what is really happening, try to set the number of lines to small number.
+
+Playing with both number of lines and speed, allow to notice different interesting patterns.
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -57,7 +61,7 @@ class Cardioids extends Animation {
 
     getSettings() {
         return [{prop: "lines", type: "int", min: 1, max: 2500},
-                {prop: "speed", type: "float", min: -1.0, max: 1.0},
+                {prop: "speed", type: "float", min: -2.0, max: 2.0},
                 {prop: "scale", type: "float", min: 0.25, max: 1.75},
                 {prop: "rainbowColors", type: "bool"}];
     }
