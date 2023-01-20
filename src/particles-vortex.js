@@ -4,6 +4,8 @@ const NAME = "vortex of particles",
       FILE = "particles-vortex.js",
       DESC = `
 Particles vortex with randomized speed and direction.
+The illusion of a 3D vortex is created by calculating the 2D position 
+of each particle, each frame, using simple trigonometry functions.
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -65,7 +67,7 @@ class ParticlesVortex extends Animation {
 
         this.ctx.beginPath();
         for(let i = 1; i <= this.particles; i++){
-            const r = this.radius + Math.pow(i / (this.particles / 1.5),2) * i / 2,
+            const r = this.radius + Math.pow(i / (this.particles / 1.5), 2) * i / 2,
                   p = this.noise.perlin2(i * 0.1 + s, 0.1) * 100 + s * this.rotationSpeed,
                   x = Math.cos(p) * r + Math.sqrt(i * this.radius) * this.dirX,
                   y = Math.sin(p) * r + Math.sqrt(i * this.radius) * this.dirY;

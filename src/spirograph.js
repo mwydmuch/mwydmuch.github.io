@@ -3,9 +3,18 @@
 const NAME = "spirograph",
       FILE = "spirograph.js",
       DESC = `
-Spirograph created with 1-5 random gears.
-See: https://en.wikipedia.org/wiki/Spirograph,
-and: http://www.eddaardvark.co.uk/v2/spirograph/spirograph2.html (this site is amazing).
+Virtual spirograph created with 2-5 configurable gears.
+Spirograph is a drawing toy that use gears to create patterns. I used to play with it a lot as a kid.
+
+You can read about in on
+[Wikipedia](https://en.wikipedia.org/wiki/Spirograph).
+I also recommend to check this awesome [website] (http://www.eddaardvark.co.uk/v2/spirograph/spirograph2.html),
+which is the source of inspiration for this animation.
+And also this great [blogpost](https://www.bit-101.com/blog/2022/12/coding-curves-09-roulette-curves/)
+that step by step how it works.
+
+Try play with the gears' settings or hit reset button few times 
+to get different random configurations.
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -16,14 +25,14 @@ const Utils = require("./utils");
 class Spirograph extends Animation {
     constructor (canvas, colors, colorsAlt, 
                  vertices = 2500, 
-                 length = 2, 
+                 lineLength = 2, 
                  gearCount = "random",
                  rescaleToFit = true,
                  scale = 1) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
 
         this.vertices = vertices;
-        this.length = length;
+        this.lineLength = lineLength;
         this.maxGears = 5;
         this.rescaleToFit = rescaleToFit;
         this.scale = scale;
@@ -77,7 +86,7 @@ class Spirograph extends Animation {
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
         this.ctx.scale(this.scale, this.scale);
 
-        const length = Math.PI * this.length,
+        const length = Math.PI * this.lineLength,
               lenPerVertex = length / this.vertices;
 
         let start = this.getXY(0, this.time, scale);
@@ -92,9 +101,9 @@ class Spirograph extends Animation {
     }
 
     getSettings() {
-        let settings = [{prop: "vertices", type: "int", min: 100, max: 10000},
-                        {prop: "length", type: "float", step: 0.25, min: 1, max: 8},
-                        {prop: "gearCount", type: "int", min: 1, max: this.maxGears, toCall: "updateName"},
+        let settings = [{prop: "vertices", type: "int", min: 100, max: 15000},
+                        {prop: "lineLength", type: "float", step: 0.25, min: 1, max: 8},
+                        {prop: "gearCount", type: "int", min: 2, max: this.maxGears, toCall: "updateName"},
                         {prop: "rescaleToFit", type: "bool"},
                         {prop: "scale", type: "float", min: 0.25, max: 4},
                         {prop: "speed", type: "float", step: 0.1, min: -4, max: 4}];

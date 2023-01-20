@@ -63,8 +63,9 @@ class PerlinNoiseParticles extends Animation {
         this.fadeOut(this.fadingSpeed);
 
         for(let p of this.particles){
-            // Utils.fillCircle(this.ctx, p.x, p.y, p.radius, p.color);
-            Utils.drawLine(this.ctx, p.prevX, p.prevY, p.x, p.y, p.color, 2 * p.radius); // This results with better antialiasing
+            // To make it look smooth even at high speeds, draw a line between the previous and new positions instead of a point
+            // Drawing a line also results with a better antialiasing
+            Utils.drawLine(this.ctx, p.prevX, p.prevY, p.x, p.y, p.color, 2 * p.radius); 
         }
         this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     }

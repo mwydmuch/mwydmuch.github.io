@@ -3,8 +3,9 @@
 const NAME = "shapes dancing in a circle",
       FILE = "spinning-shapes.js",
       DESC = `
-Shapes moving/"dancing" in a circle.
-Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
+Just same shape "dancing" in a circle.
+This animation recreates the effect 
+described in this [article](https://observablehq.com/@rreusser/instanced-webgl-circles).
  
 Coded with no external dependencies, using only canvas API.
 `;
@@ -77,8 +78,8 @@ class SpinningShapes extends Animation {
         return [{prop: "vertices", type: "int", min: 0, max: 8, toCall: "updateName"},
                 {prop: "shapes", type: "int", min: 0, max: 2500},
                 {prop: "rotateShapes", type: "bool" },
-                //{prop: "distanceRange", type: "float", min: 0, max: 1},
-                //{prop: "sizeRange", type: "float", min: 0, max: 1},
+                {prop: "distanceRange", type: "float", min: 0, max: 1},
+                {prop: "sizeRange", type: "float", min: 0, max: 1},
                 {prop: "scale", type: "float", min: 0.05, max: 1.95},
                 {prop: "speed", type: "float", step: 0.1, min: -4, max: 4},
                 {prop: "colorsShift", type: "float", min: 0, max: 3.14},

@@ -4,7 +4,7 @@ const NAME = "particles waves",
       FILE = "particles-waves.js",
       DESC = `
 "Particles waves" animation.
-The effect was achieved by modifying perlin-noise-particles.js.
+The effect was achieved by modifying Perlin noise animation.
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -36,15 +36,15 @@ class ParticlesStorm extends Animation {
 
         for(let p of this.particles){
             const theta = this.noise.perlin3(p.x * this.noiseScale * 2,
-                p.y  *this.noiseScale * 3,
-                this.frame * this.noiseScale * 3) * 2 * Math.PI;
+                                             p.y * this.noiseScale * 3,
+                                             this.frame * this.noiseScale * 3) * 2 * Math.PI;
             p.x += 2 * Math.tan(theta);
             p.y += 2 * Math.sin(theta);
 
             // Wrap particles
             if (p.x < 0) p.x = this.width;
             if (p.x > this.width ) p.x = 0;
-            if (p.y < 0 ) p.y = this.height;
+            if (p.y < 0) p.y = this.height;
             if (p.y > this.height) p.y =  0;
         }
     }

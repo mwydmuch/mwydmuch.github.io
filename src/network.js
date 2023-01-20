@@ -11,7 +11,7 @@ a line is drawn between them, creating a network-like structure.
 You can read about the Delaunay triangulation on [Wikipedia](https://en.wikipedia.org/wiki/Delaunay_triangulation)
 
 Source of Delaunay triangulation implementation used in this animation
-can be found in this [GitHub repository](https://github.com/darkskyapp/delaunay-fast).
+can be found in this [repository](https://github.com/darkskyapp/delaunay-fast).
 `;
 
 const Animation = require("./animation");

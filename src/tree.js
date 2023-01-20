@@ -1,12 +1,8 @@
 'use strict';
 
-/*
- * Work in progress.
- *
- * Binary tree animation.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+
+// Work in progress.
+// Binary tree animation.
 
 const Animation = require("./animation");
 const Utils = require("./utils");

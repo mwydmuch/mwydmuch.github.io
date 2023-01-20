@@ -3,7 +3,7 @@
 const NAME = "sorting algorithm visualization",
       FILE = "sorting.js",
       DESC = `
-Visualization of different sorting algorithms.
+Animated visualization of different sorting algorithms.
 
 Coded with no external dependencies, using only canvas API.
 `;

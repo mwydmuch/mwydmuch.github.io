@@ -50,9 +50,16 @@ class Animation {
     }
 
     fadeOut(alpha) {  // Commonly used by some animations
-        if (alpha <= 0.001 && this.frame % 10 === 0) Utils.blendColor(this.ctx, this.bgColor, alpha * 10, "lighter");
-        else if (alpha <= 0.005 && this.frame % 2 === 0) Utils.blendColor(this.ctx, this.bgColor, alpha * 2, "lighter");
-        else Utils.blendColor(this.ctx, this.bgColor, alpha, "lighter");
+        // Assumes that bgColor is white or other light color
+        this.blendColorAlpha(this.bgColor, alpha, "lighter");
+    }
+
+    blendColorAlpha(color, alpha, mode) {  // More general version of the above
+        if (alpha <= 0.0005 && this.frame % 20 === 0) Utils.blendColor(this.ctx, color, alpha * 20, mode);
+        else if (alpha <= 0.001 && this.frame % 10 === 0) Utils.blendColor(this.ctx, color, alpha * 10, mode);
+        else if (alpha <= 0.005 && this.frame % 2 === 0) Utils.blendColor(this.ctx, color, alpha * 2, mode);
+        //else if(alpha > 0.005) Utils.blendColor(this.ctx, color, alpha, mode);
+        else Utils.blendColor(this.ctx, color, alpha, mode);
     }
 
     getFPS(){

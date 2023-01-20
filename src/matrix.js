@@ -4,9 +4,11 @@ const NAME = "Matrix digital rain",
       FILE = "matrix.js",
       DESC = `
 Recreation of matrix digital rain based on this analysis
-of the original effect: https://carlnewton.github.io/digital-rain-analysis/
+of the original effect on this 
+[website](https://carlnewton.github.io/digital-rain-analysis/).
+
 I'm a huge fan of the first movie.
- 
+
 Coded with no external dependencies, using only canvas API.
 `;
 
@@ -18,12 +20,14 @@ class Matrix extends Animation {
     constructor(canvas, colors, colorsAlt,
                 dropsSize = 20,
                 dropsSpeed = 0.6,
-                fadingSpeed = 0.01) {
+                fadingSpeed = 0.01,
+                originalMatrixColors = false) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
 
         this.dropsSize = dropsSize;
         this.dropsSpeed = dropsSpeed;
         this.fadingSpeed = fadingSpeed;
+        this.originalMatrixColors = originalMatrixColors;
 
         this.flipProp = 0.25; // Probability of flipping a character
         this.errorProp = 0.1; // Probability of drawing character in different row
@@ -33,8 +37,9 @@ class Matrix extends Animation {
         this.columns = 0;
         this.columnHeight = 0;
         this.drops = [];
-        
+        this.textColor = null;
         this.imageData = null;
+        this.setColors();
 
         const katakana = "ｦｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾜﾝ",
               katakanaSubset = "ﾊﾋｼﾂｳｰﾅﾐﾓﾆｻﾜｵﾘﾎﾏｴｷﾑﾃｹﾒｶﾕﾗｾﾈｽﾀﾇ",
@@ -68,8 +73,19 @@ class Matrix extends Animation {
         } else this.ctx.fillText(char, cellX, cellY);
     }
 
+    setColors(){
+        if(this.originalMatrixColors){
+            this.bgColor = "#000000";
+            this.textColor = "#00FF00";
+        } else {
+            this.bgColor = "#FFFFFF";
+            this.textColor = this.colors[0];
+        }
+    }
+
     draw() {
-        this.fadeOut(this.fadingSpeed);
+        if(this.originalMatrixColors) this.blendColorAlpha(this.bgColor, this.fadingSpeed, "darken");
+        else this.blendColorAlpha(this.bgColor, this.fadingSpeed, "lighter");
 
         this.ctx.font = `${this.dropsSize}px monospace`;
         this.ctx.textAlign = "center"; // This helps with aligning flipped characters
@@ -81,14 +97,14 @@ class Matrix extends Animation {
                 const cellX = d.x * this.cellWidth + this.cellWidth / 2,
                       cellY = Math.floor(d.y) * this.cellHeight;
 
-                this.drawCharacter(d.char, cellX, cellY, this.colors[0]);
+                this.drawCharacter(d.char, cellX, cellY, this.textColor);
 
                 d.char = Utils.randomChoice(this.characters);
                 if(this.dropDespawn(d.y)) d.y = this.dropSpawnPoint(d.y);
 
                 if(Math.random() < this.errorProp){
                     const yDiff = Utils.randomInt(-8, 8);
-                    this.drawCharacter(Utils.randomChoice(this.characters), cellX, Math.floor(yDiff + d.y) * this.cellHeight, this.colors[0]);
+                    this.drawCharacter(Utils.randomChoice(this.characters), cellX, Math.floor(yDiff + d.y) * this.cellHeight, this.textColor);
                 }
             }
             else d.y += this.dropsSpeed;
@@ -116,6 +132,7 @@ class Matrix extends Animation {
 
     restart(){
         this.drops = [];
+        this.setColors();
         this.resize();
         this.clear();
     }
@@ -123,7 +140,9 @@ class Matrix extends Animation {
     getSettings() {
         return [{prop: "dropsSize", type: "int", min: 8, max: 64, toCall: "resize"},
                 {prop: "dropsSpeed", type: "float", min: 0, max: 1},
-                {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.5}];
+                {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.5},
+                //{prop: "originalMatrixColors", type: "bool", toCall: "restart"} // Not ready yet
+            ];
     }
 }
 

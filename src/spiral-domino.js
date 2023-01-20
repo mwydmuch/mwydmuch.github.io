@@ -1,12 +1,8 @@
 'use strict';
 
-/*
- * Work in progress.
- *
- * Spiral domino animation.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+// Work in progress
+// Spiral domino animation.
+
 
 const Animation = require("./animation");
 const Utils = require("./utils");
