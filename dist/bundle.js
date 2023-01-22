@@ -4,9 +4,15 @@
 const NAME = "3n + 1 (Collatz Conjecture) visualization",
       FILE = "3n+1.js",
       DESC = `
-3n + 1 (Collatz Conjecture) visualization.
-Inspired by Veritasium video: 
-https://www.youtube.com/watch?v=094y1Z2wpJg
+3n + 1 (Collatz Conjecture) visualization 
+inspired by this Veritasium's [video](https://www.youtube.com/watch?v=094y1Z2wpJg).
+You can also read about the conjecture on [Wikipedia](https://en.wikipedia.org/wiki/Collatz_conjecture).
+
+Each tic Collatz sequence is generated for the next number.
+Following the generated sequence from its end (1), 
+for each number, the line is drawn from the point of the previous line's end.
+The next line is drawn at the angle of the previous line, rotated by the angle 
+that depends if the following number in the sequence is even or odd.
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -132,7 +138,8 @@ class Animation {
     constructor(canvas, colors, colorsAlt,
                 name = "",
                 file = "",
-                description = "") {
+                description = "",
+                seed = "random") {
         this.ctx = canvas.getContext("2d", { alpha: false });
 
         // Colors variables
@@ -153,6 +160,9 @@ class Animation {
         this.speed = 1;
         this.fps = 30;
 
+        // Seed, might be combined with seedable rngs to make animations deterministic
+        this.seed = this.assignIfRandom(seed, Math.random());
+
         // Reset text settings
         this.ctx.font = '14px sans-serif';
         this.ctx.textAlign = "left";
@@ -172,9 +182,16 @@ class Animation {
     }
 
     fadeOut(alpha) {  // Commonly used by some animations
-        if (alpha <= 0.001 && this.frame % 10 === 0) Utils.blendColor(this.ctx, this.bgColor, alpha * 10, "lighter");
-        else if (alpha <= 0.005 && this.frame % 2 === 0) Utils.blendColor(this.ctx, this.bgColor, alpha * 2, "lighter");
-        else Utils.blendColor(this.ctx, this.bgColor, alpha, "lighter");
+        // Assumes that bgColor is white or other light color
+        this.blendColorAlpha(this.bgColor, alpha, "lighter");
+    }
+
+    blendColorAlpha(color, alpha, mode) {  // More general version of the above
+        if (alpha <= 0.0005 && this.frame % 20 === 0) Utils.blendColor(this.ctx, color, alpha * 20, mode);
+        else if (alpha <= 0.001 && this.frame % 10 === 0) Utils.blendColor(this.ctx, color, alpha * 10, mode);
+        else if (alpha <= 0.005 && this.frame % 2 === 0) Utils.blendColor(this.ctx, color, alpha * 2, mode);
+        //else if(alpha > 0.005) Utils.blendColor(this.ctx, color, alpha, mode);
+        else Utils.blendColor(this.ctx, color, alpha, mode);
     }
 
     getFPS(){
@@ -227,11 +244,15 @@ const NAME = "cardioids with a pencil of lines",
       FILE = "cardioids.js",
       DESC = `
 Modified method of L. Cremona for drawing cardioid with a pencil of lines,
-as described in section "cardioid as envelope of a pencil of lines" of:
-https://en.wikipedia.org/wiki/Cardioid
+as described in section "cardioid as envelope of a pencil of lines" 
+of this Wikipedia [article](https://en.wikipedia.org/wiki/Cardioid).
 
-Here the shift of the second point is determined by time passed
+Here the shift of the second point for each line is determined by time passed
 from the beginning of the animation.
+
+To see what is really happening, try to set the number of lines to small number.
+
+Playing with both number of lines and speed, allow to notice different interesting patterns.
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -280,7 +301,7 @@ class Cardioids extends Animation {
 
     getSettings() {
         return [{prop: "lines", type: "int", min: 1, max: 2500},
-                {prop: "speed", type: "float", min: -1.0, max: 1.0},
+                {prop: "speed", type: "float", min: -2.0, max: 2.0},
                 {prop: "scale", type: "float", min: 0.25, max: 1.75},
                 {prop: "rainbowColors", type: "bool"}];
     }
@@ -294,7 +315,8 @@ module.exports = Cardioids
 const NAME = "circular waves",
       FILE = "circular-waves.js",
       DESC = `
-Circular waves animation.
+This animation draw a circle as a set of vertices and edges,
+noise is added to the position of each vertex to create a wave effect. 
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -628,8 +650,15 @@ const NAME = "isometric Conway's game of life",
       FILE = "game-of-life-isometric.js",
       DESC = `
 Conway's game of life visualization with isometric rendering.
-Cells that "died" in the previous step keep their color to achieve a stable image
-since flickering is not good for a background image.
+You can read about the game of life on
+[Wikipedia](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
+Game of life is one of the first programs I wrote in my life.
+
+As in the top-down version, cells leave 
+a trace for a few steps after they die to achieve a nice effect.
+Especially, cells that died in the previous step keep the appearance 
+of the life cell resulting in a stable image 
+since flickering is not that good for a background image.
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -805,10 +834,16 @@ module.exports = GameOfLifeIsometric;
 const NAME = "Conway's game of life",
       FILE = "game-of-life.js",
       DESC = `
-Conway's game of life visualization.
-Cells that "died" in the previous step keep their color to achieve a stable image
-since flickering is not good for a background image.
+Conway's game of life visualization. 
+You can read about the game of life on
+[Wikipedia](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
 Game of life is one of the first programs I wrote in my life.
+
+In this version, cells leave a trace for 
+a few steps after they die to achieve a nice effect.
+Especially, cells that died in the previous step keep the appearance 
+of the life cell resulting in a stable image 
+since flickering is not that good for a background image.
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -1766,14 +1801,52 @@ if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
 }
 
 function processDescription(description){
+    // Replace string format
+    const urlReplaceStrFormat = (prevContent, hrefContent, linkContent, followingContent) => 
+        `${prevContent}<span class="nowrap">[<a href="${hrefContent}" target="_blank" rel="noopener noreferrer">${linkContent}</a>]</span>${followingContent}`;
+    
+    // Wrap urls into <a> tags
+    const regexpToReplace = [
+        // Wikipedia urls in the Markdown format ( [text](url) )
+        {
+            replaceStr: urlReplaceStrFormat('\$1', '\$3', '<i class="fa fa-wikipedia-w"></i> \$2', '\$4'), 
+            regexp: /(.*)\[(.*)\]\((https?:\/\/(?:www\.)?en\.wikipedia\.org\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*))\)(.*)/g
+        },
+        // YouTube urls
+        {
+            replaceStr: urlReplaceStrFormat('\$1', '\$3', '<i class="fa fa-youtube"></i> \$2', '\$4'),
+            regexp: /(.*)\[(.*)\]\((https?:\/\/(?:www\.)?youtube\.com\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*))\)(.*)/g
+        },
+        // GitHub urls
+        {
+            replaceStr: urlReplaceStrFormat('\$1', '\$3', '<i class="fa fa-github"></i> \$2', '\$4'), 
+            regexp: /(.*)\[(.*)\]\((https?:\/\/(?:www\.)?github\.com\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*))\)(.*)/g
+        },
+        // Other Markdown urls
+        {
+            replaceStr: urlReplaceStrFormat('\$1', '\$3', '<i class="fas fa-link"></i> \$2', '\$4'),
+            regexp: /(.*)\[(.*)\]\((https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*))\)(.*)/g
+        },
+        // lose urls
+        {
+            replaceStr: urlReplaceStrFormat('\$1', '\$2', '<i class="fas fa-link"></i> \$2', '\$3'),
+            regexp: /(.*)[^"](https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*))[^"](.*)/g
+        },
+    ]
+
+    for(let r of regexpToReplace){
+        description = description.replaceAll(r.regexp, r.replaceStr);
+    }
+
     // Replace new lines \n with </br>
     description = description.trim().replaceAll("\n\n", "</p><p>");
     description = '<p>' + description + '</p>';
 
-    // Wrap urls into <a> tag
-    const urlRegex = /(.*)(https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*))(.*)/g
-    description = description.replaceAll(urlRegex, '\$1<a href="\$2">\$2</a>\$3');
     return description;
+}
+
+function getPropId(propName){
+    return propName.split(/(?=[A-Z])/).join(' ').toLowerCase().replaceAll(/\.|\]|s\[/g, '-');
 }
 
 function updateUI(){
@@ -1804,8 +1877,8 @@ function updateUI(){
         // Create settings controls
         settings.forEach(function(setting, index) {
             const value = eval(`animation.${setting.prop}`),
-                elemId = setting.prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls",
-                name = setting.prop.split(/(?=[A-Z])/).join(' ').toLowerCase();
+                  name = getPropId(setting.prop).replaceAll('-', ' '),
+                  elemId = getPropId(setting.prop) + "-controls";
 
             let optionControls = `<div><span class="setting-name">${name}</span><span class="nowrap setting-value-control">`;
 
@@ -1839,7 +1912,7 @@ function updateUI(){
 
         // Add events
         settings.forEach(function(setting, index) {
-            const elemId = setting.prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls";
+            const elemId = getPropId(setting.prop) + "-controls";
             let elem = document.getElementById(elemId);
             if(elem) {
                 elem.addEventListener("input", function (e) {
@@ -1871,9 +1944,11 @@ const NAME = "Matrix digital rain",
       FILE = "matrix.js",
       DESC = `
 Recreation of matrix digital rain based on this analysis
-of the original effect: https://carlnewton.github.io/digital-rain-analysis/
+of the original effect on this 
+[website](https://carlnewton.github.io/digital-rain-analysis/).
+
 I'm a huge fan of the first movie.
- 
+
 Coded with no external dependencies, using only canvas API.
 `;
 
@@ -1885,12 +1960,14 @@ class Matrix extends Animation {
     constructor(canvas, colors, colorsAlt,
                 dropsSize = 20,
                 dropsSpeed = 0.6,
-                fadingSpeed = 0.01) {
+                fadingSpeed = 0.01,
+                originalMatrixColors = false) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
 
         this.dropsSize = dropsSize;
         this.dropsSpeed = dropsSpeed;
         this.fadingSpeed = fadingSpeed;
+        this.originalMatrixColors = originalMatrixColors;
 
         this.flipProp = 0.25; // Probability of flipping a character
         this.errorProp = 0.1; // Probability of drawing character in different row
@@ -1900,8 +1977,9 @@ class Matrix extends Animation {
         this.columns = 0;
         this.columnHeight = 0;
         this.drops = [];
-        
+        this.textColor = null;
         this.imageData = null;
+        this.setColors();
 
         const katakana = "ｦｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾜﾝ",
               katakanaSubset = "ﾊﾋｼﾂｳｰﾅﾐﾓﾆｻﾜｵﾘﾎﾏｴｷﾑﾃｹﾒｶﾕﾗｾﾈｽﾀﾇ",
@@ -1935,8 +2013,19 @@ class Matrix extends Animation {
         } else this.ctx.fillText(char, cellX, cellY);
     }
 
+    setColors(){
+        if(this.originalMatrixColors){
+            this.bgColor = "#000000";
+            this.textColor = "#00FF00";
+        } else {
+            this.bgColor = "#FFFFFF";
+            this.textColor = this.colors[0];
+        }
+    }
+
     draw() {
-        this.fadeOut(this.fadingSpeed);
+        if(this.originalMatrixColors) this.blendColorAlpha(this.bgColor, this.fadingSpeed, "darken");
+        else this.blendColorAlpha(this.bgColor, this.fadingSpeed, "lighter");
 
         this.ctx.font = `${this.dropsSize}px monospace`;
         this.ctx.textAlign = "center"; // This helps with aligning flipped characters
@@ -1948,14 +2037,14 @@ class Matrix extends Animation {
                 const cellX = d.x * this.cellWidth + this.cellWidth / 2,
                       cellY = Math.floor(d.y) * this.cellHeight;
 
-                this.drawCharacter(d.char, cellX, cellY, this.colors[0]);
+                this.drawCharacter(d.char, cellX, cellY, this.textColor);
 
                 d.char = Utils.randomChoice(this.characters);
                 if(this.dropDespawn(d.y)) d.y = this.dropSpawnPoint(d.y);
 
                 if(Math.random() < this.errorProp){
                     const yDiff = Utils.randomInt(-8, 8);
-                    this.drawCharacter(Utils.randomChoice(this.characters), cellX, Math.floor(yDiff + d.y) * this.cellHeight, this.colors[0]);
+                    this.drawCharacter(Utils.randomChoice(this.characters), cellX, Math.floor(yDiff + d.y) * this.cellHeight, this.textColor);
                 }
             }
             else d.y += this.dropsSpeed;
@@ -1983,6 +2072,7 @@ class Matrix extends Animation {
 
     restart(){
         this.drops = [];
+        this.setColors();
         this.resize();
         this.clear();
     }
@@ -1990,7 +2080,9 @@ class Matrix extends Animation {
     getSettings() {
         return [{prop: "dropsSize", type: "int", min: 8, max: 64, toCall: "resize"},
                 {prop: "dropsSpeed", type: "float", min: 0, max: 1},
-                {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.5}];
+                {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.5},
+                //{prop: "originalMatrixColors", type: "bool", toCall: "restart"} // Not ready yet
+            ];
     }
 }
 
@@ -2002,11 +2094,15 @@ module.exports = Matrix;
 const NAME = "Delaunay triangulation for a cloud of particles",
       FILE = "network.js",
       DESC = `
-Delaunay triangulation algorithm for cloud of moving particles
-Applied to create network-like structure.
+In this animation, the Delaunay triangulation algorithm 
+is applied to a set of moving particles (points).
+Then if the edge length between two points is below a threshold value,
+a line is drawn between them, creating a network-like structure.
 
-Source of Delaunay triangulation implementation:
-https://github.com/darkskyapp/delaunay-fast
+You can read about the Delaunay triangulation on [Wikipedia](https://en.wikipedia.org/wiki/Delaunay_triangulation)
+
+Source of Delaunay triangulation implementation used in this animation
+can be found in this [repository](https://github.com/darkskyapp/delaunay-fast).
 `;
 
 const Animation = require("./animation");
@@ -2145,7 +2241,7 @@ module.exports = Network;
 'use strict';
 
 /*
- * Temporarily disabled, this old animation needs some improvement.
+ * Temporarily disabled, this old animation needs some improvement to be visualy pleasing.
  *
  * Visualization of a simple, fully connected neural network, with random weights,
  * ReLU activations on intermediate layers, and sigmoid output at the last layer.
@@ -2587,10 +2683,13 @@ module.exports = NeuralNetwork;
 const NAME = "system of particles and attractors",
       FILE = "particles-and-attractors.js",
       DESC = `
-Very simple particles system with attractors.
+Very simple particle system with attractors.
 In this system, distance and momentum are ignored.
 The new velocity vector of a particle is calculated as the sum of angles
-between the particle and all attractors (see line 51+).
+between the particle and all attractors.
+Because the velocity does not depend on the distance to the attractors,
+and momentum is not preserved, the particles are not "catapulted" away from the attractors.
+This results in a system that is mesmerizing to watch.
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -2604,6 +2703,7 @@ class ParticlesAndAttractors extends Animation {
                  particlesSpeed = "random",
                  fadingSpeed = 0.03,
                  numAttractors = 5,
+                 centralAttractor = "random",
                  attractorsSystem = "random",
                  attractorsSpeed = "random",
                  drawAttractors = false,
@@ -2618,7 +2718,7 @@ class ParticlesAndAttractors extends Animation {
 
         this.drawAttractors = drawAttractors;
         this.numAttractors = numAttractors;
-
+        this.centralAttractor = this.assignIfRandom(centralAttractor, Utils.randomChoice([false, true]));
         this.attractorsSystems = ["orbits", "eights"]
         this.attractorsSystem = this.assignIfRandom(attractorsSystem, Utils.randomChoice(this.attractorsSystems));
         this.attractorsSpeed = this.assignIfRandom(attractorsSpeed, Utils.round(Utils.randomRange(0.05, 0.1) * Utils.randomChoice([-1, 1])));
@@ -2648,29 +2748,36 @@ class ParticlesAndAttractors extends Animation {
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
         this.ctx.scale(this.scale, this.scale);
 
-        const p = this.startingPosition + this.attractorsPosition;
+        const pos = this.startingPosition + this.attractorsPosition,
+              numA = this.numAttractors + 1 - this.centralAttractor,
+              startI = 1 - this.centralAttractor
 
+        // Calculate positions of attractors
         let attractors = [];
         if(this.attractorsSystem === "orbits") {
             const s = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / (2 * (this.numAttractors - 1));
-            for (let i = 0; i < this.numAttractors; ++i)
-                attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * s, 0), p * i));
+            for (let i = startI; i < numA; ++i)
+                attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * s, 0), pos * i));
         } else if (this.attractorsSystem === "eights") {
             const s = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / this.numAttractors;
-            for (let i = 0; i < this.numAttractors; ++i)
-                attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * Math.sin(p * Math.PI / 2) * s, 0), p * i));
+            for (let i = startI; i < numA; ++i)
+                attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * Math.sin(pos * Math.PI / 2) * s, 0), pos * i));
         }
 
         const color = this.rainbowColors ? `hsl(${this.time / 5 * 360}, 100%, 75%)` : this.colors[0];
-
+        
         for (let p of this.particles) {
             let d = 0
+
+            // Calculate new velocity vector for each particle
             for (let a of attractors) d += Math.atan2(a.y - p.y, a.x - p.x);
 
+            // Calculate new position of the particle
             const prevX = p.x, prevY = p.y;
             p.x += Math.cos(d) * this.particlesSpeed;
             p.y += Math.sin(d) * this.particlesSpeed;
 
+            // To make it look smooth even at high speeds, draw a line between the previous and new positions instead of a point
             Utils.drawLine(this.ctx, prevX, prevY, p.x, p.y, color);
         }
 
@@ -2697,6 +2804,7 @@ class ParticlesAndAttractors extends Animation {
                 {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.1},
                 {prop: "attractorsSystem", type: "select", values: this.attractorsSystems},
                 {prop: "numAttractors", type: "int", min: 3, max: 7},
+                {prop: "centralAttractor", type: "bool"},
                 {prop: "attractorsSpeed", type: "float", min: -0.2, max: 0.2},
                 {prop: "drawAttractors", type: "bool"},
                 {prop: "scale", type: "float", min: 0.05, max: 1.95},
@@ -2713,6 +2821,8 @@ const NAME = "vortex of particles",
       FILE = "particles-vortex.js",
       DESC = `
 Particles vortex with randomized speed and direction.
+The illusion of a 3D vortex is created by calculating the 2D position 
+of each particle, each frame, using simple trigonometry functions.
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -2774,7 +2884,7 @@ class ParticlesVortex extends Animation {
 
         this.ctx.beginPath();
         for(let i = 1; i <= this.particles; i++){
-            const r = this.radius + Math.pow(i / (this.particles / 1.5),2) * i / 2,
+            const r = this.radius + Math.pow(i / (this.particles / 1.5), 2) * i / 2,
                   p = this.noise.perlin2(i * 0.1 + s, 0.1) * 100 + s * this.rotationSpeed,
                   x = Math.cos(p) * r + Math.sqrt(i * this.radius) * this.dirX,
                   y = Math.sin(p) * r + Math.sqrt(i * this.radius) * this.dirY;
@@ -2805,7 +2915,7 @@ const NAME = "particles waves",
       FILE = "particles-waves.js",
       DESC = `
 "Particles waves" animation.
-The effect was achieved by modifying perlin-noise-particles.js.
+The effect was achieved by modifying Perlin noise animation.
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -2837,15 +2947,15 @@ class ParticlesStorm extends Animation {
 
         for(let p of this.particles){
             const theta = this.noise.perlin3(p.x * this.noiseScale * 2,
-                p.y  *this.noiseScale * 3,
-                this.frame * this.noiseScale * 3) * 2 * Math.PI;
+                                             p.y * this.noiseScale * 3,
+                                             this.frame * this.noiseScale * 3) * 2 * Math.PI;
             p.x += 2 * Math.tan(theta);
             p.y += 2 * Math.sin(theta);
 
             // Wrap particles
             if (p.x < 0) p.x = this.width;
             if (p.x > this.width ) p.x = 0;
-            if (p.y < 0 ) p.y = this.height;
+            if (p.y < 0) p.y = this.height;
             if (p.y > this.height) p.y =  0;
         }
     }
@@ -2875,10 +2985,6 @@ class ParticlesStorm extends Animation {
                 color: Utils.lerpColor(this.colorA, this.colorB, particleX / this.width)
             });
         }
-    }
-
-    reset(){
-
     }
 
     getSettings() {
@@ -2956,8 +3062,9 @@ class PerlinNoiseParticles extends Animation {
         this.fadeOut(this.fadingSpeed);
 
         for(let p of this.particles){
-            // Utils.fillCircle(this.ctx, p.x, p.y, p.radius, p.color);
-            Utils.drawLine(this.ctx, p.prevX, p.prevY, p.x, p.y, p.color, 2 * p.radius); // This results with better antialiasing
+            // To make it look smooth even at high speeds, draw a line between the previous and new positions instead of a point
+            // Drawing a line also results with a better antialiasing
+            Utils.drawLine(this.ctx, p.prevX, p.prevY, p.x, p.y, p.color, 2 * p.radius); 
         }
         this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     }
@@ -3028,8 +3135,10 @@ module.exports = PerlinNoiseParticles;
 const NAME = "quadtree visualization",
       FILE = "quadtree.js",
       DESC = `
-Visualization of quadtree algorithm.
-See: https://en.wikipedia.org/wiki/Quadtree
+Visualization of quadtree for points generated by thresholding Perlin noise.
+Quadtree is a data structure that is 2-dimensional, special variant of k-d trees.
+
+You can read about quadtree on [Wikipedia](https://en.wikipedia.org/wiki/Quadtree).
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -3041,36 +3150,57 @@ const Noise = require("./noise");
 class Quadtree extends Animation {
     constructor(canvas, colors, colorsAlt,
                 maxPointsInNode = 1,
-                pointsDensity = 9,
+                pointsDensity = 0.5,
                 drawPoints = false,
-                noiseScale = 0.001) {
+                noiseScale = 0.002,
+                noiseSpeed = {x: "random", y: "random", z: 1},
+                noiseThreshold = 0.01,
+                drawLeafNode = true) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
         this.pointsDensity = pointsDensity;
+        this.drawPoints = drawPoints;
+        this.maxPointsInNode = maxPointsInNode;
+        this.noiseThreshold = noiseThreshold;
+        this.drawLeafNodes = drawLeafNode;
+        
+        this.minNodeSize = 3;
+
+        this.noiseSpeed = noiseSpeed;
+        this.noiseSpeed.x = this.assignIfRandom(this.noiseSpeed.x, Utils.round(Utils.randomRange(-1, 1), 1));
+        this.noiseSpeed.y = this.assignIfRandom(this.noiseSpeed.y, Utils.round(Utils.randomRange(-1, 1), 1));
 
         this.noiseScale = noiseScale;
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
-        
         this.width = 0;
         this.height = 0;
+        this.noisePos = {x: 0, y: 0, z: 0};
+    }
 
-        this.drawPoints = drawPoints;
-        this.maxPointsInNode = maxPointsInNode;
+    update(elapsed){
+        this.noisePos.x += this.noiseSpeed.x * elapsed / 1000 * 10;
+        this.noisePos.y += this.noiseSpeed.y * elapsed / 1000 * 10;
+        this.noisePos.z += this.noiseSpeed.z * elapsed / 1000 * 0.05;
+        super.update(elapsed);
     }
 
     generatePoints(){
         let points = [];
-        const maxRectSize = Math.max(this.width, this.height),
-              spacing = maxRectSize / Math.pow(2, this.pointsDensity),
-              spacingHalf = spacing / 2,
-              noiseThr = spacing / maxRectSize;
-        for(let x = -spacing / 2; x < this.width; x += spacing){
-            for (let y = -spacing / 2; y < this.height; y += spacing){
-                const noiseVal = this.noise.perlin3(x * this.noiseScale, y * this.noiseScale, this.time * 0.05);
-                if(Math.abs(noiseVal) <= noiseThr){
+        const spacing = 1 / this.pointsDensity,
+              spacingHalf = spacing / 2;
+
+        let rng = Utils.Mulberry32(this.seed);
+        for(let x = spacingHalf; x < this.width; x += spacing){
+            for (let y = spacingHalf; y < this.height; y += spacing){
+                const noiseVal = this.noise.perlin3(
+                    (x + this.noisePos.x) * this.noiseScale, 
+                    (y + this.noisePos.y) * this.noiseScale, 
+                    this.noisePos.z);
+                if(Math.abs(noiseVal) <= this.noiseThreshold){
+                    // To make it look more natural add some small random offset to the point's position
                     points.push({
-                        x: Utils.randomRange(x - spacingHalf, x + spacingHalf),
-                        y: Utils.randomRange(y - spacingHalf, y + spacingHalf)
+                        x: x - spacingHalf + rng() * spacing,
+                        y: y - spacingHalf + rng() * spacing,
                     });
                 }
             }
@@ -3078,11 +3208,11 @@ class Quadtree extends Animation {
         return points;
     }
 
-    quadTree(x, y, size, points){
+    quadTree(x, y, size, points, depth){
         const sizeHalf = size / 2,
               sizeQuar = size / 4;
-        if (points.length <= this.maxPointsInNode) {
-            this.ctx.strokeRect(x - sizeHalf, y - sizeHalf, size, size);
+        if (points.length <= this.maxPointsInNode || size <= this.minNodeSize) {
+            if(size > this.minNodeSize || this.drawLeafNodes) this.ctx.strokeRect(x - sizeHalf, y - sizeHalf, size, size);
         } else {
             let nwPoints = [],
                 nePoints = [],
@@ -3094,10 +3224,11 @@ class Quadtree extends Animation {
                 else if(p.x >= x && p.y < y) sePoints.push(p);
                 else if(p.x < x && p.y < y) swPoints.push(p);
             }
-            this.quadTree(x + sizeQuar, y + sizeQuar, sizeHalf, nePoints);
-            this.quadTree(x + sizeQuar, y - sizeQuar, sizeHalf, sePoints);
-            this.quadTree(x - sizeQuar, y + sizeQuar, sizeHalf, nwPoints);
-            this.quadTree(x - sizeQuar, y - sizeQuar, sizeHalf, swPoints);
+            ++depth;
+            this.quadTree(x + sizeQuar, y + sizeQuar, sizeHalf, nePoints, depth);
+            this.quadTree(x + sizeQuar, y - sizeQuar, sizeHalf, sePoints, depth);
+            this.quadTree(x - sizeQuar, y + sizeQuar, sizeHalf, nwPoints, depth);
+            this.quadTree(x - sizeQuar, y - sizeQuar, sizeHalf, swPoints, depth);
         }
     }
 
@@ -3112,17 +3243,31 @@ class Quadtree extends Animation {
 
         this.ctx.lineWidth = 1;
         this.ctx.strokeStyle = this.colors[0];
-        this.quadTree(this.width / 2, this.height / 2, maxRectSize, points);
+        this.quadTree(this.width / 2, this.height / 2, maxRectSize, points, 0);
 
-        if(this.drawPoints)
-            for(let p of points) Utils.fillCircle(this.ctx, p.x, p.y, 2, this.colorsAlt[1]);
+        if(this.drawPoints){
+            this.ctx.fillStyle = this.colorsAlt[1];
+            if(this.pointsDensity < 0.5)
+                for(let p of points) Utils.fillCircle(this.ctx, p.x, p.y, 2, this.colorsAlt[1]);
+            else
+                for(let p of points) this.ctx.fillRect(p.x, p.y, 2, 2);
+        }
     }
 
+    restart(){
+        this.noisePos = {x: 0, y: 0, z: 0};
+        super.restart();
+    }
 
     getSettings() {
         return [{prop: "maxPointsInNode", type: "int", min: 1, max: 16},
-                {prop: "noiseScale", type: "float", step: 0.0001, min: 0.0005, max: 0.0015},
-                {prop: "pointsDensity", type: "int", min: 1, max: 10},
+                {prop: "pointsDensity", type: "float", step: 0.1, min: 0.1, max: 0.7},
+                {prop: "noiseScale", type: "float", step: 0.0001, min: 0.0005, max: 0.0125},
+                {prop: "noiseSpeed.x", type: "float", step: 0.1, min: -10, max: 10},
+                {prop: "noiseSpeed.y", type: "float", step: 0.1, min: -10, max: 10},
+                {prop: "noiseSpeed.z", type: "float", step: 0.1, min: -10, max: 10},
+                {prop: "noiseThreshold", type: "float", min: 0, max: 0.15, step: 0.001},
+                {prop: "drawLeafNodes", type: "bool"},
                 {prop: "drawPoints", type: "bool"}];
     }
 }
@@ -3194,8 +3339,13 @@ module.exports = Queue;
 const NAME = "finding the shortest path",
       FILE = "shortest-path.js",
       DESC = `
-Animation showing process of finding the shortest path
+Animation showing the process of finding the shortest path
 in the grid world by BFS or A* algorithm.
+
+In the 8-way variant, horizontal or vertical moves have a length (cost) of 1 
+while diagonal moves have a length of sqrt(2).
+
+The map is generated by recursively dividing rectangular rooms.
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -3726,7 +3876,7 @@ module.exports = SineWaves;
 const NAME = "sorting algorithm visualization",
       FILE = "sorting.js",
       DESC = `
-Visualization of different sorting algorithms.
+Animated visualization of different sorting algorithms.
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -4149,14 +4299,13 @@ class Sorting extends Animation {
 
         if(this.showStats){
             const lineHeight = 20;
-            this.ctx.font = '14px sans-serif';
             this.ctx.lineWidth = 2;
             this.ctx.fillStyle = this.colors[0];
             this.ctx.strokeStyle = this.bgColor;
 
-            Utils.fillAndStrokeText(this.ctx,`Sorting algorithm: ${this.sortingAlgorithm}`, lineHeight, elementMaxHeight - 3 * lineHeight);
-            Utils.fillAndStrokeText(this.ctx,`Number of elements: ${this.numElements}`, lineHeight, elementMaxHeight - 2 * lineHeight);
-            Utils.fillAndStrokeText(this.ctx,`Number of elements comparisons: ${this.cmpCount} / ${this.cmpTotal}`, lineHeight, elementMaxHeight - lineHeight);
+            Utils.fillAndStrokeText(this.ctx, `Sorting algorithm: ${this.sortingAlgorithm}`, lineHeight, elementMaxHeight - 3 * lineHeight);
+            Utils.fillAndStrokeText(this.ctx, `Number of elements: ${this.numElements}`, lineHeight, elementMaxHeight - 2 * lineHeight);
+            Utils.fillAndStrokeText(this.ctx, `Number of elements comparisons: ${this.cmpCount} / ${this.cmpTotal}`, lineHeight, elementMaxHeight - lineHeight);
         }
     }
 
@@ -4181,9 +4330,10 @@ module.exports = Sorting;
 const NAME = "shapes dancing in a circle",
       FILE = "spinning-shapes.js",
       DESC = `
-Shapes moving/"dancing" in a circle.
-Based on: https://observablehq.com/@rreusser/instanced-webgl-circles
- 
+Just same shape "dancing" in a circle.
+This animation recreates the effect 
+described in this [article](https://observablehq.com/@rreusser/instanced-webgl-circles).
+
 Coded with no external dependencies, using only canvas API.
 `;
 
@@ -4255,8 +4405,8 @@ class SpinningShapes extends Animation {
         return [{prop: "vertices", type: "int", min: 0, max: 8, toCall: "updateName"},
                 {prop: "shapes", type: "int", min: 0, max: 2500},
                 {prop: "rotateShapes", type: "bool" },
-                //{prop: "distanceRange", type: "float", min: 0, max: 1},
-                //{prop: "sizeRange", type: "float", min: 0, max: 1},
+                {prop: "distanceRange", type: "float", min: 0, max: this.distanceBase},
+                {prop: "sizeRange", type: "float", min: 0, max: this.sizeBase},
                 {prop: "scale", type: "float", min: 0.05, max: 1.95},
                 {prop: "speed", type: "float", step: 0.1, min: -4, max: 4},
                 {prop: "colorsShift", type: "float", min: 0, max: 3.14},
@@ -4273,9 +4423,18 @@ module.exports = SpinningShapes
 const NAME = "spirograph",
       FILE = "spirograph.js",
       DESC = `
-Spirograph created with 1-5 random gears.
-See: https://en.wikipedia.org/wiki/Spirograph,
-and: http://www.eddaardvark.co.uk/v2/spirograph/spirograph2.html (this site is amazing).
+Virtual spirograph created with 2-5 configurable gears.
+Spirograph is a drawing toy that use gears to create patterns. I used to play with it a lot as a kid.
+
+You can read about in on
+[Wikipedia](https://en.wikipedia.org/wiki/Spirograph).
+I also recommend to check this awesome [website] (http://www.eddaardvark.co.uk/v2/spirograph/spirograph2.html),
+which is the source of inspiration for this animation.
+And also this great [blogpost](https://www.bit-101.com/blog/2022/12/coding-curves-09-roulette-curves/)
+that step by step how it works.
+
+Try play with the gears' settings or hit reset button few times 
+to get different random configurations.
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -4286,14 +4445,14 @@ const Utils = require("./utils");
 class Spirograph extends Animation {
     constructor (canvas, colors, colorsAlt, 
                  vertices = 2500, 
-                 length = 2, 
+                 lineLength = 2, 
                  gearCount = "random",
                  rescaleToFit = true,
                  scale = 1) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
 
         this.vertices = vertices;
-        this.length = length;
+        this.lineLength = lineLength;
         this.maxGears = 5;
         this.rescaleToFit = rescaleToFit;
         this.scale = scale;
@@ -4347,7 +4506,7 @@ class Spirograph extends Animation {
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
         this.ctx.scale(this.scale, this.scale);
 
-        const length = Math.PI * this.length,
+        const length = Math.PI * this.lineLength,
               lenPerVertex = length / this.vertices;
 
         let start = this.getXY(0, this.time, scale);
@@ -4362,9 +4521,9 @@ class Spirograph extends Animation {
     }
 
     getSettings() {
-        let settings = [{prop: "vertices", type: "int", min: 100, max: 10000},
-                        {prop: "length", type: "float", step: 0.25, min: 1, max: 8},
-                        {prop: "gearCount", type: "int", min: 1, max: this.maxGears, toCall: "updateName"},
+        let settings = [{prop: "vertices", type: "int", min: 100, max: 15000},
+                        {prop: "lineLength", type: "float", step: 0.25, min: 1, max: 8},
+                        {prop: "gearCount", type: "int", min: 2, max: this.maxGears, toCall: "updateName"},
                         {prop: "rescaleToFit", type: "bool"},
                         {prop: "scale", type: "float", min: 0.25, max: 4},
                         {prop: "speed", type: "float", step: 0.1, min: -4, max: 4}];
@@ -4387,30 +4546,49 @@ module.exports = Spirograph
  */
 
 module.exports = {
+    // Random generators
+    // https://github.com/bryc/code/blob/master/jshash/PRNGs.md
+
+    Lcg(s) { // Linear congruential generator
+        return function () {
+            s = Math.imul(48271, s) | 0 % 2147483647;
+            return (s & 2147483647) / 2147483648;
+        }
+    },
+
+    Mulberry32(a) { // Mulberry32
+        return function () {
+            a |= 0; a = a + 0x6D2B79F5 | 0;
+            var t = Math.imul(a ^ a >>> 15, 1 | a);
+            t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+            return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        }
+    },
+
     // Randomization helpers
-    randomRange(min, max) {
-        return Math.random() * (max - min) + min;
+    randomRange(min, max, rndGen = Math.random) {
+        return rndGen() * (max - min) + min;
     },
 
-    randomInt(min, max) {
-        return Math.floor(this.randomRange(min, max));
+    randomInt(min, max, rndGen = Math.random) {
+        return Math.floor(this.randomRange(min, max, rndGen));
     },
 
-    randomChoice(arr) {
-        return arr[Math.floor(Math.random() * arr.length)];
+    randomChoice(arr, rndGen = Math.random) {
+        return arr[Math.floor(rndGen() * arr.length)];
     },
 
-    randomBoxMuller() {
-        return Math.sqrt(-2.0 * Math.log( 1 - Math.random())) * Math.cos(2.0 * Math.PI * Math.random());
+    randomBoxMuller(rndGen = Math.random) {
+        return Math.sqrt(-2.0 * Math.log( 1 - rndGen())) * Math.cos(2.0 * Math.PI * rndGen());
     },
 
-    randomArray(length, min, max){
-        return Array(length).fill().map(() => this.randomRange(min, max))
+    randomArray(length, min, max, rndGen = Math.random){
+        return Array(length).fill().map(() => this.randomRange(min, max, rndGen))
     },
 
-    randomShuffle(arr){
+    randomShuffle(arr, rndGen = Math.random){
         for (let i = arr.length - 1; i > 0; --i) {
-             const j = Math.floor(Math.random() * (i + 1)),
+             const j = Math.floor(rndGen() * (i + 1)),
                    temp = arr[i];
              arr[i] = arr[j];
              arr[j] = temp;

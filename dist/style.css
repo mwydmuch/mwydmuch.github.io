@@ -495,7 +495,7 @@ ul {
 .form-checkbox input:focus + .form-icon,
 .form-radio input:focus + .form-icon,
 .form-switch input:focus + .form-icon {
-  border-color: #43696B;
+  border-color: unset;
 }
 .form-checkbox,
 .form-radio,
@@ -512,7 +512,7 @@ ul {
   margin-top: -0.15rem;
 }
 .form-select:focus {
-  border-color: #43696B;
+  border-color: unset;
   font-size: unset;
 }
 .form-select {

@@ -386,6 +386,10 @@ function processDescription(description){
     return description;
 }
 
+function getPropId(propName){
+    return propName.split(/(?=[A-Z])/).join(' ').toLowerCase().replaceAll(/\.|\]|s\[/g, '-');
+}
+
 function updateUI(){
     // Update basic controls
     if(elemBgName) elemBgName.innerHTML = animation.getName();
@@ -414,8 +418,8 @@ function updateUI(){
         // Create settings controls
         settings.forEach(function(setting, index) {
             const value = eval(`animation.${setting.prop}`),
-                  elemId = setting.prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls",
-                  name = setting.prop.split(/(?=[A-Z])/).join(' ').toLowerCase();
+                  name = getPropId(setting.prop).replaceAll('-', ' '),
+                  elemId = getPropId(setting.prop) + "-controls";
 
             let optionControls = `<div><span class="setting-name">${name}</span><span class="nowrap setting-value-control">`;
 
@@ -449,7 +453,7 @@ function updateUI(){
 
         // Add events
         settings.forEach(function(setting, index) {
-            const elemId = setting.prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls";
+            const elemId = getPropId(setting.prop) + "-controls";
             let elem = document.getElementById(elemId);
             if(elem) {
                 elem.addEventListener("input", function (e) {
