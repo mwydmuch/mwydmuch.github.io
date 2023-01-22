@@ -18,7 +18,7 @@ const Noise = require("./noise");
 class Quadtree extends Animation {
     constructor(canvas, colors, colorsAlt,
                 maxPointsInNode = 1,
-                pointsDensity = 0.5,
+                pointsDensity = 0.3,
                 drawPoints = false,
                 noiseScale = 0.002,
                 noiseSpeed = {x: "random", y: "random", z: 1},
@@ -31,13 +31,13 @@ class Quadtree extends Animation {
         this.noiseThreshold = noiseThreshold;
         this.drawLeafNodes = drawLeafNode;
         
-        this.minNodeSize = 3;
-
+        this.noiseScale = noiseScale;
         this.noiseSpeed = noiseSpeed;
         this.noiseSpeed.x = this.assignIfRandom(this.noiseSpeed.x, Utils.round(Utils.randomRange(-1, 1), 1));
         this.noiseSpeed.y = this.assignIfRandom(this.noiseSpeed.y, Utils.round(Utils.randomRange(-1, 1), 1));
+        
+        this.minNodeSize = 4;
 
-        this.noiseScale = noiseScale;
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
         this.width = 0;
@@ -56,7 +56,6 @@ class Quadtree extends Animation {
         let points = [];
         const spacing = 1 / this.pointsDensity,
               spacingHalf = spacing / 2;
-
         let rng = Utils.Mulberry32(this.seed);
         for(let x = spacingHalf; x < this.width; x += spacing){
             for (let y = spacingHalf; y < this.height; y += spacing){
@@ -135,6 +134,7 @@ class Quadtree extends Animation {
                 {prop: "noiseSpeed.y", type: "float", step: 0.1, min: -10, max: 10},
                 {prop: "noiseSpeed.z", type: "float", step: 0.1, min: -10, max: 10},
                 {prop: "noiseThreshold", type: "float", min: 0, max: 0.15, step: 0.001},
+                //{prop: "minNodeSize", type: "float", step: 0.1, min: 1, max: 6},
                 {prop: "drawLeafNodes", type: "bool"},
                 {prop: "drawPoints", type: "bool"}];
     }
