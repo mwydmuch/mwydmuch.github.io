@@ -76,10 +76,6 @@ class ParticlesStorm extends Animation {
         }
     }
 
-    reset(){
-
-    }
-
     getSettings() {
         return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.01, toCall: "resize"},
                 {prop: "noiseScale", type: "float", step: 0.001, min: 0.001, max: 0.01},

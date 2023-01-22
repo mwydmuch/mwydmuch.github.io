@@ -3,8 +3,8 @@
 const NAME = "3n + 1 (Collatz Conjecture) visualization",
       FILE = "3n+1.js",
       DESC = `
-3n + 1 (Collatz Conjecture) visualization.
-Inspired by this Veritasium's [video](https://www.youtube.com/watch?v=094y1Z2wpJg).
+3n + 1 (Collatz Conjecture) visualization 
+inspired by this Veritasium's [video](https://www.youtube.com/watch?v=094y1Z2wpJg).
 You can also read about the conjecture on [Wikipedia](https://en.wikipedia.org/wiki/Collatz_conjecture).
 
 Each tic Collatz sequence is generated for the next number.

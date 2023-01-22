@@ -10,7 +10,8 @@ class Animation {
     constructor(canvas, colors, colorsAlt,
                 name = "",
                 file = "",
-                description = "") {
+                description = "",
+                seed = "random") {
         this.ctx = canvas.getContext("2d", { alpha: false });
 
         // Colors variables
@@ -30,6 +31,9 @@ class Animation {
         this.frame = 0;
         this.speed = 1;
         this.fps = 30;
+
+        // Seed, might be combined with seedable rngs to make animations deterministic
+        this.seed = this.assignIfRandom(seed, Math.random());
 
         // Reset text settings
         this.ctx.font = '14px sans-serif';

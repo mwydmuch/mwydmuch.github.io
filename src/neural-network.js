@@ -1,7 +1,7 @@
 'use strict';
 
 /*
- * Temporarily disabled, this old animation needs some improvement.
+ * Temporarily disabled, this old animation needs some improvement to be visualy pleasing.
  *
  * Visualization of a simple, fully connected neural network, with random weights,
  * ReLU activations on intermediate layers, and sigmoid output at the last layer.

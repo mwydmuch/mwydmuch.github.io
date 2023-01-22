@@ -342,13 +342,47 @@ if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
 }
 
 function processDescription(description){
+    // Replace string format
+    const urlReplaceStrFormat = (prevContent, hrefContent, linkContent, followingContent) => 
+        `${prevContent}<span class="nowrap">[<a href="${hrefContent}" target="_blank" rel="noopener noreferrer">${linkContent}</a>]</span>${followingContent}`;
+    
+    // Wrap urls into <a> tags
+    const regexpToReplace = [
+        // Wikipedia urls in the Markdown format ( [text](url) )
+        {
+            replaceStr: urlReplaceStrFormat('\$1', '\$3', '<i class="fa fa-wikipedia-w"></i> \$2', '\$4'), 
+            regexp: /(.*)\[(.*)\]\((https?:\/\/(?:www\.)?en\.wikipedia\.org\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*))\)(.*)/g
+        },
+        // YouTube urls
+        {
+            replaceStr: urlReplaceStrFormat('\$1', '\$3', '<i class="fa fa-youtube"></i> \$2', '\$4'),
+            regexp: /(.*)\[(.*)\]\((https?:\/\/(?:www\.)?youtube\.com\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*))\)(.*)/g
+        },
+        // GitHub urls
+        {
+            replaceStr: urlReplaceStrFormat('\$1', '\$3', '<i class="fa fa-github"></i> \$2', '\$4'), 
+            regexp: /(.*)\[(.*)\]\((https?:\/\/(?:www\.)?github\.com\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*))\)(.*)/g
+        },
+        // Other Markdown urls
+        {
+            replaceStr: urlReplaceStrFormat('\$1', '\$3', '<i class="fas fa-link"></i> \$2', '\$4'),
+            regexp: /(.*)\[(.*)\]\((https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*))\)(.*)/g
+        },
+        // lose urls
+        {
+            replaceStr: urlReplaceStrFormat('\$1', '\$2', '<i class="fas fa-link"></i> \$2', '\$3'),
+            regexp: /(.*)[^"](https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*))[^"](.*)/g
+        },
+    ]
+
+    for(let r of regexpToReplace){
+        description = description.replaceAll(r.regexp, r.replaceStr);
+    }
+
     // Replace new lines \n with </br>
     description = description.trim().replaceAll("\n\n", "</p><p>");
     description = '<p>' + description + '</p>';
 
-    // Wrap urls into <a> tag
-    const urlRegex = /(.*)(https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*))(.*)/g
-    description = description.replaceAll(urlRegex, '\$1<a href="\$2">\$2</a>\$3');
     return description;
 }
 
@@ -380,8 +414,8 @@ function updateUI(){
         // Create settings controls
         settings.forEach(function(setting, index) {
             const value = eval(`animation.${setting.prop}`),
-                elemId = setting.prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls",
-                name = setting.prop.split(/(?=[A-Z])/).join(' ').toLowerCase();
+                  elemId = setting.prop.split(/(?=[A-Z])/).join('-').toLowerCase() + "-controls",
+                  name = setting.prop.split(/(?=[A-Z])/).join(' ').toLowerCase();
 
             let optionControls = `<div><span class="setting-name">${name}</span><span class="nowrap setting-value-control">`;
 

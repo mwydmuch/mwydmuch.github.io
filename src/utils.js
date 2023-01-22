@@ -5,30 +5,49 @@
  */
 
 module.exports = {
+    // Random generators
+    // https://github.com/bryc/code/blob/master/jshash/PRNGs.md
+
+    Lcg(s) { // Linear congruential generator
+        return function () {
+            s = Math.imul(48271, s) | 0 % 2147483647;
+            return (s & 2147483647) / 2147483648;
+        }
+    },
+
+    Mulberry32(a) { // Mulberry32
+        return function () {
+            a |= 0; a = a + 0x6D2B79F5 | 0;
+            var t = Math.imul(a ^ a >>> 15, 1 | a);
+            t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+            return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        }
+    },
+
     // Randomization helpers
-    randomRange(min, max) {
-        return Math.random() * (max - min) + min;
+    randomRange(min, max, rndGen = Math.random) {
+        return rndGen() * (max - min) + min;
     },
 
-    randomInt(min, max) {
-        return Math.floor(this.randomRange(min, max));
+    randomInt(min, max, rndGen = Math.random) {
+        return Math.floor(this.randomRange(min, max, rndGen));
     },
 
-    randomChoice(arr) {
-        return arr[Math.floor(Math.random() * arr.length)];
+    randomChoice(arr, rndGen = Math.random) {
+        return arr[Math.floor(rndGen() * arr.length)];
     },
 
-    randomBoxMuller() {
-        return Math.sqrt(-2.0 * Math.log( 1 - Math.random())) * Math.cos(2.0 * Math.PI * Math.random());
+    randomBoxMuller(rndGen = Math.random) {
+        return Math.sqrt(-2.0 * Math.log( 1 - rndGen())) * Math.cos(2.0 * Math.PI * rndGen());
     },
 
-    randomArray(length, min, max){
-        return Array(length).fill().map(() => this.randomRange(min, max))
+    randomArray(length, min, max, rndGen = Math.random){
+        return Array(length).fill().map(() => this.randomRange(min, max, rndGen))
     },
 
-    randomShuffle(arr){
+    randomShuffle(arr, rndGen = Math.random){
         for (let i = arr.length - 1; i > 0; --i) {
-             const j = Math.floor(Math.random() * (i + 1)),
+             const j = Math.floor(rndGen() * (i + 1)),
                    temp = arr[i];
              arr[i] = arr[j];
              arr[j] = temp;

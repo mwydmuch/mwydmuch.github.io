@@ -3,7 +3,8 @@
 const NAME = "circular waves",
       FILE = "circular-waves.js",
       DESC = `
-Circular waves animation.
+This animation draw a circle as a set of vertices and edges,
+noise is added to the position of each vertex to create a wave effect. 
 
 Coded with no external dependencies, using only canvas API.
 `;
