@@ -10,6 +10,8 @@ const Utils = require("./utils");
 const ThreeNPlusOne = require("./3n+1");
 const Cardioids = require("./cardioids");
 const CircularWaves = require("./circular-waves");
+const Coding = require("./coding");
+const FiguresSpiral = require("./figures-spiral");
 const GameOfLife = require("./game-of-life");
 const GameOfLifeIsometric = require("./game-of-life-isometric");
 const GradientDescent = require("./gradient-descent");
@@ -102,17 +104,19 @@ let animations = [
     {class: ThreeNPlusOne, name: "3n+1"},
     {class: Cardioids, name: "cardioids"},
     {class: CircularWaves, name: "circular waves"},
+    //{class: Coding, name: "coding"},  // Disable till finished
+    //{class: FiguresSpiral, name: "figures spiral"},  // Disable since it's not that interesting
     {class: GameOfLife, name: "game of life"},
     {class: GameOfLifeIsometric, name: "isometric game of life"},
     {class: GradientDescent, name: "gradient descent"},
     {class: Matrix, name: "matrix rain"},
     {class: Network, name: "network"},
-    //{class: NeuralNetwork, name: "neural network"},
+    //{class: NeuralNetwork, name: "neural network"}, // Disable till updated
     {class: ParticlesAndAttractors, name: "particles and attractors"},
     {class: ParticlesVortex, name: "particles vortex"},
     {class: ParticlesWaves, name: "particles waves"},
     {class: PerlinNoiseParticles, name: "perlin noise"},
-    {class: Quadtree, name: "quadtree"},
+    {class: Quadtree, name: "quadtree", startAnimation: false}, // Don't use as start animation, since it can be performance heavy
     {class: ShortestPath, name: "shortest path"},
     {class: Sorting, name: "sorting"},
     {class: SpinningShapes, name: "spinning shapes"},
@@ -121,8 +125,10 @@ let animations = [
 ];
 
 const animationCount = animations.length;
-let animationId = Utils.randomInt(0, animationCount),
-    animation = null,
+let animationId = Utils.randomInt(0, animationCount);
+while(animations[animationId].startAnimation === false) animationId = Utils.randomInt(0, animationCount);
+
+let animation = null,
     order = Array.from({length: animationCount}, (x, i) => i);
 
 Utils.randomShuffle(order);

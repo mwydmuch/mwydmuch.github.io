@@ -1,20 +1,22 @@
 'use strict';
 
-/*
- * Very simple of figures spinning in the spiral.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "figures spiral",
+      FILE = "figures-spiral.js",
+      DESC = `
+Very simple of figures spinning in the spiral.
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Utils = require("./utils");
 
-class FigureSpiral extends Animation {
+class FiguresSpiral extends Animation {
     constructor(canvas, colors, colorsAlt,
                 number = 500,
                 size = 50,
                 sides = "random") {
-        super(canvas, colors, colorsAlt, "", "figure-spiral.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
 
         this.shapeSides = [0, 1, 2, 3, 4, 5, 6, 8];
         this.shapeNames = ["circles", "points", "lines", "triangles", "rectangles", "pentagons", "hexagons", "octagons"];
@@ -54,4 +56,4 @@ class FigureSpiral extends Animation {
     }
 }
 
-module.exports = FigureSpiral;
+module.exports = FiguresSpiral;

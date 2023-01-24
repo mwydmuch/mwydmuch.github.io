@@ -1,13 +1,15 @@
 'use strict';
 
-/*
- * Work in progress.
- *
- * Code writing animation inspired by: https://openprocessing.org/sketch/1219550
- * It's only light themed to match website colors, personally I always use dark IDE.
- *
- * Coded with no external dependencies, using only canvas API.
- */
+const NAME = "Code writing animation",
+      FILE = "codding.js",
+      DESC = `
+Work in progress.
+
+Code writing animation inspired by: https://openprocessing.org/sketch/1219550
+It's only light themed to match website colors, personally I always use dark IDE.
+
+Coded with no external dependencies, using only canvas API.
+`;
 
 const Animation = require("./animation");
 const Utils = require("./utils");
@@ -16,7 +18,7 @@ class Coding extends Animation {
     constructor(canvas, colors, colorsAlt,
                 charSize = 20,
                 tabSize = 4) {
-        super(canvas, colors, colorsAlt, "Code writing animation", "codding.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
 
         this.charSize = charSize;
         this.lineX = this.padding;

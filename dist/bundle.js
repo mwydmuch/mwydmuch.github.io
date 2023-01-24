@@ -237,7 +237,7 @@ class Animation {
 
 module.exports = Animation;
 
-},{"./utils":25}],3:[function(require,module,exports){
+},{"./utils":27}],3:[function(require,module,exports){
 'use strict';
 
 const NAME = "cardioids with a pencil of lines",
@@ -309,7 +309,7 @@ class Cardioids extends Animation {
 
 module.exports = Cardioids
 
-},{"./animation":2,"./utils":25}],4:[function(require,module,exports){
+},{"./animation":2,"./utils":27}],4:[function(require,module,exports){
 'use strict';
 
 const NAME = "circular waves",
@@ -395,7 +395,159 @@ class CircularWaves extends Animation {
 
 module.exports = CircularWaves;
 
-},{"./animation":2,"./noise":13,"./utils":25}],5:[function(require,module,exports){
+},{"./animation":2,"./noise":15,"./utils":27}],5:[function(require,module,exports){
+'use strict';
+
+const NAME = "Code writing animation",
+      FILE = "codding.js",
+      DESC = `
+Work in progress.
+
+Code writing animation inspired by: https://openprocessing.org/sketch/1219550
+It's only light themed to match website colors, personally I always use dark IDE.
+
+Coded with no external dependencies, using only canvas API.
+`;
+
+const Animation = require("./animation");
+const Utils = require("./utils");
+
+class Coding extends Animation {
+    constructor(canvas, colors, colorsAlt,
+                charSize = 20,
+                tabSize = 4) {
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+
+        this.charSize = charSize;
+        this.lineX = this.padding;
+        this.lineY = this.padding;
+
+        this.tabSize = tabSize;
+        this.maxLines = 0;
+        this.line = 0;
+        this.tabs = 0;
+        this.words = 0;
+        this.wordLen = 0;
+
+        this.editorTheme = { // Loosely based on Monokai Light theme
+            keyword: "#33C5E1",
+            typeName: "#F52D73",
+            argument: "#F9A857",
+            variable: "#030303",
+            numericValue: "#B693FB",
+            stringValue: "#F0763B",
+            comment: "#737373",
+        }
+
+        this.firstWordColors = [this.editorTheme.keyword,
+                                this.editorTheme.typeName,
+                                this.editorTheme.variable,
+                                this.editorTheme.comment];
+        this.afterTypeName = [this.editorTheme.argument,
+                              this.editorTheme.typeName,
+                              this.editorTheme.variable];
+        this.afterVariable = Utils.getValues(this.editorTheme);
+        this.otherCases = [this.editorTheme.keyword,
+                           this.editorTheme.typeName,
+                           this.editorTheme.variable,
+                           this.editorTheme.comment,
+                           this.editorTheme.numericValue,
+                           this.editorTheme.stringValue];
+
+        this.currentColor = null;
+        this.imageData = null;
+
+        this.updateCharSize();
+        this.newLine();
+        this.newWord();
+    }
+
+    updateCharSize(){
+        this.padding = this.charSize / 2;
+        this.lineHeight = this.charSize * 1.25;
+        this.charWidth = Math.ceil(this.charSize / 1.618);
+        this.charHeight = this.charSize;
+        this.imageData = null;
+        this.line = 0;
+        this.resize();
+        this.newWord();
+    }
+
+    newWord(){
+        // Some handcrafted rules for the next word's color to make it look more structured
+        this.wordLen = 0;
+        if(this.words === 0) this.currentColor = Utils.randomChoice(this.firstWordColors);
+        else {
+            if (this.currentColor === this.editorTheme.typeName)
+                this.currentColor = Utils.randomChoice(this.afterTypeName);
+            else if (this.currentColor === this.editorTheme.variable)
+                this.currentColor = Utils.randomChoice(this.afterVariable);
+            else if (this.currentColor === this.editorTheme.comment)
+                this.currentColor = this.editorTheme.comment;
+            else this.currentColor = Utils.randomChoice(this.otherCases);
+        }
+    }
+
+    newLine(){
+        if(this.line > this.maxLines){
+            const shift = (this.maxLines - this.line) * this.lineHeight;
+            this.clear();
+            if(this.imageData !== null) this.ctx.putImageData(this.imageData, 0, shift);
+            this.line = this.maxLines;
+        }
+
+        this.words = 0;
+        this.lineX = this.padding + this.tabs * this.tabSize * this.charWidth;
+        this.lineY = this.padding + this.line * this.lineHeight;
+    }
+
+    draw() {
+        // Continue current word and write next "character"
+        if(Math.random() < Math.pow(0.9, this.wordLen - 2) || this.wordLen < 3){
+            this.lineX += this.charWidth;
+            ++this.wordLen;
+            this.ctx.fillStyle = this.currentColor;
+            this.ctx.fillRect(this.lineX, this.lineY, this.charWidth, this.charHeight);
+        } else {
+            if(Math.random() < Math.pow(0.5,this.words - 1) || this.words < 2) { // Continue line
+                ++this.words;
+                this.lineX += this.charWidth;
+            } else { // New line
+                const indentChoice = Utils.randomChoice(["inc", "inc", "dec", "dec", "keep", "keep", "reset", "keep+newline"]);
+                if(indentChoice === "inc" && this.tabs < 4) ++this.tabs;
+                else if(indentChoice === "keep+newline") ++this.line;
+                else if(indentChoice === "dec" && this.tabs > 0) {
+                    ++this.line;
+                    --this.tabs;
+                } else if(indentChoice === "reset" && this.tabs > 0){
+                    ++this.line;
+                    this.tabs = 0;
+                }
+                ++this.line;
+                this.newLine();
+            }
+            this.newWord();
+        }
+
+        this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    }
+
+    resize() {
+        this.clear();
+        if(this.imageData !== null) this.ctx.putImageData(this.imageData, 0, 0);
+        this.maxLines = Math.floor((this.ctx.canvas.height - 2 * this.padding) / this.lineHeight) - 1;
+        this.newLine();
+    }
+
+    getSettings() {
+        return [{prop: "charSize", type: "int", min: 8, max: 72, toCall: "updateCharSize"},
+                {prop: "tabSize", type: "int", min: 1, max: 16}]
+    }
+}
+
+module.exports = Coding;
+
+},{"./animation":2,"./utils":27}],6:[function(require,module,exports){
 'use strict';
 
 /*
@@ -643,7 +795,68 @@ var Delaunay;
     if(typeof module !== "undefined")
         module.exports = Delaunay;
 })();
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
+'use strict';
+
+const NAME = "figures spiral",
+      FILE = "figures-spiral.js",
+      DESC = `
+Very simple of figures spinning in the spiral.
+
+Coded with no external dependencies, using only canvas API.
+`;
+
+const Animation = require("./animation");
+const Utils = require("./utils");
+
+class FiguresSpiral extends Animation {
+    constructor(canvas, colors, colorsAlt,
+                number = 500,
+                size = 50,
+                sides = "random") {
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+
+        this.shapeSides = [0, 1, 2, 3, 4, 5, 6, 8];
+        this.shapeNames = ["circles", "points", "lines", "triangles", "rectangles", "pentagons", "hexagons", "octagons"];
+        this.sides = this.assignIfRandom(sides, Utils.randomChoice(this.shapeSides));
+        this.updateName();
+        this.size = size;
+        this.number = number;
+    }
+
+    updateName(){
+        this.name = this.shapeNames[this.shapeSides.indexOf(this.sides)] + " spinning in spiral";
+    }
+
+    draw() {
+        this.clear();
+        this.ctx.translate(this.ctx.canvas.width / 2,  this.ctx.canvas.height / 2);
+        this.ctx.scale(this.scale, this.scale);
+
+        this.ctx.strokeStyle = this.colors[0];
+
+        for (let i = 0; i < this.number; ++i) {
+            this.ctx.rotate(Math.PI * (this.time * 0.001 + i * 0.000001));
+            this.ctx.beginPath();
+            if (this.sides === 0) Utils.pathCircle(this.ctx, i, i, this.size);
+            if (this.sides === 1) Utils.pathCircle(this.ctx, i, i, 1);
+            else Utils.pathPolygon(this.ctx, i, i, this.size, this.sides, 0);
+            this.ctx.stroke();
+        }
+        this.ctx.resetTransform();
+    }
+
+    getSettings() {
+        return [{prop: "sides", type: "int", min: 0, max: 8, toCall: "updateName"},
+                {prop: "number", type: "int", min: 1, max: 1024},
+                {prop: "size", type: "int", min: 1, max: 128},
+                {prop: "speed", type: "float", step: 0.1, min: -4, max: 4}];
+    }
+}
+
+module.exports = FiguresSpiral;
+
+},{"./animation":2,"./utils":27}],8:[function(require,module,exports){
 'use strict';
 
 const NAME = "isometric Conway's game of life",
@@ -828,7 +1041,7 @@ class GameOfLifeIsometric extends GameOfLife {
 
 module.exports = GameOfLifeIsometric;
 
-},{"./game-of-life":7,"./utils":25}],7:[function(require,module,exports){
+},{"./game-of-life":9,"./utils":27}],9:[function(require,module,exports){
 'use strict';
 
 const NAME = "Conway's game of life",
@@ -1004,7 +1217,7 @@ class GameOfLife extends Animation {
 
 module.exports = GameOfLife;
 
-},{"./animation":2,"./utils":25}],8:[function(require,module,exports){
+},{"./animation":2,"./utils":27}],10:[function(require,module,exports){
 'use strict';
 
 const NAME = "visualization of gradient descent algorithms",
@@ -1456,7 +1669,7 @@ class GradientDescent extends Animation {
 
 module.exports = GradientDescent;
 
-},{"./animation":2,"./utils":25}],9:[function(require,module,exports){
+},{"./animation":2,"./utils":27}],11:[function(require,module,exports){
 'use strict';
 
 // TODO: Refactor/wrap this code into animation/background controller class/module
@@ -1469,6 +1682,8 @@ const Utils = require("./utils");
 const ThreeNPlusOne = require("./3n+1");
 const Cardioids = require("./cardioids");
 const CircularWaves = require("./circular-waves");
+const Coding = require("./coding");
+const FiguresSpiral = require("./figures-spiral");
 const GameOfLife = require("./game-of-life");
 const GameOfLifeIsometric = require("./game-of-life-isometric");
 const GradientDescent = require("./gradient-descent");
@@ -1561,17 +1776,19 @@ let animations = [
     {class: ThreeNPlusOne, name: "3n+1"},
     {class: Cardioids, name: "cardioids"},
     {class: CircularWaves, name: "circular waves"},
+    //{class: Coding, name: "coding"},  // Disable till finished
+    //{class: FiguresSpiral, name: "figures spiral"},  // Disable since it's not that interesting
     {class: GameOfLife, name: "game of life"},
     {class: GameOfLifeIsometric, name: "isometric game of life"},
     {class: GradientDescent, name: "gradient descent"},
     {class: Matrix, name: "matrix rain"},
     {class: Network, name: "network"},
-    //{class: NeuralNetwork, name: "neural network"},
+    //{class: NeuralNetwork, name: "neural network"}, // Disable till updated
     {class: ParticlesAndAttractors, name: "particles and attractors"},
     {class: ParticlesVortex, name: "particles vortex"},
     {class: ParticlesWaves, name: "particles waves"},
     {class: PerlinNoiseParticles, name: "perlin noise"},
-    {class: Quadtree, name: "quadtree"},
+    {class: Quadtree, name: "quadtree", startAnimation: false}, // Don't use as start animation, since it can be performance heavy
     {class: ShortestPath, name: "shortest path"},
     {class: Sorting, name: "sorting"},
     {class: SpinningShapes, name: "spinning shapes"},
@@ -1580,8 +1797,10 @@ let animations = [
 ];
 
 const animationCount = animations.length;
-let animationId = Utils.randomInt(0, animationCount),
-    animation = null,
+let animationId = Utils.randomInt(0, animationCount);
+while(animations[animationId].startAnimation === false) animationId = Utils.randomInt(0, animationCount);
+
+let animation = null,
     order = Array.from({length: animationCount}, (x, i) => i);
 
 Utils.randomShuffle(order);
@@ -1937,7 +2156,7 @@ function updateUI(){
     }
 }
 
-},{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./game-of-life":7,"./game-of-life-isometric":6,"./gradient-descent":8,"./matrix":10,"./network":11,"./neural-network":12,"./particles-and-attractors":14,"./particles-vortex":15,"./particles-waves":16,"./perlin-noise-particles":17,"./quadtree":18,"./shortest-path":20,"./sine-waves":21,"./sorting":22,"./spinning-shapes":23,"./spirograph":24,"./utils":25}],10:[function(require,module,exports){
+},{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./coding":5,"./figures-spiral":7,"./game-of-life":9,"./game-of-life-isometric":8,"./gradient-descent":10,"./matrix":12,"./network":13,"./neural-network":14,"./particles-and-attractors":16,"./particles-vortex":17,"./particles-waves":18,"./perlin-noise-particles":19,"./quadtree":20,"./shortest-path":22,"./sine-waves":23,"./sorting":24,"./spinning-shapes":25,"./spirograph":26,"./utils":27}],12:[function(require,module,exports){
 'use strict';
 
 const NAME = "Matrix digital rain",
@@ -2088,7 +2307,7 @@ class Matrix extends Animation {
 
 module.exports = Matrix;
 
-},{"./animation":2,"./utils":25}],11:[function(require,module,exports){
+},{"./animation":2,"./utils":27}],13:[function(require,module,exports){
 'use strict';
 
 const NAME = "Delaunay triangulation for a cloud of particles",
@@ -2237,7 +2456,7 @@ class Network extends Animation {
 
 module.exports = Network;
 
-},{"./animation":2,"./delaunay":5,"./utils":25}],12:[function(require,module,exports){
+},{"./animation":2,"./delaunay":6,"./utils":27}],14:[function(require,module,exports){
 'use strict';
 
 /*
@@ -2364,7 +2583,7 @@ class NeuralNetwork extends Animation {
 
 module.exports = NeuralNetwork;
 
-},{"./animation":2,"./utils":25}],13:[function(require,module,exports){
+},{"./animation":2,"./utils":27}],15:[function(require,module,exports){
 'use strict';
 
 /*
@@ -2677,7 +2896,7 @@ module.exports = NeuralNetwork;
 
 })(this);
 
-},{}],14:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 'use strict';
 
 const NAME = "system of particles and attractors",
@@ -2814,7 +3033,7 @@ class ParticlesAndAttractors extends Animation {
 
 module.exports = ParticlesAndAttractors;
 
-},{"./animation":2,"./utils":25}],15:[function(require,module,exports){
+},{"./animation":2,"./utils":27}],17:[function(require,module,exports){
 'use strict';
 
 const NAME = "vortex of particles",
@@ -2908,7 +3127,7 @@ class ParticlesVortex extends Animation {
 
 module.exports = ParticlesVortex;
 
-},{"./animation":2,"./noise":13,"./utils":25}],16:[function(require,module,exports){
+},{"./animation":2,"./noise":15,"./utils":27}],18:[function(require,module,exports){
 'use strict';
 
 const NAME = "particles waves",
@@ -2996,7 +3215,7 @@ class ParticlesStorm extends Animation {
 
 module.exports = ParticlesStorm;
 
-},{"./animation":2,"./noise":13,"./utils":25}],17:[function(require,module,exports){
+},{"./animation":2,"./noise":15,"./utils":27}],19:[function(require,module,exports){
 'use strict';
 
 const NAME = "particles moving through Perlin noise",
@@ -3129,7 +3348,7 @@ class PerlinNoiseParticles extends Animation {
 
 module.exports = PerlinNoiseParticles;
 
-},{"./animation":2,"./noise":13,"./utils":25}],18:[function(require,module,exports){
+},{"./animation":2,"./noise":15,"./utils":27}],20:[function(require,module,exports){
 'use strict';
 
 const NAME = "quadtree visualization",
@@ -3274,7 +3493,7 @@ class Quadtree extends Animation {
 
 module.exports = Quadtree;
 
-},{"./animation":2,"./noise":13,"./utils":25}],19:[function(require,module,exports){
+},{"./animation":2,"./noise":15,"./utils":27}],21:[function(require,module,exports){
 'use strict';
 
 /*
@@ -3333,7 +3552,7 @@ class Queue {
 
 module.exports = Queue;
 
-},{}],20:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 'use strict';
 
 const NAME = "finding the shortest path",
@@ -3777,7 +3996,7 @@ class ShortestPath extends Animation {
 
 module.exports = ShortestPath;
 
-},{"./animation":2,"./queue":19,"./utils":25}],21:[function(require,module,exports){
+},{"./animation":2,"./queue":21,"./utils":27}],23:[function(require,module,exports){
 'use strict';
 
 const NAME = "grid of sine waves",
@@ -3870,7 +4089,7 @@ class SineWaves extends Animation {
 }
 
 module.exports = SineWaves;
-},{"./animation":2,"./utils":25}],22:[function(require,module,exports){
+},{"./animation":2,"./utils":27}],24:[function(require,module,exports){
 'use strict';
 
 const NAME = "sorting algorithm visualization",
@@ -4324,7 +4543,7 @@ class Sorting extends Animation {
 
 module.exports = Sorting;
 
-},{"./animation":2,"./utils":25}],23:[function(require,module,exports){
+},{"./animation":2,"./utils":27}],25:[function(require,module,exports){
 'use strict';
 
 const NAME = "shapes dancing in a circle",
@@ -4417,7 +4636,7 @@ class SpinningShapes extends Animation {
 
 module.exports = SpinningShapes
 
-},{"./animation":2,"./utils":25}],24:[function(require,module,exports){
+},{"./animation":2,"./utils":27}],26:[function(require,module,exports){
 'use strict';
 
 const NAME = "spirograph",
@@ -4538,7 +4757,7 @@ class Spirograph extends Animation {
 
 module.exports = Spirograph
 
-},{"./animation":2,"./utils":25}],25:[function(require,module,exports){
+},{"./animation":2,"./utils":27}],27:[function(require,module,exports){
 'use strict';
 
 /*
@@ -4831,4 +5050,4 @@ module.exports = {
     }
 };
 
-},{}]},{},[9])
+},{}]},{},[11])
