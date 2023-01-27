@@ -223,6 +223,7 @@ ul {
 }
 .animation-container {
   position: relative;
+  display: block;
 }
 #me {
   text-align: center;
@@ -481,8 +482,13 @@ ul {
   cursor: pointer;
   margin-left: 0.5rem;
 }
-.slider::-webkit-slider-thumb,
-.slider::-moz-range-thumb {
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  background: linear-gradient(135deg, #38575A, #43696B);
+  border: 2px solid #FFFFFF;
+}
+input[type=range]::-moz-range-thumb {
+  -moz-appearance: none;
   background: linear-gradient(135deg, #38575A, #43696B);
   border: 2px solid #FFFFFF;
 }

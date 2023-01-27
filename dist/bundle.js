@@ -3369,7 +3369,7 @@ const Noise = require("./noise");
 class Quadtree extends Animation {
     constructor(canvas, colors, colorsAlt,
                 maxPointsInNode = 1,
-                pointsDensity = 0.3,
+                pointsDensity = 0.4,
                 drawPoints = false,
                 noiseScale = 0.002,
                 noiseSpeed = {x: "random", y: "random", z: 1},

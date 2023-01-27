@@ -169,6 +169,7 @@ ul{
 
 .animation-container {
   position: relative;
+  display: block;
 }
 
 
@@ -450,7 +451,14 @@ each(@fade-show-values, {
 // Input fixes
 // ---------------------------------------------------------------------------------------------------------------------
 
-.slider::-webkit-slider-thumb, .slider::-moz-range-thumb {
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance: none;
+  background: @main-gradient;
+  border: 2px solid @background;
+}
+
+input[type=range]::-moz-range-thumb {
+  -moz-appearance: none;
   background: @main-gradient;
   border: 2px solid @background;
 }
