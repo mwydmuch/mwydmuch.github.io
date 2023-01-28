@@ -68,7 +68,7 @@ class Network extends Animation {
     }
 
     draw() {
-        this.fadeOut(this.fadingSpeed);
+        this.clear();
         if (this.particles.length > 0) {
             // Run script to get points to create triangles with.
             let data = Delaunay.triangulate(this.particles.map(function(p) {
@@ -114,8 +114,6 @@ class Network extends Animation {
     }
 
     resize() {
-        this.clear();
-
         // Add particles to the new parts of the canvas.
         const divWidth = this.ctx.canvas.width - this.width,
               divHeight = this.ctx.canvas.height - this.height;
