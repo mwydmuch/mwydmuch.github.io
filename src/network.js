@@ -70,7 +70,7 @@ class Network extends Animation {
     draw() {
         this.clear();
         if (this.particles.length > 0) {
-            // Run script to get points to create triangles with.
+            // Run Delaunay traiangulation to get points to create triangles with.
             let data = Delaunay.triangulate(this.particles.map(function(p) {
                 return [p.x, p.y];
             }));

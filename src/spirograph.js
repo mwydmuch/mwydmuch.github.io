@@ -56,7 +56,7 @@ class Spirograph extends Animation {
     }
 
     updateName(){
-        this.name = "spirograph with " + this.gearNames[this.gearCount] + " random gears";
+        this.name = "spirograph with " + this.gearNames[this.gearCount] + " gears";
     }
 
     getXY(i, j, scale = 1){

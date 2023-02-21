@@ -1779,7 +1779,7 @@ let animations = [
     //{class: Coding, name: "coding"},  // Disable till finished
     //{class: FiguresSpiral, name: "figures spiral"},  // Disable since it's not that interesting
     {class: GameOfLife, name: "game of life"},
-    {class: GameOfLifeIsometric, name: "isometric game of life"},
+    {class: GameOfLifeIsometric, name: "isometric game of life", startAnimation: false},
     {class: GradientDescent, name: "gradient descent"},
     {class: Matrix, name: "matrix rain"},
     {class: Network, name: "network"},
@@ -1821,8 +1821,7 @@ if(urlParams.has("animation")){
 function updateAnimation(newAnimationId) {
     animationId = newAnimationId;
     animation = new animations[animationId].class(canvas, colors, colorsAlt);
-    let fps = animation.getFPS();
-    framesInterval = 1000 / fps;
+    framesInterval = 1000 / animation.getFPS();
     then = Date.now();
     animation.resize();
     updateUI();
@@ -2380,7 +2379,7 @@ class Network extends Animation {
     draw() {
         this.clear();
         if (this.particles.length > 0) {
-            // Run script to get points to create triangles with.
+            // Run Delaunay traiangulation to get points to create triangles with.
             let data = Delaunay.triangulate(this.particles.map(function(p) {
                 return [p.x, p.y];
             }));
@@ -4693,7 +4692,7 @@ class Spirograph extends Animation {
     }
 
     updateName(){
-        this.name = "spirograph with " + this.gearNames[this.gearCount] + " random gears";
+        this.name = "spirograph with " + this.gearNames[this.gearCount] + " gears";
     }
 
     getXY(i, j, scale = 1){

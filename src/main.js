@@ -107,7 +107,7 @@ let animations = [
     //{class: Coding, name: "coding"},  // Disable till finished
     //{class: FiguresSpiral, name: "figures spiral"},  // Disable since it's not that interesting
     {class: GameOfLife, name: "game of life"},
-    {class: GameOfLifeIsometric, name: "isometric game of life"},
+    {class: GameOfLifeIsometric, name: "isometric game of life", startAnimation: false},
     {class: GradientDescent, name: "gradient descent"},
     {class: Matrix, name: "matrix rain"},
     {class: Network, name: "network"},
@@ -149,8 +149,7 @@ if(urlParams.has("animation")){
 function updateAnimation(newAnimationId) {
     animationId = newAnimationId;
     animation = new animations[animationId].class(canvas, colors, colorsAlt);
-    let fps = animation.getFPS();
-    framesInterval = 1000 / fps;
+    framesInterval = 1000 / animation.getFPS();
     then = Date.now();
     animation.resize();
     updateUI();
