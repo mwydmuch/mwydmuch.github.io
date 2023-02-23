@@ -14,6 +14,7 @@ const Coding = require("./coding");
 const FiguresSpiral = require("./figures-spiral");
 const GameOfLife = require("./game-of-life");
 const GameOfLifeIsometric = require("./game-of-life-isometric");
+const Glitch = require("./glitch");
 const GradientDescent = require("./gradient-descent");
 const Matrix = require("./matrix");
 const Network = require("./network");
@@ -108,6 +109,7 @@ let animations = [
     //{class: FiguresSpiral, name: "figures spiral"},  // Disable since it's not that interesting
     {class: GameOfLife, name: "game of life"},
     {class: GameOfLifeIsometric, name: "isometric game of life", startAnimation: false},
+    {class: Glitch, name: "glitch"},
     {class: GradientDescent, name: "gradient descent"},
     {class: Matrix, name: "matrix rain"},
     {class: Network, name: "network"},
@@ -182,6 +184,14 @@ function checkResize() {
     lastWidth = width;
 }
 
+function updateStats() {
+    if(elemBgStats) {
+        elemBgStats.innerHTML = `frame time: ${timeElapsed}</br>
+                                fps: ${Math.round(1000 / timeElapsed)}</br>
+                                canvas size: ${width} x ${height}`;
+    }
+}
+
 function render() {
     if(paused) return;
 
@@ -189,20 +199,17 @@ function render() {
           timeElapsed = now - then;
 
     // Limit framerate
-    requestAnimationFrame(render);
-    if (timeElapsed <= framesInterval) return;
-    then = now;
+    if (timeElapsed >= framesInterval) {
+        then = now;
 
-    checkResize();
-
-    animation.update(timeElapsed);
-    animation.draw();
-
-    if(elemBgStats) {
-        elemBgStats.innerHTML = `frame time: ${timeElapsed}</br>
-                                fps: ${Math.round(1000 / timeElapsed)}</br>
-                                canvas size: ${width} x ${height}`;
+        checkResize();
+    
+        animation.update(timeElapsed);
+        animation.draw();
+    
+        updateStats();
     }
+    requestAnimationFrame(render);
 }
 
 updateAnimation(animationId);
