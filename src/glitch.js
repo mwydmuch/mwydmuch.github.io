@@ -3,40 +3,25 @@
 const NAME = "Glitch animation",
       FILE = "glitch.js",
       DESC = `
-Glitch animation inspired by: https://openprocessing.org/sketch/1219550
+Animation inspierd by glitch effects of:
+
+The animation is just a celuar automata that based on the noise function.
 `;
 
-const Animation = require("./animation");
+const Grid = require("./grid");
 
-class Glitch extends Animation {
+class Glitch extends Grid {
     constructor(canvas, colors, colorsAlt,
                 cellSize = 6,
                 noiseScale = 0.0051) {
-        super(canvas, colors, colorsAlt, "Glitch", "glitch.js");
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
         this.cellSize = cellSize;
         this.noiseScale = noiseScale;
-
-        this.gridWidth = 0;
-        this.gridHeight = 0;
-        this.grid = null;
     }
 
-    wrapGetIdx(x, y) {
-        return (x + this.gridWidth) % this.gridWidth + (y + this.gridHeight) % this.gridHeight * this.gridWidth;
-    }
+    update(elapsed){
+        super.update(elapsed);
 
-    getIdx(x, y) {
-        return x + y * this.gridWidth;
-    }
-
-    getVal(x, y) {
-        return this.grid[this.getIdx(x, y)];
-    }
-
-    draw() {
-        this.clear();
-
-        let next = [...this.grid];
         for (let x = 0; x < this.gridWidth; ++x) {
             for (let y = 0; y < this.gridHeight; ++y) {
                 const r = this.noise.simplex3(x * this.noiseScale, y * this.noiseScale, this.frame * this.noiseScale);
@@ -44,24 +29,28 @@ class Glitch extends Animation {
                 const cellIdx = this.getIdx(x, y);
                 switch (sw) {
                     case 0:
-                        next[cellIdx] = this.grid[this.wrapGetIdx(x - 1, y)]; // west
+                        this.gridNext[cellIdx] = this.grid[this.getIdxWrap(x - 1, y)]; // west
                         break
                     case 1:
-                        next[cellIdx] = this.grid[this.wrapGetIdx(x + 1, y)]; // east
+                        this.gridNext[cellIdx] = this.grid[this.getIdxWrap(x + 1, y)]; // east
                         break
                     case 2:
-                        next[cellIdx] = this.grid[this.wrapGetIdx(x, y - 1)]; // north
+                        this.gridNext[cellIdx] = this.grid[this.getIdxWrap(x, y - 1)]; // north
                         break
                     case 3:
-                        next[cellIdx] = this.grid[this.wrapGetIdx(x, y + 1)]; // south
+                        this.gridNext[cellIdx] = this.grid[this.getIdxWrap(x, y + 1)]; // south
                         break
                     case 4:
-                        next[cellIdx] = this.grid[cellIdx]; // self
+                        this.gridNext[cellIdx] = this.grid[cellIdx]; // self
                 }
             }
         }
 
-        this.grid = next;
+        [this.grid, this.gridNext] = [this.gridNext, this.grid];
+    }
+
+    draw() {
+        this.clear();
         this.ctx.fillStyle = this.colors[0];
         for (let x = 0; x < this.gridWidth; ++x) {
             for (let y = 0; y < this.gridHeight; ++y) {
@@ -70,20 +59,8 @@ class Glitch extends Animation {
         }
     }
 
-    resizeGrid(newGridWidth, newGridHeight){
-        let newGrid = new Array(newGridWidth * newGridHeight);
-
-        for (let y = 0; y < newGridHeight; y++) {
-            for (let x = 0; x < newGridWidth; x++) {
-                const cellCord = x + y * newGridWidth;
-                if(x < this.gridWidth && y < this.gridHeight) newGrid[cellCord] = this.grid[this.getIdx(x, y)];
-                else newGrid[cellCord] = (x + y) % 2 ? 1 : 0;
-            }
-        }
-
-        this.grid = newGrid;
-        this.gridWidth = newGridWidth;
-        this.gridHeight = newGridHeight;
+    newCellState(x, y) {
+        return (x + y) % 2 ? 1 : 0;
     }
 
     resize() {
@@ -92,15 +69,10 @@ class Glitch extends Animation {
         this.resizeGrid(newGridWidth, newGridHeight);
     }
 
-    restart(){
-        this.gridWidth = 0;
-        this.gridHeight = 0;
-        super.restart();
-    }
-
     getSettings() {
         return [{prop: "cellSize", type: "int", min: 4, max: 12, toCall: "resize"},
-                {prop: "noiseScale", type: "float", step: 0.0001, min: 0.001, max: 0.05}];
+                {prop: "noiseScale", type: "float", step: 0.0001, min: 0.001, max: 0.05},
+                this.getSeedSettings()];
     }
 }
 

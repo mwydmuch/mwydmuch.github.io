@@ -176,7 +176,9 @@ class GameOfLifeIsometric extends GameOfLife {
     getSettings() {
         return [{prop: "loopGrid", type: "bool"},
                 {prop: "fadeDeadCells", type: "bool"},
-                {prop: "drawCellsGrid", type: "bool"}];
+                {prop: "drawCellsGrid", type: "bool"},
+                {prop: "spawnProb", type: "float", step: 0.01, min: 0, max: 1, toCall: "restart"},
+                this.getSeedSettings()];
     }
 }
 

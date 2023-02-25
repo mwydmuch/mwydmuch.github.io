@@ -4,6 +4,7 @@
  * Base class for all the background animations.
  */
 
+const Noise = require("./noise");
 const Utils = require("./utils");
 
 class Animation {
@@ -32,8 +33,13 @@ class Animation {
         this.speed = 1;
         this.fps = 30;
 
+        // Noise, it is frequently used by many animations
+        this.noise = Noise.noise;
+
         // Seed, might be combined with seedable rngs to make animations deterministic
-        this.seed = this.assignIfRandom(seed, Math.random());
+        this.maxSeedValue = 999999;
+        this.seed = this.assignIfRandom(seed, Math.round(Math.random() * this.maxSeedValue));
+        this.setSeed(this.seed);
 
         // Reset text settings
         this.ctx.font = '14px sans-serif';
@@ -42,6 +48,11 @@ class Animation {
 
         // Debug flag
         this.debug = false;
+    }
+
+    setSeed(seed){
+        this.noise.seed(seed / this.maxSeedValue);
+        this.rand = Utils.Mulberry32(seed);
     }
 
     assignIfRandom(value, random){  // Commonly used by many constructors
@@ -95,6 +106,7 @@ class Animation {
     restart() {
         this.time = 0;
         this.frame = 0;
+        this.setSeed(this.seed);
         this.resize();
     }
 
@@ -102,8 +114,12 @@ class Animation {
         return [] // By default there is no settings
     }
 
+    getSeedSettings() {
+        return {prop: "seed", type: "int", min: 0, max: this.maxSeedValue, toCall: "restart"};
+    }
+
     mouseAction(cords) {
-        // By default do nothing
+        // By default do nothing, this is not really implemented
     }
 }
 

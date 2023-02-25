@@ -17,14 +17,14 @@ since flickering is not that good for a background image.
 Coded with no external dependencies, using only canvas API.
 `;
 
-const Animation = require("./animation");
+const Grid = require("./grid");
 const Utils = require("./utils");
 
-class GameOfLife extends Animation {
+class GameOfLife extends Grid {
     constructor (canvas, colors, colorsAlt,
                  cellSize = 12,
                  cellPadding = 1,
-                 spawnProb= 0.5,
+                 spawnProb = 0.5,
                  loopGrid = true,
                  cellStyle = "random",
                  deadCellsFadingSteps = 5) {
@@ -37,19 +37,6 @@ class GameOfLife extends Animation {
         this.cellStyle = this.assignIfRandom(cellStyle, Utils.randomChoice(this.cellStyles));
         this.deadCellsFadingSteps = deadCellsFadingSteps;
         this.loopGrid = loopGrid;
-        
-        this.gridWidth = 0;
-        this.gridHeight = 0;
-        this.grid = null;
-        this.gridNextState = null;
-    }
-
-    getIdx(x, y) {
-        return x + y * this.gridWidth;
-    }
-
-    getVal(x, y) {
-        return this.grid[this.getIdx(x, y)];
     }
 
     isAlive(x, y) {
@@ -61,6 +48,8 @@ class GameOfLife extends Animation {
     }
 
     update(elapsed){
+        super.update(elapsed);
+        
         for (let y = 0; y < this.gridHeight; ++y) {
             for (let x = 0; x < this.gridWidth; ++x) {
                 const numAlive = this.isAlive(x - 1, y - 1)
@@ -72,13 +61,13 @@ class GameOfLife extends Animation {
                       + this.isAlive(x, y + 1)
                       + this.isAlive(x + 1, y + 1);
                 const cellIdx = this.getIdx(x, y);
-                if (numAlive === 2 && this.grid[cellIdx] >= 1) this.gridNextState[cellIdx] = this.grid[cellIdx] + 1;
-                else if (numAlive === 3) this.gridNextState[cellIdx] = Math.max(1, this.grid[cellIdx] + 1);
-                else this.gridNextState[cellIdx] = Math.min(0, this.grid[cellIdx] - 1);
+                if (numAlive === 2 && this.grid[cellIdx] >= 1) this.gridNext[cellIdx] = this.grid[cellIdx] + 1;
+                else if (numAlive === 3) this.gridNext[cellIdx] = Math.max(1, this.grid[cellIdx] + 1);
+                else this.gridNext[cellIdx] = Math.min(0, this.grid[cellIdx] - 1);
             }
         }
 
-        [this.grid, this.gridNextState] = [this.gridNextState, this.grid];
+        [this.grid, this.gridNext] = [this.gridNext, this.grid]
     }
 
     drawSquareCell(x, y, cellPadding){
@@ -126,21 +115,8 @@ class GameOfLife extends Animation {
         }
     }
 
-    resizeGrid(newGridWidth, newGridHeight){
-        let newGrid = new Array(newGridWidth * newGridHeight);
-
-        for (let y = 0; y < newGridHeight; y++) {
-            for (let x = 0; x < newGridWidth; x++) {
-                const cellCord = x + y * newGridWidth;
-                if(x < this.gridWidth && y < this.gridHeight) newGrid[cellCord] = this.grid[this.getIdx(x, y)];
-                else newGrid[cellCord] = (Math.random() < this.spawnProb) ? 1 : -99999;
-            }
-        }
-
-        this.grid = newGrid;
-        this.gridNextState = [...this.grid];
-        this.gridWidth = newGridWidth;
-        this.gridHeight = newGridHeight;
+    newCellState(x, y) {
+        return (this.rand() < this.spawnProb) ? 1 : -99999;
     }
 
     resize() {
@@ -149,17 +125,13 @@ class GameOfLife extends Animation {
         this.resizeGrid(newGridWidth, newGridHeight);
     }
 
-    restart(){
-        this.gridWidth = 0;
-        this.gridHeight = 0;
-        super.restart();
-    }
-
     getSettings() {
         return [{prop: "loopGrid", type: "bool"},
-                {prop: "cellSize", type: "int", min: 4, max: 32, toCall: "resize"},
+                {prop: "cellSize", type: "int", min: 4, max: 32, toCall: "restart"},
                 {prop: "cellStyle", type: "select", values: this.cellStyles},
-                {prop: "deadCellsFadingSteps", type: "int", min: 0, max: 8}];
+                {prop: "deadCellsFadingSteps", type: "int", min: 0, max: 8},
+                {prop: "spawnProb", type: "float", step: 0.01, min: 0, max: 1, toCall: "restart"},
+                this.getSeedSettings()];
     }
 
     mouseAction(cords) {
