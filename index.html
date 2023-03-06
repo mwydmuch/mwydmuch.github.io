@@ -23,53 +23,83 @@
 
   <!-- Favicon -->
   <link rel="icon" type="image/jpg" href="assets/me.jpg">
+
+  <!-- OpenGraph tags -->
+  <meta property="og:title" content="Marek Wydmuch - Homepage">
+  <meta property="og:description" content="Marek Wydmuch's personal website">
+  <meta property="og:image" content="assets/me.jpg">
+  <meta property="og:url" content="https://mwydmuch.pl">
+
 </head>
 
 <body>
 
+<!-- Header/title -->
+<header class="header">
 <!-- Animated background -->
-<canvas id="background" class="background faded-10"> </canvas>
-
-<!-- Primary page layout -->
-<div id="container" class="container grid-lg">
+<canvas id="background" class="background faded-25"> </canvas>
+        
+<div id="background-container" class="header-content">
+<div class="container grid-lg">
   <div class="columns">
     <div class="column">
-      <div id="content">
-
-        <!-- Header/title -->
-        <div id="me">
-          <div id="photo" class="section">
-            <img alt="Marek Wydmuch" src="assets/me.jpg"/>
-          </div>
-
-          <div id="name" class="section reverse-second">
-            <h2 class="inline">Hi! </h2><h3 class="inline"> I'm Marek Wydmuch</h3>
-          </div>
-
-          <div id="about" class="section">
-            <p><span class="reverse-second"><i class="fa fa-graduation-cap" aria-hidden="true"></i> Ph.D. student</span>
-              at <span class="reverse-second"><i class="fa fa-university" aria-hidden="true"></i> <a href="https://www.put.poznan.pl/en">Poznan University of Technology, Poland</a></span>,
-              interested mostly in various <span class="reverse-second"><i class="fa fa-robot" aria-hidden="true"></i> Machine Learning</span> topics.
-              My current research is focused on <span class="reverse-second"><i class="fa fa-sitemap" aria-hidden="true"></i> Extreme Classification</span>.
-              I'm supervised by <span class="reverse-second"><i class="fa fa-user-tie" aria-hidden="true"></i> <a href="https://www.cs.put.poznan.pl/kdembczynski/">Krzysztof Dembczyński</a></span>.
-              <span class="reverse-second"> I <i class="fa fa-heart"></i> <i class="fa fa-computer"></i></span><br>
-              <span class="reverse-ua-gradient">I stand with Ukraine 🇺🇦</span>
-            </p>
-          </div>
-
-          <div id="profiles" class="section">
-            <a href="https://www.linkedin.com/in/marekwydmuch" class="profile-link"><i class="fa fa-linkedin"></i> LinkedIn</a>
-            <a href="https://github.com/mwydmuch" class="profile-link"><i class="fa fa-github"></i> GitHub</a>
-            <a href="https://scholar.google.com/citations?user=lMXyoEAAAAAJ" class="profile-link"><i class="fa fa-google"></i> Google Scholar</a>
-            <a href="mailto:mwydmuch@cs.put.poznan.pl" class="profile-link"><i class="fa fa-envelope"></i> E-mail</a>
-            <a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_cv.pdf" class="profile-link"><i class="fa fa-file"></i> CV</a>
-          </div>
+      <div id="me">
+        <div id="photo" class="section">
+          <img alt="Marek Wydmuch" src="assets/me.jpg"/>
         </div>
+
+        <div id="name" class="section reverse-second">
+          <h2 class="inline">Hi! </h2><h3 class="inline"> I'm Marek Wydmuch</h3>
+        </div>
+
+        <div id="about" class="section">
+          <p><span class="reverse-second"><i class="fa fa-graduation-cap" aria-hidden="true"></i> Ph.D. student</span>
+            at <span class="reverse-second"><i class="fa fa-university" aria-hidden="true"></i> <a href="https://www.put.poznan.pl/en">Poznan University of Technology, Poland</a></span>,
+            interested mostly in various <span class="reverse-second"><i class="fa fa-robot" aria-hidden="true"></i> Machine Learning</span> topics.
+            My current research is focused on <span class="reverse-second"><i class="fa fa-sitemap" aria-hidden="true"></i> Extreme Classification</span>.
+            I'm supervised by <span class="reverse-second"><i class="fa fa-user-tie" aria-hidden="true"></i> <a href="https://www.cs.put.poznan.pl/kdembczynski/">Krzysztof Dembczyński</a></span>.
+            <span class="reverse-second"> I <i class="fa fa-heart"></i> <i class="fa fa-computer"></i></span><br>
+            <span class="reverse-ua-gradient">I stand with Ukraine 🇺🇦</span>
+          </p>
+        </div>
+
+        <div id="profiles" class="section">
+          <a href="https://www.linkedin.com/in/marekwydmuch" class="profile-link"><i class="fa fa-linkedin"></i> LinkedIn</a>
+          <a href="https://github.com/mwydmuch" class="profile-link"><i class="fa fa-github"></i> GitHub</a>
+          <a href="https://scholar.google.com/citations?user=lMXyoEAAAAAJ" class="profile-link"><i class="fa fa-google"></i> Google Scholar</a>
+          <a href="mailto:mwydmuch@cs.put.poznan.pl" class="profile-link"><i class="fa fa-envelope"></i> E-mail</a>
+          <a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_cv.pdf" class="profile-link"><i class="fa fa-file"></i> CV</a>
+        </div>
+
+        <a href="#main-content">
+          <i class="fa fa-angle-down fa-beat" style="--fa-animation-duration: 2s; font-size: 2.5em;"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="background-controls">
+  Background: <span id="background-name"></span> | 
+  <span class="nowrap">[<a id="background-show"><i class="fas fa-eye"></i> show</a>]</span>
+  <span class="nowrap">[<a id="background-settings"><i class="fas fa-cog"></i> settings</a>]</span>
+  <span class="nowrap">[<a href="animations.html"><i class="fas fa-images"></i> gallery</a>]</span>
+</div>
+
+</div>
+</header>
+
+
+<!-- Primary page layout -->
+<div id="main-container" class="main-content container grid-lg">
+  <div class="columns">
+    <div class="column">
+      <div id="main-content">
 
         <!-- Main content -->
         <div>
-          <p>
-            These are some of the things I've made and done:
+          <p style="margin-bottom: 1rem; font-size: 1.1em;">
+            Welcome to my personal website, below you will find some of the things I've made and done:
           </p>
         </div>
 
@@ -208,7 +238,7 @@
             </p>
             <p>
               From 2021 I'm a member of the management board of <span class="reverse-mlinpl-red"><a href="https://mlinpl.org/">ML in PL Association</a></span>
-              and try to support other members of the association in the organization of great machine learning events.
+              and try to support other members of the association in the organization of great machine learning related events.
             </p>
           </div>
         </div>
@@ -249,7 +279,7 @@
           <div class="accordion-body justify">
             I am/was teaching a few courses at Poznan University of Technology:
             <ul>
-              <li><strong>Advanced Methods of Computational Intelligence 2021 and 2022 (lectures + exercises)</strong><br>
+              <li><strong>Advanced Methods of Computational Intelligence 2021, 2022 and 2023 (lectures + exercises)</strong><br>
                 based on
                 <i>Richard S. Sutton and Andrew G. Barto, Reinforcement Learning: An Introduction</i>
                 and selected chapters from
@@ -275,14 +305,6 @@
 
       <!-- Footer -->
       <div id="footer">
-        <div id="background-controls">
-          <div>Background: <span id="background-name"></span></div>
-          <div>
-            <span class="nowrap">[<a id="background-show"><i class="fas fa-eye"></i> show</a>]</span>
-            <span class="nowrap">[<a id="background-settings"><i class="fas fa-cog"></i> settings</a>]</span>
-            <span class="nowrap">[<a href="animations.html"><i class="fas fa-images"></i> gallery</a>]</span>
-          </div>
-        </div>
         <div>
           This website was <i class="fa fa-code"></i> with <i class="fa fa-keyboard"></i> by me :)
         </div>

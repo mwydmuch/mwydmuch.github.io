@@ -17,25 +17,28 @@ const GameOfLifeIsometric = require("./game-of-life-isometric");
 const Glitch = require("./glitch");
 const GradientDescent = require("./gradient-descent");
 const Matrix = require("./matrix");
+const MLinPL = require("./mlinpl");
 const Network = require("./network");
 const NeuralNetwork = require("./neural-network");
 const ParticlesAndAttractors = require("./particles-and-attractors");
 const ParticlesVortex = require("./particles-vortex");
 const ParticlesWaves = require("./particles-waves");
 const PerlinNoiseParticles = require("./perlin-noise-particles");
+const RockPaperScissors = require("./rock-paper-scissors-automata");
 const Quadtree = require("./quadtree");
 const ShortestPath = require("./shortest-path");
 const SineWaves = require("./sine-waves");
 const Sorting = require("./sorting");
 const SpinningShapes = require("./spinning-shapes");
 const Spirograph = require("./spirograph");
+const Tree = require("./tree");
 
 
 // Globals
 // ---------------------------------------------------------------------------------------------------------------------
 
 const canvas = document.getElementById("background");
-const container = document.getElementById("container");
+const container = document.getElementById("background-container");
 let framesInterval = 0,
     then = 0,
     paused = false,
@@ -81,7 +84,7 @@ const colorsAlt = [ // Alt palette
 // Get elements controls
 // ---------------------------------------------------------------------------------------------------------------------
 
-const content = document.getElementById("content");
+const content = document.getElementById("me");
 const elemBgShow = document.getElementById("background-show");
 const elemBgName = document.getElementById("background-name");
 const elemBgDesc = document.getElementById("background-description");
@@ -108,22 +111,25 @@ let animations = [
     //{class: Coding, name: "coding"},  // Disable till finished
     //{class: FiguresSpiral, name: "figures spiral"},  // Disable since it's not that interesting
     {class: GameOfLife, name: "game of life"},
-    {class: GameOfLifeIsometric, name: "isometric game of life", startAnimation: false},
+    {class: GameOfLifeIsometric, name: "isometric game of life"},
     {class: Glitch, name: "glitch"},
     {class: GradientDescent, name: "gradient descent"},
     {class: Matrix, name: "matrix rain"},
+    {class: MLinPL, name: "mlinpl"},
     {class: Network, name: "network"},
     //{class: NeuralNetwork, name: "neural network"}, // Disable till updated
     {class: ParticlesAndAttractors, name: "particles and attractors"},
     {class: ParticlesVortex, name: "particles vortex"},
     {class: ParticlesWaves, name: "particles waves"},
     {class: PerlinNoiseParticles, name: "perlin noise"},
-    {class: Quadtree, name: "quadtree", startAnimation: false}, // Don't use as start animation, since it can be performance heavy
+    {class: RockPaperScissors, name: "rock paper scissors automata"},
+    {class: Quadtree, name: "quadtree"},
     {class: ShortestPath, name: "shortest path"},
     {class: Sorting, name: "sorting"},
     {class: SpinningShapes, name: "spinning shapes"},
     {class: Spirograph, name: "spirograph"},
-    {class: SineWaves, name: "sine waves"}
+    {class: SineWaves, name: "sine waves"},
+    {class: Tree, name: "tree"}
 ];
 
 const animationCount = animations.length;
@@ -250,17 +256,17 @@ if(elemBgShow) {
     function hideBackground(){
         content.classList.remove("fade-out");
         content.classList.add("fade-in");
-        canvas.classList.remove("show-from-10");
-        canvas.classList.add("fade-to-10");
+        canvas.classList.remove("show-from-25");
+        canvas.classList.add("fade-to-25");
         elemBgShow.innerHTML = "<i class=\"fas fa-eye\"></i> show";
     }
 
     function showBackground(){
         content.classList.remove("fade-in");
         content.classList.add("fade-out");
-        canvas.classList.remove("faded-10");
-        canvas.classList.remove("fade-to-10");
-        canvas.classList.add("show-from-10");
+        canvas.classList.remove("faded-25");
+        canvas.classList.remove("fade-to-25");
+        canvas.classList.add("show-from-25");
         elemBgShow.innerHTML = "<i class=\"fas fa-eye-slash\"></i> hide";
     }
 
@@ -345,6 +351,7 @@ if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
         if(elemBgSettingsControls.classList.contains('moving')){
             elemBgSettingsControls.style.left = e.clientX - elemBgSettingsControls.clickAnchorX + 'px';
             elemBgSettingsControls.style.top = e.clientY - elemBgSettingsControls.clickAnchorY  + 'px';
+            elemBgSettingsControls.style.maxHeight = elemBgSettingsControls.parentNode.offsetHeight - (e.clientY - elemBgSettingsControls.clickAnchorY) - 10 + 'px';
         }
     });
 

@@ -172,6 +172,23 @@ ul{
   display: block;
 }
 
+.header {
+  min-height: 100vh;
+  width: 100%;
+  display: table;
+  border-bottom: 2px solid @main;
+  margin-bottom: 5rem;
+
+  .header-content {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    padding: 0;
+    position: relative;
+    height: 100%;
+  }
+}
+
 
 // Me section
 // ---------------------------------------------------------------------------------------------------------------------
@@ -246,7 +263,7 @@ ul{
 }
 
 @grayscale: 100%;
-@fade-show-values: 0, 10;
+@fade-show-values: 0, 25;
 
 @keyframes fade-out-animation {
   0% { opacity: 1; visibility: visible; }
@@ -346,13 +363,20 @@ each(@fade-show-values, {
 #background-controls, #background-settings-controls, #background-controls-bar {
   color: @background;
   padding: 0.1rem 0.25rem;
-  display: inline-block;
   //background: @main;
   background-image: @main-gradient;
+  font-size: 0.7rem;
 
   a, a:link, a:visited, a:hover, a:active {
     color: @background;
   }
+}
+
+#background-controls {
+  display: inline-block;
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
 
 #background-controls-bar {
@@ -360,7 +384,8 @@ each(@fade-show-values, {
 }
 
 .floating-controls {
-  position: fixed;
+  //position: fixed;
+  position: absolute;
   top: 10px;
   left: 10px;
   display: none;
@@ -371,9 +396,12 @@ each(@fade-show-values, {
 #background-settings-controls {
   transition: opacity @global-animation-duration;
   width: 19rem;
-  max-height: 100%;
+  //max-height: 100%;
   overflow: auto;
   font-size: 0.7rem;
+  display: inline-block;
+  height: fit-content;
+  border: 1px solid @background;
 
   .accordion {
     text-align: left;
