@@ -331,8 +331,8 @@ class ShortestPath extends Animation {
         const mazeEndX = mazeX + mazeW,
               mazeEndY = mazeY + mazeH;
 
-        const wall1 = mazeW >= minSize && Math.random() > (wallSpawnProb * mazeH / mazeW),
-              wall2 = mazeH >= minSize && Math.random() > wallSpawnProb;
+        const wall1 = mazeW >= minSize && this.rand() > (wallSpawnProb * mazeH / mazeW),
+              wall2 = mazeH >= minSize && this.rand() > wallSpawnProb;
 
         // let wallX = wall1 ? mazeX + Math.floor(mazeW / 2) : mazeX - 1,
         //     wallY = wall2 ? mazeY + Math.floor(mazeH / 2) : mazeEndY;
@@ -435,7 +435,9 @@ class ShortestPath extends Animation {
                 {prop: "speed", type: "int", min: 1, max: 64},
                 {prop: "startNewAfterFinish", type: "bool"},
                 {prop: "cellStyle", type: "select", values: this.cellStyles},
-                {prop: "showStats", type: "bool"}];
+                {prop: "showStats", type: "bool"},
+                //this.getSeedSettings()
+            ];
     }
 }
 

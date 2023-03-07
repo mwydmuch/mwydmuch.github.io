@@ -60,8 +60,8 @@ class Tree extends Animation {
 
         this.ctx.beginPath();
         this.ctx.strokeStyle = this.colors[0];
-        this.branch(this.ctx, this.ctx.canvas.width / 2, 0, 0, 300, 80 * Math.PI / 180, 6);
-        //this.branch(this.ctx, this.ctx.canvas.width / 2, 0, 0, (this.frame % 90) * 5 , (this.frame % 90) * Math.PI / 180);
+        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        this.branch(this.ctx, 0, 0, 0, 300, 80 * Math.PI / 180, 6);
         this.ctx.stroke();
     }
 

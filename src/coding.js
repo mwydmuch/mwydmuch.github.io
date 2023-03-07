@@ -105,13 +105,13 @@ class Coding extends Animation {
 
     draw() {
         // Continue current word and write next "character"
-        if(Math.random() < Math.pow(0.9, this.wordLen - 2) || this.wordLen < 3){
+        if(this.rand() < Math.pow(0.9, this.wordLen - 2) || this.wordLen < 3){
             this.lineX += this.charWidth;
             ++this.wordLen;
             this.ctx.fillStyle = this.currentColor;
             this.ctx.fillRect(this.lineX, this.lineY, this.charWidth, this.charHeight);
         } else {
-            if(Math.random() < Math.pow(0.5,this.words - 1) || this.words < 2) { // Continue line
+            if(this.rand() < Math.pow(0.5,this.words - 1) || this.words < 2) { // Continue line
                 ++this.words;
                 this.lineX += this.charWidth;
             } else { // New line

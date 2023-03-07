@@ -321,7 +321,7 @@ class Sorting extends Animation {
         // Initial order of values
         let values = Array.from({length: valMax}, (x, i) => i + 1);
 
-        if(this.initialOrder === "random") Utils.randomShuffle(values);
+        if(this.initialOrder === "random") Utils.randomShuffle(values, this.rand);
         else if(this.initialOrder === "reverse sorted") values = values.reverse();
         else if(this.initialOrder === "evens then odds")
             values = values.sort((a, b) => (a % 2 + a / (valMax + 1) - (b % 2 + b / (valMax + 1))));
@@ -437,6 +437,7 @@ class Sorting extends Animation {
     }
 
     restart() {
+        super.restart();
         this.setup();
     }
 
@@ -445,7 +446,8 @@ class Sorting extends Animation {
                 {prop: "sortingAlgorithm", type: "select", values: this.sortAlgoNames, toCall: "setup"},
                 {prop: "numElements", type: "int", min: 8, max: 256, toCall: "setup"},
                 {prop: "speed", type: "float", step: 0.25, min: 0.5, max: 8},
-                {prop: "showStats", type: "bool"}];
+                {prop: "showStats", type: "bool"},
+                this.getSeedSettings()];
     }
 }
 

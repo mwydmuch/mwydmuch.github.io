@@ -136,7 +136,8 @@ class Quadtree extends Animation {
                 {prop: "noiseThreshold", type: "float", min: 0, max: 0.15, step: 0.001},
                 //{prop: "minNodeSize", type: "float", step: 0.1, min: 1, max: 6},
                 {prop: "drawLeafNodes", type: "bool"},
-                {prop: "drawPoints", type: "bool"}];
+                {prop: "drawPoints", type: "bool"},
+                this.getSeedSettings()];
     }
 }
 

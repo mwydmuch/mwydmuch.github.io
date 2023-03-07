@@ -54,7 +54,7 @@ class ParticlesAndAttractors extends Animation {
     setup(){
         this.particles = []
         for (let i = 0; i < this.numParticles; ++i)
-            this.particles.push(Utils.rotateVec2d(Utils.createVec2d(Utils.randomRange(1, 100), 0), i));
+            this.particles.push(Utils.rotateVec2d(Utils.createVec2d(Utils.randomRange(1, 100, this.rand), 0), i));
     }
 
     update(elapsed){
@@ -89,7 +89,7 @@ class ParticlesAndAttractors extends Animation {
         for (let p of this.particles) {
             let d = 0
 
-            // Calculate new velocity vector for each particle
+            // Calculate direction of velocity vector for each particle
             for (let a of attractors) d += Math.atan2(a.y - p.y, a.x - p.x);
 
             // Calculate new position of the particle

@@ -10,7 +10,6 @@ Coded with no external dependencies, using only canvas API.
 `;
 
 const Animation = require("./animation");
-const Noise = require("./noise");
 const Utils = require("./utils");
 
 class CircularWaves extends Animation {
@@ -22,8 +21,6 @@ class CircularWaves extends Animation {
                 fadingSpeed = 0.001,
                 rainbowColors = false) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
-        this.noise = Noise.noise;
-        this.noise.seed(Utils.randomRange(0, 1));
 
         this.vertices = vertices;
         this.noiseScale = noiseScale;
@@ -77,7 +74,8 @@ class CircularWaves extends Animation {
                 {prop: "radiusScaleMax", type: "float", min: 0, max: 2.0, toCall: "resize"},
                 {prop: "noiseScale", type: "float", min: 0, max: 2.0, toCall: "resize"},
                 {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.1},
-                {prop: "rainbowColors", type: "bool"}];
+                {prop: "rainbowColors", type: "bool"},
+                this.getSeedSettings()];
     }
 }
 

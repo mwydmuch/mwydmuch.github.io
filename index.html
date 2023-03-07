@@ -25,17 +25,17 @@
   <link rel="icon" type="image/jpg" href="assets/me.jpg">
 
   <!-- OpenGraph tags -->
-  <meta property="og:title" content="Marek Wydmuch - Homepage">
+  <!-- <meta property="og:title" content="Marek Wydmuch - Homepage">
   <meta property="og:description" content="Marek Wydmuch's personal website">
   <meta property="og:image" content="assets/me.jpg">
-  <meta property="og:url" content="https://mwydmuch.pl">
+  <meta property="og:url" content="https://mwydmuch.pl"> -->
 
 </head>
 
 <body>
 
 <!-- Header/title -->
-<header class="header">
+<header>
 <!-- Animated background -->
 <canvas id="background" class="background faded-25"> </canvas>
         
@@ -90,229 +90,231 @@
 </header>
 
 
-<!-- Primary page layout -->
-<div id="main-container" class="main-content container grid-lg">
-  <div class="columns">
-    <div class="column">
-      <div id="main-content">
-
-        <!-- Main content -->
-        <div>
-          <p style="margin-bottom: 1rem; font-size: 1.1em;">
-            Welcome to my personal website, below you will find some of the things I've made and done:
-          </p>
-        </div>
-
-        <div id="news" class="accordion">
-          <input id="news-accordion" type="checkbox" name="accordion-checkbox" hidden>
-          <label class="accordion-header c-hand" for="news-accordion"><i class="icon icon-arrow-right mr-1"></i><h4 class="inline">News & events</h4></label>
-          <div class="accordion-body justify">
-            <ul>
-              <li class="date-li"><span class="date-span">11.2022</span>Me and <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i> ViZDoom</a></span> project joined  <span class="reverse-farama-green"><a href="https://farama.org/"><i class="fa fa-leaf"></i> The Farama Foundation</a></span>.</li>
-              <li class="date-li"><span class="date-span">06.2022</span>I started an internship at <span class="reverse-yahoo-purple"><a href="https://www.yahooinc.com/"><i class="fa-brands fa-yahoo"></i> Yahoo!</a></span> in Paris, France.</li>
-              <li class="date-li"><span class="date-span">05.2022</span>Our paper titled "On missing labels, long-tails and propensities in extreme multi-label classification" was accepted at KDD'22.</li>
-              <li class="date-li"><span class="date-span">03.2022</span>New release of <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i> ViZDoom</a></span> (1.1.12) library with new official <span class="reverse-openai-blue"><a href="https://gym.openai.com/"><i class="fa fa-dumbbell"></i> OpenAI Gym</a></span> wrapper.</li>
-              <li class="date-li"><span class="date-span">01.2022</span>I joined the management board of <span class="reverse-mlinpl-red"><a href="https://mlinpl.org/"><i class="fa fa-people-group"></i> ML in PL Association</a></span>.</li>
-              <li class="date-li"><span class="date-span">11.2021</span>New release of <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i> ViZDoom</a></span> (1.1.11) library with new features, including access to the game's audio buffer.</li>
-              <li class="date-li"><span class="date-span">08.2021</span>Our paper "ViZDoom Competitions: Playing Doom From Pixels" received <span class="reverse-second"><a href="https://cis.ieee.org/awards/2019-cis-award-recipients"><i class="fa fa-award"></i> 2022 IEEE ToG Outstanding Paper Award</a></span>.</li>
-              <li class="date-li"><span class="date-span">04.2021</span>Our short paper titled "Propensity-scored Probabilistic Label Trees" was accepted at SIGIR'21.</li>
-              <li class="date-li"><span class="date-span">03.2021</span>Our paper titled "Efficient Set-Valued Prediction in Multi-Class Classification" was accepted for publication in Data Mining and Knowledge Discovery.</li>
-              <li class="date-li"><span class="date-span">02.2021</span>Our paper titled "Online probabilistic label trees" was accepted at AISTATS'21.</li>
-              <li class="date-li"><span class="date-span">12.2020</span>I gave a talk titled "Probabilistic Label Trees in Vowpal Wabbit" on Vowpal Wabbit Workshop at NeurIPS'20. <span class="nowrap">[<a href="https://slideslive.com/38942331/vowpal-wabbit?ref=speaker-37667-latest"><i class="fa fa-video"></i> video</a>]</span></li>
-              <li class="date-li"><span class="date-span">10.2020</span>I gave a talk titled "Extreme classification: applications and algorithms" on GHOST Day: AMLC'20. <span class="nowrap">[<a href="https://www.youtube.com/watch?v=fgKohq6jpek"><i class="fa fa-youtube"></i> video</a>]</span></li>
-            </ul>
-          </div>
-        </div>
-
-        <div id="publications" class="accordion">
-          <input id="publications-accordion" type="checkbox" name="accordion-checkbox" hidden>
-          <label class="accordion-header c-hand" for="publications-accordion"><i class="icon icon-arrow-right mr-1"></i><h4 class="inline">Publications</h4></label>
-          <div class="accordion-body">
-            <ul>
-              <li>
-                <a href="https://dl.acm.org/doi/10.1145/3534678.3539466">On Missing Labels, Long-tails and Propensities in Extreme Multi-label Classification</a><br>
-                Erik Schultheis, Marek Wydmuch, Rohit Babbar, Krzysztof Dembczyński<br>
-                <i>Proceedings of the 28th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD '22)</i>, 2022<br>
-                <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/xmlc_missing_labels_&_long_tail_kdd_2022.pdf"><i class="fa fa-file-pdf"></i> paper</a>]</span>
-                <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/xmlc_missing_labels_&_long_tail_poster_kdd_2022.pdf"><i class="fa fa-file-image"></i> poster</a>]</span>
-                <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib"><i class="fas fa-book"></i> bibtex</a>]</span>
-              </li>
-              <li>
-                <a href="https://dl.acm.org/doi/10.1145/3404835.3463084">Propensity-scored Probabilistic Label Trees</a><br>
-                Marek Wydmuch, Kalina Jasinska-Kobus, Rohit Babbar, Krzysztof Dembczyński<br>
-                <i>Proceedings of the 44th International ACM SIGIR Conference on Research and Development in Information Retrieval (SIGIR '21)</i>, 2021<br>
-                <span class="nowrap">[<a href="https://github.com/mwydmuch/napkinXC"><i class="fa fa-github"></i> code (napkinXC)</a>]</span>
-                <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/psplt_sigir_2021.pdf"><i class="fa fa-file-pdf"></i> paper</a>]</span>
-                <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/psplt_poster_sigir_2021.pdf"><i class="fa fa-file-image"></i> poster</a>]</span>
-                <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib"><i class="fas fa-book"></i> bibtex</a>]</span>
-              </li>
-              <li>
-                <a href="https://proceedings.mlr.press/v130/jasinska-kobus21a.html">Online probabilistic label trees</a><br>
-                Kalina Jasinska-Kobus, Marek Wydmuch, Devanathan Thiruvenkatachari, Krzysztof Dembczyński<br>
-                <i>Proceedings of the 24th International Conference on Artificial Intelligence and Statistics (AISTATS 2021)</i>, 2021<br>
-                <span class="nowrap">[<a href="https://github.com/mwydmuch/napkinXC"><i class="fa fa-github"></i> code (napkinXC)</a>]</span>
-                <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/oplt_aistats_2021.pdf"><i class="fa fa-file-pdf"></i> paper</a>]</span>
-                <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/oplt_poster_aistats_2021.pdf"><i class="fa fa-file-image"></i> poster</a>]</span>
-                <span class="nowrap">[<a href="https://slideslive.com/38953102/online-probabilistic-label-trees-oplts?ref=speaker-37667-latest"><i class="fa fa-video"></i> AISTATS 2021 talk</a>]</span>
-                <span class="nowrap">[<a href="https://slideslive.com/38931292/online-probabilistic-label-trees-oplts?ref=speaker-37667-latest"><i class="fa fa-video"></i> ICML XC 2020 talk</a>]</span>
-                <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib"><i class="fas fa-book"></i> bibtex</a>]</span>
-              </li>
-              <li>
-                <a href="https://link.springer.com/article/10.1007/s10618-021-00751-x">Efficient set-valued prediction in multi-class classification</a><br>
-                Thomas Mortier, Marek Wydmuch, Krzysztof Dembczyński, Eyke Hüllermeier, Willem Waegeman<br>
-                <i>Data Mining and Knowledge Discovery</i>, 2021<br>
-                <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/efficient_set-valued_pred_dami_2021.pdf"><i class="fa fa-file-pdf"></i> paper</a>]</span>
-                <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib"><i class="fas fa-book"></i> bibtex</a>]</span>
-              </li>
-              <li>
-                <a href="https://arxiv.org/abs/2009.11218">Probabilistic Label Trees for Extreme Multi-label Classification</a><br>
-                Kalina Jasinska-Kobus, Marek Wydmuch, Krzysztof Dembczyński<br>
-                <i>Submitted to Journal of Machine Learning Research</i>, 2020<br>
-                <span class="nowrap">[<a href="https://github.com/mwydmuch/napkinXC"><i class="fa fa-github"></i> code (napkinXC)</a>]</span>
-                <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib"><i class="fas fa-book"></i> bibtex</a>]</span>
-              </li>
-              <li>
-                <a href="https://papers.nips.cc/paper/2018/hash/8b8388180314a337c9aa3c5aa8e2f37a-Abstract.html">A no-regret generalization of hierarchical softmax to extreme multi-label classification</a><br>
-                Marek Wydmuch, Kalina Jasinska-Kobus, Mikhail Kuznetsov, Robert Busa-Fekete, Krzysztof Dembczyński<br>
-                <i>Proceedings of the 32nd International Conference on Neural Information Processing Systems (NeurIPS 2018)</i>, 2018<br>
-                <span class="nowrap">[<a href="https://github.com/mwydmuch/extremeText"><i class="fa fa-github"></i> code (extremeText)</a>]</span>
-                <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/xt_neurips_2018.pdf"><i class="fa fa-file-pdf"></i> paper</a>]</span>
-                <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/xt_poster_neurips_2018.pdf"><i class="fa fa-file-image"></i> poster</a>]</span>
-                <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib"><i class="fas fa-book"></i> bibtex</a>]</span>
-              </li>
-              <li>
-                <a href="https://arxiv.org/abs/1809.03470">ViZDoom Competitions: Playing Doom From Pixels</a><br>
-                Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski<br>
-                <i>IEEE Transactions on Games</i>, 2018<br>
-                Note: <span class="reverse-second"><a href="https://cis.ieee.org/awards/2019-cis-award-recipients"><i class="fa fa-award"></i> 2022 IEEE ToG Outstanding Paper Award</a></span>
-                <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/vizdoom_competitions_2018.pdf"><i class="fa fa-file-pdf"></i> paper</a>]</span>
-                <span class="nowrap">[<a href="https://www.youtube.com/channel/UC8UghzsxS5uEFUEbvcAWwlQ"><i class="fa fa-youtube"></i> movies</a>]</span>
-                <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib"><i class="fas fa-book"></i> bibtex</a>]</span>
-              </li>
-              <li>
-                <a href="https://arxiv.org/abs/1605.02097">ViZDoom: A Doom-based AI research platform for visual reinforcement learning</a><br>
-                Michał Kempka, Marek Wydmuch, Grzegorz Runc, Jakub Toczek, Wojciech Jaśkowski<br>
-                <i>2016 IEEE Conference on Computational Intelligence and Games (CIG 2016)</i>, 2016<br>
-                Note: <span class="reverse-second"><i class="fa fa-award"></i> 2016 IEEE CIG The Best Paper Award</span><br>
-                <span class="nowrap">[<a href="http://vizdoom.cs.put.edu.pl"><i class="fa fa-globe"></i> www</a>]</span>
-                <span class="nowrap">[<a href="https://github.com/mwydmuch/ViZDoom"><i class="fa fa-github"></i> code</a>]</span>
-                <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/vizdoom_2016.pdf"><i class="fa fa-file-pdf"></i> paper</a>]</span>
-                <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib"><i class="fas fa-book"></i> bibtex</a>]</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div id="software" class="accordion">
-          <input id="software-accordion" type="checkbox" name="accordion-checkbox" hidden>
-          <label class="accordion-header c-hand" for="software-accordion"><i class="icon icon-arrow-right mr-1"></i><h4 class="inline">Software</h4></label>
-          <div class="accordion-body justify">
-            <ul>
-              <li>
-                <a href="http://vizdoom.cs.put.edu.pl">ViZDoom</a> - Doom-based AI Research Platform for Reinforcement Learning from Raw Visual Information.
-              </li>
-              <li>
-                <a href="https://github.com/mwydmuch/napkinXC">napkinXC</a> - extremely simple and fast library for extreme multi-class and multi-label classification.
-              </li>
-              <li>
-                <a href="https://github.com/mwydmuch/extremeText">extremeText</a> - extension of fastText library for multi-label classification including extreme cases with hundreds of thousands and millions of labels.
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div id="mlinpl" class="accordion">
-          <input id="mlinpl-accordion" type="checkbox" name="accordion-checkbox" hidden>
-          <label class="accordion-header c-hand" for="mlinpl-accordion"><i class="icon icon-arrow-right mr-1"></i><h4 class="inline">ML in PL</h4></label>
-          <div class="accordion-body justify">
-            <p>
-              I'm proud to be a member of the awesome <span class="reverse-mlinpl-red"><a href="https://mlinpl.org/">ML in PL Association</a></span>,
-              a non-profit organization devoted to fostering the machine learning community in Poland and around the world.
-            </p>
-            <p>
-              I co-organized
-              <span class="reverse-mlinpl-purple"><a href="https://conference2019.mlinpl.org/">ML in PL Conference 2019</a></span>,
-              <span class="reverse-mlinpl-red"><a href="https://virtual-event.mlinpl.org/">ML in PL Virtual Event 2020</a></span>,
-              and <span class="reverse-mlinpl-red"><a href="https://conference2021.mlinpl.org/">ML in PL Conference 2021</a></span>
-              serving as Call for Contributions (Talks and Posters) coordinator.
-            </p>
-            <p>
-              From 2021 I'm a member of the management board of <span class="reverse-mlinpl-red"><a href="https://mlinpl.org/">ML in PL Association</a></span>
-              and try to support other members of the association in the organization of great machine learning related events.
-            </p>
-          </div>
-        </div>
-
-        <div id="reviews" class="accordion">
-          <input id="reviews-accordion" type="checkbox" name="accordion-checkbox" hidden>
-          <label class="accordion-header c-hand" for="reviews-accordion"><i class="icon icon-arrow-right mr-1"></i><h4 class="inline">Reviews</h4></label>
-          <div class="accordion-body justify">
-            I try to review at least a dozen of papers each year. So far I served as a reviewer for:
-            <ul>
-              <li>Conferences:
-                <ul>
-                  <li><a href="https://nips.cc/Conferences/2020/ProgramCommittee">NeurIPS 2020</a>,
-                    <a href="https://nips.cc/Conferences/2021/ProgramCommittee">2021 (Outstanding Reviewer Award - top 8%)</a>,
-                    and <a href="https://nips.cc/Conferences/2022/ProgramCommittee">2022 (Top Reviewer Award - top 8%)</a></li>
-                  <li><a href="https://icml.cc/Conferences/2021/Reviewers">ICML 2021</a>,
-                    and <a href="https://icml.cc/Conferences/2022/Reviewers">2022</a></li>
-                  <li><a href="https://iclr.cc/Conferences/2022/Reviewers">ICLR 2022</a>, and 2023</li>
-                  <li><a href="https://ijcai20.org/pc_members/">IJCAI 2020</a>, and <a href="https://ijcai-21.org/program-committee-members/">2021</a></li>
-                  <li><a href="https://virtual.aistats.org/Conferences/2021/Reviewers">AISTATS 2021</a></li>
-                </ul>
-              </li>
-              <li>
-                Journals:
-                <ul>
-                  <li>IEEE Transactions on Pattern Analysis and Machine Intelligence (PAMI)</li>
-                  <li>Machine Learning Journal</li>
-                  <li>Transactions on Machine Learning Research (TMLR)</li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div id="teaching" class="accordion">
-          <input id="teaching-accordion" type="checkbox" name="accordion-checkbox" hidden>
-          <label class="accordion-header c-hand" for="teaching-accordion"><i class="icon icon-arrow-right mr-1"></i><h4 class="inline">Teaching</h4></label>
-          <div class="accordion-body justify">
-            I am/was teaching a few courses at Poznan University of Technology:
-            <ul>
-              <li><strong>Advanced Methods of Computational Intelligence 2021, 2022 and 2023 (lectures + exercises)</strong><br>
-                based on
-                <i>Richard S. Sutton and Andrew G. Barto, Reinforcement Learning: An Introduction</i>
-                and selected chapters from
-                <i>Stuart Russell and Peter Norvig, Artificial Intelligence A Modern Approach</i>.
-              </li>
-              <li><strong>Methods of Artificial and Computational Intelligence 2021 (exercises)</strong><br>
-                based on selected chapters from
-                <i>Stuart Russell and Peter Norvig, Artificial Intelligence A Modern Approach</i>.
-              </li>
-              <li><strong>Big Data Processing 2019/2020 and Processing of Massive Datasets 2018/2019 (exercises)</strong><br>
-                based on selected chapters from
-                <i>Jure Leskovec, Anand Rajaraman, Jeff Ullman, Mining of Massive Datasets</i>.
-              </li>
-              <li><strong>Information Theory and Lossless Compression Methods 2018 (exercises)</strong><br>
-                based on the first chapters from
-                <i>David J.C. MacKay, Information Theory, Inference, and Learning Algorithms</i>.
-              </li>
-            </ul>
-            If you are my student feel free to contact me via e-mail.
-          </div>
-        </div>
+<!-- Primary page layout / Main content -->
+<div id="main-content" class="main-content">
+  <section class="container grid-lg">
+    <div class="columns">
+      <div class="column">
+        <p style="margin-bottom: 1rem; font-size: 1.2em;">
+          <span class="reverse-second">Welcome to my personal website, below you will find some of the things I've made and done:</span>
+        </p>
       </div>
-
-      <!-- Footer -->
-      <div id="footer">
-        <div>
-          This website was <i class="fa fa-code"></i> with <i class="fa fa-keyboard"></i> by me :)
-        </div>
-      </div>
-
     </div>
-  </div>
+  </section>
+
+  <section id="news" class="container grid-lg">
+    <div class="columns">
+      <div class="column">
+        <h3>Most recent news & events</h3>
+        <ul class="dates-ul">
+          <li class="date-li"><span class="date-span">02.2023</span>New version of <span class="reverse-vowpal-wabbit-pink"><a href="https://vowpalwabbit.org/"><i class="fa-brands fa-microsoft"></i> Vowpal Wabbit</a></span> (9.7.0) was released with my improved implementation of PLT reduction.</li>
+          <li class="date-li"><span class="date-span">11.2022</span>Me and <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i> ViZDoom</a></span> project joined  <span class="reverse-farama-green"><a href="https://farama.org/"><i class="fa fa-leaf"></i> The Farama Foundation</a></span>.</li>
+          <li class="date-li"><span class="date-span">06.2022</span>I started an internship at <span class="reverse-yahoo-purple"><a href="https://www.yahooinc.com/"><i class="fa-brands fa-yahoo"></i> Yahoo!</a></span> in Paris, France.</li>
+          <li class="date-li"><span class="date-span">05.2022</span>Our paper titled "On missing labels, long-tails and propensities in extreme multi-label classification" was accepted at KDD'22.</li>
+          <li class="date-li"><span class="date-span">03.2022</span>New release of <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i> ViZDoom</a></span> (1.1.12) library with new official <span class="reverse-openai-blue"><a href="https://gym.openai.com/"><i class="fa fa-dumbbell"></i> OpenAI Gym</a></span> wrapper.</li>
+          <li class="date-li"><span class="date-span">01.2022</span>I joined the management board of <span class="reverse-mlinpl-red"><a href="https://mlinpl.org/"><i class="fa fa-people-group"></i> ML in PL Association</a></span>.</li>
+          <li class="date-li"><span class="date-span">11.2021</span>New release of <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i> ViZDoom</a></span> (1.1.11) library with new features, including access to the game's audio buffer.</li>
+          <li class="date-li"><span class="date-span">08.2021</span>Our paper "ViZDoom Competitions: Playing Doom From Pixels" received <span class="reverse-second"><a href="https://cis.ieee.org/awards/2019-cis-award-recipients"><i class="fa fa-award"></i> 2022 IEEE ToG Outstanding Paper Award</a></span>.</li>
+          <li class="date-li"><span class="date-span">04.2021</span>Our short paper titled "Propensity-scored Probabilistic Label Trees" was accepted at SIGIR'21.</li>
+          <li class="date-li"><span class="date-span">03.2021</span>Our paper titled "Efficient Set-Valued Prediction in Multi-Class Classification" was accepted for publication in Data Mining and Knowledge Discovery.</li>
+          <li class="date-li"><span class="date-span">02.2021</span>Our paper titled "Online probabilistic label trees" was accepted at AISTATS'21.</li>
+          <li class="date-li"><span class="date-span">12.2020</span>I gave a talk titled "Probabilistic Label Trees in Vowpal Wabbit" at Vowpal Wabbit Workshop at NeurIPS'20. <span class="nowrap">[<a href="https://slideslive.com/38942331/vowpal-wabbit?ref=speaker-37667-latest"><i class="fa fa-video"></i> video</a>]</span></li>
+          <li class="date-li"><span class="date-span">10.2020</span>I gave a talk titled "Extreme classification: applications and algorithms" on GHOST Day: AMLC'20. <span class="nowrap">[<a href="https://www.youtube.com/watch?v=fgKohq6jpek"><i class="fa fa-youtube"></i> video</a>]</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="publications" class="container grid-lg">
+    <div class="columns">
+      <div class="column">
+        <h3>Publications</h3>
+        <ul>
+          <li>
+            <a href="https://dl.acm.org/doi/10.1145/3534678.3539466">On Missing Labels, Long-tails and Propensities in Extreme Multi-label Classification</a><br>
+            Erik Schultheis, Marek Wydmuch, Rohit Babbar, Krzysztof Dembczyński<br>
+            <i>Proceedings of the 28th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD '22)</i>, 2022<br>
+            <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/xmlc_missing_labels_&_long_tail_kdd_2022.pdf"><i class="fa fa-file-pdf"></i> paper</a>]</span>
+            <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/xmlc_missing_labels_&_long_tail_poster_kdd_2022.pdf"><i class="fa fa-file-image"></i> poster</a>]</span>
+            <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib"><i class="fas fa-book"></i> bibtex</a>]</span>
+          </li>
+          <li>
+            <a href="https://dl.acm.org/doi/10.1145/3404835.3463084">Propensity-scored Probabilistic Label Trees</a><br>
+            Marek Wydmuch, Kalina Jasinska-Kobus, Rohit Babbar, Krzysztof Dembczyński<br>
+            <i>Proceedings of the 44th International ACM SIGIR Conference on Research and Development in Information Retrieval (SIGIR '21)</i>, 2021<br>
+            <span class="nowrap">[<a href="https://github.com/mwydmuch/napkinXC"><i class="fa fa-github"></i> code (napkinXC)</a>]</span>
+            <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/psplt_sigir_2021.pdf"><i class="fa fa-file-pdf"></i> paper</a>]</span>
+            <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/psplt_poster_sigir_2021.pdf"><i class="fa fa-file-image"></i> poster</a>]</span>
+            <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib"><i class="fas fa-book"></i> bibtex</a>]</span>
+          </li>
+          <li>
+            <a href="https://proceedings.mlr.press/v130/jasinska-kobus21a.html">Online probabilistic label trees</a><br>
+            Kalina Jasinska-Kobus, Marek Wydmuch, Devanathan Thiruvenkatachari, Krzysztof Dembczyński<br>
+            <i>Proceedings of the 24th International Conference on Artificial Intelligence and Statistics (AISTATS 2021)</i>, 2021<br>
+            <span class="nowrap">[<a href="https://github.com/mwydmuch/napkinXC"><i class="fa fa-github"></i> code (napkinXC)</a>]</span>
+            <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/oplt_aistats_2021.pdf"><i class="fa fa-file-pdf"></i> paper</a>]</span>
+            <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/oplt_poster_aistats_2021.pdf"><i class="fa fa-file-image"></i> poster</a>]</span>
+            <span class="nowrap">[<a href="https://slideslive.com/38953102/online-probabilistic-label-trees-oplts?ref=speaker-37667-latest"><i class="fa fa-video"></i> AISTATS 2021 talk</a>]</span>
+            <span class="nowrap">[<a href="https://slideslive.com/38931292/online-probabilistic-label-trees-oplts?ref=speaker-37667-latest"><i class="fa fa-video"></i> ICML XC 2020 talk</a>]</span>
+            <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib"><i class="fas fa-book"></i> bibtex</a>]</span>
+          </li>
+          <li>
+            <a href="https://link.springer.com/article/10.1007/s10618-021-00751-x">Efficient set-valued prediction in multi-class classification</a><br>
+            Thomas Mortier, Marek Wydmuch, Krzysztof Dembczyński, Eyke Hüllermeier, Willem Waegeman<br>
+            <i>Data Mining and Knowledge Discovery</i>, 2021<br>
+            <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/efficient_set-valued_pred_dami_2021.pdf"><i class="fa fa-file-pdf"></i> paper</a>]</span>
+            <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib"><i class="fas fa-book"></i> bibtex</a>]</span>
+          </li>
+          <li>
+            <a href="https://arxiv.org/abs/2009.11218">Probabilistic Label Trees for Extreme Multi-label Classification</a><br>
+            Kalina Jasinska-Kobus, Marek Wydmuch, Krzysztof Dembczyński<br>
+            <i>Submitted to Journal of Machine Learning Research</i>, 2020<br>
+            <span class="nowrap">[<a href="https://github.com/mwydmuch/napkinXC"><i class="fa fa-github"></i> code (napkinXC)</a>]</span>
+            <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib"><i class="fas fa-book"></i> bibtex</a>]</span>
+          </li>
+          <li>
+            <a href="https://papers.nips.cc/paper/2018/hash/8b8388180314a337c9aa3c5aa8e2f37a-Abstract.html">A no-regret generalization of hierarchical softmax to extreme multi-label classification</a><br>
+            Marek Wydmuch, Kalina Jasinska-Kobus, Mikhail Kuznetsov, Robert Busa-Fekete, Krzysztof Dembczyński<br>
+            <i>Proceedings of the 32nd International Conference on Neural Information Processing Systems (NeurIPS 2018)</i>, 2018<br>
+            <span class="nowrap">[<a href="https://github.com/mwydmuch/extremeText"><i class="fa fa-github"></i> code (extremeText)</a>]</span>
+            <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/xt_neurips_2018.pdf"><i class="fa fa-file-pdf"></i> paper</a>]</span>
+            <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/xt_poster_neurips_2018.pdf"><i class="fa fa-file-image"></i> poster</a>]</span>
+            <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib"><i class="fas fa-book"></i> bibtex</a>]</span>
+          </li>
+          <li>
+            <a href="https://arxiv.org/abs/1809.03470">ViZDoom Competitions: Playing Doom From Pixels</a><br>
+            Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski<br>
+            <i>IEEE Transactions on Games</i>, 2018<br>
+            Note: <span class="reverse-second"><a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9679692"><i class="fa fa-award"></i> 2022 IEEE ToG Outstanding Paper Award</a></span>
+            <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/vizdoom_competitions_2018.pdf"><i class="fa fa-file-pdf"></i> paper</a>]</span>
+            <span class="nowrap">[<a href="https://www.youtube.com/channel/UC8UghzsxS5uEFUEbvcAWwlQ"><i class="fa fa-youtube"></i> movies</a>]</span>
+            <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib"><i class="fas fa-book"></i> bibtex</a>]</span>
+          </li>
+          <li>
+            <a href="https://arxiv.org/abs/1605.02097">ViZDoom: A Doom-based AI research platform for visual reinforcement learning</a><br>
+            Michał Kempka, Marek Wydmuch, Grzegorz Runc, Jakub Toczek, Wojciech Jaśkowski<br>
+            <i>2016 IEEE Conference on Computational Intelligence and Games (CIG 2016)</i>, 2016<br>
+            Note: <span class="reverse-second"><i class="fa fa-award"></i> 2016 IEEE CIG The Best Paper Award</span><br>
+            <span class="nowrap">[<a href="http://vizdoom.cs.put.edu.pl"><i class="fa fa-globe"></i> www</a>]</span>
+            <span class="nowrap">[<a href="https://github.com/mwydmuch/ViZDoom"><i class="fa fa-github"></i> code</a>]</span>
+            <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/vizdoom_2016.pdf"><i class="fa fa-file-pdf"></i> paper</a>]</span>
+            <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib"><i class="fas fa-book"></i> bibtex</a>]</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="software" class="container grid-lg">
+    <div class="columns">
+      <div class="column">
+        <h3>Software</h3>
+        <ul>
+          <li>
+            <a href="http://vizdoom.cs.put.edu.pl">ViZDoom</a> - Doom-based AI Research Platform for Reinforcement Learning from Raw Visual Information.
+          </li>
+          <li>
+            <a href="https://github.com/mwydmuch/napkinXC">napkinXC</a> - extremely simple and fast library for extreme multi-class and multi-label classification.
+          </li>
+          <li>
+            <a href="https://github.com/mwydmuch/extremeText">extremeText</a> - extension of fastText library for multi-label classification including extreme cases with hundreds of thousands and millions of labels.
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="mlinpl" class="container grid-lg">
+    <div class="columns">
+      <div class="column">
+        <h3>ML in PL</h3>
+        <p>
+          I'm proud to be a member of the awesome <span class="reverse-mlinpl-red"><a href="https://mlinpl.org/">ML in PL Association</a></span>,
+          a non-profit organization devoted to fostering the machine learning community in Poland and around the world.
+        </p>
+        <p>
+          I co-organized
+          <span class="reverse-mlinpl-purple"><a href="https://conference2019.mlinpl.org/">ML in PL Conference 2019</a></span>,
+          <span class="reverse-mlinpl-red"><a href="https://virtual-event.mlinpl.org/">ML in PL Virtual Event 2020</a></span>,
+          and <span class="reverse-mlinpl-red"><a href="https://conference2021.mlinpl.org/">ML in PL Conference 2021</a></span>
+          serving as Call for Contributions (Talks and Posters) coordinator.
+        </p>
+        <p>
+          From 2021 I'm a member of the management board of <span class="reverse-mlinpl-red"><a href="https://mlinpl.org/">ML in PL Association</a></span>
+          and try to support other members of the association in the organization of great machine learning related events.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="reviews" class="container grid-lg">
+    <div class="columns">
+      <div class="column">
+        <h3>Reviewing scientific papers</h3>
+        I try to review at least a dozen of papers each year. So far I have served as a reviewer for:
+        <ul>
+          <li>Conferences:
+            <ul>
+              <li><a href="https://nips.cc/Conferences/2020/ProgramCommittee">NeurIPS 2020</a>,
+                <a href="https://nips.cc/Conferences/2021/ProgramCommittee">2021 (Outstanding Reviewer Award - top 8%)</a>,
+                and <a href="https://nips.cc/Conferences/2022/ProgramCommittee">2022 (Top Reviewer Award - top 8%)</a></li>
+              <li><a href="https://icml.cc/Conferences/2021/Reviewers">ICML 2021</a>,
+                and <a href="https://icml.cc/Conferences/2022/Reviewers">2022</a>, and 2023</li>
+              <li><a href="https://iclr.cc/Conferences/2022/Reviewers">ICLR 2022</a>, and 2023</li>
+              <li><a href="https://ijcai20.org/pc_members/">IJCAI 2020</a>, and <a href="https://ijcai-21.org/program-committee-members/">2021</a></li>
+              <li><a href="https://virtual.aistats.org/Conferences/2021/Reviewers">AISTATS 2021</a></li>
+            </ul>
+          </li>
+          <li>
+            Journals:
+            <ul>
+              <li>IEEE Transactions on Pattern Analysis and Machine Intelligence (PAMI)</li>
+              <li>Machine Learning Journal</li>
+              <li>Transactions on Machine Learning Research (TMLR)</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="teaching" class="container grid-lg">
+    <div class="columns">
+      <div class="column">
+        <h3>Teaching</h3>
+        As part of my PhD, I teach/teached a few courses at Poznan University of Technology (PUT) related to the topics of Machine Learning, Artificial Intelligence, and Data Science and Big Data:
+        <ul>
+          <li><strong>Advanced Methods of Computational Intelligence 2021, 2022 and 2023 (lectures + exercises)</strong><br>
+            based on
+            <i>Richard S. Sutton and Andrew G. Barto, Reinforcement Learning: An Introduction</i>
+            and selected chapters from
+            <i>Stuart Russell and Peter Norvig, Artificial Intelligence A Modern Approach</i>.
+          </li>
+          <li><strong>Methods of Artificial and Computational Intelligence 2021 (exercises)</strong><br>
+            based on selected chapters from
+            <i>Stuart Russell and Peter Norvig, Artificial Intelligence A Modern Approach</i>.
+          </li>
+          <li><strong>Big Data Processing 2019/2020 and Processing of Massive Datasets 2018/2019 (exercises)</strong><br>
+            based on selected chapters from
+            <i>Jure Leskovec, Anand Rajaraman, Jeff Ullman, Mining of Massive Datasets</i>.
+          </li>
+          <li><strong>Information Theory and Lossless Compression Methods 2018 (exercises)</strong><br>
+            based on the first chapters from
+            <i>David J.C. MacKay, Information Theory, Inference, and Learning Algorithms</i>.
+            Note: <span class="reverse-second"><i class="fa fa-award"></i> The course was awarded as the best new course in 2018 at the Institute of Computer Science.</span>
+          </li>
+        </ul>
+        If you are my student feel free to contact me via e-mail.
+      </div>
+    </div>
+  </section>
 </div>
+
+<!-- Footer -->
+<footer>
+    This website was <i class="fa fa-code"></i> with <i class="fa fa-keyboard"></i> by me :)
+</footer>
 
 <!-- Animation settings panel -->
 <div id="background-settings-controls" class="floating-controls" style="left: 1rem; top: 1rem; display: none;">

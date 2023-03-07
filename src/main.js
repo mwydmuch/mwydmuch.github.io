@@ -108,16 +108,16 @@ let animations = [
     {class: ThreeNPlusOne, name: "3n+1"},
     {class: Cardioids, name: "cardioids"},
     {class: CircularWaves, name: "circular waves"},
-    //{class: Coding, name: "coding"},  // Disable till finished
-    //{class: FiguresSpiral, name: "figures spiral"},  // Disable since it's not that interesting
+    //{class: Coding, name: "coding"},  // Disabled till finished
+    //{class: FiguresSpiral, name: "figures spiral"},  // Disabled since it's not that interesting
     {class: GameOfLife, name: "game of life"},
     {class: GameOfLifeIsometric, name: "isometric game of life"},
     {class: Glitch, name: "glitch"},
     {class: GradientDescent, name: "gradient descent"},
     {class: Matrix, name: "matrix rain"},
-    {class: MLinPL, name: "mlinpl"},
+    //{class: MLinPL, name: "mlinpl"}, // Disabled cause it is not ready
     {class: Network, name: "network"},
-    //{class: NeuralNetwork, name: "neural network"}, // Disable till updated
+    //{class: NeuralNetwork, name: "neural network"}, // Disabled till updated
     {class: ParticlesAndAttractors, name: "particles and attractors"},
     {class: ParticlesVortex, name: "particles vortex"},
     {class: ParticlesWaves, name: "particles waves"},
@@ -129,7 +129,7 @@ let animations = [
     {class: SpinningShapes, name: "spinning shapes"},
     {class: Spirograph, name: "spirograph"},
     {class: SineWaves, name: "sine waves"},
-    {class: Tree, name: "tree"}
+    //{class: Tree, name: "tree"}, // Disabled cause it is not ready
 ];
 
 const animationCount = animations.length;

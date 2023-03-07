@@ -73,10 +73,10 @@ class SineWaves extends Animation {
         const newWaves = Math.max(0, this.gridWidth * this.gridHeight - this.waves.length);
         for(let i = 0; i < newWaves; ++i){
             this.waves.push({
-                freq: Math.pow(2, Math.random() * 8) * Utils.randomChoice([-1, 1]),
-                noise: Math.random(),
-                rotation: Math.random(),
-                color: Utils.randomChoice(this.colors)
+                freq: Math.pow(2, this.rand() * 8) * Utils.randomChoice([-1, 1], this.rand),
+                noise: this.rand(),
+                rotation: this.rand(),
+                color: Utils.randomChoice(this.colors, this.rand)
             });
         }
     }

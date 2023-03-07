@@ -27,7 +27,8 @@ class GameOfLifeIsometric extends GameOfLife {
                  spawnProb = 0.5,
                  fadeDeadCells = true,
                  drawCellsGrid = true,
-                 loopGrid = true) {
+                 loopGrid = true,
+                 gridSize=1) {
         super(canvas, colors, colorsAlt, cellSize, cellBasePadding, spawnProb, loopGrid);
 
         this.name = NAME;

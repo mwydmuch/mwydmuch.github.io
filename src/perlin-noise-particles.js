@@ -1,5 +1,6 @@
 'use strict';
 
+// TODO: Improve this description
 const NAME = "particles moving through Perlin noise",
       FILE = "perlin-noise-particles.js",
       DESC = `
@@ -14,9 +15,10 @@ const Utils = require("./utils");
 
 class PerlinNoiseParticles extends Animation {
     constructor(canvas, colors, colorsAlt,
-                particlesDensity = 0.0004,
+                particlesDensity = 0.0006,
                 noiseScale = 0.001,
                 particlesSpeed = 1,
+                particlesSize = 1,
                 fadingSpeed = 0) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
 
@@ -26,6 +28,7 @@ class PerlinNoiseParticles extends Animation {
         this.noise.seed(Utils.randomRange(0, 1));
 
         this.particlesSpeed = particlesSpeed;
+        this.particlesSize = particlesSize;
         this.fadingSpeed = fadingSpeed;
 
         this.width = 0;
@@ -65,7 +68,7 @@ class PerlinNoiseParticles extends Animation {
         for(let p of this.particles){
             // To make it look smooth even at high speeds, draw a line between the previous and new positions instead of a point
             // Drawing a line also results with a better antialiasing
-            Utils.drawLine(this.ctx, p.prevX, p.prevY, p.x, p.y, p.color, 2 * p.radius); 
+            Utils.drawLine(this.ctx, p.prevX, p.prevY, p.x, p.y, p.color, 2 * p.radius * this.particlesSize); 
         }
         this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     }
@@ -75,15 +78,15 @@ class PerlinNoiseParticles extends Animation {
 
         // Create new particles
         for(let i = 0; i < newParticles; i++){
-            const particleX = Math.random() * width + x,
-                  particleY = Math.random() * height + y;
+            const particleX = this.rand() * width + x,
+                  particleY = this.rand() * height + y;
             this.particles.push({
                 x: particleX,
                 y: particleY,
                 prevX: particleX,
                 prevY: particleY,
-                speed: Math.random() * 0.20 + 0.10,
-                radius: Math.random() * 0.5 + 0.5,
+                speed: this.rand() * 0.20 + 0.10,
+                radius: this.rand() * 0.5 + 0.5,
                 color: Utils.randomChoice(this.colors)
             });
         }
@@ -122,9 +125,11 @@ class PerlinNoiseParticles extends Animation {
 
     getSettings() {
         return [{prop: "noiseScale", type: "float", step: 0.001, min: 0.001, max: 0.01, toCall: "reset"},
-                {prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.002, toCall: "reset"},
+                {prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.005, toCall: "reset"},
                 {prop: "particlesSpeed", type: "float", min: 0.25, max: 32},
-                {prop: "fadingSpeed", type: "float", step: 0.0001, min: 0, max: 0.01}];
+                {prop: "particlesSize", type: "float", step: 0.1, min: 1, max: 4},
+                {prop: "fadingSpeed", type: "float", step: 0.0001, min: 0, max: 0.01},
+                this.getSeedSettings()];
     }
 }
 

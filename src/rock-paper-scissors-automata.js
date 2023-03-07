@@ -1,5 +1,6 @@
 'use strict';
 
+// TODO: Improve this description
 const NAME = "Rock paper scissors automata",
       FILE = "rock-paper-scissors-automata.js",
       DESC = `

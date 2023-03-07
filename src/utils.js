@@ -60,6 +60,10 @@ module.exports = {
         return Math.round( value * shift) / shift;
     },
 
+    argMax(arr) {
+        return [].reduce.call(arr, (m, c, i, a) => c > a[m] ? i : m, 0)
+    },
+
     addArrays(a, b){
         return a.map((e, i) => e + b[i]);
     },

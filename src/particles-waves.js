@@ -15,7 +15,7 @@ const Utils = require("./utils");
 
 class ParticlesStorm extends Animation {
     constructor(canvas, colors, colorsAlt,
-                particlesDensity = 0.005,
+                particlesDensity = 0.01,
                 noiseScale = 0.001,
                 fadingSpeed = 0.02) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
@@ -24,8 +24,6 @@ class ParticlesStorm extends Animation {
         this.noiseScale = noiseScale;
         this.fadingSpeed = fadingSpeed;
 
-        this.noise = Noise.noise;
-        this.noise.seed(Utils.randomRange(0, 1));
         this.particles = [];
         this.width = 0;
         this.height = 0;
@@ -66,8 +64,8 @@ class ParticlesStorm extends Animation {
         // Create new particles
         this.particles = [];
         for(let i = 0; i < newParticles; i++){
-            const particleX = Math.random() * this.width,
-                  particleY = Math.random() * this.height;
+            const particleX = this.rand() * this.width,
+                  particleY = this.rand() * this.height;
             this.particles.push({
                 x: particleX,
                 y: particleY,
@@ -77,9 +75,10 @@ class ParticlesStorm extends Animation {
     }
 
     getSettings() {
-        return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.01, toCall: "resize"},
+        return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.05, toCall: "resize"},
                 {prop: "noiseScale", type: "float", step: 0.001, min: 0.001, max: 0.01},
-                {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.1}];
+                {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.1},
+                this.getSeedSettings()];
     }
 }
 

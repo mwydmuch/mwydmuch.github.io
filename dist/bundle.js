@@ -132,6 +132,7 @@ module.exports = ThreeNPlusOne;
  * Base class for all the background animations.
  */
 
+const Noise = require("./noise");
 const Utils = require("./utils");
 
 class Animation {
@@ -160,8 +161,13 @@ class Animation {
         this.speed = 1;
         this.fps = 30;
 
+        // Noise, it is frequently used by many animations
+        this.noise = Noise.noise;
+
         // Seed, might be combined with seedable rngs to make animations deterministic
-        this.seed = this.assignIfRandom(seed, Math.random());
+        this.maxSeedValue = 999999;
+        this.seed = this.assignIfRandom(seed, Math.round(Math.random() * this.maxSeedValue));
+        this.setSeed(this.seed);
 
         // Reset text settings
         this.ctx.font = '14px sans-serif';
@@ -170,6 +176,11 @@ class Animation {
 
         // Debug flag
         this.debug = false;
+    }
+
+    setSeed(seed){
+        this.noise.seed(seed / this.maxSeedValue);
+        this.rand = Utils.Mulberry32(seed);
     }
 
     assignIfRandom(value, random){  // Commonly used by many constructors
@@ -223,6 +234,7 @@ class Animation {
     restart() {
         this.time = 0;
         this.frame = 0;
+        this.setSeed(this.seed);
         this.resize();
     }
 
@@ -230,14 +242,18 @@ class Animation {
         return [] // By default there is no settings
     }
 
+    getSeedSettings() {
+        return {prop: "seed", type: "int", min: 0, max: this.maxSeedValue, toCall: "restart"};
+    }
+
     mouseAction(cords) {
-        // By default do nothing
+        // By default do nothing, this is not really implemented
     }
 }
 
 module.exports = Animation;
 
-},{"./utils":27}],3:[function(require,module,exports){
+},{"./noise":18,"./utils":32}],3:[function(require,module,exports){
 'use strict';
 
 const NAME = "cardioids with a pencil of lines",
@@ -309,7 +325,7 @@ class Cardioids extends Animation {
 
 module.exports = Cardioids
 
-},{"./animation":2,"./utils":27}],4:[function(require,module,exports){
+},{"./animation":2,"./utils":32}],4:[function(require,module,exports){
 'use strict';
 
 const NAME = "circular waves",
@@ -322,7 +338,6 @@ Coded with no external dependencies, using only canvas API.
 `;
 
 const Animation = require("./animation");
-const Noise = require("./noise");
 const Utils = require("./utils");
 
 class CircularWaves extends Animation {
@@ -334,8 +349,6 @@ class CircularWaves extends Animation {
                 fadingSpeed = 0.001,
                 rainbowColors = false) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
-        this.noise = Noise.noise;
-        this.noise.seed(Utils.randomRange(0, 1));
 
         this.vertices = vertices;
         this.noiseScale = noiseScale;
@@ -389,13 +402,14 @@ class CircularWaves extends Animation {
                 {prop: "radiusScaleMax", type: "float", min: 0, max: 2.0, toCall: "resize"},
                 {prop: "noiseScale", type: "float", min: 0, max: 2.0, toCall: "resize"},
                 {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.1},
-                {prop: "rainbowColors", type: "bool"}];
+                {prop: "rainbowColors", type: "bool"},
+                this.getSeedSettings()];
     }
 }
 
 module.exports = CircularWaves;
 
-},{"./animation":2,"./noise":15,"./utils":27}],5:[function(require,module,exports){
+},{"./animation":2,"./utils":32}],5:[function(require,module,exports){
 'use strict';
 
 const NAME = "Code writing animation",
@@ -503,13 +517,13 @@ class Coding extends Animation {
 
     draw() {
         // Continue current word and write next "character"
-        if(Math.random() < Math.pow(0.9, this.wordLen - 2) || this.wordLen < 3){
+        if(this.rand() < Math.pow(0.9, this.wordLen - 2) || this.wordLen < 3){
             this.lineX += this.charWidth;
             ++this.wordLen;
             this.ctx.fillStyle = this.currentColor;
             this.ctx.fillRect(this.lineX, this.lineY, this.charWidth, this.charHeight);
         } else {
-            if(Math.random() < Math.pow(0.5,this.words - 1) || this.words < 2) { // Continue line
+            if(this.rand() < Math.pow(0.5,this.words - 1) || this.words < 2) { // Continue line
                 ++this.words;
                 this.lineX += this.charWidth;
             } else { // New line
@@ -547,7 +561,7 @@ class Coding extends Animation {
 
 module.exports = Coding;
 
-},{"./animation":2,"./utils":27}],6:[function(require,module,exports){
+},{"./animation":2,"./utils":32}],6:[function(require,module,exports){
 'use strict';
 
 /*
@@ -856,7 +870,7 @@ class FiguresSpiral extends Animation {
 
 module.exports = FiguresSpiral;
 
-},{"./animation":2,"./utils":27}],8:[function(require,module,exports){
+},{"./animation":2,"./utils":32}],8:[function(require,module,exports){
 'use strict';
 
 const NAME = "isometric Conway's game of life",
@@ -886,7 +900,8 @@ class GameOfLifeIsometric extends GameOfLife {
                  spawnProb = 0.5,
                  fadeDeadCells = true,
                  drawCellsGrid = true,
-                 loopGrid = true) {
+                 loopGrid = true,
+                 gridSize=1) {
         super(canvas, colors, colorsAlt, cellSize, cellBasePadding, spawnProb, loopGrid);
 
         this.name = NAME;
@@ -1035,13 +1050,15 @@ class GameOfLifeIsometric extends GameOfLife {
     getSettings() {
         return [{prop: "loopGrid", type: "bool"},
                 {prop: "fadeDeadCells", type: "bool"},
-                {prop: "drawCellsGrid", type: "bool"}];
+                {prop: "drawCellsGrid", type: "bool"},
+                {prop: "spawnProb", type: "float", step: 0.01, min: 0, max: 1, toCall: "restart"},
+                this.getSeedSettings()];
     }
 }
 
 module.exports = GameOfLifeIsometric;
 
-},{"./game-of-life":9,"./utils":27}],9:[function(require,module,exports){
+},{"./game-of-life":9,"./utils":32}],9:[function(require,module,exports){
 'use strict';
 
 const NAME = "Conway's game of life",
@@ -1061,14 +1078,14 @@ since flickering is not that good for a background image.
 Coded with no external dependencies, using only canvas API.
 `;
 
-const Animation = require("./animation");
+const Grid = require("./grid");
 const Utils = require("./utils");
 
-class GameOfLife extends Animation {
+class GameOfLife extends Grid {
     constructor (canvas, colors, colorsAlt,
                  cellSize = 12,
                  cellPadding = 1,
-                 spawnProb= 0.5,
+                 spawnProb = 0.5,
                  loopGrid = true,
                  cellStyle = "random",
                  deadCellsFadingSteps = 5) {
@@ -1081,19 +1098,6 @@ class GameOfLife extends Animation {
         this.cellStyle = this.assignIfRandom(cellStyle, Utils.randomChoice(this.cellStyles));
         this.deadCellsFadingSteps = deadCellsFadingSteps;
         this.loopGrid = loopGrid;
-        
-        this.gridWidth = 0;
-        this.gridHeight = 0;
-        this.grid = null;
-        this.gridNextState = null;
-    }
-
-    getIdx(x, y) {
-        return x + y * this.gridWidth;
-    }
-
-    getVal(x, y) {
-        return this.grid[this.getIdx(x, y)];
     }
 
     isAlive(x, y) {
@@ -1105,6 +1109,8 @@ class GameOfLife extends Animation {
     }
 
     update(elapsed){
+        super.update(elapsed);
+        
         for (let y = 0; y < this.gridHeight; ++y) {
             for (let x = 0; x < this.gridWidth; ++x) {
                 const numAlive = this.isAlive(x - 1, y - 1)
@@ -1116,13 +1122,13 @@ class GameOfLife extends Animation {
                       + this.isAlive(x, y + 1)
                       + this.isAlive(x + 1, y + 1);
                 const cellIdx = this.getIdx(x, y);
-                if (numAlive === 2 && this.grid[cellIdx] >= 1) this.gridNextState[cellIdx] = this.grid[cellIdx] + 1;
-                else if (numAlive === 3) this.gridNextState[cellIdx] = Math.max(1, this.grid[cellIdx] + 1);
-                else this.gridNextState[cellIdx] = Math.min(0, this.grid[cellIdx] - 1);
+                if (numAlive === 2 && this.grid[cellIdx] >= 1) this.gridNext[cellIdx] = this.grid[cellIdx] + 1;
+                else if (numAlive === 3) this.gridNext[cellIdx] = Math.max(1, this.grid[cellIdx] + 1);
+                else this.gridNext[cellIdx] = Math.min(0, this.grid[cellIdx] - 1);
             }
         }
 
-        [this.grid, this.gridNextState] = [this.gridNextState, this.grid];
+        [this.grid, this.gridNext] = [this.gridNext, this.grid]
     }
 
     drawSquareCell(x, y, cellPadding){
@@ -1170,21 +1176,8 @@ class GameOfLife extends Animation {
         }
     }
 
-    resizeGrid(newGridWidth, newGridHeight){
-        let newGrid = new Array(newGridWidth * newGridHeight);
-
-        for (let y = 0; y < newGridHeight; y++) {
-            for (let x = 0; x < newGridWidth; x++) {
-                const cellCord = x + y * newGridWidth;
-                if(x < this.gridWidth && y < this.gridHeight) newGrid[cellCord] = this.grid[this.getIdx(x, y)];
-                else newGrid[cellCord] = (Math.random() < this.spawnProb) ? 1 : -99999;
-            }
-        }
-
-        this.grid = newGrid;
-        this.gridNextState = [...this.grid];
-        this.gridWidth = newGridWidth;
-        this.gridHeight = newGridHeight;
+    newCellState(x, y) {
+        return (this.rand() < this.spawnProb) ? 1 : -99999;
     }
 
     resize() {
@@ -1193,17 +1186,13 @@ class GameOfLife extends Animation {
         this.resizeGrid(newGridWidth, newGridHeight);
     }
 
-    restart(){
-        this.gridWidth = 0;
-        this.gridHeight = 0;
-        super.restart();
-    }
-
     getSettings() {
         return [{prop: "loopGrid", type: "bool"},
-                {prop: "cellSize", type: "int", min: 4, max: 32, toCall: "resize"},
+                {prop: "cellSize", type: "int", min: 4, max: 32, toCall: "restart"},
                 {prop: "cellStyle", type: "select", values: this.cellStyles},
-                {prop: "deadCellsFadingSteps", type: "int", min: 0, max: 8}];
+                {prop: "deadCellsFadingSteps", type: "int", min: 0, max: 8},
+                {prop: "spawnProb", type: "float", step: 0.01, min: 0, max: 1, toCall: "restart"},
+                this.getSeedSettings()];
     }
 
     mouseAction(cords) {
@@ -1217,7 +1206,88 @@ class GameOfLife extends Animation {
 
 module.exports = GameOfLife;
 
-},{"./animation":2,"./utils":27}],10:[function(require,module,exports){
+},{"./grid":12,"./utils":32}],10:[function(require,module,exports){
+'use strict';
+
+const NAME = "Glitch animation",
+      FILE = "glitch.js",
+      DESC = `
+Animation inspierd by glitch effects of:
+
+The animation is just a celuar automata that based on the noise function.
+`;
+
+const Grid = require("./grid");
+
+class Glitch extends Grid {
+    constructor(canvas, colors, colorsAlt,
+                cellSize = 6,
+                noiseScale = 0.0051) {
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        this.cellSize = cellSize;
+        this.noiseScale = noiseScale;
+    }
+
+    update(elapsed){
+        super.update(elapsed);
+
+        for (let x = 0; x < this.gridWidth; ++x) {
+            for (let y = 0; y < this.gridHeight; ++y) {
+                const r = this.noise.simplex3(x * this.noiseScale, y * this.noiseScale, this.frame * this.noiseScale);
+                const sw = Math.round(20 * r) % 5;
+                const cellIdx = this.getIdx(x, y);
+                switch (sw) {
+                    case 0:
+                        this.gridNext[cellIdx] = this.grid[this.getIdxWrap(x - 1, y)]; // west
+                        break
+                    case 1:
+                        this.gridNext[cellIdx] = this.grid[this.getIdxWrap(x + 1, y)]; // east
+                        break
+                    case 2:
+                        this.gridNext[cellIdx] = this.grid[this.getIdxWrap(x, y - 1)]; // north
+                        break
+                    case 3:
+                        this.gridNext[cellIdx] = this.grid[this.getIdxWrap(x, y + 1)]; // south
+                        break
+                    case 4:
+                        this.gridNext[cellIdx] = this.grid[cellIdx]; // self
+                }
+            }
+        }
+
+        [this.grid, this.gridNext] = [this.gridNext, this.grid];
+    }
+
+    draw() {
+        this.clear();
+        this.ctx.fillStyle = this.colors[0];
+        for (let x = 0; x < this.gridWidth; ++x) {
+            for (let y = 0; y < this.gridHeight; ++y) {
+                if(this.grid[this.getIdx(x, y)] > 0) this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
+            }
+        }
+    }
+
+    newCellState(x, y) {
+        return (x + y) % 2 ? 1 : 0;
+    }
+
+    resize() {
+        const newGridWidth = Math.ceil(this.ctx.canvas.width / this.cellSize),
+              newGridHeight = Math.ceil(this.ctx.canvas.height / this.cellSize);
+        this.resizeGrid(newGridWidth, newGridHeight);
+    }
+
+    getSettings() {
+        return [{prop: "cellSize", type: "int", min: 4, max: 12, toCall: "resize"},
+                {prop: "noiseScale", type: "float", step: 0.0001, min: 0.001, max: 0.05},
+                this.getSeedSettings()];
+    }
+}
+
+module.exports = Glitch;
+
+},{"./grid":12}],11:[function(require,module,exports){
 'use strict';
 
 const NAME = "visualization of gradient descent algorithms",
@@ -1669,7 +1739,75 @@ class GradientDescent extends Animation {
 
 module.exports = GradientDescent;
 
-},{"./animation":2,"./utils":27}],11:[function(require,module,exports){
+},{"./animation":2,"./utils":32}],12:[function(require,module,exports){
+'use strict';
+
+/*
+ * Base class for all animations based on grid of cells.
+ */
+
+const Animation = require("./animation");
+
+class Grid extends Animation {
+    constructor(canvas, colors, colorsAlt, 
+                name = "",
+                file = "",
+                description = "",
+                seed = "random") {
+        super(canvas, colors, colorsAlt, file, description, seed);
+
+        this.gridWidth = 0;
+        this.gridHeight = 0;
+        this.grid = null;
+        this.gridNext = null;
+    }
+
+    getIdx(x, y) {
+        return x + y * this.gridWidth;
+    }
+
+    getIdxWrap(x, y) {
+        return (x + this.gridWidth) % this.gridWidth + (y + this.gridHeight) % this.gridHeight * this.gridWidth;
+    }
+
+    getVal(x, y) {
+        return this.grid[this.getIdx(x, y)];
+    }
+
+    getValWrap(x, y) {
+        return this.grid[this.getIdxWrap(x, y)];
+    }
+
+    newCellState(x, y) {
+        return 0;
+    }
+
+    resizeGrid(newGridWidth, newGridHeight){
+        let newGrid = new Array(newGridWidth * newGridHeight);
+
+        for (let y = 0; y < newGridHeight; y++) {
+            for (let x = 0; x < newGridWidth; x++) {
+                const cellCord = x + y * newGridWidth;
+                if(x < this.gridWidth && y < this.gridHeight) newGrid[cellCord] = this.grid[this.getIdx(x, y)];
+                else newGrid[cellCord] = this.newCellState(x, y);
+            }
+        }
+
+        this.grid = newGrid;
+        this.gridNext = [...this.grid];
+        this.gridWidth = newGridWidth;
+        this.gridHeight = newGridHeight;
+    }
+
+    restart(){
+        this.gridWidth = 0;
+        this.gridHeight = 0;
+        super.restart();
+    }
+}
+
+module.exports = Grid;
+},{"./animation":2}],13:[function(require,module,exports){
 'use strict';
 
 // TODO: Refactor/wrap this code into animation/background controller class/module
@@ -1686,27 +1824,31 @@ const Coding = require("./coding");
 const FiguresSpiral = require("./figures-spiral");
 const GameOfLife = require("./game-of-life");
 const GameOfLifeIsometric = require("./game-of-life-isometric");
+const Glitch = require("./glitch");
 const GradientDescent = require("./gradient-descent");
 const Matrix = require("./matrix");
+const MLinPL = require("./mlinpl");
 const Network = require("./network");
 const NeuralNetwork = require("./neural-network");
 const ParticlesAndAttractors = require("./particles-and-attractors");
 const ParticlesVortex = require("./particles-vortex");
 const ParticlesWaves = require("./particles-waves");
 const PerlinNoiseParticles = require("./perlin-noise-particles");
+const RockPaperScissors = require("./rock-paper-scissors-automata");
 const Quadtree = require("./quadtree");
 const ShortestPath = require("./shortest-path");
 const SineWaves = require("./sine-waves");
 const Sorting = require("./sorting");
 const SpinningShapes = require("./spinning-shapes");
 const Spirograph = require("./spirograph");
+const Tree = require("./tree");
 
 
 // Globals
 // ---------------------------------------------------------------------------------------------------------------------
 
 const canvas = document.getElementById("background");
-const container = document.getElementById("container");
+const container = document.getElementById("background-container");
 let framesInterval = 0,
     then = 0,
     paused = false,
@@ -1752,7 +1894,7 @@ const colorsAlt = [ // Alt palette
 // Get elements controls
 // ---------------------------------------------------------------------------------------------------------------------
 
-const content = document.getElementById("content");
+const content = document.getElementById("me");
 const elemBgShow = document.getElementById("background-show");
 const elemBgName = document.getElementById("background-name");
 const elemBgDesc = document.getElementById("background-description");
@@ -1776,24 +1918,28 @@ let animations = [
     {class: ThreeNPlusOne, name: "3n+1"},
     {class: Cardioids, name: "cardioids"},
     {class: CircularWaves, name: "circular waves"},
-    //{class: Coding, name: "coding"},  // Disable till finished
-    //{class: FiguresSpiral, name: "figures spiral"},  // Disable since it's not that interesting
+    //{class: Coding, name: "coding"},  // Disabled till finished
+    //{class: FiguresSpiral, name: "figures spiral"},  // Disabled since it's not that interesting
     {class: GameOfLife, name: "game of life"},
-    {class: GameOfLifeIsometric, name: "isometric game of life", startAnimation: false},
+    {class: GameOfLifeIsometric, name: "isometric game of life"},
+    {class: Glitch, name: "glitch"},
     {class: GradientDescent, name: "gradient descent"},
     {class: Matrix, name: "matrix rain"},
+    //{class: MLinPL, name: "mlinpl"}, // Disabled cause it is not ready
     {class: Network, name: "network"},
-    //{class: NeuralNetwork, name: "neural network"}, // Disable till updated
+    //{class: NeuralNetwork, name: "neural network"}, // Disabled till updated
     {class: ParticlesAndAttractors, name: "particles and attractors"},
     {class: ParticlesVortex, name: "particles vortex"},
     {class: ParticlesWaves, name: "particles waves"},
     {class: PerlinNoiseParticles, name: "perlin noise"},
-    {class: Quadtree, name: "quadtree", startAnimation: false}, // Don't use as start animation, since it can be performance heavy
+    {class: RockPaperScissors, name: "rock paper scissors automata"},
+    {class: Quadtree, name: "quadtree"},
     {class: ShortestPath, name: "shortest path"},
     {class: Sorting, name: "sorting"},
     {class: SpinningShapes, name: "spinning shapes"},
     {class: Spirograph, name: "spirograph"},
-    {class: SineWaves, name: "sine waves"}
+    {class: SineWaves, name: "sine waves"},
+    //{class: Tree, name: "tree"}, // Disabled cause it is not ready
 ];
 
 const animationCount = animations.length;
@@ -1854,6 +2000,14 @@ function checkResize() {
     lastWidth = width;
 }
 
+function updateStats() {
+    if(elemBgStats) {
+        elemBgStats.innerHTML = `frame time: ${timeElapsed}</br>
+                                fps: ${Math.round(1000 / timeElapsed)}</br>
+                                canvas size: ${width} x ${height}`;
+    }
+}
+
 function render() {
     if(paused) return;
 
@@ -1861,20 +2015,17 @@ function render() {
           timeElapsed = now - then;
 
     // Limit framerate
-    requestAnimationFrame(render);
-    if (timeElapsed <= framesInterval) return;
-    then = now;
+    if (timeElapsed >= framesInterval) {
+        then = now;
 
-    checkResize();
-
-    animation.update(timeElapsed);
-    animation.draw();
-
-    if(elemBgStats) {
-        elemBgStats.innerHTML = `frame time: ${timeElapsed}</br>
-                                fps: ${Math.round(1000 / timeElapsed)}</br>
-                                canvas size: ${width} x ${height}`;
+        checkResize();
+    
+        animation.update(timeElapsed);
+        animation.draw();
+    
+        updateStats();
     }
+    requestAnimationFrame(render);
 }
 
 updateAnimation(animationId);
@@ -1915,17 +2066,17 @@ if(elemBgShow) {
     function hideBackground(){
         content.classList.remove("fade-out");
         content.classList.add("fade-in");
-        canvas.classList.remove("show-from-10");
-        canvas.classList.add("fade-to-10");
+        canvas.classList.remove("show-from-25");
+        canvas.classList.add("fade-to-25");
         elemBgShow.innerHTML = "<i class=\"fas fa-eye\"></i> show";
     }
 
     function showBackground(){
         content.classList.remove("fade-in");
         content.classList.add("fade-out");
-        canvas.classList.remove("faded-10");
-        canvas.classList.remove("fade-to-10");
-        canvas.classList.add("show-from-10");
+        canvas.classList.remove("faded-25");
+        canvas.classList.remove("fade-to-25");
+        canvas.classList.add("show-from-25");
         elemBgShow.innerHTML = "<i class=\"fas fa-eye-slash\"></i> hide";
     }
 
@@ -2010,6 +2161,7 @@ if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
         if(elemBgSettingsControls.classList.contains('moving')){
             elemBgSettingsControls.style.left = e.clientX - elemBgSettingsControls.clickAnchorX + 'px';
             elemBgSettingsControls.style.top = e.clientY - elemBgSettingsControls.clickAnchorY  + 'px';
+            elemBgSettingsControls.style.maxHeight = elemBgSettingsControls.parentNode.offsetHeight - (e.clientY - elemBgSettingsControls.clickAnchorY) - 10 + 'px';
         }
     });
 
@@ -2155,7 +2307,7 @@ function updateUI(){
     }
 }
 
-},{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./coding":5,"./figures-spiral":7,"./game-of-life":9,"./game-of-life-isometric":8,"./gradient-descent":10,"./matrix":12,"./network":13,"./neural-network":14,"./particles-and-attractors":16,"./particles-vortex":17,"./particles-waves":18,"./perlin-noise-particles":19,"./quadtree":20,"./shortest-path":22,"./sine-waves":23,"./sorting":24,"./spinning-shapes":25,"./spirograph":26,"./utils":27}],12:[function(require,module,exports){
+},{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./coding":5,"./figures-spiral":7,"./game-of-life":9,"./game-of-life-isometric":8,"./glitch":10,"./gradient-descent":11,"./matrix":14,"./mlinpl":15,"./network":16,"./neural-network":17,"./particles-and-attractors":19,"./particles-vortex":20,"./particles-waves":21,"./perlin-noise-particles":22,"./quadtree":23,"./rock-paper-scissors-automata":25,"./shortest-path":26,"./sine-waves":27,"./sorting":28,"./spinning-shapes":29,"./spirograph":30,"./tree":31,"./utils":32}],14:[function(require,module,exports){
 'use strict';
 
 const NAME = "Matrix digital rain",
@@ -2210,11 +2362,11 @@ class Matrix extends Animation {
     }
 
     dropSpawnPoint(y){
-        return Utils.randomInt(0, Math.min(y - 1, this.columnHeight / 2)) - 1;
+        return Utils.randomInt(0, Math.min(y - 1, this.columnHeight / 2), this.rand) - 1;
     }
 
     dropDespawn(y){
-        return (Math.random() < Math.pow(y / this.columnHeight, 2) * 0.1) || (y > this.columnHeight);
+        return (this.rand() < Math.pow(y / this.columnHeight, 2) * 0.1) || (y > this.columnHeight);
     }
 
     drawCharacter(char, cellX, cellY, color){
@@ -2222,7 +2374,7 @@ class Matrix extends Animation {
         this.ctx.fillRect(cellX - this.cellWidth/2, cellY, this.cellWidth, this.cellHeight);
         this.ctx.fillStyle = color;
 
-        if(Math.random() < this.flipProp){ // Randomly flip character
+        if(this.rand() < this.flipProp){ // Randomly flip character
             this.ctx.save();
             this.ctx.translate(cellX, cellY);
             this.ctx.scale(-1, 1);
@@ -2260,7 +2412,7 @@ class Matrix extends Animation {
                 d.char = Utils.randomChoice(this.characters);
                 if(this.dropDespawn(d.y)) d.y = this.dropSpawnPoint(d.y);
 
-                if(Math.random() < this.errorProp){
+                if(this.rand() < this.errorProp){
                     const yDiff = Utils.randomInt(-8, 8);
                     this.drawCharacter(Utils.randomChoice(this.characters), cellX, Math.floor(yDiff + d.y) * this.cellHeight, this.textColor);
                 }
@@ -2299,6 +2451,7 @@ class Matrix extends Animation {
         return [{prop: "dropsSize", type: "int", min: 8, max: 64, toCall: "resize"},
                 {prop: "dropsSpeed", type: "float", min: 0, max: 1},
                 {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.5},
+                //this.getSeedSettings()
                 //{prop: "originalMatrixColors", type: "bool", toCall: "restart"} // Not ready yet
             ];
     }
@@ -2306,7 +2459,9 @@ class Matrix extends Animation {
 
 module.exports = Matrix;
 
-},{"./animation":2,"./utils":27}],13:[function(require,module,exports){
+},{"./animation":2,"./utils":32}],15:[function(require,module,exports){
+
+},{}],16:[function(require,module,exports){
 'use strict';
 
 const NAME = "Delaunay triangulation for a cloud of particles",
@@ -2406,11 +2561,11 @@ class Network extends Animation {
         // Create new particles
         for(let i = 0; i < newParticles; i++){
             this.particles.push({
-                x: Math.random() * width + x,
-                y: Math.random() * height + y,
-                velY: Math.random() * 2 - 1,
-                velX: Math.random() * 2 - 1,
-                color: Utils.randomChoice(this.colors)
+                x: this.rand() * width + x,
+                y: this.rand() * height + y,
+                velY: this.rand() * 2 - 1,
+                velX: this.rand() * 2 - 1,
+                color: Utils.randomChoice(this.colors, this.rand)
             });
         }
     }
@@ -2453,7 +2608,7 @@ class Network extends Animation {
 
 module.exports = Network;
 
-},{"./animation":2,"./delaunay":6,"./utils":27}],14:[function(require,module,exports){
+},{"./animation":2,"./delaunay":6,"./utils":32}],17:[function(require,module,exports){
 'use strict';
 
 /*
@@ -2580,7 +2735,7 @@ class NeuralNetwork extends Animation {
 
 module.exports = NeuralNetwork;
 
-},{"./animation":2,"./utils":27}],15:[function(require,module,exports){
+},{"./animation":2,"./utils":32}],18:[function(require,module,exports){
 'use strict';
 
 /*
@@ -2893,7 +3048,7 @@ module.exports = NeuralNetwork;
 
 })(this);
 
-},{}],16:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 'use strict';
 
 const NAME = "system of particles and attractors",
@@ -2950,7 +3105,7 @@ class ParticlesAndAttractors extends Animation {
     setup(){
         this.particles = []
         for (let i = 0; i < this.numParticles; ++i)
-            this.particles.push(Utils.rotateVec2d(Utils.createVec2d(Utils.randomRange(1, 100), 0), i));
+            this.particles.push(Utils.rotateVec2d(Utils.createVec2d(Utils.randomRange(1, 100, this.rand), 0), i));
     }
 
     update(elapsed){
@@ -2985,7 +3140,7 @@ class ParticlesAndAttractors extends Animation {
         for (let p of this.particles) {
             let d = 0
 
-            // Calculate new velocity vector for each particle
+            // Calculate direction of velocity vector for each particle
             for (let a of attractors) d += Math.atan2(a.y - p.y, a.x - p.x);
 
             // Calculate new position of the particle
@@ -3030,7 +3185,7 @@ class ParticlesAndAttractors extends Animation {
 
 module.exports = ParticlesAndAttractors;
 
-},{"./animation":2,"./utils":27}],17:[function(require,module,exports){
+},{"./animation":2,"./utils":32}],20:[function(require,module,exports){
 'use strict';
 
 const NAME = "vortex of particles",
@@ -3124,7 +3279,7 @@ class ParticlesVortex extends Animation {
 
 module.exports = ParticlesVortex;
 
-},{"./animation":2,"./noise":15,"./utils":27}],18:[function(require,module,exports){
+},{"./animation":2,"./noise":18,"./utils":32}],21:[function(require,module,exports){
 'use strict';
 
 const NAME = "particles waves",
@@ -3142,7 +3297,7 @@ const Utils = require("./utils");
 
 class ParticlesStorm extends Animation {
     constructor(canvas, colors, colorsAlt,
-                particlesDensity = 0.005,
+                particlesDensity = 0.01,
                 noiseScale = 0.001,
                 fadingSpeed = 0.02) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
@@ -3151,8 +3306,6 @@ class ParticlesStorm extends Animation {
         this.noiseScale = noiseScale;
         this.fadingSpeed = fadingSpeed;
 
-        this.noise = Noise.noise;
-        this.noise.seed(Utils.randomRange(0, 1));
         this.particles = [];
         this.width = 0;
         this.height = 0;
@@ -3193,8 +3346,8 @@ class ParticlesStorm extends Animation {
         // Create new particles
         this.particles = [];
         for(let i = 0; i < newParticles; i++){
-            const particleX = Math.random() * this.width,
-                  particleY = Math.random() * this.height;
+            const particleX = this.rand() * this.width,
+                  particleY = this.rand() * this.height;
             this.particles.push({
                 x: particleX,
                 y: particleY,
@@ -3204,17 +3357,19 @@ class ParticlesStorm extends Animation {
     }
 
     getSettings() {
-        return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.01, toCall: "resize"},
+        return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.05, toCall: "resize"},
                 {prop: "noiseScale", type: "float", step: 0.001, min: 0.001, max: 0.01},
-                {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.1}];
+                {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.1},
+                this.getSeedSettings()];
     }
 }
 
 module.exports = ParticlesStorm;
 
-},{"./animation":2,"./noise":15,"./utils":27}],19:[function(require,module,exports){
+},{"./animation":2,"./noise":18,"./utils":32}],22:[function(require,module,exports){
 'use strict';
 
+// TODO: Improve this description
 const NAME = "particles moving through Perlin noise",
       FILE = "perlin-noise-particles.js",
       DESC = `
@@ -3229,9 +3384,10 @@ const Utils = require("./utils");
 
 class PerlinNoiseParticles extends Animation {
     constructor(canvas, colors, colorsAlt,
-                particlesDensity = 0.0004,
+                particlesDensity = 0.0006,
                 noiseScale = 0.001,
                 particlesSpeed = 1,
+                particlesSize = 1,
                 fadingSpeed = 0) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
 
@@ -3241,6 +3397,7 @@ class PerlinNoiseParticles extends Animation {
         this.noise.seed(Utils.randomRange(0, 1));
 
         this.particlesSpeed = particlesSpeed;
+        this.particlesSize = particlesSize;
         this.fadingSpeed = fadingSpeed;
 
         this.width = 0;
@@ -3280,7 +3437,7 @@ class PerlinNoiseParticles extends Animation {
         for(let p of this.particles){
             // To make it look smooth even at high speeds, draw a line between the previous and new positions instead of a point
             // Drawing a line also results with a better antialiasing
-            Utils.drawLine(this.ctx, p.prevX, p.prevY, p.x, p.y, p.color, 2 * p.radius); 
+            Utils.drawLine(this.ctx, p.prevX, p.prevY, p.x, p.y, p.color, 2 * p.radius * this.particlesSize); 
         }
         this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     }
@@ -3290,15 +3447,15 @@ class PerlinNoiseParticles extends Animation {
 
         // Create new particles
         for(let i = 0; i < newParticles; i++){
-            const particleX = Math.random() * width + x,
-                  particleY = Math.random() * height + y;
+            const particleX = this.rand() * width + x,
+                  particleY = this.rand() * height + y;
             this.particles.push({
                 x: particleX,
                 y: particleY,
                 prevX: particleX,
                 prevY: particleY,
-                speed: Math.random() * 0.20 + 0.10,
-                radius: Math.random() * 0.5 + 0.5,
+                speed: this.rand() * 0.20 + 0.10,
+                radius: this.rand() * 0.5 + 0.5,
                 color: Utils.randomChoice(this.colors)
             });
         }
@@ -3337,15 +3494,17 @@ class PerlinNoiseParticles extends Animation {
 
     getSettings() {
         return [{prop: "noiseScale", type: "float", step: 0.001, min: 0.001, max: 0.01, toCall: "reset"},
-                {prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.002, toCall: "reset"},
+                {prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.005, toCall: "reset"},
                 {prop: "particlesSpeed", type: "float", min: 0.25, max: 32},
-                {prop: "fadingSpeed", type: "float", step: 0.0001, min: 0, max: 0.01}];
+                {prop: "particlesSize", type: "float", step: 0.1, min: 1, max: 4},
+                {prop: "fadingSpeed", type: "float", step: 0.0001, min: 0, max: 0.01},
+                this.getSeedSettings()];
     }
 }
 
 module.exports = PerlinNoiseParticles;
 
-},{"./animation":2,"./noise":15,"./utils":27}],20:[function(require,module,exports){
+},{"./animation":2,"./noise":18,"./utils":32}],23:[function(require,module,exports){
 'use strict';
 
 const NAME = "quadtree visualization",
@@ -3484,13 +3643,14 @@ class Quadtree extends Animation {
                 {prop: "noiseThreshold", type: "float", min: 0, max: 0.15, step: 0.001},
                 //{prop: "minNodeSize", type: "float", step: 0.1, min: 1, max: 6},
                 {prop: "drawLeafNodes", type: "bool"},
-                {prop: "drawPoints", type: "bool"}];
+                {prop: "drawPoints", type: "bool"},
+                this.getSeedSettings()];
     }
 }
 
 module.exports = Quadtree;
 
-},{"./animation":2,"./noise":15,"./utils":27}],21:[function(require,module,exports){
+},{"./animation":2,"./noise":18,"./utils":32}],24:[function(require,module,exports){
 'use strict';
 
 /*
@@ -3549,7 +3709,91 @@ class Queue {
 
 module.exports = Queue;
 
-},{}],22:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
+'use strict';
+
+// TODO: Improve this description
+const NAME = "Rock paper scissors automata",
+      FILE = "rock-paper-scissors-automata.js",
+      DESC = `
+Rock paper scissors automata.
+
+The animation is just a celuar automata that based on the noise function.
+
+Coded with no external dependencies, using only canvas API.
+`;
+
+const Grid = require("./grid");
+const Utils = require("./utils");
+
+class RockPaperScissorsAutomata extends Grid {
+    constructor(canvas, colors, colorsAlt,
+                cellSize = 6,
+                states = 3,
+                minimumLosses = 3) {
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        this.cellSize = cellSize;
+        this.states = states;
+        this.minimumLosses = minimumLosses;
+    }
+
+    update(elapsed){
+        super.update(elapsed);
+
+        for (let x = 0; x < this.gridWidth; ++x) {
+            for (let y = 0; y < this.gridHeight; ++y) {
+                const cellIdx = this.getIdx(x, y),
+                      cellVal = this.grid[cellIdx],
+                      nextVal = (cellVal + 1) % this.states;
+                let neighbours = Array(this.states).fill(0);
+                ++neighbours[this.getValWrap(x - 1, y - 1)];
+                ++neighbours[this.getValWrap(x, y - 1)];
+                ++neighbours[this.getValWrap(x + 1, y - 1)];
+                ++neighbours[this.getValWrap(x - 1, y)];
+                ++neighbours[this.getValWrap(x + 1, y)];
+                ++neighbours[this.getValWrap(x - 1, y + 1)];
+                ++neighbours[this.getValWrap(x, y + 1)];
+                ++neighbours[this.getValWrap(x + 1, y + 1)];
+
+                if(neighbours[nextVal] >= this.minimumLosses) this.gridNext[cellIdx] = nextVal;
+                else this.gridNext[cellIdx] = cellVal;
+            }
+        }
+
+        [this.grid, this.gridNext] = [this.gridNext, this.grid];
+    }
+
+    draw() {
+        this.clear();
+        for (let x = 0; x < this.gridWidth; ++x) {
+            for (let y = 0; y < this.gridHeight; ++y) {
+                this.ctx.fillStyle = this.colors[this.getVal(x, y)];
+                this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
+            }
+        }
+    }
+
+    newCellState(x, y) {
+        return Utils.randomInt(0, this.states, this.rand);
+    }
+
+    resize() {
+        const newGridWidth = Math.ceil(this.ctx.canvas.width / this.cellSize),
+              newGridHeight = Math.ceil(this.ctx.canvas.height / this.cellSize);
+        this.resizeGrid(newGridWidth, newGridHeight);
+    }
+
+    getSettings() {
+        return [{prop: "cellSize", type: "int", min: 4, max: 12, toCall: "resize"},
+                {prop: "states", type: "int", min: 2, max: 6, toCall: "restart"},
+                {prop: "minimumLosses", type: "int", min: 0, max: 8},
+                this.getSeedSettings()];
+    }
+}
+
+module.exports = RockPaperScissorsAutomata;
+
+},{"./grid":12,"./utils":32}],26:[function(require,module,exports){
 'use strict';
 
 const NAME = "finding the shortest path",
@@ -3883,8 +4127,8 @@ class ShortestPath extends Animation {
         const mazeEndX = mazeX + mazeW,
               mazeEndY = mazeY + mazeH;
 
-        const wall1 = mazeW >= minSize && Math.random() > (wallSpawnProb * mazeH / mazeW),
-              wall2 = mazeH >= minSize && Math.random() > wallSpawnProb;
+        const wall1 = mazeW >= minSize && this.rand() > (wallSpawnProb * mazeH / mazeW),
+              wall2 = mazeH >= minSize && this.rand() > wallSpawnProb;
 
         // let wallX = wall1 ? mazeX + Math.floor(mazeW / 2) : mazeX - 1,
         //     wallY = wall2 ? mazeY + Math.floor(mazeH / 2) : mazeEndY;
@@ -3987,13 +4231,15 @@ class ShortestPath extends Animation {
                 {prop: "speed", type: "int", min: 1, max: 64},
                 {prop: "startNewAfterFinish", type: "bool"},
                 {prop: "cellStyle", type: "select", values: this.cellStyles},
-                {prop: "showStats", type: "bool"}];
+                {prop: "showStats", type: "bool"},
+                //this.getSeedSettings()
+            ];
     }
 }
 
 module.exports = ShortestPath;
 
-},{"./animation":2,"./queue":21,"./utils":27}],23:[function(require,module,exports){
+},{"./animation":2,"./queue":24,"./utils":32}],27:[function(require,module,exports){
 'use strict';
 
 const NAME = "grid of sine waves",
@@ -4069,10 +4315,10 @@ class SineWaves extends Animation {
         const newWaves = Math.max(0, this.gridWidth * this.gridHeight - this.waves.length);
         for(let i = 0; i < newWaves; ++i){
             this.waves.push({
-                freq: Math.pow(2, Math.random() * 8) * Utils.randomChoice([-1, 1]),
-                noise: Math.random(),
-                rotation: Math.random(),
-                color: Utils.randomChoice(this.colors)
+                freq: Math.pow(2, this.rand() * 8) * Utils.randomChoice([-1, 1], this.rand),
+                noise: this.rand(),
+                rotation: this.rand(),
+                color: Utils.randomChoice(this.colors, this.rand)
             });
         }
     }
@@ -4086,7 +4332,7 @@ class SineWaves extends Animation {
 }
 
 module.exports = SineWaves;
-},{"./animation":2,"./utils":27}],24:[function(require,module,exports){
+},{"./animation":2,"./utils":32}],28:[function(require,module,exports){
 'use strict';
 
 const NAME = "sorting algorithm visualization",
@@ -4410,7 +4656,7 @@ class Sorting extends Animation {
         // Initial order of values
         let values = Array.from({length: valMax}, (x, i) => i + 1);
 
-        if(this.initialOrder === "random") Utils.randomShuffle(values);
+        if(this.initialOrder === "random") Utils.randomShuffle(values, this.rand);
         else if(this.initialOrder === "reverse sorted") values = values.reverse();
         else if(this.initialOrder === "evens then odds")
             values = values.sort((a, b) => (a % 2 + a / (valMax + 1) - (b % 2 + b / (valMax + 1))));
@@ -4526,6 +4772,7 @@ class Sorting extends Animation {
     }
 
     restart() {
+        super.restart();
         this.setup();
     }
 
@@ -4534,13 +4781,14 @@ class Sorting extends Animation {
                 {prop: "sortingAlgorithm", type: "select", values: this.sortAlgoNames, toCall: "setup"},
                 {prop: "numElements", type: "int", min: 8, max: 256, toCall: "setup"},
                 {prop: "speed", type: "float", step: 0.25, min: 0.5, max: 8},
-                {prop: "showStats", type: "bool"}];
+                {prop: "showStats", type: "bool"},
+                this.getSeedSettings()];
     }
 }
 
 module.exports = Sorting;
 
-},{"./animation":2,"./utils":27}],25:[function(require,module,exports){
+},{"./animation":2,"./utils":32}],29:[function(require,module,exports){
 'use strict';
 
 const NAME = "shapes dancing in a circle",
@@ -4633,7 +4881,7 @@ class SpinningShapes extends Animation {
 
 module.exports = SpinningShapes
 
-},{"./animation":2,"./utils":27}],26:[function(require,module,exports){
+},{"./animation":2,"./utils":32}],30:[function(require,module,exports){
 'use strict';
 
 const NAME = "spirograph",
@@ -4754,7 +5002,82 @@ class Spirograph extends Animation {
 
 module.exports = Spirograph
 
-},{"./animation":2,"./utils":27}],27:[function(require,module,exports){
+},{"./animation":2,"./utils":32}],31:[function(require,module,exports){
+'use strict';
+
+
+// Work in progress.
+// Binary tree animation.
+
+const Animation = require("./animation");
+const Utils = require("./utils");
+
+class Tree extends Animation {
+    constructor (canvas, colors, colorsAlt) {
+        super(canvas, colors, colorsAlt, "tree", "tree.js");
+        this.frame = 0;
+    }
+
+    getName(){
+        return "binary tree";
+    }
+
+    update(timeElapsed){
+        this.frame++;
+    }
+
+    getFPS() {
+        return 1;
+    }
+
+    branch(ctx, x, y, a, branchLength, branchAngle, levels){
+        Utils.pathCircle(ctx, x, y, 5);
+        if(levels > 0){
+            const left = Utils.rotateVec2d({x: 0, y: branchLength}, a + branchAngle);
+            Utils.pathLine(ctx, x, y, x + left.x, y + left.y);
+
+            const right = Utils.rotateVec2d({x: 0, y: branchLength}, a - branchAngle);
+            Utils.pathLine(ctx, x, y, x + right.x, y + right.y);
+
+            const nextLength = branchLength * 4/7;
+            const nextAngle = branchAngle * 7/9;
+            this.branch(ctx, x + left.x, y + left.y, 0, nextLength, nextAngle, levels - 1);
+            this.branch(ctx, x + right.x, y + right.y, 0, nextLength, nextAngle, levels - 1);
+
+            //const nextLength = branchLength * 2/3;
+            //this.branch(ctx, x + left.x, y + left.y, a + branchAngle, nextLength, branchAngle);
+            //this.branch(ctx, x + right.x, y + right.y, a - branchAngle, nextLength, branchAngle);
+        }
+    }
+
+    genTree(){
+        this.tree.push({
+            parent: 0,
+            left: 0,
+            right: 0,
+            pred: 0,
+            visited: false,
+        });
+    }
+
+    draw() {
+        Utils.clear(this.ctx, "#FFFFFF");
+
+        this.ctx.beginPath();
+        this.ctx.strokeStyle = this.colors[0];
+        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        this.branch(this.ctx, 0, 0, 0, 300, 80 * Math.PI / 180, 6);
+        this.ctx.stroke();
+    }
+
+    resize() {
+
+    }
+}
+
+module.exports = Tree;
+
+},{"./animation":2,"./utils":32}],32:[function(require,module,exports){
 'use strict';
 
 /*
@@ -4815,6 +5138,10 @@ module.exports = {
     round(value, decimalPlace = 2){
         const shift = Math.pow(10, decimalPlace);
         return Math.round( value * shift) / shift;
+    },
+
+    argMax(arr) {
+        return [].reduce.call(arr, (m, c, i, a) => c > a[m] ? i : m, 0)
     },
 
     addArrays(a, b){
@@ -5047,4 +5374,4 @@ module.exports = {
     }
 };
 
-},{}]},{},[11])
+},{}]},{},[13])

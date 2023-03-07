@@ -22,11 +22,11 @@ h4,
 h5,
 h6 {
   margin-top: 0;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   font-weight: 400;
 }
 p {
-  margin: 0.25rem;
+  margin-bottom: 0.25rem;
 }
 ol,
 ul {
@@ -177,6 +177,20 @@ ul ul {
 .reverse-farama-green a:active {
   color: #FFFFFF;
 }
+.reverse-vowpal-wabbit-pink {
+  color: #FFFFFF;
+  padding: 0.05rem 0.25rem;
+  margin: 0 0.05rem;
+  white-space: nowrap;
+  background-image: linear-gradient(135deg, #FF81F9, #ff9bfa);
+}
+.reverse-vowpal-wabbit-pink a,
+.reverse-vowpal-wabbit-pink a:link,
+.reverse-vowpal-wabbit-pink a:visited,
+.reverse-vowpal-wabbit-pink a:hover,
+.reverse-vowpal-wabbit-pink a:active {
+  color: #FFFFFF;
+}
 .reverse-ua-gradient {
   color: #FFFFFF;
   padding: 0.05rem 0.25rem;
@@ -204,16 +218,21 @@ ul {
   list-style-type: square;
   margin-left: 1rem;
 }
-.date-li {
-  text-indent: -3.6rem;
-  padding-left: 3.6rem;
+.dates-ul {
+  list-style-type: none;
+  margin-left: 0;
 }
-.date-li .date-span {
+.dates-ul .date-li {
+  text-indent: -3.6rem;
+  margin-left: 3.6rem;
+  padding-left: 1rem;
+}
+.dates-ul .date-li .date-span {
   width: 3.6rem;
   display: inline-block;
-  padding-left: 3.6rem;
+  padding-left: 2.6rem;
 }
-.date-li i {
+.dates-ul .date-li i {
   text-indent: 0;
 }
 .background {
@@ -224,6 +243,33 @@ ul {
 .animation-container {
   position: relative;
   display: block;
+}
+header {
+  min-height: 100vh;
+  width: 100%;
+  display: table;
+  border-bottom: 2px solid #43696B;
+  margin-bottom: 5rem;
+}
+header .header-content {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  padding: 0;
+  position: relative;
+  height: 100%;
+}
+section {
+  margin: 2rem 0;
+}
+footer {
+  text-align: center;
+  margin: 5rem 0 0;
+  font-size: 0.7rem;
+  background: #43696B;
+  background-image: linear-gradient(135deg, #38575A, #43696B);
+  color: #FFFFFF;
+  padding: 0.1rem 0.25rem;
 }
 #me {
   text-align: center;
@@ -339,33 +385,33 @@ ul {
   animation-timing-function: ease;
   opacity: 100%;
 }
-@keyframes "fade-to-10-animation" {
+@keyframes "fade-to-25-animation" {
   from {
     opacity: 100%;
   }
   to {
-    opacity: 10%;
+    opacity: 25%;
   }
 }
-@keyframes "show-from-10-animation" {
+@keyframes "show-from-25-animation" {
   from {
-    opacity: 10%;
+    opacity: 25%;
   }
   to {
     opacity: 100%;
   }
 }
-.faded-10 {
-  opacity: 10%;
+.faded-25 {
+  opacity: 25%;
 }
-.fade-to-10 {
-  animation: "fade-to-10-animation";
+.fade-to-25 {
+  animation: "fade-to-25-animation";
   animation-duration: 0.5s;
   animation-timing-function: ease;
-  opacity: 10%;
+  opacity: 25%;
 }
-.show-from-10 {
-  animation: "show-from-10-animation";
+.show-from-25 {
+  animation: "show-from-25-animation";
   animation-duration: 0.5s;
   animation-timing-function: ease;
   opacity: 100%;
@@ -377,18 +423,14 @@ ul {
   transition: opacity 0.5s;
   opacity: 0.75;
 }
-#footer {
-  text-align: center;
-  margin: 1.6rem 0;
-  font-size: 0.7rem;
-}
 #background-controls,
 #background-settings-controls,
 #background-controls-bar {
   color: #FFFFFF;
   padding: 0.1rem 0.25rem;
-  display: inline-block;
+  background: #43696B;
   background-image: linear-gradient(135deg, #38575A, #43696B);
+  font-size: 0.7rem;
 }
 #background-controls a,
 #background-settings-controls a,
@@ -407,11 +449,17 @@ ul {
 #background-controls-bar a:active {
   color: #FFFFFF;
 }
+#background-controls {
+  display: inline-block;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
 #background-controls-bar {
   width: 100%;
 }
 .floating-controls {
-  position: fixed;
+  position: absolute;
   top: 10px;
   left: 10px;
   display: none;
@@ -421,9 +469,10 @@ ul {
 #background-settings-controls {
   transition: opacity 0.5s;
   width: 19rem;
-  max-height: 100%;
   overflow: auto;
   font-size: 0.7rem;
+  display: inline-block;
+  height: fit-content;
 }
 #background-settings-controls .accordion {
   text-align: left;

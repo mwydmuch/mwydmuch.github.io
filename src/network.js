@@ -97,11 +97,11 @@ class Network extends Animation {
         // Create new particles
         for(let i = 0; i < newParticles; i++){
             this.particles.push({
-                x: Math.random() * width + x,
-                y: Math.random() * height + y,
-                velY: Math.random() * 2 - 1,
-                velX: Math.random() * 2 - 1,
-                color: Utils.randomChoice(this.colors)
+                x: this.rand() * width + x,
+                y: this.rand() * height + y,
+                velY: this.rand() * 2 - 1,
+                velX: this.rand() * 2 - 1,
+                color: Utils.randomChoice(this.colors, this.rand)
             });
         }
     }
