@@ -1,12 +1,15 @@
 'use strict';
 
 // TODO: Improve this description
-const NAME = "Rock paper scissors automata",
+const NAME = "Rock-paper-scissors automata",
       FILE = "rock-paper-scissors-automata.js",
       DESC = `
-Rock paper scissors automata.
+Rock-paper-scissors automata.
 
-The animation is just a celuar automata that based on the noise function.
+This cellular automata adapts the rules of the rock-paper-scissors game 
+(one type beats one state but loses to another).
+If the cell has more than a defined number of neighbors with the state it losses to, 
+it changes its state to that state.
 
 Coded with no external dependencies, using only canvas API.
 `;

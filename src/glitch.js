@@ -3,9 +3,10 @@
 const NAME = "Glitch animation",
       FILE = "glitch.js",
       DESC = `
-Animation inspierd by glitch effects of:
+The animation is just cellular automata that apply to the cell 
+a state of one of the neighbor cells based on a noise function.
 
-The animation is just a celuar automata that based on the noise function.
+Coded with no external dependencies, using only canvas API.
 `;
 
 const Grid = require("./grid");

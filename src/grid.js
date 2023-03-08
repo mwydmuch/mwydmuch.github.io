@@ -12,7 +12,7 @@ class Grid extends Animation {
                 file = "",
                 description = "",
                 seed = "random") {
-        super(canvas, colors, colorsAlt, file, description, seed);
+        super(canvas, colors, colorsAlt, name, file, description, seed);
 
         this.gridWidth = 0;
         this.gridHeight = 0;
