@@ -122,7 +122,7 @@ let animations = [
     {class: ParticlesVortex, name: "particles vortex"},
     {class: ParticlesWaves, name: "particles waves"},
     {class: PerlinNoiseParticles, name: "perlin noise"},
-    {class: RockPaperScissors, name: "rock paper scissors automata"},
+    {class: RockPaperScissors, name: "rock-paper-scissors automata"},
     {class: Quadtree, name: "quadtree"},
     {class: ShortestPath, name: "shortest path"},
     {class: Sorting, name: "sorting"},

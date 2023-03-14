@@ -19,7 +19,7 @@ const Utils = require("./utils");
 
 class RockPaperScissorsAutomata extends Grid {
     constructor(canvas, colors, colorsAlt,
-                cellSize = 6,
+                cellSize = 7,
                 states = 3,
                 minimumLosses = 3) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);

@@ -13,7 +13,7 @@ const Grid = require("./grid");
 
 class Glitch extends Grid {
     constructor(canvas, colors, colorsAlt,
-                cellSize = 6,
+                cellSize = 7,
                 noiseScale = 0.0051) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
         this.cellSize = cellSize;

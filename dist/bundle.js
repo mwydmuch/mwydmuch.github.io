@@ -1222,7 +1222,7 @@ const Grid = require("./grid");
 
 class Glitch extends Grid {
     constructor(canvas, colors, colorsAlt,
-                cellSize = 6,
+                cellSize = 7,
                 noiseScale = 0.0051) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
         this.cellSize = cellSize;
@@ -1794,6 +1794,10 @@ class Grid extends Animation {
             }
         }
 
+        // Explicitly delete old arrays to free memory
+        delete this.grid;
+        delete this.gridNext;
+
         this.grid = newGrid;
         this.gridNext = [...this.grid];
         this.gridWidth = newGridWidth;
@@ -1933,7 +1937,7 @@ let animations = [
     {class: ParticlesVortex, name: "particles vortex"},
     {class: ParticlesWaves, name: "particles waves"},
     {class: PerlinNoiseParticles, name: "perlin noise"},
-    {class: RockPaperScissors, name: "rock paper scissors automata"},
+    {class: RockPaperScissors, name: "rock-paper-scissors automata"},
     {class: Quadtree, name: "quadtree"},
     {class: ShortestPath, name: "shortest path"},
     {class: Sorting, name: "sorting"},
@@ -3732,7 +3736,7 @@ const Utils = require("./utils");
 
 class RockPaperScissorsAutomata extends Grid {
     constructor(canvas, colors, colorsAlt,
-                cellSize = 6,
+                cellSize = 7,
                 states = 3,
                 minimumLosses = 3) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);

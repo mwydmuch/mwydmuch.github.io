@@ -58,7 +58,6 @@ ul ul {
   color: #FFFFFF;
   padding: 0.05rem 0.25rem;
   margin: 0 0.05rem;
-  white-space: nowrap;
   background-image: linear-gradient(135deg, #43696B, #4d787b);
 }
 .reverse-main a,
@@ -68,11 +67,13 @@ ul ul {
 .reverse-main a:active {
   color: #FFFFFF;
 }
+.reverse-main i {
+  display: inline;
+}
 .reverse-second {
   color: #FFFFFF;
   padding: 0.05rem 0.25rem;
   margin: 0 0.05rem;
-  white-space: nowrap;
   background-image: linear-gradient(135deg, #43696B, #4d787b);
 }
 .reverse-second a,
@@ -82,11 +83,13 @@ ul ul {
 .reverse-second a:active {
   color: #FFFFFF;
 }
+.reverse-second i {
+  display: inline;
+}
 .reverse-mlinpl-red {
   color: #FFFFFF;
   padding: 0.05rem 0.25rem;
   margin: 0 0.05rem;
-  white-space: nowrap;
   background-image: linear-gradient(135deg, #E52C2C, #e84343);
 }
 .reverse-mlinpl-red a,
@@ -96,11 +99,13 @@ ul ul {
 .reverse-mlinpl-red a:active {
   color: #FFFFFF;
 }
+.reverse-mlinpl-red i {
+  display: inline;
+}
 .reverse-mlinpl-purple {
   color: #FFFFFF;
   padding: 0.05rem 0.25rem;
   margin: 0 0.05rem;
-  white-space: nowrap;
   background-image: linear-gradient(135deg, #7F4FB2, #8c61ba);
 }
 .reverse-mlinpl-purple a,
@@ -110,11 +115,13 @@ ul ul {
 .reverse-mlinpl-purple a:active {
   color: #FFFFFF;
 }
+.reverse-mlinpl-purple i {
+  display: inline;
+}
 .reverse-put-blue {
   color: #FFFFFF;
   padding: 0.05rem 0.25rem;
   margin: 0 0.05rem;
-  white-space: nowrap;
   background-image: linear-gradient(135deg, #006991, #007bab);
 }
 .reverse-put-blue a,
@@ -124,11 +131,13 @@ ul ul {
 .reverse-put-blue a:active {
   color: #FFFFFF;
 }
+.reverse-put-blue i {
+  display: inline;
+}
 .reverse-yahoo-purple {
   color: #FFFFFF;
   padding: 0.05rem 0.25rem;
   margin: 0 0.05rem;
-  white-space: nowrap;
   background-image: linear-gradient(135deg, #6000D3, #6c00ec);
 }
 .reverse-yahoo-purple a,
@@ -138,11 +147,13 @@ ul ul {
 .reverse-yahoo-purple a:active {
   color: #FFFFFF;
 }
+.reverse-yahoo-purple i {
+  display: inline;
+}
 .reverse-vizdoom-red {
   color: #FFFFFF;
   padding: 0.05rem 0.25rem;
   margin: 0 0.05rem;
-  white-space: nowrap;
   background-image: linear-gradient(135deg, #8B0000, #a40000);
 }
 .reverse-vizdoom-red a,
@@ -152,11 +163,13 @@ ul ul {
 .reverse-vizdoom-red a:active {
   color: #FFFFFF;
 }
+.reverse-vizdoom-red i {
+  display: inline;
+}
 .reverse-openai-blue {
   color: #FFFFFF;
   padding: 0.05rem 0.25rem;
   margin: 0 0.05rem;
-  white-space: nowrap;
   background-image: linear-gradient(135deg, #21AEB9, #25c2cf);
 }
 .reverse-openai-blue a,
@@ -166,11 +179,13 @@ ul ul {
 .reverse-openai-blue a:active {
   color: #FFFFFF;
 }
+.reverse-openai-blue i {
+  display: inline;
+}
 .reverse-farama-green {
   color: #FFFFFF;
   padding: 0.05rem 0.25rem;
   margin: 0 0.05rem;
-  white-space: nowrap;
   background-image: linear-gradient(135deg, #05505B, #066573);
 }
 .reverse-farama-green a,
@@ -180,11 +195,13 @@ ul ul {
 .reverse-farama-green a:active {
   color: #FFFFFF;
 }
+.reverse-farama-green i {
+  display: inline;
+}
 .reverse-vowpal-wabbit-pink {
   color: #FFFFFF;
   padding: 0.05rem 0.25rem;
   margin: 0 0.05rem;
-  white-space: nowrap;
   background-image: linear-gradient(135deg, #FF81F9, #ff9bfa);
 }
 .reverse-vowpal-wabbit-pink a,
@@ -193,6 +210,9 @@ ul ul {
 .reverse-vowpal-wabbit-pink a:hover,
 .reverse-vowpal-wabbit-pink a:active {
   color: #FFFFFF;
+}
+.reverse-vowpal-wabbit-pink i {
+  display: inline;
 }
 .reverse-ua-gradient {
   color: #FFFFFF;
@@ -276,7 +296,7 @@ footer {
 }
 #me {
   text-align: center;
-  margin: 1.4rem 0;
+  margin: 4.2rem 0;
 }
 #me .section {
   margin-bottom: 1rem;

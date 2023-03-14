@@ -51,6 +51,10 @@ class Grid extends Animation {
             }
         }
 
+        // Explicitly delete old arrays to free memory
+        delete this.grid;
+        delete this.gridNext;
+
         this.grid = newGrid;
         this.gridNext = [...this.grid];
         this.gridWidth = newGridWidth;

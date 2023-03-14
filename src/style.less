@@ -110,11 +110,15 @@ each(@color-names, {
     color: @background;
     padding: 0.05rem 0.25rem;
     margin: 0 0.05rem;
-    white-space: nowrap;
+    //white-space: nowrap;
     background-image: linear-gradient(135deg, @@value, lighten(@@value, 5%));
 
     a, a:link, a:visited, a:hover, a:active {
       color: @background;
+    }
+
+    i {
+      display: inline;
     }
   }
 });
@@ -235,7 +239,7 @@ footer {
 
 #me{
   text-align: center;
-  margin: 1.4rem 0;
+  margin: 4.2rem 0;
 
   .section{
     margin-bottom: 1rem;
