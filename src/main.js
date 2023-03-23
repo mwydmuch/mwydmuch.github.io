@@ -160,8 +160,8 @@ if(urlParams.has("animation")){
 }
 
 function getTime(){
-    //return Date.now();
-    return window.performance.now();
+    return Date.now();
+    //return window.performance.now();
 }
 
 function updateAnimation(newAnimationId) {
@@ -214,10 +214,10 @@ function updateStats(now, drawTime) {
         if(frames % 10 === 0){
             elemBgStats.innerHTML = `target fps: ${animation.getFPS()}</br>
                                     target frames interval: ${Math.round(framesInterval)} ms</br>
-                                    avg. frame time: ${Math.round(avgFrameTime)} ms</br>
+                                    avg. frames interval: ${Math.round(avgFrameTime)} ms</br>
                                     avg. fps: ${Math.round(1000 / avgFrameTime)}</br>
                                     avg. draw time: ${Math.round(avgDrawTime + 1)} ms</br>
-                                    possbile fps: ${Math.round(1000 / avgDrawTime + 1)}</br>
+                                    possible fps: ${Math.round(1000 / avgDrawTime + 1)}</br>
                                     canvas size: ${width} x ${height}</br>
                                     strict mode?: ${Utils.isStrictMode()}`;
         }
@@ -232,6 +232,8 @@ function render() {
 
     // Limit framerate
     if (timeElapsed >= framesInterval) {
+        // Get ready for next frame by setting then=now,
+        // also, adjust for screen refresh rate
         then = now - (timeElapsed % framesInterval);
         
         const drawStart = getTime();
