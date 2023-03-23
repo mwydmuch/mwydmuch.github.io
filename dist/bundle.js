@@ -1865,6 +1865,11 @@ let framesInterval = 0,
     fixedWidth = 512,
     fixedHeight = 512;
 
+// For stats
+let frames = 0,
+    startTime = 0,
+    sumDrawTime = 0;
+
 const colors = [ // Green palette
     "#349BA9",
     "#41B8AD",
@@ -1969,11 +1974,20 @@ if(urlParams.has("animation")){
     }
 }
 
+function getTime(){
+    //return Date.now();
+    return window.performance.now();
+}
+
 function updateAnimation(newAnimationId) {
+    frames = 0;
+    startTime = getTime();
+    sumDrawTime = 0;
+
     animationId = newAnimationId;
     animation = new animations[animationId].class(canvas, colors, colorsAlt);
     framesInterval = 1000 / animation.getFPS();
-    then = Date.now();
+    then = getTime();
     animation.resize();
     updateUI();
 }
@@ -2005,32 +2019,46 @@ function checkResize() {
     lastWidth = width;
 }
 
-function updateStats() {
+function updateStats(now, drawTime) {
     if(elemBgStats) {
-        elemBgStats.innerHTML = `frame time: ${timeElapsed}</br>
-                                fps: ${Math.round(1000 / timeElapsed)}</br>
-                                canvas size: ${width} x ${height}`;
+        ++frames;
+        sumDrawTime += drawTime;
+        const avgFrameTime = (now - startTime) / frames,
+              avgDrawTime = sumDrawTime / frames;
+
+        if(frames % 10 === 0){
+            elemBgStats.innerHTML = `target fps: ${animation.getFPS()}</br>
+                                    target frames interval: ${Math.round(framesInterval)} ms</br>
+                                    avg. frame time: ${Math.round(avgFrameTime)} ms</br>
+                                    avg. fps: ${Math.round(1000 / avgFrameTime)}</br>
+                                    avg. draw time: ${Math.round(avgDrawTime + 1)} ms</br>
+                                    possbile fps: ${Math.round(1000 / avgDrawTime + 1)}</br>
+                                    canvas size: ${width} x ${height}</br>
+                                    strict mode?: ${Utils.isStrictMode()}`;
+        }
     }
 }
 
 function render() {
     if(paused) return;
 
-    const now = Date.now(),
+    const now = getTime(),
           timeElapsed = now - then;
 
     // Limit framerate
     if (timeElapsed >= framesInterval) {
-        then = now;
-
+        then = now - (timeElapsed % framesInterval);
+        
+        const drawStart = getTime();
         checkResize();
-    
         animation.update(timeElapsed);
         animation.draw();
-    
-        updateStats();
-    }
-    requestAnimationFrame(render);
+        const drawTime = getTime() - drawStart;
+
+        updateStats(now, drawTime);
+   }
+
+   requestAnimationFrame(render);
 }
 
 updateAnimation(animationId);
@@ -2058,7 +2086,7 @@ render();
 function play(){
     elemBgPlayPause.innerHTML = "<i class=\"fas fa-pause\"></i> pause";
     paused = false;
-    then = Date.now();
+    then = getTime();
     render();
 }
 
@@ -2465,8 +2493,107 @@ class Matrix extends Animation {
 module.exports = Matrix;
 
 },{"./animation":2,"./utils":32}],15:[function(require,module,exports){
+'use strict';
 
-},{}],16:[function(require,module,exports){
+const NAME = "ML in PL Network",
+      FILE = "mlinpl.js",
+      DESC = `
+Simple network animation, I've created for ML in PL websites.
+`;
+
+const Animation = require("./animation");
+
+class MLinPL extends Animation {
+    constructor(canvas, colors, colorsAlt,
+                particlesDensityModifier = 1,
+                connectionDistanceThreshold = 125) {
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+
+        this.particlesDensityModifier = particlesDensityModifier;
+        this.connectionDistanceThreshold = connectionDistanceThreshold;
+
+        this.mainColors = ["#000000"];  // 
+        this.bgParticles = []; // Background particles
+        this.mgParticles = []; // Middle ground particles
+        this.fgParticles = []; // Foreground particles
+        this.bgParticlesCfg = {
+            colors: "#EEE",
+            lineColors: "#EEE",
+            sizeMin: 4,
+            sizeRange: 3,
+            speedMax: 0.5,
+            groups: [[0, 1], [0, 2], [1, 2]],
+            density: 0.00015
+        };
+        this.mgParticlesCfg = {
+            colors: "#AAA",
+            lineColors: "#AAA",
+            sizeMin: 2,
+            sizeRange: 2,
+            speedMax: 0.75,
+            groups: [[]], // This group of particles has no connecting lines
+            density: 0.00015
+        };
+        this.fgParticlesCfg = {
+            colors: {1: 0.2, 0: 0.8},
+            lineColors: {"#000": 0.3, "#222": 0.3, "#444": 0.3},
+            sizeMin: 2,
+            sizeRange: 5,
+            speedMax: 1,
+            groups: [[0, 1], [0, 2], [0, 3], [0, 4], [1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4], [0], [1], [2], [3], [4], [0], [1], [2], [3], [4]],
+            density: 0.0003
+        };
+    }
+
+    update(elapsed){
+        super.update(elapsed);
+
+    }
+
+    draw() {
+        this.clear();
+
+    }
+
+    restart(){
+        this.particles = []
+        this.width = this.ctx.canvas.width;
+        this.height = this.ctx.canvas.height;
+        this.spawnParticles(0, 0, this.width, this.height);
+    }
+
+    resize() {
+        // Add particles to the new parts of the canvas.
+        const divWidth = this.ctx.canvas.width - this.width,
+              divHeight = this.ctx.canvas.height - this.height;
+
+        if(divWidth > 0) this.spawnParticles(this.width, 0, divWidth, this.height);
+        if(divHeight > 0) this.spawnParticles(0, this.height, this.width, divHeight);
+        if(divWidth > 0 || divHeight > 0) this.spawnParticles(this.width, this.height, divWidth, divHeight);
+
+        this.width = this.ctx.canvas.width;
+        this.height = this.ctx.canvas.height;
+
+        // Remove particles that are out of bounds of the new canvas to improve performance.
+        const width = this.width,
+              height = this.height;
+        this.particles = this.particles.filter(function(p){
+            return !(p.x < 0 || p.x > width || p.y < 0 || p.y > height);
+        });
+    }
+
+    getSettings() {
+        return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.002, toCall: "restart"},
+                {prop: "fillTriangles", type: "bool"},
+                {prop: "drawParticles", type: "bool"},
+                {prop: "distanceThreshold", type: "int", min: 0, max: 200},
+                {prop: "speed", type: "float", step: 0.1, min: -4, max: 4}];
+    }
+}
+
+module.exports = MLinPL;
+
+},{"./animation":2}],16:[function(require,module,exports){
 'use strict';
 
 const NAME = "Delaunay triangulation for a cloud of particles",
@@ -3717,7 +3844,6 @@ module.exports = Queue;
 },{}],25:[function(require,module,exports){
 'use strict';
 
-// TODO: Improve this description
 const NAME = "Rock-paper-scissors automata",
       FILE = "rock-paper-scissors-automata.js",
       DESC = `
@@ -3736,7 +3862,7 @@ const Utils = require("./utils");
 
 class RockPaperScissorsAutomata extends Grid {
     constructor(canvas, colors, colorsAlt,
-                cellSize = 7,
+                cellSize = 9,
                 states = 3,
                 minimumLosses = 3) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
@@ -3772,11 +3898,15 @@ class RockPaperScissorsAutomata extends Grid {
     }
 
     draw() {
-        this.clear();
+        Utils.clear(this.ctx, this.colors[0]); // Clear background to the color of the first state
+
         for (let x = 0; x < this.gridWidth; ++x) {
             for (let y = 0; y < this.gridHeight; ++y) {
-                this.ctx.fillStyle = this.colors[this.getVal(x, y)];
-                this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
+                const val = this.getVal(x, y);
+                if(val){ // Do not draw if the state is the first state (small optimization)
+                    this.ctx.fillStyle = this.colors[val];
+                    this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
+                }
             }
         }
     }
@@ -5013,9 +5143,16 @@ module.exports = Spirograph
 },{"./animation":2,"./utils":32}],31:[function(require,module,exports){
 'use strict';
 
+/*
+Work in progress.
 
-// Work in progress.
-// Binary tree animation.
+Tree visualization algorithms:
+- the Reingold–Tilford algorithm,
+- the root-centric radial layout algorithm
+- the parent-centric
+- PLANET a radial layout algorithm 
+(https://homexinlu.com/files/PLANETA%20radial%20layout%20algorithm%20for%20network%20visualization.pdf)
+*/
 
 const Animation = require("./animation");
 const Utils = require("./utils");

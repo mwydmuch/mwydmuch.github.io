@@ -1,6 +1,5 @@
 'use strict';
 
-// TODO: Improve this description
 const NAME = "Rock-paper-scissors automata",
       FILE = "rock-paper-scissors-automata.js",
       DESC = `
@@ -19,7 +18,7 @@ const Utils = require("./utils");
 
 class RockPaperScissorsAutomata extends Grid {
     constructor(canvas, colors, colorsAlt,
-                cellSize = 7,
+                cellSize = 9,
                 states = 3,
                 minimumLosses = 3) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
@@ -55,11 +54,15 @@ class RockPaperScissorsAutomata extends Grid {
     }
 
     draw() {
-        this.clear();
+        Utils.clear(this.ctx, this.colors[0]); // Clear background to the color of the first state
+
         for (let x = 0; x < this.gridWidth; ++x) {
             for (let y = 0; y < this.gridHeight; ++y) {
-                this.ctx.fillStyle = this.colors[this.getVal(x, y)];
-                this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
+                const val = this.getVal(x, y);
+                if(val){ // Do not draw if the state is the first state (small optimization)
+                    this.ctx.fillStyle = this.colors[val];
+                    this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
+                }
             }
         }
     }

@@ -50,6 +50,11 @@ let framesInterval = 0,
     fixedWidth = 512,
     fixedHeight = 512;
 
+// For stats
+let frames = 0,
+    startTime = 0,
+    sumDrawTime = 0;
+
 const colors = [ // Green palette
     "#349BA9",
     "#41B8AD",
@@ -154,11 +159,20 @@ if(urlParams.has("animation")){
     }
 }
 
+function getTime(){
+    //return Date.now();
+    return window.performance.now();
+}
+
 function updateAnimation(newAnimationId) {
+    frames = 0;
+    startTime = getTime();
+    sumDrawTime = 0;
+
     animationId = newAnimationId;
     animation = new animations[animationId].class(canvas, colors, colorsAlt);
     framesInterval = 1000 / animation.getFPS();
-    then = Date.now();
+    then = getTime();
     animation.resize();
     updateUI();
 }
@@ -190,32 +204,46 @@ function checkResize() {
     lastWidth = width;
 }
 
-function updateStats() {
+function updateStats(now, drawTime) {
     if(elemBgStats) {
-        elemBgStats.innerHTML = `frame time: ${timeElapsed}</br>
-                                fps: ${Math.round(1000 / timeElapsed)}</br>
-                                canvas size: ${width} x ${height}`;
+        ++frames;
+        sumDrawTime += drawTime;
+        const avgFrameTime = (now - startTime) / frames,
+              avgDrawTime = sumDrawTime / frames;
+
+        if(frames % 10 === 0){
+            elemBgStats.innerHTML = `target fps: ${animation.getFPS()}</br>
+                                    target frames interval: ${Math.round(framesInterval)} ms</br>
+                                    avg. frame time: ${Math.round(avgFrameTime)} ms</br>
+                                    avg. fps: ${Math.round(1000 / avgFrameTime)}</br>
+                                    avg. draw time: ${Math.round(avgDrawTime + 1)} ms</br>
+                                    possbile fps: ${Math.round(1000 / avgDrawTime + 1)}</br>
+                                    canvas size: ${width} x ${height}</br>
+                                    strict mode?: ${Utils.isStrictMode()}`;
+        }
     }
 }
 
 function render() {
     if(paused) return;
 
-    const now = Date.now(),
+    const now = getTime(),
           timeElapsed = now - then;
 
     // Limit framerate
     if (timeElapsed >= framesInterval) {
-        then = now;
-
+        then = now - (timeElapsed % framesInterval);
+        
+        const drawStart = getTime();
         checkResize();
-    
         animation.update(timeElapsed);
         animation.draw();
-    
-        updateStats();
-    }
-    requestAnimationFrame(render);
+        const drawTime = getTime() - drawStart;
+
+        updateStats(now, drawTime);
+   }
+
+   requestAnimationFrame(render);
 }
 
 updateAnimation(animationId);
@@ -243,7 +271,7 @@ render();
 function play(){
     elemBgPlayPause.innerHTML = "<i class=\"fas fa-pause\"></i> pause";
     paused = false;
-    then = Date.now();
+    then = getTime();
     render();
 }
 
