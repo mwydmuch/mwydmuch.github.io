@@ -30,6 +30,7 @@ h6 {
 }
 p {
   margin-bottom: 0.25rem;
+  text-align: justify;
 }
 ol,
 ul {
@@ -44,12 +45,6 @@ ul ol,
 ol ul,
 ul ul {
   margin: 0 0.75rem;
-}
-.inline {
-  display: inline;
-}
-.justify {
-  text-align: justify;
 }
 .nowrap {
   white-space: nowrap;

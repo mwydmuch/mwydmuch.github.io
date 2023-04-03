@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="dist/style.min.css">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/jpg" href="assets/me.jpg">
+  <link rel="icon" type="image/jpg" href="assets/marek-wydmuch.jpg">
 
   <!-- OpenGraph tags -->
   <!-- <meta property="og:title" content="Marek Wydmuch - Homepage">
@@ -45,11 +45,11 @@
     <div class="column">
       <div id="me">
         <div id="photo" class="section">
-          <img alt="Marek Wydmuch" src="assets/me.jpg"/>
+          <img alt="Marek Wydmuch" src="assets/marek-wydmuch.jpg"/>
         </div>
 
         <div id="name" class="section reverse-second">
-          <h2 class="inline">Hi! </h2><h3 class="inline"> I'm Marek Wydmuch</h3>
+          <h2 class="d-inline">Hi! </h2><h3 class="d-inline"> I'm Marek Wydmuch</h3>
         </div>
 
         <div id="about" class="section">
@@ -187,7 +187,7 @@
             <a href="https://arxiv.org/abs/1809.03470">ViZDoom Competitions: Playing Doom From Pixels</a><br>
             Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski<br>
             <i>IEEE Transactions on Games</i>, 2018<br>
-            Note: <span class="reverse-second"><a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9679692"><i class="fa fa-award"></i>&nbsp;2022 IEEE ToG Outstanding Paper Award</a></span>
+            Note: <span class="reverse-second"><a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9679692"><i class="fa fa-award"></i>&nbsp;2022 IEEE ToG Outstanding Paper Award</a></span><br>
             <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/vizdoom_competitions_2018.pdf"><i class="fa fa-file-pdf"></i>&nbsp;paper</a>]</span>
             <span class="nowrap">[<a href="https://www.youtube.com/channel/UC8UghzsxS5uEFUEbvcAWwlQ"><i class="fa fa-youtube"></i>&nbsp;movies</a>]</span>
             <span class="nowrap">[<a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib"><i class="fas fa-book"></i>&nbsp;bibtex</a>]</span>
@@ -229,23 +229,28 @@
 
   <section id="mlinpl" class="container grid-lg">
     <div class="columns">
-      <div class="column">
+      <div class="column col-8 col-sm-12">
         <h3>ML in PL</h3>
         <p>
           I'm proud to be a member of the awesome <span class="reverse-mlinpl-red"><a href="https://mlinpl.org/">ML in PL Association</a></span>,
           a non-profit organization devoted to fostering the machine learning community in Poland and around the world.
         </p>
         <p>
-          I co-organized
+          From 2021 I'm a member of the management board of <span class="reverse-mlinpl-red"><a href="https://mlinpl.org/">ML in PL Association</a></span>
+          and try to support other members of the association in the organization of great machine learning related events.
+        </p>
+        <p>
+          Before I co-organized
           <span class="reverse-mlinpl-purple"><a href="https://conference2019.mlinpl.org/">ML in PL Conference 2019</a></span>,
           <span class="reverse-mlinpl-red"><a href="https://virtual-event.mlinpl.org/">ML in PL Virtual Event 2020</a></span>,
           and <span class="reverse-mlinpl-red"><a href="https://conference2021.mlinpl.org/">ML in PL Conference 2021</a></span>
           serving as Call for Contributions (Talks and Posters) coordinator.
         </p>
-        <p>
-          From 2021 I'm a member of the management board of <span class="reverse-mlinpl-red"><a href="https://mlinpl.org/">ML in PL Association</a></span>
-          and try to support other members of the association in the organization of great machine learning related events.
-        </p>
+      </div>
+      <div class="column col-4 col-sm-12 text-center">
+        <a href="https://mlinpl.org/">
+          <img src="assets/logo-mlinpl.svg" alt="ML in PL Association" style="width: 80%; height: 100%; max-width: 300px; margin: 1em;">
+        </a>
       </div>
     </div>
   </section>
@@ -303,7 +308,7 @@
           </li>
           <li><strong>Information Theory and Lossless Compression Methods 2018 (exercises)</strong><br>
             based on the first chapters from
-            <i>David J.C. MacKay, Information Theory, Inference, and Learning Algorithms</i>.
+            <i>David J.C. MacKay, Information Theory, Inference, and Learning Algorithms</i>.<br>
             Note: <span class="reverse-second"><i class="fa fa-award"></i>&nbsp;The course was awarded as the best new course in 2018 at the Institute of Computer Science.</span>
           </li>
         </ul>
@@ -325,14 +330,6 @@
     <div>
       <span class="setting-name">animation = </span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="animation" id="background-settings-animation-select"></select></span>
     </div>
-    <!-- <div> This is not working yet
-      <span class="setting-name">size = </span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="animation-size" id="background-settings-animation-size-select">
-        <option value="fit">fit</option>
-        <option value="512x512">512x512</option>
-        <option value="1024x1024">1024x1024</option>
-        <option value="1280x720">1280x720</option>
-      </select></span>
-    </div> -->
     <div>
       <span class="nowrap">[<a id="background-play-pause"><i class="fas fa-pause"></i>&nbsp;pause</a>]</span>
       <span class="nowrap">[<a id="background-restart"><i class="fas fa-backward-step"></i>&nbsp;restart</a>]</span>
@@ -345,18 +342,17 @@
   <div class="accordion">
     <input id="background-description-accordion" type="checkbox" name="accordion-checkbox" hidden>
     <label class="accordion-header c-hand" for="background-description-accordion"><i class="icon icon-arrow-right mr-1"></i>Animation description</label>
-    <div class="accordion-body justify">
+    <div class="accordion-body text-justify">
       <div id="background-description" class="settings-section"></div>
     </div>
   </div>
   <div class="accordion"> 
     <input id="background-settings-controls-accordion" type="checkbox" name="accordion-checkbox" hidden>
     <label class="accordion-header c-hand" for="background-settings-controls-accordion"><i class="icon icon-arrow-right mr-1"></i>Animation settings</label>
-    <div class="accordion-body justify">
+    <div class="accordion-body text-justify">
       <div id="background-settings-controls-list" class="settings-section"></div>
     </div>
   </div>
-  <!-- <div id="background-stats" class="settings-section"></div> -->
 </div>
 
 <!-- Main script -->
@@ -368,8 +364,7 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
-  gtag('config', 'G-E0J2GEWXCG');
+  gtag('config', 'G-E0J2GEWXCG', { client_storage: 'none' }); // client_storage: 'none' is to disable Google Analytics cookies
 </script>
 
 </body>
