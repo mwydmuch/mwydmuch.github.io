@@ -84,6 +84,11 @@ class GameOfLife extends Grid {
     draw() {
         this.clear();
 
+        this.ctx.translate(
+            -(this.mapWidth * this.cellSize - this.ctx.canvas.width) / 2, 
+            -(this.mapHeight * this.cellSize - this.ctx.canvas.height) / 2
+        );
+
         if(this.cellStyle === "square") this.drawCell = this.drawSquareCell;
         else this.drawCell = this.drawCircleCell;
 
@@ -113,6 +118,8 @@ class GameOfLife extends Grid {
                 }
             }
         }
+
+        this.ctx.resetTransform();
     }
 
     newCellState(x, y) {

@@ -54,6 +54,16 @@ module.exports = {
         }
     },
 
+    randomRulletChoice(dict, rndGen = Math.random){
+        let total = 0;
+        for (let key in dict) total += dict[key];
+        let r = rndGen() * total;
+        for (let key in dict){
+            r -= dict[key];
+            if (r < 0) return key;
+        }
+    },
+
     // Array/math helpers
     round(value, decimalPlace = 2){
         const shift = Math.pow(10, decimalPlace);

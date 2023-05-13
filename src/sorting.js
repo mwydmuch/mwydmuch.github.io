@@ -425,11 +425,8 @@ class Sorting extends Animation {
         }
 
         if(this.showStats){
+            this.resetFont();
             const lineHeight = 20;
-            this.ctx.lineWidth = 2;
-            this.ctx.fillStyle = this.colors[0];
-            this.ctx.strokeStyle = this.bgColor;
-
             Utils.fillAndStrokeText(this.ctx, `Sorting algorithm: ${this.sortingAlgorithm}`, lineHeight, elementMaxHeight - 3 * lineHeight);
             Utils.fillAndStrokeText(this.ctx, `Number of elements: ${this.numElements}`, lineHeight, elementMaxHeight - 2 * lineHeight);
             Utils.fillAndStrokeText(this.ctx, `Number of elements comparisons: ${this.cmpCount} / ${this.cmpTotal}`, lineHeight, elementMaxHeight - lineHeight);

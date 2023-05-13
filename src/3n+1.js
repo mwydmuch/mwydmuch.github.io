@@ -18,6 +18,7 @@ Coded with no external dependencies, using only canvas API.
 
 
 const Animation = require("./animation");
+const Utils = require("./utils");
 
 class ThreeNPlusOne extends Animation {
     constructor(canvas, colors, colorsAlt,
@@ -25,15 +26,18 @@ class ThreeNPlusOne extends Animation {
                 evenAngle = 8,
                 oddAngle = -20,
                 drawNumbers = false,
-                scale = 1) {
+                scale = 1,
+                showStats = false) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
         this.length = length;
         this.evenAngle = evenAngle;
         this.oddAngle = oddAngle;
         this.scale = scale;
         this.drawNumbers = drawNumbers;
-
+        this.showStats = false;
+        
         this.seqences = [];
+        this.max = 0;
     }
 
     generateNextSequence(){
@@ -42,6 +46,7 @@ class ThreeNPlusOne extends Animation {
         while (n !== 1) {
             if (n % 2) n = 3 * n + 1;
             else n /= 2;
+            if(n > this.max) this.max = n;
             sequence.push(n);
             if(n < this.seqences.length) this.seqences[n - 1] = null;
         }
@@ -100,6 +105,13 @@ class ThreeNPlusOne extends Animation {
             ++this.frame;
         }
         this.ctx.resetTransform();
+
+        if(this.showStats){
+            this.resetFont();
+            const lineHeight = 20;
+            Utils.fillAndStrokeText(this.ctx, `Current starting number: ${this.seqences.length}`, lineHeight, this.ctx.canvas.height - 3 * lineHeight);
+            Utils.fillAndStrokeText(this.ctx, `Highest reached number: ${this.max}`, lineHeight, this.ctx.canvas.height - 2 * lineHeight);
+        }
     }
 
     resize() {
@@ -118,7 +130,8 @@ class ThreeNPlusOne extends Animation {
                 {prop: "oddAngle", type: "int", min: -45, max: 45, toCall: "resize"},
                 {prop: "speed", type: "int", min: 1, max: 16},
                 {prop: "drawNumbers", type: "bool", toCall: "resize"},
-                {prop: "scale", type: "float", min: 0.05, max: 1.95, toCall: "resize"}];
+                {prop: "scale", type: "float", min: 0.05, max: 1.95, toCall: "resize"},
+                {prop: "showStats", type: "bool"}];
     }
 }
 

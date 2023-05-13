@@ -253,9 +253,14 @@ ul {
 .dates-ul .date-li i {
   text-indent: 0;
 }
+.background,
+.animation-container {
+  box-shadow: 0px 0px 0px 2px #43696B;
+  z-index: -1;
+  margin: auto;
+}
 .background {
   position: absolute;
-  z-index: -1;
   overflow: hidden;
 }
 .animation-container {

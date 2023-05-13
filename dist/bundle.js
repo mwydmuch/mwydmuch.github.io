@@ -19,6 +19,7 @@ Coded with no external dependencies, using only canvas API.
 
 
 const Animation = require("./animation");
+const Utils = require("./utils");
 
 class ThreeNPlusOne extends Animation {
     constructor(canvas, colors, colorsAlt,
@@ -26,15 +27,18 @@ class ThreeNPlusOne extends Animation {
                 evenAngle = 8,
                 oddAngle = -20,
                 drawNumbers = false,
-                scale = 1) {
+                scale = 1,
+                showStats = false) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
         this.length = length;
         this.evenAngle = evenAngle;
         this.oddAngle = oddAngle;
         this.scale = scale;
         this.drawNumbers = drawNumbers;
-
+        this.showStats = false;
+        
         this.seqences = [];
+        this.max = 0;
     }
 
     generateNextSequence(){
@@ -43,6 +47,7 @@ class ThreeNPlusOne extends Animation {
         while (n !== 1) {
             if (n % 2) n = 3 * n + 1;
             else n /= 2;
+            if(n > this.max) this.max = n;
             sequence.push(n);
             if(n < this.seqences.length) this.seqences[n - 1] = null;
         }
@@ -101,6 +106,13 @@ class ThreeNPlusOne extends Animation {
             ++this.frame;
         }
         this.ctx.resetTransform();
+
+        if(this.showStats){
+            this.resetFont();
+            const lineHeight = 20;
+            Utils.fillAndStrokeText(this.ctx, `Current starting number: ${this.seqences.length}`, lineHeight, this.ctx.canvas.height - 3 * lineHeight);
+            Utils.fillAndStrokeText(this.ctx, `Highest reached number: ${this.max}`, lineHeight, this.ctx.canvas.height - 2 * lineHeight);
+        }
     }
 
     resize() {
@@ -119,13 +131,14 @@ class ThreeNPlusOne extends Animation {
                 {prop: "oddAngle", type: "int", min: -45, max: 45, toCall: "resize"},
                 {prop: "speed", type: "int", min: 1, max: 16},
                 {prop: "drawNumbers", type: "bool", toCall: "resize"},
-                {prop: "scale", type: "float", min: 0.05, max: 1.95, toCall: "resize"}];
+                {prop: "scale", type: "float", min: 0.05, max: 1.95, toCall: "resize"},
+                {prop: "showStats", type: "bool"}];
     }
 }
 
 module.exports = ThreeNPlusOne;
 
-},{"./animation":2}],2:[function(require,module,exports){
+},{"./animation":2,"./utils":32}],2:[function(require,module,exports){
 'use strict';
 
 /*
@@ -169,13 +182,18 @@ class Animation {
         this.seed = this.assignIfRandom(seed, Math.round(Math.random() * this.maxSeedValue));
         this.setSeed(this.seed);
 
-        // Reset text settings
-        this.ctx.font = '14px sans-serif';
-        this.ctx.textAlign = "left";
-        this.ctx.textBaseline = "alphabetic";
-
         // Debug flag
         this.debug = false;
+    }
+
+    resetFont(){
+        // Reset text settings
+        this.ctx.font = '14px sans-serif';
+        this.ctx.lineWidth = 2;
+        this.ctx.textAlign = "left";
+        this.ctx.textBaseline = "alphabetic";        
+        this.ctx.fillStyle = this.colors[0];
+        this.ctx.strokeStyle = this.bgColor;
     }
 
     setSeed(seed){
@@ -1145,6 +1163,11 @@ class GameOfLife extends Grid {
     draw() {
         this.clear();
 
+        this.ctx.translate(
+            -(this.mapWidth * this.cellSize - this.ctx.canvas.width) / 2, 
+            -(this.mapHeight * this.cellSize - this.ctx.canvas.height) / 2
+        );
+
         if(this.cellStyle === "square") this.drawCell = this.drawSquareCell;
         else this.drawCell = this.drawCircleCell;
 
@@ -1174,6 +1197,8 @@ class GameOfLife extends Grid {
                 }
             }
         }
+
+        this.ctx.resetTransform();
     }
 
     newCellState(x, y) {
@@ -1854,7 +1879,8 @@ const Tree = require("./tree");
 
 const canvas = document.getElementById("background");
 const container = document.getElementById("background-container");
-let framesInterval = 0,
+let fps = 30,
+    framesInterval = 1000 / fps,
     then = 0,
     paused = false,
     width = 0,
@@ -1862,8 +1888,8 @@ let framesInterval = 0,
     lastWidth = 0,
     lastHeight = 0,
     resizeMode = "fit",
-    fixedWidth = 512,
-    fixedHeight = 512;
+    fixedWidth = 0,
+    fixedHeight = 0;
 
 // For stats
 let frames = 0,
@@ -1919,6 +1945,8 @@ const elemBgSettingsControls = document.getElementById("background-settings-cont
 const elemBgSettingsClose = document.getElementById("background-settings-close");
 const elemBgStats = document.getElementById("background-stats");
 const elemBgAnimationSelect = document.getElementById("background-settings-animation-select");
+const elemBgAnimationFps = document.getElementById("background-settings-animation-fps");
+const elemBgAnimationSize = document.getElementById("background-settings-animation-size");
 
 
 // Create animation and init animation loop
@@ -1983,10 +2011,8 @@ function updateAnimation(newAnimationId) {
     frames = 0;
     startTime = getTime();
     sumDrawTime = 0;
-
     animationId = newAnimationId;
     animation = new animations[animationId].class(canvas, colors, colorsAlt);
-    framesInterval = 1000 / animation.getFPS();
     then = getTime();
     animation.resize();
     updateUI();
@@ -1995,28 +2021,24 @@ function updateAnimation(newAnimationId) {
 
 function checkResize() {
     // Detect container size change here for smooth resizing
-    width = Math.max(container.offsetWidth, window.innerWidth - canvas.offsetLeft);
-    height = Math.max(container.offsetHeight, window.innerHeight - canvas.offsetTop);
     if(resizeMode === "fit"){
+        width = Math.max(container.offsetWidth, window.innerWidth - canvas.offsetLeft);
+        height = Math.max(container.offsetHeight, window.innerHeight - canvas.offsetTop);
         if(width !== lastWidth || height !== lastHeight){
             canvas.width = width;
             canvas.height = height;
             animation.resize();
         } 
     } else {
-        if(canvas.width !== fixedWidth || height !== fixedHeight){
+        if(canvas.width !== fixedWidth || canvas.height !== fixedHeight){
             canvas.width = fixedWidth;
             canvas.height = fixedHeight;
             animation.resize();
-        } 
-        if(width !== lastWidth || height !== lastHeight){
-            canvas.style.top = `${(height - fixedHeight) / 2}px`;
-            canvas.style.left = `${(width - fixedWidth) / 2}px`;
         }
     }
 
-    lastHeight = height;
-    lastWidth = width;
+    lastWidth = canvas.width;
+    lastHeight = canvas.height;
 }
 
 function updateStats(now, drawTime) {
@@ -2027,7 +2049,7 @@ function updateStats(now, drawTime) {
               avgDrawTime = sumDrawTime / frames;
 
         if(frames % 10 === 0){
-            elemBgStats.innerHTML = `target fps: ${animation.getFPS()}</br>
+            elemBgStats.innerHTML = `target fps: ${fps}</br>
                                     target frames interval: ${Math.round(framesInterval)} ms</br>
                                     avg. frames interval: ${Math.round(avgFrameTime)} ms</br>
                                     avg. fps: ${Math.round(1000 / avgFrameTime)}</br>
@@ -2052,11 +2074,16 @@ function render() {
         then = now - (timeElapsed % framesInterval);
         
         const drawStart = getTime();
+
+        // Check if resize is needed
         checkResize();
+
+        // Update animation and redraw the frame
         animation.update(timeElapsed);
         animation.draw();
-        const drawTime = getTime() - drawStart;
 
+        // Update stats
+        const drawTime = getTime() - drawStart;
         updateStats(now, drawTime);
    }
 
@@ -2156,6 +2183,40 @@ if(elemBgPlayPause) {
     });
 }
 
+// Animation selection option
+if(elemBgAnimationSelect) {
+    elemBgAnimationSelect.addEventListener("input", function (e) {
+        updateAnimation(parseInt(e.target.value));
+    });
+}
+
+// Animation canvas size options
+if(elemBgAnimationSize) {
+    const animationSizes = ["fit", "512x512", "800x600", "1024x768", "1024x1024", "1280x720"];
+    const animationSizeDefault = "fit";
+    elemBgAnimationSize.innerHTML = "";
+    for(let size of animationSizes) {
+        if (size === animationSizeDefault) elemBgAnimationSize.innerHTML += `<option selected value="${size}">${size}</option>`;
+        else elemBgAnimationSize.innerHTML += `<option value="${size}">${size}</option>`;
+    }
+    elemBgAnimationSize.addEventListener("input", function (e) {
+        resizeMode = e.target.value;
+        if(resizeMode !== "fit") {
+            fixedWidth = parseInt(resizeMode.split("x")[0]);
+            fixedHeight = parseInt(resizeMode.split("x")[1]);
+        }
+    });
+}
+
+// Animation FPS option
+if(elemBgAnimationFps) {
+    elemBgAnimationFps.innerHTML = '<option value="15">15</option><option selected value="30">30</option><option value="60">60</option>';
+    elemBgAnimationFps.addEventListener("input", function (e) {
+        fps = parseInt(e.target.value);
+        framesInterval = 1000 / fps;
+    });
+}
+
 if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
     function closeSettings(){
         elemBgSettingsControls.classList.remove("fade-in");
@@ -2177,11 +2238,6 @@ if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
 
     elemBgSettingsClose.addEventListener("click", function () {
         closeSettings();
-    });
-
-    // Animation selection option
-    elemBgAnimationSelect.addEventListener("input", function (e) {
-        updateAnimation(parseInt(e.target.value));
     });
 
     // Events for dragging the background settings panel, TODO: make it work on mobile
@@ -2504,6 +2560,7 @@ Simple network animation, I've created for ML in PL websites.
 `;
 
 const Animation = require("./animation");
+const Utils = require("./utils");
 
 class MLinPL extends Animation {
     constructor(canvas, colors, colorsAlt,
@@ -2513,6 +2570,9 @@ class MLinPL extends Animation {
 
         this.particlesDensityModifier = particlesDensityModifier;
         this.connectionDistanceThreshold = connectionDistanceThreshold;
+
+        this.width = 0;
+        this.height = 0;
 
         this.mainColors = ["#000000"];  // 
         this.bgParticles = []; // Background particles
@@ -2547,55 +2607,88 @@ class MLinPL extends Animation {
         };
     }
 
+    updateParticle(p){
+        let prevSinVal = Math.sin(p.x / p.freq) * p.amp;
+        p.x += p.velX;
+        let nextSinVal = Math.sin(p.x / p.freq) * p.amp;
+        p.y += p.velY * (prevSinVal - nextSinVal);
+    
+        // Wrap around the left and right
+        if(p.x < -connectionDistanceThreshold) p.x = width + connectionDistanceThreshold; 
+        else if(p.x > width + connectionDistanceThreshold) p.x = -connectionDistanceThreshold;
+        if(p.y + p.size >= height) p.velY *= -1;
+    }
+
+    spawnParticles(x, y, width, height) {
+        this.bgParticles.push(...this.createParticles(x, y, width, height, bgParticlesCfg));
+        this.mgParticles.push(...this.createParticles(x, y, width, height, mgParticlesCfg));
+        this.fgParticles.push(...this.createParticles(x, y, width, height, fgParticlesCfg));
+    }
+
     update(elapsed){
         super.update(elapsed);
+    }
 
+    drawParticles(particles){
+        // Update position of particles
+        for (let p of particles) updateParticle(p);
+    
+        // Draw lines between particles in the same group
+        for (let i = 0; i < particles.length - 1; i++){
+            // Skip particles that are not in any group - can't connect to any other particle
+            if (particles[i].groups.length === 0) continue;
+    
+            for(let j = i + 1;  j < particles.length; j++){
+                const p1 = particles[i],
+                      p2 = particles[j];
+    
+                // This part can be done faster by creating indexes for groups, but I'm too lazy to implemt it
+                if(Utils.distVec2d(p1, p2) > connectionDistanceThreshold) continue;
+    
+                for (let g of p1.groups){  
+                    if (p2.groups.includes(g)){
+                        drawLine(p1, p2);
+                        break;
+                    }
+                }
+            }
+        }
+    
+        // Draw all particles
+        for (let p of particles) drawParticle(p);
     }
 
     draw() {
         this.clear();
-
+        this.drawParticles(this.bgParticles);
+        this.drawParticles(this.mgParticles);
+        this.drawParticles(this.fgParticles);
     }
 
     restart(){
-        this.particles = []
-        this.width = this.ctx.canvas.width;
-        this.height = this.ctx.canvas.height;
-        this.spawnParticles(0, 0, this.width, this.height);
+        this.resize();
     }
 
     resize() {
-        // Add particles to the new parts of the canvas.
-        const divWidth = this.ctx.canvas.width - this.width,
-              divHeight = this.ctx.canvas.height - this.height;
-
-        if(divWidth > 0) this.spawnParticles(this.width, 0, divWidth, this.height);
-        if(divHeight > 0) this.spawnParticles(0, this.height, this.width, divHeight);
-        if(divWidth > 0 || divHeight > 0) this.spawnParticles(this.width, this.height, divWidth, divHeight);
-
         this.width = this.ctx.canvas.width;
         this.height = this.ctx.canvas.height;
-
-        // Remove particles that are out of bounds of the new canvas to improve performance.
-        const width = this.width,
-              height = this.height;
-        this.particles = this.particles.filter(function(p){
-            return !(p.x < 0 || p.x > width || p.y < 0 || p.y > height);
-        });
+    
+        // Reset and generate new particles 
+        // (this is easier than trying to resize the existing ones)
+        bgParticles = [];
+        mgParticles = [];
+        fgParticles = [];
+        spawnParticles(0, 0, this.width, this.height);
     }
 
     getSettings() {
-        return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.002, toCall: "restart"},
-                {prop: "fillTriangles", type: "bool"},
-                {prop: "drawParticles", type: "bool"},
-                {prop: "distanceThreshold", type: "int", min: 0, max: 200},
-                {prop: "speed", type: "float", step: 0.1, min: -4, max: 4}];
+        return [];
     }
 }
 
 module.exports = MLinPL;
 
-},{"./animation":2}],16:[function(require,module,exports){
+},{"./animation":2,"./utils":32}],16:[function(require,module,exports){
 'use strict';
 
 const NAME = "Delaunay triangulation for a cloud of particles",
@@ -4203,6 +4296,13 @@ class ShortestPath extends Animation {
     draw() {
         this.clear();
 
+        // Center the map
+        this.ctx.translate(
+            -(this.mapWidth * this.cellSize - this.ctx.canvas.width) / 2, 
+            -(this.mapHeight * this.cellSize - this.ctx.canvas.height) / 2
+        );
+        
+        // Draw nodes
         for (let y = 0; y < this.mapHeight; ++y) {
             for (let x = 0; x < this.mapWidth; ++x) {
                 const idx = this.getIdx(x, y),
@@ -4217,6 +4317,7 @@ class ShortestPath extends Animation {
             }
         }
 
+        // Draw walls
         for (let y = 0; y < this.mapHeight; ++y) {
             for (let x = 0; x < this.mapWidth; ++x) {
                 const idx = this.getIdx(x, y),
@@ -4244,13 +4345,11 @@ class ShortestPath extends Animation {
             }
         }
 
-        if(this.showStats){
-            const lineHeight = 20;
-            this.ctx.font = '14px sans-serif';
-            this.ctx.lineWidth = 2;
-            this.ctx.fillStyle = this.colors[0];
-            this.ctx.strokeStyle = this.bgColor;
+        this.ctx.resetTransform();
 
+        if(this.showStats){
+            this.resetFont();
+            const lineHeight = 20;
             Utils.fillAndStrokeText(this.ctx, `Search algorithm: ${this.searchAlgorithm}`, lineHeight, this.ctx.canvas.height - 3 * lineHeight);
             Utils.fillAndStrokeText(this.ctx, `Number of visited nodes: ${this.visited}`, lineHeight, this.ctx.canvas.height - 2 * lineHeight);
             let pathText = this.queue.size === 0 ? 'Shortest path length: ' : 'Longest traveled path: ';
@@ -4900,11 +4999,8 @@ class Sorting extends Animation {
         }
 
         if(this.showStats){
+            this.resetFont();
             const lineHeight = 20;
-            this.ctx.lineWidth = 2;
-            this.ctx.fillStyle = this.colors[0];
-            this.ctx.strokeStyle = this.bgColor;
-
             Utils.fillAndStrokeText(this.ctx, `Sorting algorithm: ${this.sortingAlgorithm}`, lineHeight, elementMaxHeight - 3 * lineHeight);
             Utils.fillAndStrokeText(this.ctx, `Number of elements: ${this.numElements}`, lineHeight, elementMaxHeight - 2 * lineHeight);
             Utils.fillAndStrokeText(this.ctx, `Number of elements comparisons: ${this.cmpCount} / ${this.cmpTotal}`, lineHeight, elementMaxHeight - lineHeight);
@@ -5278,6 +5374,16 @@ module.exports = {
                    temp = arr[i];
              arr[i] = arr[j];
              arr[j] = temp;
+        }
+    },
+
+    randomRulletChoice(dict, rndGen = Math.random){
+        let total = 0;
+        for (let key in dict) total += dict[key];
+        let r = rndGen() * total;
+        for (let key in dict){
+            r -= dict[key];
+            if (r < 0) return key;
         }
     },
 

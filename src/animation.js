@@ -41,13 +41,18 @@ class Animation {
         this.seed = this.assignIfRandom(seed, Math.round(Math.random() * this.maxSeedValue));
         this.setSeed(this.seed);
 
-        // Reset text settings
-        this.ctx.font = '14px sans-serif';
-        this.ctx.textAlign = "left";
-        this.ctx.textBaseline = "alphabetic";
-
         // Debug flag
         this.debug = false;
+    }
+
+    resetFont(){
+        // Reset text settings
+        this.ctx.font = '14px sans-serif';
+        this.ctx.lineWidth = 2;
+        this.ctx.textAlign = "left";
+        this.ctx.textBaseline = "alphabetic";        
+        this.ctx.fillStyle = this.colors[0];
+        this.ctx.strokeStyle = this.bgColor;
     }
 
     setSeed(seed){

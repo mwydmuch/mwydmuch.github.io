@@ -39,7 +39,8 @@ const Tree = require("./tree");
 
 const canvas = document.getElementById("background");
 const container = document.getElementById("background-container");
-let framesInterval = 0,
+let fps = 30,
+    framesInterval = 1000 / fps,
     then = 0,
     paused = false,
     width = 0,
@@ -47,8 +48,8 @@ let framesInterval = 0,
     lastWidth = 0,
     lastHeight = 0,
     resizeMode = "fit",
-    fixedWidth = 512,
-    fixedHeight = 512;
+    fixedWidth = 0,
+    fixedHeight = 0;
 
 // For stats
 let frames = 0,
@@ -86,7 +87,7 @@ const colorsAlt = [ // Alt palette
 ];
 
 
-// Get elements controls
+// Get elements for different animation controls
 // ---------------------------------------------------------------------------------------------------------------------
 
 const content = document.getElementById("me");
@@ -104,9 +105,11 @@ const elemBgSettingsControls = document.getElementById("background-settings-cont
 const elemBgSettingsClose = document.getElementById("background-settings-close");
 const elemBgStats = document.getElementById("background-stats");
 const elemBgAnimationSelect = document.getElementById("background-settings-animation-select");
+const elemBgAnimationFps = document.getElementById("background-settings-animation-fps");
+const elemBgAnimationSize = document.getElementById("background-settings-animation-size");
 
 
-// Create animation and init animation loop
+// Create the initial animation and initiate the animation loop
 // ---------------------------------------------------------------------------------------------------------------------
 
 let animations = [
@@ -150,7 +153,7 @@ for(let i = 0; i < animationCount; ++i){
     animations[order[i]].next = order[(i + 1) % animationCount];
 }
 
-// Get animation from url search params
+// Get the animation from url search params
 const urlParams = new URLSearchParams(window.location.search);
 if(urlParams.has("animation")){
     const animationParam = urlParams.get("animation").replaceAll("-", " ");
@@ -161,17 +164,15 @@ if(urlParams.has("animation")){
 
 function getTime(){
     return Date.now();
-    //return window.performance.now();
+    //return window.performance.now(); // Alternative method for measruing time
 }
 
 function updateAnimation(newAnimationId) {
     frames = 0;
     startTime = getTime();
     sumDrawTime = 0;
-
     animationId = newAnimationId;
     animation = new animations[animationId].class(canvas, colors, colorsAlt);
-    framesInterval = 1000 / animation.getFPS();
     then = getTime();
     animation.resize();
     updateUI();
@@ -179,29 +180,25 @@ function updateAnimation(newAnimationId) {
 
 
 function checkResize() {
-    // Detect container size change here for smooth resizing
-    width = Math.max(container.offsetWidth, window.innerWidth - canvas.offsetLeft);
-    height = Math.max(container.offsetHeight, window.innerHeight - canvas.offsetTop);
+    // Detect the change of container's size for smooth resizing
     if(resizeMode === "fit"){
+        width = Math.max(container.offsetWidth, window.innerWidth - canvas.offsetLeft);
+        height = Math.max(container.offsetHeight, window.innerHeight - canvas.offsetTop);
         if(width !== lastWidth || height !== lastHeight){
             canvas.width = width;
             canvas.height = height;
             animation.resize();
         } 
     } else {
-        if(canvas.width !== fixedWidth || height !== fixedHeight){
+        if(canvas.width !== fixedWidth || canvas.height !== fixedHeight){
             canvas.width = fixedWidth;
             canvas.height = fixedHeight;
             animation.resize();
-        } 
-        if(width !== lastWidth || height !== lastHeight){
-            canvas.style.top = `${(height - fixedHeight) / 2}px`;
-            canvas.style.left = `${(width - fixedWidth) / 2}px`;
         }
     }
 
-    lastHeight = height;
-    lastWidth = width;
+    lastWidth = canvas.width;
+    lastHeight = canvas.height;
 }
 
 function updateStats(now, drawTime) {
@@ -212,7 +209,7 @@ function updateStats(now, drawTime) {
               avgDrawTime = sumDrawTime / frames;
 
         if(frames % 10 === 0){
-            elemBgStats.innerHTML = `target fps: ${animation.getFPS()}</br>
+            elemBgStats.innerHTML = `target fps: ${fps}</br>
                                     target frames interval: ${Math.round(framesInterval)} ms</br>
                                     avg. frames interval: ${Math.round(avgFrameTime)} ms</br>
                                     avg. fps: ${Math.round(1000 / avgFrameTime)}</br>
@@ -232,16 +229,21 @@ function render() {
 
     // Limit framerate
     if (timeElapsed >= framesInterval) {
-        // Get ready for next frame by setting then=now,
-        // also, adjust for screen refresh rate
+        // Get ready for the next frame by setting then=now,
+        // also, adjust for the screen refresh rate
         then = now - (timeElapsed % framesInterval);
         
         const drawStart = getTime();
+
+        // Check if resize is needed
         checkResize();
+
+        // Update the current animation and redraw the frame
         animation.update(timeElapsed);
         animation.draw();
-        const drawTime = getTime() - drawStart;
 
+        // Update the stats
+        const drawTime = getTime() - drawStart;
         updateStats(now, drawTime);
    }
 
@@ -267,7 +269,7 @@ render();
 // });
 
 
-// Controls functions
+// Control functions
 // ---------------------------------------------------------------------------------------------------------------------
 
 function play(){
@@ -341,6 +343,40 @@ if(elemBgPlayPause) {
     });
 }
 
+// Animation selection option
+if(elemBgAnimationSelect) {
+    elemBgAnimationSelect.addEventListener("input", function (e) {
+        updateAnimation(parseInt(e.target.value));
+    });
+}
+
+// Animation canvas size options
+if(elemBgAnimationSize) {
+    const animationSizes = ["fit", "512x512", "800x600", "1024x768", "1024x1024", "1280x720"];
+    const animationSizeDefault = "fit";
+    elemBgAnimationSize.innerHTML = "";
+    for(let size of animationSizes) {
+        if (size === animationSizeDefault) elemBgAnimationSize.innerHTML += `<option selected value="${size}">${size}</option>`;
+        else elemBgAnimationSize.innerHTML += `<option value="${size}">${size}</option>`;
+    }
+    elemBgAnimationSize.addEventListener("input", function (e) {
+        resizeMode = e.target.value;
+        if(resizeMode !== "fit") {
+            fixedWidth = parseInt(resizeMode.split("x")[0]);
+            fixedHeight = parseInt(resizeMode.split("x")[1]);
+        }
+    });
+}
+
+// Animation FPS option
+if(elemBgAnimationFps) {
+    elemBgAnimationFps.innerHTML = '<option value="15">15</option><option selected value="30">30</option><option value="60">60</option>';
+    elemBgAnimationFps.addEventListener("input", function (e) {
+        fps = parseInt(e.target.value);
+        framesInterval = 1000 / fps;
+    });
+}
+
 if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
     function closeSettings(){
         elemBgSettingsControls.classList.remove("fade-in");
@@ -362,11 +398,6 @@ if(elemBgSettings && elemBgSettingsControls && elemBgSettingsClose) {
 
     elemBgSettingsClose.addEventListener("click", function () {
         closeSettings();
-    });
-
-    // Animation selection option
-    elemBgAnimationSelect.addEventListener("input", function (e) {
-        updateAnimation(parseInt(e.target.value));
     });
 
     // Events for dragging the background settings panel, TODO: make it work on mobile

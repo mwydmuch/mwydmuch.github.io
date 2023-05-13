@@ -267,6 +267,13 @@ class ShortestPath extends Animation {
     draw() {
         this.clear();
 
+        // Center the map
+        this.ctx.translate(
+            -(this.mapWidth * this.cellSize - this.ctx.canvas.width) / 2, 
+            -(this.mapHeight * this.cellSize - this.ctx.canvas.height) / 2
+        );
+        
+        // Draw nodes
         for (let y = 0; y < this.mapHeight; ++y) {
             for (let x = 0; x < this.mapWidth; ++x) {
                 const idx = this.getIdx(x, y),
@@ -281,6 +288,7 @@ class ShortestPath extends Animation {
             }
         }
 
+        // Draw walls
         for (let y = 0; y < this.mapHeight; ++y) {
             for (let x = 0; x < this.mapWidth; ++x) {
                 const idx = this.getIdx(x, y),
@@ -308,13 +316,11 @@ class ShortestPath extends Animation {
             }
         }
 
-        if(this.showStats){
-            const lineHeight = 20;
-            this.ctx.font = '14px sans-serif';
-            this.ctx.lineWidth = 2;
-            this.ctx.fillStyle = this.colors[0];
-            this.ctx.strokeStyle = this.bgColor;
+        this.ctx.resetTransform();
 
+        if(this.showStats){
+            this.resetFont();
+            const lineHeight = 20;
             Utils.fillAndStrokeText(this.ctx, `Search algorithm: ${this.searchAlgorithm}`, lineHeight, this.ctx.canvas.height - 3 * lineHeight);
             Utils.fillAndStrokeText(this.ctx, `Number of visited nodes: ${this.visited}`, lineHeight, this.ctx.canvas.height - 2 * lineHeight);
             let pathText = this.queue.size === 0 ? 'Shortest path length: ' : 'Longest traveled path: ';
