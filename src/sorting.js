@@ -9,29 +9,9 @@ Coded with no external dependencies, using only canvas API.
 `;
 
 const Animation = require("./animation");
+const AnimationQueue = require("./animation-queue");
 const Utils = require("./utils");
 
-// Simple class for managing animations
-class AnimationQueue {
-    constructor(){
-        this.queue = [];
-    }
-
-    push(stepFunc){
-        this.queue.push({step: stepFunc, time: 0});
-    }
-
-    step(elapsed){
-        let finished = true;
-        if(this.queue.length){
-            let e = this.queue[0];
-            e.time += elapsed;
-            finished = e.step(e.time);
-            if(finished) this.queue.shift();
-        }
-        return (finished && !this.queue.length)
-    }
-}
 
 // Base class for a sorting algorithm
 class SortingAlgorithm {
@@ -344,12 +324,14 @@ class Sorting extends Animation {
         this.cmpCount = 0;
 
         // Validate sorting
-        // for(let i = 1; i < this.elements.length; ++i){
-        //     if(this.elements[i - 1] > this.elements[i]){
-        //         console.log("Not sorted!");
-        //         break;
-        //     }
-        // }
+        /*
+        for(let i = 1; i < this.elements.length; ++i){
+            if(this.elements[i - 1] > this.elements[i]){
+                console.log("The array is not sorted, something went wrong!");
+                break;
+            }
+        }
+        */
     }
 
     update(elapsed){
@@ -358,11 +340,11 @@ class Sorting extends Animation {
         this.time += elapsed;
         ++this.frame;
 
-        if(this.animQueue.step(elapsed)){
+        while(this.animQueue.step(elapsed) > 0){
             if(!this.moves.length) return;
 
             let s = this.moves[0];
-            const colorEasing = (x) => x < 0.5 ? Utils.easeInOutCubic( 2 * x) : 1 - Utils.easeInOutCubic( 2 * x - 1),
+            const colorEasing = (x) => x < 0.5 ? Utils.easeInOutCubic(2 * x) : 1 - Utils.easeInOutCubic(2 * x - 1),
                   posEasing = Utils.easeInOutSine;
 
             if(s[0] === "cmp") {
@@ -377,7 +359,7 @@ class Sorting extends Animation {
                     const prog = Math.min(time, duration) / duration;
                     e1.color = Utils.lerpColor(color1, colorSel, colorEasing(prog));
                     e2.color = Utils.lerpColor(color2, colorSel, colorEasing(prog));
-                    return time >= duration;
+                    return time - duration;
                 });
             }
             else if(s[0] === "swap") {
@@ -402,7 +384,7 @@ class Sorting extends Animation {
                         e1[i].color = Utils.lerpColor(color[i], colorSel, colorEasing(prog));
                         e1[i].pos = Utils.lerp(pos1[i], pos2[i], posEasing(prog));
                     }
-                    return time >= duration;
+                    return time - duration;
                 });
             }
 

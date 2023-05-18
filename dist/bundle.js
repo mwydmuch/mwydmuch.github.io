@@ -138,7 +138,31 @@ class ThreeNPlusOne extends Animation {
 
 module.exports = ThreeNPlusOne;
 
-},{"./animation":2,"./utils":32}],2:[function(require,module,exports){
+},{"./animation":3,"./utils":33}],2:[function(require,module,exports){
+// Simple class for managing animations
+class AnimationQueue {
+    constructor(){
+        this.queue = [];
+    }
+
+    push(stepFunc){
+        this.queue.push({step: stepFunc, time: 0});
+    }
+
+    step(elapsed){
+        let timeLeft = elapsed;
+        while(this.queue.length && timeLeft > 0){
+            let e = this.queue[0];
+            e.time += elapsed;
+            timeLeft = e.step(e.time);
+            if(timeLeft >= 0) this.queue.shift();
+        }
+        return timeLeft;
+    }
+}
+
+module.exports = AnimationQueue;
+},{}],3:[function(require,module,exports){
 'use strict';
 
 /*
@@ -271,7 +295,7 @@ class Animation {
 
 module.exports = Animation;
 
-},{"./noise":18,"./utils":32}],3:[function(require,module,exports){
+},{"./noise":19,"./utils":33}],4:[function(require,module,exports){
 'use strict';
 
 const NAME = "cardioids with a pencil of lines",
@@ -343,7 +367,7 @@ class Cardioids extends Animation {
 
 module.exports = Cardioids
 
-},{"./animation":2,"./utils":32}],4:[function(require,module,exports){
+},{"./animation":3,"./utils":33}],5:[function(require,module,exports){
 'use strict';
 
 const NAME = "circular waves",
@@ -427,7 +451,7 @@ class CircularWaves extends Animation {
 
 module.exports = CircularWaves;
 
-},{"./animation":2,"./utils":32}],5:[function(require,module,exports){
+},{"./animation":3,"./utils":33}],6:[function(require,module,exports){
 'use strict';
 
 const NAME = "Code writing animation",
@@ -579,7 +603,7 @@ class Coding extends Animation {
 
 module.exports = Coding;
 
-},{"./animation":2,"./utils":32}],6:[function(require,module,exports){
+},{"./animation":3,"./utils":33}],7:[function(require,module,exports){
 'use strict';
 
 /*
@@ -827,7 +851,7 @@ var Delaunay;
     if(typeof module !== "undefined")
         module.exports = Delaunay;
 })();
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 const NAME = "figures spiral",
@@ -888,7 +912,7 @@ class FiguresSpiral extends Animation {
 
 module.exports = FiguresSpiral;
 
-},{"./animation":2,"./utils":32}],8:[function(require,module,exports){
+},{"./animation":3,"./utils":33}],9:[function(require,module,exports){
 'use strict';
 
 const NAME = "isometric Conway's game of life",
@@ -1076,7 +1100,7 @@ class GameOfLifeIsometric extends GameOfLife {
 
 module.exports = GameOfLifeIsometric;
 
-},{"./game-of-life":9,"./utils":32}],9:[function(require,module,exports){
+},{"./game-of-life":10,"./utils":33}],10:[function(require,module,exports){
 'use strict';
 
 const NAME = "Conway's game of life",
@@ -1231,7 +1255,7 @@ class GameOfLife extends Grid {
 
 module.exports = GameOfLife;
 
-},{"./grid":12,"./utils":32}],10:[function(require,module,exports){
+},{"./grid":13,"./utils":33}],11:[function(require,module,exports){
 'use strict';
 
 const NAME = "Glitch animation",
@@ -1313,7 +1337,7 @@ class Glitch extends Grid {
 
 module.exports = Glitch;
 
-},{"./grid":12}],11:[function(require,module,exports){
+},{"./grid":13}],12:[function(require,module,exports){
 'use strict';
 
 const NAME = "visualization of gradient descent algorithms",
@@ -1765,7 +1789,7 @@ class GradientDescent extends Animation {
 
 module.exports = GradientDescent;
 
-},{"./animation":2,"./utils":32}],12:[function(require,module,exports){
+},{"./animation":3,"./utils":33}],13:[function(require,module,exports){
 'use strict';
 
 /*
@@ -1837,7 +1861,7 @@ class Grid extends Animation {
 }
 
 module.exports = Grid;
-},{"./animation":2}],13:[function(require,module,exports){
+},{"./animation":3}],14:[function(require,module,exports){
 'use strict';
 
 // TODO: Refactor/wrap this code into animation/background controller class/module
@@ -1927,7 +1951,7 @@ const colorsAlt = [ // Alt palette
 ];
 
 
-// Get elements controls
+// Get elements for different animation controls
 // ---------------------------------------------------------------------------------------------------------------------
 
 const content = document.getElementById("me");
@@ -1949,7 +1973,7 @@ const elemBgAnimationFps = document.getElementById("background-settings-animatio
 const elemBgAnimationSize = document.getElementById("background-settings-animation-size");
 
 
-// Create animation and init animation loop
+// Create the initial animation and initiate the animation loop
 // ---------------------------------------------------------------------------------------------------------------------
 
 let animations = [
@@ -1993,7 +2017,7 @@ for(let i = 0; i < animationCount; ++i){
     animations[order[i]].next = order[(i + 1) % animationCount];
 }
 
-// Get animation from url search params
+// Get the animation from url search params
 const urlParams = new URLSearchParams(window.location.search);
 if(urlParams.has("animation")){
     const animationParam = urlParams.get("animation").replaceAll("-", " ");
@@ -2004,7 +2028,7 @@ if(urlParams.has("animation")){
 
 function getTime(){
     return Date.now();
-    //return window.performance.now();
+    //return window.performance.now(); // Alternative method for measruing time
 }
 
 function updateAnimation(newAnimationId) {
@@ -2020,7 +2044,7 @@ function updateAnimation(newAnimationId) {
 
 
 function checkResize() {
-    // Detect container size change here for smooth resizing
+    // Detect the change of container's size for smooth resizing
     if(resizeMode === "fit"){
         width = Math.max(container.offsetWidth, window.innerWidth - canvas.offsetLeft);
         height = Math.max(container.offsetHeight, window.innerHeight - canvas.offsetTop);
@@ -2048,15 +2072,14 @@ function updateStats(now, drawTime) {
         const avgFrameTime = (now - startTime) / frames,
               avgDrawTime = sumDrawTime / frames;
 
-        if(frames % 10 === 0){
-            elemBgStats.innerHTML = `target fps: ${fps}</br>
+        if(frames % fps === 0){
+            elemBgStats.innerHTML = `canvas size: ${canvas.width} x ${canvas.height}</br>
                                     target frames interval: ${Math.round(framesInterval)} ms</br>
+                                    target fps: ${fps}</br>
                                     avg. frames interval: ${Math.round(avgFrameTime)} ms</br>
                                     avg. fps: ${Math.round(1000 / avgFrameTime)}</br>
                                     avg. draw time: ${Math.round(avgDrawTime + 1)} ms</br>
-                                    possible fps: ${Math.round(1000 / avgDrawTime + 1)}</br>
-                                    canvas size: ${width} x ${height}</br>
-                                    strict mode?: ${Utils.isStrictMode()}`;
+                                    possible fps: ${Math.round(1000 / avgDrawTime + 1)}`;
         }
     }
 }
@@ -2069,8 +2092,8 @@ function render() {
 
     // Limit framerate
     if (timeElapsed >= framesInterval) {
-        // Get ready for next frame by setting then=now,
-        // also, adjust for screen refresh rate
+        // Get ready for the next frame by setting then=now,
+        // also, adjust for the screen refresh rate
         then = now - (timeElapsed % framesInterval);
         
         const drawStart = getTime();
@@ -2078,11 +2101,11 @@ function render() {
         // Check if resize is needed
         checkResize();
 
-        // Update animation and redraw the frame
+        // Update the current animation and redraw the frame
         animation.update(timeElapsed);
         animation.draw();
 
-        // Update stats
+        // Update the stats
         const drawTime = getTime() - drawStart;
         updateStats(now, drawTime);
    }
@@ -2109,7 +2132,7 @@ render();
 // });
 
 
-// Controls functions
+// Control functions
 // ---------------------------------------------------------------------------------------------------------------------
 
 function play(){
@@ -2398,7 +2421,7 @@ function updateUI(){
     }
 }
 
-},{"./3n+1":1,"./cardioids":3,"./circular-waves":4,"./coding":5,"./figures-spiral":7,"./game-of-life":9,"./game-of-life-isometric":8,"./glitch":10,"./gradient-descent":11,"./matrix":14,"./mlinpl":15,"./network":16,"./neural-network":17,"./particles-and-attractors":19,"./particles-vortex":20,"./particles-waves":21,"./perlin-noise-particles":22,"./quadtree":23,"./rock-paper-scissors-automata":25,"./shortest-path":26,"./sine-waves":27,"./sorting":28,"./spinning-shapes":29,"./spirograph":30,"./tree":31,"./utils":32}],14:[function(require,module,exports){
+},{"./3n+1":1,"./cardioids":4,"./circular-waves":5,"./coding":6,"./figures-spiral":8,"./game-of-life":10,"./game-of-life-isometric":9,"./glitch":11,"./gradient-descent":12,"./matrix":15,"./mlinpl":16,"./network":17,"./neural-network":18,"./particles-and-attractors":20,"./particles-vortex":21,"./particles-waves":22,"./perlin-noise-particles":23,"./quadtree":24,"./rock-paper-scissors-automata":26,"./shortest-path":27,"./sine-waves":28,"./sorting":29,"./spinning-shapes":30,"./spirograph":31,"./tree":32,"./utils":33}],15:[function(require,module,exports){
 'use strict';
 
 const NAME = "Matrix digital rain",
@@ -2550,7 +2573,7 @@ class Matrix extends Animation {
 
 module.exports = Matrix;
 
-},{"./animation":2,"./utils":32}],15:[function(require,module,exports){
+},{"./animation":3,"./utils":33}],16:[function(require,module,exports){
 'use strict';
 
 const NAME = "ML in PL Network",
@@ -2688,7 +2711,7 @@ class MLinPL extends Animation {
 
 module.exports = MLinPL;
 
-},{"./animation":2,"./utils":32}],16:[function(require,module,exports){
+},{"./animation":3,"./utils":33}],17:[function(require,module,exports){
 'use strict';
 
 const NAME = "Delaunay triangulation for a cloud of particles",
@@ -2835,7 +2858,7 @@ class Network extends Animation {
 
 module.exports = Network;
 
-},{"./animation":2,"./delaunay":6,"./utils":32}],17:[function(require,module,exports){
+},{"./animation":3,"./delaunay":7,"./utils":33}],18:[function(require,module,exports){
 'use strict';
 
 /*
@@ -2962,7 +2985,7 @@ class NeuralNetwork extends Animation {
 
 module.exports = NeuralNetwork;
 
-},{"./animation":2,"./utils":32}],18:[function(require,module,exports){
+},{"./animation":3,"./utils":33}],19:[function(require,module,exports){
 'use strict';
 
 /*
@@ -3275,7 +3298,7 @@ module.exports = NeuralNetwork;
 
 })(this);
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 'use strict';
 
 const NAME = "system of particles and attractors",
@@ -3412,7 +3435,7 @@ class ParticlesAndAttractors extends Animation {
 
 module.exports = ParticlesAndAttractors;
 
-},{"./animation":2,"./utils":32}],20:[function(require,module,exports){
+},{"./animation":3,"./utils":33}],21:[function(require,module,exports){
 'use strict';
 
 const NAME = "vortex of particles",
@@ -3506,7 +3529,7 @@ class ParticlesVortex extends Animation {
 
 module.exports = ParticlesVortex;
 
-},{"./animation":2,"./noise":18,"./utils":32}],21:[function(require,module,exports){
+},{"./animation":3,"./noise":19,"./utils":33}],22:[function(require,module,exports){
 'use strict';
 
 const NAME = "particles waves",
@@ -3593,7 +3616,7 @@ class ParticlesStorm extends Animation {
 
 module.exports = ParticlesStorm;
 
-},{"./animation":2,"./noise":18,"./utils":32}],22:[function(require,module,exports){
+},{"./animation":3,"./noise":19,"./utils":33}],23:[function(require,module,exports){
 'use strict';
 
 // TODO: Improve this description
@@ -3731,7 +3754,7 @@ class PerlinNoiseParticles extends Animation {
 
 module.exports = PerlinNoiseParticles;
 
-},{"./animation":2,"./noise":18,"./utils":32}],23:[function(require,module,exports){
+},{"./animation":3,"./noise":19,"./utils":33}],24:[function(require,module,exports){
 'use strict';
 
 const NAME = "quadtree visualization",
@@ -3877,7 +3900,7 @@ class Quadtree extends Animation {
 
 module.exports = Quadtree;
 
-},{"./animation":2,"./noise":18,"./utils":32}],24:[function(require,module,exports){
+},{"./animation":3,"./noise":19,"./utils":33}],25:[function(require,module,exports){
 'use strict';
 
 /*
@@ -3936,7 +3959,7 @@ class Queue {
 
 module.exports = Queue;
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
 
 const NAME = "Rock-paper-scissors automata",
@@ -4026,7 +4049,7 @@ class RockPaperScissorsAutomata extends Grid {
 
 module.exports = RockPaperScissorsAutomata;
 
-},{"./grid":12,"./utils":32}],26:[function(require,module,exports){
+},{"./grid":13,"./utils":33}],27:[function(require,module,exports){
 'use strict';
 
 const NAME = "finding the shortest path",
@@ -4478,7 +4501,7 @@ class ShortestPath extends Animation {
 
 module.exports = ShortestPath;
 
-},{"./animation":2,"./queue":24,"./utils":32}],27:[function(require,module,exports){
+},{"./animation":3,"./queue":25,"./utils":33}],28:[function(require,module,exports){
 'use strict';
 
 const NAME = "grid of sine waves",
@@ -4571,7 +4594,7 @@ class SineWaves extends Animation {
 }
 
 module.exports = SineWaves;
-},{"./animation":2,"./utils":32}],28:[function(require,module,exports){
+},{"./animation":3,"./utils":33}],29:[function(require,module,exports){
 'use strict';
 
 const NAME = "sorting algorithm visualization",
@@ -4583,29 +4606,9 @@ Coded with no external dependencies, using only canvas API.
 `;
 
 const Animation = require("./animation");
+const AnimationQueue = require("./animation-queue");
 const Utils = require("./utils");
 
-// Simple class for managing animations
-class AnimationQueue {
-    constructor(){
-        this.queue = [];
-    }
-
-    push(stepFunc){
-        this.queue.push({step: stepFunc, time: 0});
-    }
-
-    step(elapsed){
-        let finished = true;
-        if(this.queue.length){
-            let e = this.queue[0];
-            e.time += elapsed;
-            finished = e.step(e.time);
-            if(finished) this.queue.shift();
-        }
-        return (finished && !this.queue.length)
-    }
-}
 
 // Base class for a sorting algorithm
 class SortingAlgorithm {
@@ -4918,12 +4921,14 @@ class Sorting extends Animation {
         this.cmpCount = 0;
 
         // Validate sorting
-        // for(let i = 1; i < this.elements.length; ++i){
-        //     if(this.elements[i - 1] > this.elements[i]){
-        //         console.log("Not sorted!");
-        //         break;
-        //     }
-        // }
+        /*
+        for(let i = 1; i < this.elements.length; ++i){
+            if(this.elements[i - 1] > this.elements[i]){
+                console.log("The array is not sorted, something went wrong!");
+                break;
+            }
+        }
+        */
     }
 
     update(elapsed){
@@ -4932,11 +4937,11 @@ class Sorting extends Animation {
         this.time += elapsed;
         ++this.frame;
 
-        if(this.animQueue.step(elapsed)){
+        while(this.animQueue.step(elapsed) > 0){
             if(!this.moves.length) return;
 
             let s = this.moves[0];
-            const colorEasing = (x) => x < 0.5 ? Utils.easeInOutCubic( 2 * x) : 1 - Utils.easeInOutCubic( 2 * x - 1),
+            const colorEasing = (x) => x < 0.5 ? Utils.easeInOutCubic(2 * x) : 1 - Utils.easeInOutCubic(2 * x - 1),
                   posEasing = Utils.easeInOutSine;
 
             if(s[0] === "cmp") {
@@ -4951,7 +4956,7 @@ class Sorting extends Animation {
                     const prog = Math.min(time, duration) / duration;
                     e1.color = Utils.lerpColor(color1, colorSel, colorEasing(prog));
                     e2.color = Utils.lerpColor(color2, colorSel, colorEasing(prog));
-                    return time >= duration;
+                    return time - duration;
                 });
             }
             else if(s[0] === "swap") {
@@ -4976,7 +4981,7 @@ class Sorting extends Animation {
                         e1[i].color = Utils.lerpColor(color[i], colorSel, colorEasing(prog));
                         e1[i].pos = Utils.lerp(pos1[i], pos2[i], posEasing(prog));
                     }
-                    return time >= duration;
+                    return time - duration;
                 });
             }
 
@@ -5024,7 +5029,7 @@ class Sorting extends Animation {
 
 module.exports = Sorting;
 
-},{"./animation":2,"./utils":32}],29:[function(require,module,exports){
+},{"./animation":3,"./animation-queue":2,"./utils":33}],30:[function(require,module,exports){
 'use strict';
 
 const NAME = "shapes dancing in a circle",
@@ -5117,7 +5122,7 @@ class SpinningShapes extends Animation {
 
 module.exports = SpinningShapes
 
-},{"./animation":2,"./utils":32}],30:[function(require,module,exports){
+},{"./animation":3,"./utils":33}],31:[function(require,module,exports){
 'use strict';
 
 const NAME = "spirograph",
@@ -5238,7 +5243,7 @@ class Spirograph extends Animation {
 
 module.exports = Spirograph
 
-},{"./animation":2,"./utils":32}],31:[function(require,module,exports){
+},{"./animation":3,"./utils":33}],32:[function(require,module,exports){
 'use strict';
 
 /*
@@ -5320,7 +5325,7 @@ class Tree extends Animation {
 
 module.exports = Tree;
 
-},{"./animation":2,"./utils":32}],32:[function(require,module,exports){
+},{"./animation":3,"./utils":33}],33:[function(require,module,exports){
 'use strict';
 
 /*
@@ -5627,4 +5632,4 @@ module.exports = {
     }
 };
 
-},{}]},{},[13])
+},{}]},{},[14])

@@ -4,7 +4,7 @@
 
   <!-- Basic Meta -->
   <meta charset="utf-8">
-  <title>Marek Wydmuch - Animations</title>
+  <title>Marek Wydmuch's animations</title>
   <meta name="description" content="Marek Wydmuch's animations">
   <meta name="author" content="Marek Wydmuch">
 
@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="dist/style.min.css">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/jpg" href="assets/me.jpg">
+  <link rel="icon" type="image/jpg" href="assets/marek-wydmuch.jpg">
 </head>
 
 <body>
@@ -42,28 +42,13 @@
 
 <!-- Animation settings panel -->
 <div id="background-settings-controls" class="floating-controls" style="left: 1rem; top: 2.4rem;">
-  ANIMATION SETTINGS <span id="background-settings-close">[<i class="fas fa-close"></i>]</span>
+  SETTINGS <span id="background-settings-close">[<i class="fas fa-close"></i>]</span>
   <div id="background-settings-controls-global-list" class="settings-section">
     <div>
       <span class="setting-name">animation = </span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="animation" id="background-settings-animation-select"></select></span>
     </div>
-    <!-- <div> This is not working yet 
-      <span class="setting-name">size = </span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="animation-size" id="background-settings-animation-size-select">
-        <option value="fit">fit</option>
-        <option value="512x512">512x512</option>
-        <option value="1024x1024">1024x1024</option>
-        <option value="1280x720">1280x720</option>
-      </select></span>
-    </div> -->
-    <!-- <div> This is not working yet 
-      <span class="setting-name">fps = </span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="animation-size" id="background-settings-animation-size-select">
-        <option value="15">15</option>
-        <option value="30">30</option>
-        <option value="60">60</option>
-      </select></span>
-    </div> -->
     <div>
-      <span class="nowrap">[<a id="background-play-pause"><i class="fas fa-pause"></i> pause</a>]</span>
+      <span class="nowrap tooltip" data-tooltip="This will show you">[<a id="background-play-pause"><i class="fas fa-pause"></i> pause</a>]</span>
       <span class="nowrap">[<a id="background-restart"><i class="fas fa-backward-step"></i> restart</a>]</span>
       <span class="nowrap">[<a id="background-previous"><i class="fas fa-backward-fast"></i> prev.</a>]</span>
       <span class="nowrap">[<a id="background-reset"><i class="fas fa-rotate-left"></i> reset</a>]</span>
@@ -82,7 +67,15 @@
     <input id="background-settings-controls-accordion" type="checkbox" name="accordion-checkbox" hidden>
     <label class="accordion-header c-hand" for="background-settings-controls-accordion"><i class="icon icon-arrow-right mr-1"></i>Animation settings</label>
     <div class="accordion-body justify">
-      <div id="background-settings-controls-list" class="settings-section"></div>
+      <div id="background-settings-default-list" class="settings-section">
+        <div>
+          <span class="setting-name">canvas size = </span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="animation-size" id="background-settings-animation-size"></select></span>
+        </div>
+        <div>
+          <span class="setting-name">fps = </span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="animation-size" id="background-settings-animation-fps"></select></span>
+        </div>
+        <div id="background-settings-controls-list"></div>
+      </div>
     </div>
   </div>
   <div class="accordion">

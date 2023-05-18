@@ -208,15 +208,14 @@ function updateStats(now, drawTime) {
         const avgFrameTime = (now - startTime) / frames,
               avgDrawTime = sumDrawTime / frames;
 
-        if(frames % 10 === 0){
-            elemBgStats.innerHTML = `target fps: ${fps}</br>
+        if(frames % fps === 0){
+            elemBgStats.innerHTML = `canvas size: ${canvas.width} x ${canvas.height}</br>
                                     target frames interval: ${Math.round(framesInterval)} ms</br>
+                                    target fps: ${fps}</br>
                                     avg. frames interval: ${Math.round(avgFrameTime)} ms</br>
                                     avg. fps: ${Math.round(1000 / avgFrameTime)}</br>
                                     avg. draw time: ${Math.round(avgDrawTime + 1)} ms</br>
-                                    possible fps: ${Math.round(1000 / avgDrawTime + 1)}</br>
-                                    canvas size: ${width} x ${height}</br>
-                                    strict mode?: ${Utils.isStrictMode()}`;
+                                    possible fps: ${Math.round(1000 / avgDrawTime + 1)}`;
         }
     }
 }
