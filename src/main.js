@@ -26,6 +26,7 @@ const ParticlesWaves = require("./particles-waves");
 const PerlinNoiseParticles = require("./perlin-noise-particles");
 const RockPaperScissors = require("./rock-paper-scissors-automata");
 const Quadtree = require("./quadtree");
+const RecursiveAnimation = require("./recursion");
 const ShortestPath = require("./shortest-path");
 const SineWaves = require("./sine-waves");
 const Sorting = require("./sorting");
@@ -132,6 +133,7 @@ let animations = [
     {class: PerlinNoiseParticles, name: "perlin noise"},
     {class: RockPaperScissors, name: "rock-paper-scissors automata"},
     {class: Quadtree, name: "quadtree"},
+    {class: RecursiveAnimation, name: "recursive animation"},
     {class: ShortestPath, name: "shortest path"},
     {class: Sorting, name: "sorting"},
     {class: SpinningShapes, name: "spinning shapes"},
@@ -144,15 +146,6 @@ const animationCount = animations.length;
 let animationId = Utils.randomInt(0, animationCount);
 while(animations[animationId].startAnimation === false) animationId = Utils.randomInt(0, animationCount);
 
-let animation = null,
-    order = Array.from({length: animationCount}, (x, i) => i);
-
-Utils.randomShuffle(order);
-for(let i = 0; i < animationCount; ++i){
-    animations[order[i]].prev = order[(i + animationCount - 1) % animationCount];
-    animations[order[i]].next = order[(i + 1) % animationCount];
-}
-
 // Get the animation from url search params
 const urlParams = new URLSearchParams(window.location.search);
 if(urlParams.has("animation")){
@@ -160,6 +153,15 @@ if(urlParams.has("animation")){
     for(let i = 0; i < animationCount; ++i){
         if(animationParam === animations[i].name) animationId = i;
     }
+}
+
+let animation = null,
+    order = Array.from({length: animationCount}, (x, i) => i);
+
+Utils.randomShuffle(order);
+for(let i = 0; i < animationCount; ++i){
+    animations[order[i]].prev = order[(i + animationCount - 1) % animationCount];
+    animations[order[i]].next = order[(i + 1) % animationCount];
 }
 
 function getTime(){

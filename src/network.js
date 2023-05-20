@@ -57,10 +57,8 @@ class Network extends Animation {
     update(elapsed){
         super.update(elapsed);
         for(let p of this.particles){
-            // Making it time independent requires better collision checking
-            // what is no worth the effort for such animation.
-            p.x += p.velX * this.speed;
-            p.y += p.velY * this.speed;
+            p.x += p.velX * elapsed * this.speed;
+            p.y += p.velY * elapsed * this.speed;
 
             if(p.x < 0 || p.x > this.width) p.velX *= -1;
             if(p.y < 0 || p.y > this.height) p.velY *= -1;
@@ -99,8 +97,8 @@ class Network extends Animation {
             this.particles.push({
                 x: this.rand() * width + x,
                 y: this.rand() * height + y,
-                velY: this.rand() * 2 - 1,
-                velX: this.rand() * 2 - 1,
+                velY: (this.rand() * 2 - 1) / 30,
+                velX: (this.rand() * 2 - 1) / 30,
                 color: Utils.randomChoice(this.colors, this.rand)
             });
         }

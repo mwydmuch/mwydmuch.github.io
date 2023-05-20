@@ -18,7 +18,7 @@ module.exports = {
     Mulberry32(a) { // Mulberry32
         return function () {
             a |= 0; a = a + 0x6D2B79F5 | 0;
-            var t = Math.imul(a ^ a >>> 15, 1 | a);
+            let t = Math.imul(a ^ a >>> 15, 1 | a);
             t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
             return ((t ^ t >>> 14) >>> 0) / 4294967296;
         }
@@ -146,6 +146,10 @@ module.exports = {
     },
 
     // Easing functions
+    linear(x){
+        return x;
+    },
+
     easeInSine(x){
         return 1 - Math.cos((x * Math.PI) / 2);
     },
@@ -280,6 +284,45 @@ module.exports = {
         canvas.width = width;
         canvas.height = height;
         return canvas;
+    },
+
+    // Set operations
+    isSuperset(set, subset) {
+        for (const elem of subset) {
+            if (!set.has(elem)) return false;
+        }
+        return true;
+    },
+      
+    setsUnion(setA, setB) {
+        let union = new Set(setA);
+        for (const elem of setB) {
+            union.add(elem);
+        }
+        return union;
+    },
+
+    setsIntersection(setA, setB) {
+        let intersection = new Set();
+        for (const elem of setB) {
+            if (setA.has(elem)) intersection.add(elem);
+        }
+        return _intersection;
+    },
+
+    setsSymmetricDifference(setA, setB) {
+        let difference = new Set(setA);
+        for (const elem of setB) {
+            if (difference.has(elem)) difference.delete(elem);
+            else difference.add(elem);
+        }
+        return difference;
+    },
+
+    setsDifference(setA, setB) {
+        let difference = new Set(setA);
+        for (const elem of setB) difference.delete(elem);
+        return difference;
     },
 
     // Misc

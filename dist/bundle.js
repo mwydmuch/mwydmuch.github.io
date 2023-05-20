@@ -138,7 +138,7 @@ class ThreeNPlusOne extends Animation {
 
 module.exports = ThreeNPlusOne;
 
-},{"./animation":3,"./utils":33}],2:[function(require,module,exports){
+},{"./animation":3,"./utils":34}],2:[function(require,module,exports){
 // Simple class for managing animations
 class AnimationQueue {
     constructor(){
@@ -202,6 +202,7 @@ class Animation {
         this.noise = Noise.noise;
 
         // Seed, might be combined with seedable rngs to make animations deterministic
+        this.rand = null;
         this.maxSeedValue = 999999;
         this.seed = this.assignIfRandom(seed, Math.round(Math.random() * this.maxSeedValue));
         this.setSeed(this.seed);
@@ -295,7 +296,7 @@ class Animation {
 
 module.exports = Animation;
 
-},{"./noise":19,"./utils":33}],4:[function(require,module,exports){
+},{"./noise":19,"./utils":34}],4:[function(require,module,exports){
 'use strict';
 
 const NAME = "cardioids with a pencil of lines",
@@ -367,7 +368,7 @@ class Cardioids extends Animation {
 
 module.exports = Cardioids
 
-},{"./animation":3,"./utils":33}],5:[function(require,module,exports){
+},{"./animation":3,"./utils":34}],5:[function(require,module,exports){
 'use strict';
 
 const NAME = "circular waves",
@@ -451,7 +452,7 @@ class CircularWaves extends Animation {
 
 module.exports = CircularWaves;
 
-},{"./animation":3,"./utils":33}],6:[function(require,module,exports){
+},{"./animation":3,"./utils":34}],6:[function(require,module,exports){
 'use strict';
 
 const NAME = "Code writing animation",
@@ -603,7 +604,7 @@ class Coding extends Animation {
 
 module.exports = Coding;
 
-},{"./animation":3,"./utils":33}],7:[function(require,module,exports){
+},{"./animation":3,"./utils":34}],7:[function(require,module,exports){
 'use strict';
 
 /*
@@ -912,7 +913,7 @@ class FiguresSpiral extends Animation {
 
 module.exports = FiguresSpiral;
 
-},{"./animation":3,"./utils":33}],9:[function(require,module,exports){
+},{"./animation":3,"./utils":34}],9:[function(require,module,exports){
 'use strict';
 
 const NAME = "isometric Conway's game of life",
@@ -1100,7 +1101,7 @@ class GameOfLifeIsometric extends GameOfLife {
 
 module.exports = GameOfLifeIsometric;
 
-},{"./game-of-life":10,"./utils":33}],10:[function(require,module,exports){
+},{"./game-of-life":10,"./utils":34}],10:[function(require,module,exports){
 'use strict';
 
 const NAME = "Conway's game of life",
@@ -1255,7 +1256,7 @@ class GameOfLife extends Grid {
 
 module.exports = GameOfLife;
 
-},{"./grid":13,"./utils":33}],11:[function(require,module,exports){
+},{"./grid":13,"./utils":34}],11:[function(require,module,exports){
 'use strict';
 
 const NAME = "Glitch animation",
@@ -1789,7 +1790,7 @@ class GradientDescent extends Animation {
 
 module.exports = GradientDescent;
 
-},{"./animation":3,"./utils":33}],13:[function(require,module,exports){
+},{"./animation":3,"./utils":34}],13:[function(require,module,exports){
 'use strict';
 
 /*
@@ -1890,6 +1891,7 @@ const ParticlesWaves = require("./particles-waves");
 const PerlinNoiseParticles = require("./perlin-noise-particles");
 const RockPaperScissors = require("./rock-paper-scissors-automata");
 const Quadtree = require("./quadtree");
+const RecursiveAnimation = require("./recursion");
 const ShortestPath = require("./shortest-path");
 const SineWaves = require("./sine-waves");
 const Sorting = require("./sorting");
@@ -1996,6 +1998,7 @@ let animations = [
     {class: PerlinNoiseParticles, name: "perlin noise"},
     {class: RockPaperScissors, name: "rock-paper-scissors automata"},
     {class: Quadtree, name: "quadtree"},
+    {class: RecursiveAnimation, name: "recursive animation"},
     {class: ShortestPath, name: "shortest path"},
     {class: Sorting, name: "sorting"},
     {class: SpinningShapes, name: "spinning shapes"},
@@ -2008,15 +2011,6 @@ const animationCount = animations.length;
 let animationId = Utils.randomInt(0, animationCount);
 while(animations[animationId].startAnimation === false) animationId = Utils.randomInt(0, animationCount);
 
-let animation = null,
-    order = Array.from({length: animationCount}, (x, i) => i);
-
-Utils.randomShuffle(order);
-for(let i = 0; i < animationCount; ++i){
-    animations[order[i]].prev = order[(i + animationCount - 1) % animationCount];
-    animations[order[i]].next = order[(i + 1) % animationCount];
-}
-
 // Get the animation from url search params
 const urlParams = new URLSearchParams(window.location.search);
 if(urlParams.has("animation")){
@@ -2024,6 +2018,15 @@ if(urlParams.has("animation")){
     for(let i = 0; i < animationCount; ++i){
         if(animationParam === animations[i].name) animationId = i;
     }
+}
+
+let animation = null,
+    order = Array.from({length: animationCount}, (x, i) => i);
+
+Utils.randomShuffle(order);
+for(let i = 0; i < animationCount; ++i){
+    animations[order[i]].prev = order[(i + animationCount - 1) % animationCount];
+    animations[order[i]].next = order[(i + 1) % animationCount];
 }
 
 function getTime(){
@@ -2421,7 +2424,7 @@ function updateUI(){
     }
 }
 
-},{"./3n+1":1,"./cardioids":4,"./circular-waves":5,"./coding":6,"./figures-spiral":8,"./game-of-life":10,"./game-of-life-isometric":9,"./glitch":11,"./gradient-descent":12,"./matrix":15,"./mlinpl":16,"./network":17,"./neural-network":18,"./particles-and-attractors":20,"./particles-vortex":21,"./particles-waves":22,"./perlin-noise-particles":23,"./quadtree":24,"./rock-paper-scissors-automata":26,"./shortest-path":27,"./sine-waves":28,"./sorting":29,"./spinning-shapes":30,"./spirograph":31,"./tree":32,"./utils":33}],15:[function(require,module,exports){
+},{"./3n+1":1,"./cardioids":4,"./circular-waves":5,"./coding":6,"./figures-spiral":8,"./game-of-life":10,"./game-of-life-isometric":9,"./glitch":11,"./gradient-descent":12,"./matrix":15,"./mlinpl":16,"./network":17,"./neural-network":18,"./particles-and-attractors":20,"./particles-vortex":21,"./particles-waves":22,"./perlin-noise-particles":23,"./quadtree":24,"./recursion":26,"./rock-paper-scissors-automata":27,"./shortest-path":28,"./sine-waves":29,"./sorting":30,"./spinning-shapes":31,"./spirograph":32,"./tree":33,"./utils":34}],15:[function(require,module,exports){
 'use strict';
 
 const NAME = "Matrix digital rain",
@@ -2573,7 +2576,7 @@ class Matrix extends Animation {
 
 module.exports = Matrix;
 
-},{"./animation":3,"./utils":33}],16:[function(require,module,exports){
+},{"./animation":3,"./utils":34}],16:[function(require,module,exports){
 'use strict';
 
 const NAME = "ML in PL Network",
@@ -2711,7 +2714,7 @@ class MLinPL extends Animation {
 
 module.exports = MLinPL;
 
-},{"./animation":3,"./utils":33}],17:[function(require,module,exports){
+},{"./animation":3,"./utils":34}],17:[function(require,module,exports){
 'use strict';
 
 const NAME = "Delaunay triangulation for a cloud of particles",
@@ -2771,10 +2774,8 @@ class Network extends Animation {
     update(elapsed){
         super.update(elapsed);
         for(let p of this.particles){
-            // Making it time independent requires better collision checking
-            // what is no worth the effort for such animation.
-            p.x += p.velX * this.speed;
-            p.y += p.velY * this.speed;
+            p.x += p.velX * elapsed * this.speed;
+            p.y += p.velY * elapsed * this.speed;
 
             if(p.x < 0 || p.x > this.width) p.velX *= -1;
             if(p.y < 0 || p.y > this.height) p.velY *= -1;
@@ -2813,8 +2814,8 @@ class Network extends Animation {
             this.particles.push({
                 x: this.rand() * width + x,
                 y: this.rand() * height + y,
-                velY: this.rand() * 2 - 1,
-                velX: this.rand() * 2 - 1,
+                velY: (this.rand() * 2 - 1) / 30,
+                velX: (this.rand() * 2 - 1) / 30,
                 color: Utils.randomChoice(this.colors, this.rand)
             });
         }
@@ -2858,7 +2859,7 @@ class Network extends Animation {
 
 module.exports = Network;
 
-},{"./animation":3,"./delaunay":7,"./utils":33}],18:[function(require,module,exports){
+},{"./animation":3,"./delaunay":7,"./utils":34}],18:[function(require,module,exports){
 'use strict';
 
 /*
@@ -2985,7 +2986,7 @@ class NeuralNetwork extends Animation {
 
 module.exports = NeuralNetwork;
 
-},{"./animation":3,"./utils":33}],19:[function(require,module,exports){
+},{"./animation":3,"./utils":34}],19:[function(require,module,exports){
 'use strict';
 
 /*
@@ -3435,7 +3436,7 @@ class ParticlesAndAttractors extends Animation {
 
 module.exports = ParticlesAndAttractors;
 
-},{"./animation":3,"./utils":33}],21:[function(require,module,exports){
+},{"./animation":3,"./utils":34}],21:[function(require,module,exports){
 'use strict';
 
 const NAME = "vortex of particles",
@@ -3529,7 +3530,7 @@ class ParticlesVortex extends Animation {
 
 module.exports = ParticlesVortex;
 
-},{"./animation":3,"./noise":19,"./utils":33}],22:[function(require,module,exports){
+},{"./animation":3,"./noise":19,"./utils":34}],22:[function(require,module,exports){
 'use strict';
 
 const NAME = "particles waves",
@@ -3616,7 +3617,7 @@ class ParticlesStorm extends Animation {
 
 module.exports = ParticlesStorm;
 
-},{"./animation":3,"./noise":19,"./utils":33}],23:[function(require,module,exports){
+},{"./animation":3,"./noise":19,"./utils":34}],23:[function(require,module,exports){
 'use strict';
 
 // TODO: Improve this description
@@ -3754,7 +3755,7 @@ class PerlinNoiseParticles extends Animation {
 
 module.exports = PerlinNoiseParticles;
 
-},{"./animation":3,"./noise":19,"./utils":33}],24:[function(require,module,exports){
+},{"./animation":3,"./noise":19,"./utils":34}],24:[function(require,module,exports){
 'use strict';
 
 const NAME = "quadtree visualization",
@@ -3900,7 +3901,7 @@ class Quadtree extends Animation {
 
 module.exports = Quadtree;
 
-},{"./animation":3,"./noise":19,"./utils":33}],25:[function(require,module,exports){
+},{"./animation":3,"./noise":19,"./utils":34}],25:[function(require,module,exports){
 'use strict';
 
 /*
@@ -3960,6 +3961,133 @@ class Queue {
 module.exports = Queue;
 
 },{}],26:[function(require,module,exports){
+'use strict';
+
+const NAME = "recursion",
+      FILE = "recursion.js",
+      DESC = `
+Recursion animation.
+`;
+
+const Animation = require("./animation");
+const AnimationQueue = require("./animation-queue");
+const Utils = require("./utils");
+
+
+class RecursiveRect {
+    constructor(depth, rand) {
+        this.depth = depth;
+        this.rand = rand;
+
+        this.animQueue = new AnimationQueue();
+        this.children = [];
+        this.positions = {
+            0: {x: 0, y: 0, from: [1, 2]},
+            1: {x: 1, y: 0, from: [0, 3]},
+            2: {x: 0, y: 1, from: [0, 3]},
+            3: {x: 1, y: 1, from: [1, 2]},
+        }
+
+        if(depth > 0){
+            this.children = [
+                {object: new RecursiveRect(depth - 1, this.rand), position: 0},
+                {object: new RecursiveRect(depth - 1, this.rand), position: 1},
+                {object: new RecursiveRect(depth - 1, this.rand), position: 2},
+            ];
+
+            for(let c of this.children){
+                c["x"] = this.positions[c.position]["x"];
+                c["y"] = this.positions[c.position]["y"];
+            }
+        }
+    }  
+
+    update(elapsed) {
+        for(let c of this.children){
+            c.object.update(elapsed);
+        }
+
+        if(this.children.length === 0) return;
+
+        while(this.animQueue.step(elapsed) > 0){
+            let takenPositions = new Set();
+            for(let c of this.children) takenPositions.add(c.position);
+            const freePositions = new Set([0, 1, 2, 3]),
+                  freePosition = Utils.setsDifference(freePositions, takenPositions).values().next().value,
+                  newPos = this.positions[freePosition],
+                  positionToMove = Utils.randomChoice(newPos.from, this.rand);
+            
+                  let objectToMove = null;
+            for(let c of this.children){
+                if(c.position == positionToMove){
+                    objectToMove = c;
+                    break;
+                }
+            }
+
+            //console.log(this.depth, elapsed, takenPositions, freePositions, freePosition, positionToMove, objectToMove);
+
+            const oldPos = this.positions[objectToMove.position],
+                  duration = this.depth / 2;
+            objectToMove.position = freePosition;
+
+            const posEasing = Utils.easeInOutSine;
+            this.animQueue.push(function (time) {
+                const prog = Math.min(time, duration) / duration;
+                objectToMove.x = Utils.lerp(oldPos.x, newPos.x, posEasing(prog));
+                objectToMove.y = Utils.lerp(oldPos.y, newPos.y, posEasing(prog));
+                return time - duration;
+            });
+        }
+    }
+
+    draw(ctx, size) {
+        const nextSize = size / 2;
+        ctx.strokeRect(-0.5 * size, -0.5 * size, size, size);
+        for(let c of this.children){
+            ctx.save();
+            ctx.translate((-0.5 + c.x) * nextSize, (-0.5 + c.y) * nextSize);
+            c.object.draw(ctx, nextSize);
+            ctx.restore();
+        }
+    }
+}
+
+class Recursion extends Animation {
+    constructor(canvas, colors, colorsAlt, depth = 9, speed = 1) {
+        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        this.depth = depth;
+        this.speed = speed;
+        this.object = new RecursiveRect(this.depth, this.rand);
+    }
+
+    update(elapsed) {
+        elapsed /= 1000;
+        elapsed *= this.speed;
+        this.time += elapsed;
+        ++this.frame;
+
+        this.object.update(elapsed);
+    }
+
+    draw() {
+        this.clear();
+        const size = Math.max(this.ctx.canvas.width, this.ctx.canvas.height);
+        this.ctx.strokeStyle = this.colors[0];
+        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        this.object.draw(this.ctx, size);
+        this.ctx.resetTransform();
+    }
+
+    getSettings() {
+        return [{prop: "speed", type: "float", step: 0.25, min: 0.5, max: 8},
+                this.getSeedSettings()];
+    }
+}
+
+module.exports = Recursion;
+
+},{"./animation":3,"./animation-queue":2,"./utils":34}],27:[function(require,module,exports){
 'use strict';
 
 const NAME = "Rock-paper-scissors automata",
@@ -4049,7 +4177,7 @@ class RockPaperScissorsAutomata extends Grid {
 
 module.exports = RockPaperScissorsAutomata;
 
-},{"./grid":13,"./utils":33}],27:[function(require,module,exports){
+},{"./grid":13,"./utils":34}],28:[function(require,module,exports){
 'use strict';
 
 const NAME = "finding the shortest path",
@@ -4501,7 +4629,7 @@ class ShortestPath extends Animation {
 
 module.exports = ShortestPath;
 
-},{"./animation":3,"./queue":25,"./utils":33}],28:[function(require,module,exports){
+},{"./animation":3,"./queue":25,"./utils":34}],29:[function(require,module,exports){
 'use strict';
 
 const NAME = "grid of sine waves",
@@ -4594,7 +4722,7 @@ class SineWaves extends Animation {
 }
 
 module.exports = SineWaves;
-},{"./animation":3,"./utils":33}],29:[function(require,module,exports){
+},{"./animation":3,"./utils":34}],30:[function(require,module,exports){
 'use strict';
 
 const NAME = "sorting algorithm visualization",
@@ -5029,7 +5157,7 @@ class Sorting extends Animation {
 
 module.exports = Sorting;
 
-},{"./animation":3,"./animation-queue":2,"./utils":33}],30:[function(require,module,exports){
+},{"./animation":3,"./animation-queue":2,"./utils":34}],31:[function(require,module,exports){
 'use strict';
 
 const NAME = "shapes dancing in a circle",
@@ -5122,7 +5250,7 @@ class SpinningShapes extends Animation {
 
 module.exports = SpinningShapes
 
-},{"./animation":3,"./utils":33}],31:[function(require,module,exports){
+},{"./animation":3,"./utils":34}],32:[function(require,module,exports){
 'use strict';
 
 const NAME = "spirograph",
@@ -5243,7 +5371,7 @@ class Spirograph extends Animation {
 
 module.exports = Spirograph
 
-},{"./animation":3,"./utils":33}],32:[function(require,module,exports){
+},{"./animation":3,"./utils":34}],33:[function(require,module,exports){
 'use strict';
 
 /*
@@ -5325,7 +5453,7 @@ class Tree extends Animation {
 
 module.exports = Tree;
 
-},{"./animation":3,"./utils":33}],33:[function(require,module,exports){
+},{"./animation":3,"./utils":34}],34:[function(require,module,exports){
 'use strict';
 
 /*
@@ -5346,7 +5474,7 @@ module.exports = {
     Mulberry32(a) { // Mulberry32
         return function () {
             a |= 0; a = a + 0x6D2B79F5 | 0;
-            var t = Math.imul(a ^ a >>> 15, 1 | a);
+            let t = Math.imul(a ^ a >>> 15, 1 | a);
             t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
             return ((t ^ t >>> 14) >>> 0) / 4294967296;
         }
@@ -5474,6 +5602,10 @@ module.exports = {
     },
 
     // Easing functions
+    linear(x){
+        return x;
+    },
+
     easeInSine(x){
         return 1 - Math.cos((x * Math.PI) / 2);
     },
@@ -5608,6 +5740,45 @@ module.exports = {
         canvas.width = width;
         canvas.height = height;
         return canvas;
+    },
+
+    // Set operations
+    isSuperset(set, subset) {
+        for (const elem of subset) {
+            if (!set.has(elem)) return false;
+        }
+        return true;
+    },
+      
+    setsUnion(setA, setB) {
+        let union = new Set(setA);
+        for (const elem of setB) {
+            union.add(elem);
+        }
+        return union;
+    },
+
+    setsIntersection(setA, setB) {
+        let intersection = new Set();
+        for (const elem of setB) {
+            if (setA.has(elem)) intersection.add(elem);
+        }
+        return _intersection;
+    },
+
+    setsSymmetricDifference(setA, setB) {
+        let difference = new Set(setA);
+        for (const elem of setB) {
+            if (difference.has(elem)) difference.delete(elem);
+            else difference.add(elem);
+        }
+        return difference;
+    },
+
+    setsDifference(setA, setB) {
+        let difference = new Set(setA);
+        for (const elem of setB) difference.delete(elem);
+        return difference;
     },
 
     // Misc

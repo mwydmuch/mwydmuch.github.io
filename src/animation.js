@@ -37,6 +37,7 @@ class Animation {
         this.noise = Noise.noise;
 
         // Seed, might be combined with seedable rngs to make animations deterministic
+        this.rand = null;
         this.maxSeedValue = 999999;
         this.seed = this.assignIfRandom(seed, Math.round(Math.random() * this.maxSeedValue));
         this.setSeed(this.seed);
