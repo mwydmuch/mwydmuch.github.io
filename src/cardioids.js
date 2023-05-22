@@ -53,7 +53,8 @@ class Cardioids extends Animation {
             let color;
             if(this.rainbowColors) color = 'hsl(' + i / this.lines * 360 + ', 100%, 75%)';
             else color = Utils.lerpColorsPallet([this.colorA, this.colorB, this.colorA], i / this.lines);
-            Utils.drawLine(this.ctx, a.x, a.y, b.x, b.y, color, 1);
+            this.ctx.strokeStyle = color;
+            Utils.drawLine(this.ctx, a.x, a.y, b.x, b.y, 1, color);
         }
 
         this.ctx.resetTransform();

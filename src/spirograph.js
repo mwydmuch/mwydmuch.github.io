@@ -93,7 +93,7 @@ class Spirograph extends Animation {
         for (let i = 1; i < this.vertices; ++i) {
             let next = this.getXY(i * lenPerVertex, this.time, scale);
             const color = Utils.lerpColor(this.colorA, this.colorB, i / this.vertices);
-            Utils.drawLine(this.ctx, start.x, start.y, next.x, next.y, color, 1);
+            Utils.drawLine(this.ctx, start.x, start.y, next.x, next.y, 1, color);
             start = next;
         }
 

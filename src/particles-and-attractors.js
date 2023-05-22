@@ -98,7 +98,7 @@ class ParticlesAndAttractors extends Animation {
             p.y += Math.sin(d) * this.particlesSpeed;
 
             // To make it look smooth even at high speeds, draw a line between the previous and new positions instead of a point
-            Utils.drawLine(this.ctx, prevX, prevY, p.x, p.y, color);
+            Utils.drawLine(this.ctx, prevX, prevY, p.x, p.y, 1, color);
         }
 
         if(this.drawAttractors)

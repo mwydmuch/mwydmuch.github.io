@@ -18,6 +18,10 @@ class AnimationQueue {
         }
         return timeLeft;
     }
+
+    clear(){
+        this.queue = [];
+    }
 }
 
 module.exports = AnimationQueue;

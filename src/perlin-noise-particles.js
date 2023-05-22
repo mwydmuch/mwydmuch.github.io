@@ -68,7 +68,7 @@ class PerlinNoiseParticles extends Animation {
         for(let p of this.particles){
             // To make it look smooth even at high speeds, draw a line between the previous and new positions instead of a point
             // Drawing a line also results with a better antialiasing
-            Utils.drawLine(this.ctx, p.prevX, p.prevY, p.x, p.y, p.color, 2 * p.radius * this.particlesSize); 
+            Utils.drawLine(this.ctx, p.prevX, p.prevY, p.x, p.y, 2 * p.radius * this.particlesSize, p.color); 
         }
         this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     }

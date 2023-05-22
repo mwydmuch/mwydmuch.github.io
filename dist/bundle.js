@@ -159,6 +159,10 @@ class AnimationQueue {
         }
         return timeLeft;
     }
+
+    clear(){
+        this.queue = [];
+    }
 }
 
 module.exports = AnimationQueue;
@@ -352,7 +356,8 @@ class Cardioids extends Animation {
             let color;
             if(this.rainbowColors) color = 'hsl(' + i / this.lines * 360 + ', 100%, 75%)';
             else color = Utils.lerpColorsPallet([this.colorA, this.colorB, this.colorA], i / this.lines);
-            Utils.drawLine(this.ctx, a.x, a.y, b.x, b.y, color, 1);
+            this.ctx.strokeStyle = color;
+            Utils.drawLine(this.ctx, a.x, a.y, b.x, b.y, 1, color);
         }
 
         this.ctx.resetTransform();
@@ -1033,15 +1038,15 @@ class GameOfLifeIsometric extends GameOfLife {
         for (let i = 0; i < this.gridHeight; ++i) {
             const x = i * -this.xShift,
                 y = i * this.yShift;
-            Utils.drawLine(ctx, x, y, x + eastX, y + eastY, color);
-            Utils.drawLine(ctx, -x, y, -x + westX, y + westY, color);
+            Utils.drawLine(ctx, x, y, x + eastX, y + eastY, 1, color);
+            Utils.drawLine(ctx, -x, y, -x + westX, y + westY, 1, color);
         }
 
         // Draw outline
-        Utils.drawLine(ctx, 0, 0, eastX, eastY, color, 3);
-        Utils.drawLine(ctx, 0, 0, westX, westY, color, 3);
-        Utils.drawLine(ctx, westX, westY, southX, southY, color, 3);
-        Utils.drawLine(ctx, eastX, eastY, southX, southY, color, 3);
+        Utils.drawLine(ctx, 0, 0, eastX, eastY, 3, color);
+        Utils.drawLine(ctx, 0, 0, westX, westY, 3, color);
+        Utils.drawLine(ctx, westX, westY, southX, southY, 3, color);
+        Utils.drawLine(ctx, eastX, eastY, southX, southY, 3, color);
     }
 
     drawPrerenderedCube(x, y, idx){
@@ -1631,7 +1636,7 @@ class GradientDescent extends Animation {
             [x1, y1] = o.getW();
             o.update(this.func.grad(o.getW()));
             [x2, y2] = o.getW();
-            Utils.drawLine(this.ctx, x1 * this.scale, -y1 * this.scale, x2 * this.scale, -y2 * this.scale, this.colorsAlt[i], 2);
+            Utils.drawLine(this.ctx, x1 * this.scale, -y1 * this.scale, x2 * this.scale, -y2 * this.scale, 2, this.colorsAlt[i]);
         }
 
         this.ctx.resetTransform();
@@ -1891,7 +1896,7 @@ const ParticlesWaves = require("./particles-waves");
 const PerlinNoiseParticles = require("./perlin-noise-particles");
 const RockPaperScissors = require("./rock-paper-scissors-automata");
 const Quadtree = require("./quadtree");
-const RecursiveAnimation = require("./recursion");
+const RecursiveRectangles = require("./recursive-rectangles");
 const ShortestPath = require("./shortest-path");
 const SineWaves = require("./sine-waves");
 const Sorting = require("./sorting");
@@ -1998,7 +2003,7 @@ let animations = [
     {class: PerlinNoiseParticles, name: "perlin noise"},
     {class: RockPaperScissors, name: "rock-paper-scissors automata"},
     {class: Quadtree, name: "quadtree"},
-    {class: RecursiveAnimation, name: "recursive animation"},
+    {class: RecursiveRectangles, name: "recursive rectangles"},
     {class: ShortestPath, name: "shortest path"},
     {class: Sorting, name: "sorting"},
     {class: SpinningShapes, name: "spinning shapes"},
@@ -2090,8 +2095,13 @@ function updateStats(now, drawTime) {
 function render() {
     if(paused) return;
 
-    const now = getTime(),
-          timeElapsed = now - then;
+    const now = getTime();
+    let timeElapsed = now - then;
+        
+    if(document.hidden){
+        then = now;
+        timeElapsed = 0;
+    }
 
     // Limit framerate
     if (timeElapsed >= framesInterval) {
@@ -2424,7 +2434,7 @@ function updateUI(){
     }
 }
 
-},{"./3n+1":1,"./cardioids":4,"./circular-waves":5,"./coding":6,"./figures-spiral":8,"./game-of-life":10,"./game-of-life-isometric":9,"./glitch":11,"./gradient-descent":12,"./matrix":15,"./mlinpl":16,"./network":17,"./neural-network":18,"./particles-and-attractors":20,"./particles-vortex":21,"./particles-waves":22,"./perlin-noise-particles":23,"./quadtree":24,"./recursion":26,"./rock-paper-scissors-automata":27,"./shortest-path":28,"./sine-waves":29,"./sorting":30,"./spinning-shapes":31,"./spirograph":32,"./tree":33,"./utils":34}],15:[function(require,module,exports){
+},{"./3n+1":1,"./cardioids":4,"./circular-waves":5,"./coding":6,"./figures-spiral":8,"./game-of-life":10,"./game-of-life-isometric":9,"./glitch":11,"./gradient-descent":12,"./matrix":15,"./mlinpl":16,"./network":17,"./neural-network":18,"./particles-and-attractors":20,"./particles-vortex":21,"./particles-waves":22,"./perlin-noise-particles":23,"./quadtree":24,"./recursive-rectangles":26,"./rock-paper-scissors-automata":27,"./shortest-path":28,"./sine-waves":29,"./sorting":30,"./spinning-shapes":31,"./spirograph":32,"./tree":33,"./utils":34}],15:[function(require,module,exports){
 'use strict';
 
 const NAME = "Matrix digital rain",
@@ -2916,7 +2926,7 @@ class NeuralNetwork extends Animation {
                     const v = Utils.clip(n1.v, 0, 1),
                           color = this.colors[this.colors.length - 1 - Math.floor(v * this.colors.length)];
                     this.ctx.globalAlpha = v;
-                    Utils.drawLine(this.ctx, n1.x, n1.y, n2.x, n2.y, color, 1 + v);
+                    Utils.drawLine(this.ctx, n1.x, n1.y, n2.x, n2.y, 1 + v, color);
                 }
             }
         }
@@ -3400,7 +3410,7 @@ class ParticlesAndAttractors extends Animation {
             p.y += Math.sin(d) * this.particlesSpeed;
 
             // To make it look smooth even at high speeds, draw a line between the previous and new positions instead of a point
-            Utils.drawLine(this.ctx, prevX, prevY, p.x, p.y, color);
+            Utils.drawLine(this.ctx, prevX, prevY, p.x, p.y, 1, color);
         }
 
         if(this.drawAttractors)
@@ -3688,7 +3698,7 @@ class PerlinNoiseParticles extends Animation {
         for(let p of this.particles){
             // To make it look smooth even at high speeds, draw a line between the previous and new positions instead of a point
             // Drawing a line also results with a better antialiasing
-            Utils.drawLine(this.ctx, p.prevX, p.prevY, p.x, p.y, p.color, 2 * p.radius * this.particlesSize); 
+            Utils.drawLine(this.ctx, p.prevX, p.prevY, p.x, p.y, 2 * p.radius * this.particlesSize, p.color); 
         }
         this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     }
@@ -3963,10 +3973,12 @@ module.exports = Queue;
 },{}],26:[function(require,module,exports){
 'use strict';
 
-const NAME = "recursion",
-      FILE = "recursion.js",
+const NAME = "recursive rectangles",
+      FILE = "recursion-rectangles.js",
       DESC = `
-Recursion animation.
+Simple recursive animation. 
+Each rectangle contains three smaller rectangles, which move around.
+One randomly chosen rectangle is always moving to the empty space.
 `;
 
 const Animation = require("./animation");
@@ -3974,11 +3986,10 @@ const AnimationQueue = require("./animation-queue");
 const Utils = require("./utils");
 
 
-class RecursiveRect {
+class RecursiveRectangle {
     constructor(depth, rand) {
-        this.depth = depth;
+        this.depth = null;
         this.rand = rand;
-
         this.animQueue = new AnimationQueue();
         this.children = [];
         this.positions = {
@@ -3988,26 +3999,15 @@ class RecursiveRect {
             3: {x: 1, y: 1, from: [1, 2]},
         }
 
-        if(depth > 0){
-            this.children = [
-                {object: new RecursiveRect(depth - 1, this.rand), position: 0},
-                {object: new RecursiveRect(depth - 1, this.rand), position: 1},
-                {object: new RecursiveRect(depth - 1, this.rand), position: 2},
-            ];
-
-            for(let c of this.children){
-                c["x"] = this.positions[c.position]["x"];
-                c["y"] = this.positions[c.position]["y"];
-            }
-        }
-    }  
+        this.setDepth(depth);
+    }
 
     update(elapsed) {
+        if(this.children.length === 0) return;
+
         for(let c of this.children){
             c.object.update(elapsed);
         }
-
-        if(this.children.length === 0) return;
 
         while(this.animQueue.step(elapsed) > 0){
             let takenPositions = new Set();
@@ -4025,8 +4025,6 @@ class RecursiveRect {
                 }
             }
 
-            //console.log(this.depth, elapsed, takenPositions, freePositions, freePosition, positionToMove, objectToMove);
-
             const oldPos = this.positions[objectToMove.position],
                   duration = this.depth / 2;
             objectToMove.position = freePosition;
@@ -4041,24 +4039,56 @@ class RecursiveRect {
         }
     }
 
+    setDepth(depth) {
+        if(depth === 0 && this.children.length){
+            this.children = [];
+            this.animQueue.clear();
+        }
+        else if(depth > 0){
+            if (this.children.length === 0){
+                this.children = [
+                    {object: new RecursiveRectangle(depth - 1, this.rand), position: 0},
+                    {object: new RecursiveRectangle(depth - 1, this.rand), position: 1},
+                    {object: new RecursiveRectangle(depth - 1, this.rand), position: 2},
+                ];
+    
+                for(let c of this.children){
+                    c["x"] = this.positions[c.position]["x"];
+                    c["y"] = this.positions[c.position]["y"];
+                }
+            } else {
+                for(let c of this.children) c.object.setDepth(depth - 1);
+            }
+        }
+        this.depth = depth;
+    }
+
     draw(ctx, size) {
         const nextSize = size / 2;
-        ctx.strokeRect(-0.5 * size, -0.5 * size, size, size);
-        for(let c of this.children){
-            ctx.save();
-            ctx.translate((-0.5 + c.x) * nextSize, (-0.5 + c.y) * nextSize);
-            c.object.draw(ctx, nextSize);
-            ctx.restore();
+        if(this.children.length === 0){
+            ctx.strokeRect(-0.5 * size, -0.5 * size, nextSize, nextSize);
+            ctx.strokeRect(0, -0.5 * size, nextSize, nextSize);
+            ctx.strokeRect(-0.5 * size, 0, nextSize, nextSize);
+            ctx.strokeRect(0, 0, nextSize, nextSize);
+        }
+        else {
+            ctx.strokeRect(-0.5 * size, -0.5 * size, size, size);
+            for(let c of this.children){
+                ctx.save();
+                ctx.translate((-0.5 + c.x) * nextSize, (-0.5 + c.y) * nextSize);
+                c.object.draw(ctx, nextSize);
+                ctx.restore();
+            }
         }
     }
 }
 
-class Recursion extends Animation {
-    constructor(canvas, colors, colorsAlt, depth = 9, speed = 1) {
+class RecursiveRectangles extends Animation {
+    constructor(canvas, colors, colorsAlt, depth = 8, speed = 1) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
         this.depth = depth;
         this.speed = speed;
-        this.object = new RecursiveRect(this.depth, this.rand);
+        this.object = new RecursiveRectangle(this.depth, this.rand);
     }
 
     update(elapsed) {
@@ -4074,18 +4104,24 @@ class Recursion extends Animation {
         this.clear();
         const size = Math.max(this.ctx.canvas.width, this.ctx.canvas.height);
         this.ctx.strokeStyle = this.colors[0];
-        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        this.ctx.fillStyle = this.colors[0];
+        this.ctx.translate(size / 2, size / 2);
         this.object.draw(this.ctx, size);
         this.ctx.resetTransform();
     }
 
+    updateDepth() {
+        this.object.setDepth(this.depth);
+    }
+
     getSettings() {
-        return [{prop: "speed", type: "float", step: 0.25, min: 0.5, max: 8},
+        return [{prop: "depth", type: "int", min: 3, max: 12, toCall: "updateDepth"},
+                {prop: "speed", type: "float", step: 0.25, min: 0.5, max: 8},
                 this.getSeedSettings()];
     }
 }
 
-module.exports = Recursion;
+module.exports = RecursiveRectangles;
 
 },{"./animation":3,"./animation-queue":2,"./utils":34}],27:[function(require,module,exports){
 'use strict';
@@ -5346,7 +5382,7 @@ class Spirograph extends Animation {
         for (let i = 1; i < this.vertices; ++i) {
             let next = this.getXY(i * lenPerVertex, this.time, scale);
             const color = Utils.lerpColor(this.colorA, this.colorB, i / this.vertices);
-            Utils.drawLine(this.ctx, start.x, start.y, next.x, next.y, color, 1);
+            Utils.drawLine(this.ctx, start.x, start.y, next.x, next.y, 1, color);
             start = next;
         }
 
@@ -5665,9 +5701,9 @@ module.exports = {
         ctx.lineTo(x2, y2);
     },
 
-    drawLine(ctx, x1, y1, x2, y2, color, width = 1){
+    drawLine(ctx, x1, y1, x2, y2, width, color){
         ctx.lineWidth = width;
-        ctx.strokeStyle = color;
+        if(typeof color !== "undefined") ctx.strokeStyle = color;
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
@@ -5688,7 +5724,7 @@ module.exports = {
     },
 
     fillCircle(ctx, x, y, radius, color){
-        ctx.fillStyle = color;
+        if(typeof color !== "undefined") ctx.fillStyle = color;
         ctx.beginPath();
         ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
         ctx.fill();
@@ -5696,6 +5732,7 @@ module.exports = {
 
     strokeCircle(ctx, x, y, radius, color){
         ctx.strokeStyle = color;
+        if(typeof color !== "undefined") ctx.strokeStyle = color;
         ctx.beginPath();
         ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
         ctx.stroke();

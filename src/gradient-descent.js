@@ -290,7 +290,7 @@ class GradientDescent extends Animation {
             [x1, y1] = o.getW();
             o.update(this.func.grad(o.getW()));
             [x2, y2] = o.getW();
-            Utils.drawLine(this.ctx, x1 * this.scale, -y1 * this.scale, x2 * this.scale, -y2 * this.scale, this.colorsAlt[i], 2);
+            Utils.drawLine(this.ctx, x1 * this.scale, -y1 * this.scale, x2 * this.scale, -y2 * this.scale, 2, this.colorsAlt[i]);
         }
 
         this.ctx.resetTransform();

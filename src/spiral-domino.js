@@ -32,9 +32,8 @@ class SpiralDomino extends Animation {
 
             let v = Utils.rotateVec2d(Utils.createVec2d(36, 0), this.time + p);
 
-            Utils.drawLine(this.ctx, x - v.x, y - v.y, x + v.x, y + v.y, this.colorsAlt[0]);
-
-            Utils.drawLine(this.ctx, x2, y2, x, y, this.colors[0]);
+            Utils.drawLine(this.ctx, x - v.x, y - v.y, x + v.x, y + v.y, 1, this.colorsAlt[0]);
+            Utils.drawLine(this.ctx, x2, y2, x, y, 1, this.colors[0]);
         }
     }
 }

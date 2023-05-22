@@ -209,9 +209,9 @@ module.exports = {
         ctx.lineTo(x2, y2);
     },
 
-    drawLine(ctx, x1, y1, x2, y2, color, width = 1){
+    drawLine(ctx, x1, y1, x2, y2, width, color){
         ctx.lineWidth = width;
-        ctx.strokeStyle = color;
+        if(typeof color !== "undefined") ctx.strokeStyle = color;
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
@@ -232,7 +232,7 @@ module.exports = {
     },
 
     fillCircle(ctx, x, y, radius, color){
-        ctx.fillStyle = color;
+        if(typeof color !== "undefined") ctx.fillStyle = color;
         ctx.beginPath();
         ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
         ctx.fill();
@@ -240,6 +240,7 @@ module.exports = {
 
     strokeCircle(ctx, x, y, radius, color){
         ctx.strokeStyle = color;
+        if(typeof color !== "undefined") ctx.strokeStyle = color;
         ctx.beginPath();
         ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
         ctx.stroke();

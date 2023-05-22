@@ -1,9 +1,11 @@
 'use strict';
 
-const NAME = "recursion",
-      FILE = "recursion.js",
+const NAME = "recursive rectangles",
+      FILE = "recursion-rectangles.js",
       DESC = `
-Recursion animation.
+Simple recursive animation. 
+Each rectangle contains three smaller rectangles, which move around.
+One randomly chosen rectangle is always moving to the empty space.
 `;
 
 const Animation = require("./animation");
@@ -11,11 +13,10 @@ const AnimationQueue = require("./animation-queue");
 const Utils = require("./utils");
 
 
-class RecursiveRect {
+class RecursiveRectangle {
     constructor(depth, rand) {
-        this.depth = depth;
+        this.depth = null;
         this.rand = rand;
-
         this.animQueue = new AnimationQueue();
         this.children = [];
         this.positions = {
@@ -25,26 +26,15 @@ class RecursiveRect {
             3: {x: 1, y: 1, from: [1, 2]},
         }
 
-        if(depth > 0){
-            this.children = [
-                {object: new RecursiveRect(depth - 1, this.rand), position: 0},
-                {object: new RecursiveRect(depth - 1, this.rand), position: 1},
-                {object: new RecursiveRect(depth - 1, this.rand), position: 2},
-            ];
-
-            for(let c of this.children){
-                c["x"] = this.positions[c.position]["x"];
-                c["y"] = this.positions[c.position]["y"];
-            }
-        }
-    }  
+        this.setDepth(depth);
+    }
 
     update(elapsed) {
+        if(this.children.length === 0) return;
+
         for(let c of this.children){
             c.object.update(elapsed);
         }
-
-        if(this.children.length === 0) return;
 
         while(this.animQueue.step(elapsed) > 0){
             let takenPositions = new Set();
@@ -62,8 +52,6 @@ class RecursiveRect {
                 }
             }
 
-            //console.log(this.depth, elapsed, takenPositions, freePositions, freePosition, positionToMove, objectToMove);
-
             const oldPos = this.positions[objectToMove.position],
                   duration = this.depth / 2;
             objectToMove.position = freePosition;
@@ -78,24 +66,56 @@ class RecursiveRect {
         }
     }
 
+    setDepth(depth) {
+        if(depth === 0 && this.children.length){
+            this.children = [];
+            this.animQueue.clear();
+        }
+        else if(depth > 0){
+            if (this.children.length === 0){
+                this.children = [
+                    {object: new RecursiveRectangle(depth - 1, this.rand), position: 0},
+                    {object: new RecursiveRectangle(depth - 1, this.rand), position: 1},
+                    {object: new RecursiveRectangle(depth - 1, this.rand), position: 2},
+                ];
+    
+                for(let c of this.children){
+                    c["x"] = this.positions[c.position]["x"];
+                    c["y"] = this.positions[c.position]["y"];
+                }
+            } else {
+                for(let c of this.children) c.object.setDepth(depth - 1);
+            }
+        }
+        this.depth = depth;
+    }
+
     draw(ctx, size) {
         const nextSize = size / 2;
-        ctx.strokeRect(-0.5 * size, -0.5 * size, size, size);
-        for(let c of this.children){
-            ctx.save();
-            ctx.translate((-0.5 + c.x) * nextSize, (-0.5 + c.y) * nextSize);
-            c.object.draw(ctx, nextSize);
-            ctx.restore();
+        if(this.children.length === 0){
+            ctx.strokeRect(-0.5 * size, -0.5 * size, nextSize, nextSize);
+            ctx.strokeRect(0, -0.5 * size, nextSize, nextSize);
+            ctx.strokeRect(-0.5 * size, 0, nextSize, nextSize);
+            ctx.strokeRect(0, 0, nextSize, nextSize);
+        }
+        else {
+            ctx.strokeRect(-0.5 * size, -0.5 * size, size, size);
+            for(let c of this.children){
+                ctx.save();
+                ctx.translate((-0.5 + c.x) * nextSize, (-0.5 + c.y) * nextSize);
+                c.object.draw(ctx, nextSize);
+                ctx.restore();
+            }
         }
     }
 }
 
-class Recursion extends Animation {
-    constructor(canvas, colors, colorsAlt, depth = 9, speed = 1) {
+class RecursiveRectangles extends Animation {
+    constructor(canvas, colors, colorsAlt, depth = 8, speed = 1) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
         this.depth = depth;
         this.speed = speed;
-        this.object = new RecursiveRect(this.depth, this.rand);
+        this.object = new RecursiveRectangle(this.depth, this.rand);
     }
 
     update(elapsed) {
@@ -111,15 +131,21 @@ class Recursion extends Animation {
         this.clear();
         const size = Math.max(this.ctx.canvas.width, this.ctx.canvas.height);
         this.ctx.strokeStyle = this.colors[0];
-        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        this.ctx.fillStyle = this.colors[0];
+        this.ctx.translate(size / 2, size / 2);
         this.object.draw(this.ctx, size);
         this.ctx.resetTransform();
     }
 
+    updateDepth() {
+        this.object.setDepth(this.depth);
+    }
+
     getSettings() {
-        return [{prop: "speed", type: "float", step: 0.25, min: 0.5, max: 8},
+        return [{prop: "depth", type: "int", min: 3, max: 12, toCall: "updateDepth"},
+                {prop: "speed", type: "float", step: 0.25, min: 0.5, max: 8},
                 this.getSeedSettings()];
     }
 }
 
-module.exports = Recursion;
+module.exports = RecursiveRectangles;

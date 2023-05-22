@@ -26,7 +26,7 @@ const ParticlesWaves = require("./particles-waves");
 const PerlinNoiseParticles = require("./perlin-noise-particles");
 const RockPaperScissors = require("./rock-paper-scissors-automata");
 const Quadtree = require("./quadtree");
-const RecursiveAnimation = require("./recursion");
+const RecursiveRectangles = require("./recursive-rectangles");
 const ShortestPath = require("./shortest-path");
 const SineWaves = require("./sine-waves");
 const Sorting = require("./sorting");
@@ -133,7 +133,7 @@ let animations = [
     {class: PerlinNoiseParticles, name: "perlin noise"},
     {class: RockPaperScissors, name: "rock-paper-scissors automata"},
     {class: Quadtree, name: "quadtree"},
-    {class: RecursiveAnimation, name: "recursive animation"},
+    {class: RecursiveRectangles, name: "recursive rectangles"},
     {class: ShortestPath, name: "shortest path"},
     {class: Sorting, name: "sorting"},
     {class: SpinningShapes, name: "spinning shapes"},
@@ -225,8 +225,13 @@ function updateStats(now, drawTime) {
 function render() {
     if(paused) return;
 
-    const now = getTime(),
-          timeElapsed = now - then;
+    const now = getTime();
+    let timeElapsed = now - then;
+        
+    if(document.hidden){
+        then = now;
+        timeElapsed = 0;
+    }
 
     // Limit framerate
     if (timeElapsed >= framesInterval) {

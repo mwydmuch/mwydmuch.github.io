@@ -54,7 +54,7 @@ class NeuralNetwork extends Animation {
                     const v = Utils.clip(n1.v, 0, 1),
                           color = this.colors[this.colors.length - 1 - Math.floor(v * this.colors.length)];
                     this.ctx.globalAlpha = v;
-                    Utils.drawLine(this.ctx, n1.x, n1.y, n2.x, n2.y, color, 1 + v);
+                    Utils.drawLine(this.ctx, n1.x, n1.y, n2.x, n2.y, 1 + v, color);
                 }
             }
         }

@@ -117,15 +117,15 @@ class GameOfLifeIsometric extends GameOfLife {
         for (let i = 0; i < this.gridHeight; ++i) {
             const x = i * -this.xShift,
                 y = i * this.yShift;
-            Utils.drawLine(ctx, x, y, x + eastX, y + eastY, color);
-            Utils.drawLine(ctx, -x, y, -x + westX, y + westY, color);
+            Utils.drawLine(ctx, x, y, x + eastX, y + eastY, 1, color);
+            Utils.drawLine(ctx, -x, y, -x + westX, y + westY, 1, color);
         }
 
         // Draw outline
-        Utils.drawLine(ctx, 0, 0, eastX, eastY, color, 3);
-        Utils.drawLine(ctx, 0, 0, westX, westY, color, 3);
-        Utils.drawLine(ctx, westX, westY, southX, southY, color, 3);
-        Utils.drawLine(ctx, eastX, eastY, southX, southY, color, 3);
+        Utils.drawLine(ctx, 0, 0, eastX, eastY, 3, color);
+        Utils.drawLine(ctx, 0, 0, westX, westY, 3, color);
+        Utils.drawLine(ctx, westX, westY, southX, southY, 3, color);
+        Utils.drawLine(ctx, eastX, eastY, southX, southY, 3, color);
     }
 
     drawPrerenderedCube(x, y, idx){
