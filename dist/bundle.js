@@ -1923,9 +1923,11 @@ let fps = 30,
     fixedHeight = 0;
 
 // For stats
-let frames = 0,
-    startTime = 0,
-    sumDrawTime = 0;
+let sampleSize = 30,
+    frames = 0,
+    avgDrawTime = 0,
+    avgElapsedTime = 0, 
+    trueThen = 0;
 
 const colors = [ // Green palette
     "#349BA9",
@@ -2041,11 +2043,12 @@ function getTime(){
 
 function updateAnimation(newAnimationId) {
     frames = 0;
-    startTime = getTime();
-    sumDrawTime = 0;
+    avgDrawTime = 0;
+    avgElapsedTime = 0;
     animationId = newAnimationId;
     animation = new animations[animationId].class(canvas, colors, colorsAlt);
     then = getTime();
+    trueThen = then;
     animation.resize();
     updateUI();
 }
@@ -2073,19 +2076,18 @@ function checkResize() {
     lastHeight = canvas.height;
 }
 
-function updateStats(now, drawTime) {
+function updateStats(timeElapsed, drawTime) {
     if(elemBgStats) {
         ++frames;
-        sumDrawTime += drawTime;
-        const avgFrameTime = (now - startTime) / frames,
-              avgDrawTime = sumDrawTime / frames;
+        avgElapsedTime = (avgElapsedTime * (sampleSize - 1) + timeElapsed) / sampleSize;
+        avgDrawTime = (avgDrawTime * (sampleSize - 1) + drawTime) / sampleSize;
 
         if(frames % fps === 0){
             elemBgStats.innerHTML = `canvas size: ${canvas.width} x ${canvas.height}</br>
                                     target frames interval: ${Math.round(framesInterval)} ms</br>
                                     target fps: ${fps}</br>
-                                    avg. frames interval: ${Math.round(avgFrameTime)} ms</br>
-                                    avg. fps: ${Math.round(1000 / avgFrameTime)}</br>
+                                    avg. frames interval: ${Math.round(avgElapsedTime)} ms</br>
+                                    avg. fps: ${Math.round(1000 / avgElapsedTime)}</br>
                                     avg. draw time: ${Math.round(avgDrawTime + 1)} ms</br>
                                     possible fps: ${Math.round(1000 / avgDrawTime + 1)}`;
         }
@@ -2099,6 +2101,7 @@ function render() {
     let timeElapsed = now - then;
         
     if(document.hidden){
+        trueThen = now;
         then = now;
         timeElapsed = 0;
     }
@@ -2120,7 +2123,8 @@ function render() {
 
         // Update the stats
         const drawTime = getTime() - drawStart;
-        updateStats(now, drawTime);
+        updateStats(now - trueThen, drawTime);
+        trueThen = now;
    }
 
    requestAnimationFrame(render);
