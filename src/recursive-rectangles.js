@@ -6,6 +6,8 @@ const NAME = "recursive rectangles",
 Simple recursive animation. 
 Each rectangle contains three smaller rectangles, which move around.
 One randomly chosen rectangle is always moving to the empty space.
+
+Coded with no external dependencies, using only canvas API.
 `;
 
 const Animation = require("./animation");
@@ -121,9 +123,6 @@ class RecursiveRectangles extends Animation {
     update(elapsed) {
         elapsed /= 1000;
         elapsed *= this.speed;
-        this.time += elapsed;
-        ++this.frame;
-
         this.object.update(elapsed);
     }
 

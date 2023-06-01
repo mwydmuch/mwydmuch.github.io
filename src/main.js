@@ -24,7 +24,8 @@ const ParticlesAndAttractors = require("./particles-and-attractors");
 const ParticlesVortex = require("./particles-vortex");
 const ParticlesWaves = require("./particles-waves");
 const PerlinNoiseParticles = require("./perlin-noise-particles");
-const RockPaperScissors = require("./rock-paper-scissors-automata");
+const RockPaperScissorsAutomata = require("./rock-paper-scissors-automata");
+const SandAutomata = require("./sand-automata");
 const Quadtree = require("./quadtree");
 const RecursiveRectangles = require("./recursive-rectangles");
 const ShortestPath = require("./shortest-path");
@@ -133,7 +134,8 @@ let animations = [
     {class: ParticlesVortex, name: "particles vortex"},
     {class: ParticlesWaves, name: "particles waves"},
     {class: PerlinNoiseParticles, name: "perlin noise"},
-    {class: RockPaperScissors, name: "rock-paper-scissors automata"},
+    {class: RockPaperScissorsAutomata, name: "rock-paper-scissors automata"},
+    {class: SandAutomata, name: "sand automata"},
     {class: Quadtree, name: "quadtree"},
     {class: RecursiveRectangles, name: "recursive rectangles"},
     {class: ShortestPath, name: "shortest path"},

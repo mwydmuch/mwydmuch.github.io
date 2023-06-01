@@ -43,8 +43,8 @@ class Grid extends Animation {
     resizeGrid(newGridWidth, newGridHeight){
         let newGrid = new Array(newGridWidth * newGridHeight);
 
-        for (let y = 0; y < newGridHeight; y++) {
-            for (let x = 0; x < newGridWidth; x++) {
+        for (let y = 0; y < newGridHeight; ++y) {
+            for (let x = 0; x < newGridWidth; ++x) {
                 const cellCord = x + y * newGridWidth;
                 if(x < this.gridWidth && y < this.gridHeight) newGrid[cellCord] = this.grid[this.getIdx(x, y)];
                 else newGrid[cellCord] = this.newCellState(x, y);
