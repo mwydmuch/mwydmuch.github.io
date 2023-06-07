@@ -22,6 +22,7 @@ class SandAutomata extends Grid {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
         this.cellSize = cellSize;
         this.blockSize = blockSize;
+        this.maxBlockSize = 12;
         
         // All tetris blocks with all rotations
         this.blocksTemplates = [
@@ -82,6 +83,10 @@ class SandAutomata extends Grid {
              " X"],
         ]
 
+        this.generateBlocks();
+    }
+
+    generateBlocks(){
         // Generate real blocks
         this.blocks = [];
         for(let tempalte of this.blocksTemplates){
@@ -100,7 +105,6 @@ class SandAutomata extends Grid {
 
             this.blocks.push(newBlock);
         }
-        
     }
 
     update(elapsed){
@@ -162,7 +166,7 @@ class SandAutomata extends Grid {
         for (let x = 0; x < this.gridWidth; ++x) {
             for (let y = 4 * this.blockSize; y < this.gridHeight; ++y) {
                 const val = this.getVal(x, y),
-                      drawY = y - 4 * this.blockSize;
+                      drawY = y - 4 * this.maxBlockSize;
                 if(val >= 0){ // Do not draw if the state is the first state (small optimization)
                     this.ctx.fillStyle = this.colors[val];
                     this.ctx.fillRect(x * this.cellSize, drawY * this.cellSize, this.cellSize, this.cellSize);
@@ -173,7 +177,7 @@ class SandAutomata extends Grid {
 
     resize() {
         const newGridWidth = Math.ceil(this.ctx.canvas.width / this.cellSize),
-              newGridHeight = Math.ceil(this.ctx.canvas.height / this.cellSize) + 4 * this.blockSize;
+              newGridHeight = Math.ceil(this.ctx.canvas.height / this.cellSize) + 4 * this.maxBlockSize;
         
         let newGrid = new Array(newGridWidth * newGridHeight);
         newGrid.fill(-1);
@@ -197,6 +201,7 @@ class SandAutomata extends Grid {
 
     getSettings() {
         return [{prop: "cellSize", type: "int", min: 2, max: 12, toCall: "resize"},
+                {prop: "blockSize", type: "int", min: 1, max: this.maxBlockSize, toCall: "generateBlocks"},
                 this.getSeedSettings()];
     }
 }
