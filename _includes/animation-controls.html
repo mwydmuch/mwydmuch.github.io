@@ -1,0 +1,51 @@
+{% comment %}
+Expects following parameters:
+    controls-title
+    controls-style
+{% endcomment %}
+<!-- Animation settings panel -->
+<div id="background-settings-controls" class="floating-controls" style="{{ include.controls-style }}">
+    {{ include.controls-title }} <span id="background-settings-close">[<i class="fas fa-close"></i>]</span>
+    <div id="background-settings-controls-global-list" class="settings-section">
+        <div>
+            <span class="setting-name">animation = </span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="animation" id="background-settings-animation-select"></select></span>
+        </div>
+        <div>
+            <span class="nowrap tooltip" data-tooltip="This will show you">[<a id="background-play-pause"><i class="fas fa-pause"></i> pause</a>]</span>
+            <span class="nowrap">[<a id="background-restart"><i class="fas fa-backward-step"></i> restart</a>]</span>
+            <span class="nowrap">[<a id="background-previous"><i class="fas fa-backward-fast"></i> prev.</a>]</span>
+            <span class="nowrap">[<a id="background-reset"><i class="fas fa-rotate-left"></i> reset</a>]</span>
+            <span class="nowrap">[<a id="background-next"><i class="fas fa-forward-fast"></i> next</a>]</span>
+            <span class="nowrap">[<a id="background-code"><i class="fas fa-file-code"></i> code</a>]</span>
+        </div>
+    </div>
+    <div class="accordion">
+        <input id="background-description-accordion" type="checkbox" name="accordion-checkbox" hidden>
+        <label class="accordion-header c-hand" for="background-description-accordion"><i class="icon icon-arrow-right mr-1"></i>Animation description</label>
+        <div class="accordion-body justify">
+            <div id="background-description" class="settings-section"></div>
+        </div>
+    </div>
+    <div class="accordion"> 
+        <input id="background-settings-controls-accordion" type="checkbox" name="accordion-checkbox" hidden>
+        <label class="accordion-header c-hand" for="background-settings-controls-accordion"><i class="icon icon-arrow-right mr-1"></i>Animation settings</label>
+        <div class="accordion-body justify">
+            <div id="background-settings-default-list" class="settings-section">
+                <div>
+                    <span class="setting-name">canvas size = </span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="animation-size" id="background-settings-animation-size"></select></span>
+                </div>
+                <div>
+                    <span class="setting-name">fps = </span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="animation-size" id="background-settings-animation-fps"></select></span>
+                </div>
+                <div id="background-settings-controls-list"></div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion">
+        <input id="background-rendering-stats-accordion" type="checkbox" name="accordion-checkbox" hidden>
+        <label class="accordion-header c-hand" for="background-rendering-stats-accordion"><i class="icon icon-arrow-right mr-1"></i>Rendering statistics</label>
+        <div class="accordion-body justify">
+            <div id="background-stats" class="settings-section"></div>
+        </div>
+    </div>
+</div>

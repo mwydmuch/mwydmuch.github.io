@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include head.html %}
+
+<body>
+    {% include homepage-header.html %}
+
+    <div id="main-content" class="main-content">
+        <section class="container grid-lg">
+            <div class="columns">
+              <div class="column">
+                    {{ content }}
+                </div>
+            </div>
+        </section>
+    </div>
+
+    {% include animation-controls.html controls-title="BACKGROUND SETTINGS" controls-style="left: 1rem; top: 1rem; display: none;" %}
+    {% include footer.html %}
+    {% include js.html %}
+</body>
+</html>
