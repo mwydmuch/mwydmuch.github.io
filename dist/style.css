@@ -85,7 +85,7 @@ ul ul {
   color: #FFFFFF;
   padding: 0.05rem 0.25rem;
   margin: 0 0.05rem;
-  background-image: linear-gradient(135deg, #E52C2C, #e84343);
+  background-image: linear-gradient(135deg, #E7302A, #ea4641);
 }
 .reverse-mlinpl-red a,
 .reverse-mlinpl-red a:link,
@@ -95,6 +95,22 @@ ul ul {
   color: #FFFFFF;
 }
 .reverse-mlinpl-red i {
+  display: inline;
+}
+.reverse-mlss-blue {
+  color: #FFFFFF;
+  padding: 0.05rem 0.25rem;
+  margin: 0 0.05rem;
+  background-image: linear-gradient(135deg, #6DB6C6, #7fbfcd);
+}
+.reverse-mlss-blue a,
+.reverse-mlss-blue a:link,
+.reverse-mlss-blue a:visited,
+.reverse-mlss-blue a:hover,
+.reverse-mlss-blue a:active {
+  color: #FFFFFF;
+}
+.reverse-mlss-blue i {
   display: inline;
 }
 .reverse-mlinpl-purple {
