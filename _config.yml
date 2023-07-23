@@ -20,10 +20,10 @@
 
 
 # Head settings
-title: Marek Wydmuch's personal website
+title: Marek Wydmuch
 email: mwydmuch@cs.put.poznan.pl
 description: >-
-  ML in PL Conference 2023 is an event focused on the best of Machine Learning both in academia and in business.
+  Marek Wydmuch's personal website
 main-image: images/mlinpl-conference-2023-logo-black.png
 twitter-username: "@mwydmuch"
 baseurl: "" # the subpath of your site, e.g. /blog
@@ -45,7 +45,13 @@ defaults:
 theme: minima
 plugins:
   - jekyll-seo-tag
+  - jekyll-paginate
+  - jekyll-sitemap
+  - jekyll-titles-from-headings
 
+permalink: /:title
+paginate: 5
+paginate_path: "/blog/page:num/"
 markdown: kramdown
 permalink: pretty
 

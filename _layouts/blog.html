@@ -3,19 +3,84 @@
 {% include head.html %}
 
 <body>
-    {% include homepage-header.html %}
+    {% include blog-header.html %}
+
+    {% if site.paginate %}
+        {% assign posts = paginator.posts %}
+    {% else %}
+        {% assign posts = site.posts %}
+    {% endif %}
 
     <div id="main-content" class="main-content">
         <section class="container grid-lg">
             <div class="columns">
-              <div class="column">
-                    Here will be content of my blog!
+                <div class="column">
+                    {%- assign date_format = site.minima.date_format | default: "%B %-d, %Y" -%}
+            
+                    {%- for post in posts -%}
+                        <div>
+                            <a href="{{ post.url | relative_url }}">
+                                <img style="width: 100%" src="{{ post.image | relative_url }}" alt="{{ post.title | escape }}">
+                                <h2>{{ post.title | escape }}</h2>
+                                <span class="reverse-second">Posted: {{ post.date | date: date_format }}</span>
+                                <span>
+                                    Tags:
+                                    {% for tag in post.tags %}
+                                        <a href="/tags/{{ tag }}">{{ tag }}</a>
+                                    {% endfor %}
+                                </span>
+                                <p>
+                                    {{ post.content | strip_html | escape | truncate: 400}}
+                                </p>
+                            </a>
+                        </div>
+                    {%- endfor -%}
+                        
+                    {% if site.paginate %}
+                    <!-- Pagination -->
+                    <ul class="pagination">
+                        {%- if paginator.previous_page %}
+                        <li class="page-item">
+                            <a href="{{ paginator.previous_page_path | relative_url }}" tabindex="-1">Previous</a>
+                        </li>
+                        {%- else %}
+                        <li class="page-item disabled">
+                            <a href="#" tabindex="-1">Previous</a>
+                        </li>
+                        {%- endif %}
+
+                        {% for page in (1..paginator.total_pages) %}
+                            {% if page == paginator.page %}
+                            <li class="page-item active">
+                                <a href="#">{{ page }}</a>
+                            </li>
+                            {% elsif page == 1 %}
+                            <li class="page-item">
+                                <a href="{{ '/blog' | relative_url }}">{{ page }}</a>
+                            </li>
+                            {% else %}
+                            <li class="page-item">
+                                <a href="{{ site.paginate_path | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page }}">{{ page }}</a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {%- if paginator.next_page %}
+                        <li class="page-item">
+                            <a href="{{ paginator.next_page_path | relative_url }}">Next</a>
+                        </li>
+                        {%- else %}
+                        <li class="page-item disabled">
+                            <a href="#">Next</a>
+                        </li>
+                        {%- endif %}
+                    </ul>
+                    {%- endif %}
                 </div>
             </div>
         </section>
     </div>
 
-    {% include animation-controls.html controls-title="BACKGROUND SETTINGS" controls-style="left: 1rem; top: 1rem; display: none;" %}
     {% include footer.html %}
     {% include js.html %}
 </body>
