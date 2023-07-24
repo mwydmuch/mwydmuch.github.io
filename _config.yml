@@ -54,6 +54,7 @@ paginate: 5
 paginate_path: "/blog/page:num/"
 markdown: kramdown
 permalink: pretty
+usemathjax: true
 
 sass:
   style: compressed # possible values: nested expanded compact compressed
