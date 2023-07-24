@@ -4,8 +4,11 @@
 
 <body>
     <div id="background-controls-bar">
-        [<a href="index.html" id="background-settings-home" ><i class="fas fa-home"></i> home</a>]
-        <span class="nowrap">[<a id="background-settings"><i class="fas fa-cog"></i> settings / <i class="fas fa-file-lines"></i> description</a>]</span>
+        [<a href="{{ './' | relative-url }}" id="background-settings-home" ><i class="fas fa-home"></i>&nbsp;home</a>]
+        [<a href="{{ './blog' | relative-url }}"><i class="fa fa-pen-to-square"></i>&nbsp;blog</a>] 
+        <span class="nowrap" style="border-left: 1px solid white; margin-left: 0.25rem; padding-left: 0.35rem">
+            [<a id="background-settings"><i class="fas fa-cog"></i> settings / <i class="fas fa-file-lines"></i> description</a>]
+        </span>
         <span style="border-left: 1px solid white; margin-left: 0.25rem; padding-left: 0.35rem">Animation: <span id="background-name"></span></span>
         <span style="float: right;"><i class="fa fa-code"></i> with <i class="fa fa-keyboard"></i> by Marek Wydmuch</span>
     </div>
@@ -17,7 +20,6 @@
     <div id="background-container" class="container"></div>
 
     {% include animation-controls.html controls-title="ANIMATION SETTINGS" controls-style="left: 1rem; top: 2.4rem;" %}
-    {% include footer.html %}
     {% include js.html %}
 </body>
 </html>

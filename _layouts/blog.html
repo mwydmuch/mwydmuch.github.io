@@ -3,7 +3,9 @@
 {% include head.html %}
 
 <body>
-    {% include blog-header.html %}
+    <header>
+        {% include blog-nav.html %}
+    </header>
 
     {% if site.paginate %}
         {% assign posts = paginator.posts %}
@@ -18,22 +20,24 @@
                     {%- assign date_format = site.minima.date_format | default: "%B %-d, %Y" -%}
             
                     {%- for post in posts -%}
-                        <div>
-                            <a href="{{ post.url | relative_url }}">
-                                <img style="width: 100%" src="{{ post.image | relative_url }}" alt="{{ post.title | escape }}">
-                                <h2>{{ post.title | escape }}</h2>
-                                <span class="reverse-second">Posted: {{ post.date | date: date_format }}</span>
-                                <span>
-                                    Tags:
-                                    {% for tag in post.tags %}
-                                        <a href="/tags/{{ tag }}">{{ tag }}</a>
-                                    {% endfor %}
-                                </span>
-                                <p>
-                                    {{ post.content | strip_html | escape | truncate: 400}}
-                                </p>
-                            </a>
+                        <a href="{{ post.url | relative_url }}">
+                        <div class="post-item">   
+                            <div class="header-image-wrapper">
+                                <img src="{{ post.image | relative_url }}" alt="{{ post.title | escape }}">
+                            </div>
+                            <h2><span class="reverse-second">{{ post.title | escape }}</span></h2>
+                            <span class="reverse-second">Posted: {{ post.date | date: date_format }}</span>
+                            <!-- <span>
+                                Tags:
+                                {% for tag in post.tags %}
+                                    <a href="/tags/{{ tag }}">{{ tag }}</a>
+                                {% endfor %}
+                            </span> -->                           
+                            <p>
+                                {{ post.content | strip_html | escape | truncate: 470}} <span style="float: right;">[Read more...]</span>
+                            </p>
                         </div>
+                        </a>
                     {%- endfor -%}
                         
                     {% if site.paginate %}
@@ -41,11 +45,11 @@
                     <ul class="pagination">
                         {%- if paginator.previous_page %}
                         <li class="page-item">
-                            <a href="{{ paginator.previous_page_path | relative_url }}" tabindex="-1">Previous</a>
+                            [<a href="{{ paginator.previous_page_path | relative_url }}" tabindex="-1"><i class="fa-solid fa-angle-left"></i> Previous</a>]
                         </li>
                         {%- else %}
                         <li class="page-item disabled">
-                            <a href="#" tabindex="-1">Previous</a>
+                            [<a href="#" tabindex="-1"><i class="fa-solid fa-angle-left"></i> Previous</a>]
                         </li>
                         {%- endif %}
 
@@ -56,22 +60,22 @@
                             </li>
                             {% elsif page == 1 %}
                             <li class="page-item">
-                                <a href="{{ '/blog' | relative_url }}">{{ page }}</a>
+                                [<a href="{{ '/blog' | relative_url }}">{{ page }}</a>]
                             </li>
                             {% else %}
                             <li class="page-item">
-                                <a href="{{ site.paginate_path | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page }}">{{ page }}</a>
+                                [<a href="{{ site.paginate_path | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page }}">{{ page }}</a>]
                             </li>
                             {% endif %}
                         {% endfor %}
 
                         {%- if paginator.next_page %}
                         <li class="page-item">
-                            <a href="{{ paginator.next_page_path | relative_url }}">Next</a>
+                            [<a href="{{ paginator.next_page_path | relative_url }}">Next <i class="fa-solid fa-angle-right"></i></a>]
                         </li>
                         {%- else %}
                         <li class="page-item disabled">
-                            <a href="#">Next</a>
+                            [<a href="#">Next <i class="fa-solid fa-angle-right"></i></a>]
                         </li>
                         {%- endif %}
                     </ul>

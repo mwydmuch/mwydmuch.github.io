@@ -10,11 +10,11 @@
             <div class="column">
                 <div id="me">
                     <div id="photo" class="section">
-                        <img alt="Marek Wydmuch" src="assets/marek-wydmuch.jpg"/>
+                        <img alt="Marek Wydmuch" src="{{ './assets/marek-wydmuch.jpg' | relative_url }}"/>
                     </div>
             
                     <div id="name" class="section reverse-second">
-                        <h2 class="d-inline">Hi! </h2><h3 class="d-inline"> I'm Marek Wydmuch</h3>
+                        <h1 class="d-inline" style="font-size: 1.8rem;">Hi! <span style="font-size: 1.5rem;">I'm Marek Wydmuch</span></h1>
                     </div>
             
                     <div id="about" class="section">
@@ -29,7 +29,7 @@
                     </div>
             
                     <div id="profiles" class="section">
-                          <a href="/blog" class="profile-link"><i class="fa fa-pen-to-square"></i>&nbsp;My blog</a>
+                          <a href="{{ './blog' | relative_url }}" class="profile-link"><i class="fa fa-pen-to-square"></i>&nbsp;My blog</a>
                           <a href="https://www.linkedin.com/in/marekwydmuch" class="profile-link"><i class="fa fa-linkedin"></i>&nbsp;LinkedIn</a>
                           <a href="https://github.com/mwydmuch" class="profile-link"><i class="fa fa-github"></i>&nbsp;GitHub</a>
                           <a href="https://scholar.google.com/citations?user=lMXyoEAAAAAJ" class="profile-link"><i class="fa fa-google"></i>&nbsp;Google Scholar</a>
