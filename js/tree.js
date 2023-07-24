@@ -1,8 +1,15 @@
 'use strict';
 
+/*
+Work in progress.
 
-// Work in progress.
-// Binary tree animation.
+Tree visualization algorithms:
+- the Reingold–Tilford algorithm,
+- the root-centric radial layout algorithm
+- the parent-centric
+- PLANET a radial layout algorithm 
+(https://homexinlu.com/files/PLANETA%20radial%20layout%20algorithm%20for%20network%20visualization.pdf)
+*/
 
 const Animation = require("./animation");
 const Utils = require("./utils");

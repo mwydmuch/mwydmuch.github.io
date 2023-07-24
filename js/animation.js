@@ -92,7 +92,7 @@ class Animation {
     }
 
     getCodeUrl(){
-        return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/src/" + this.file;
+        return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/src/js" + this.file;
     }
 
     getDescription(){

@@ -127,7 +127,7 @@ let animations = [
     {class: Glitch, name: "glitch"},
     {class: GradientDescent, name: "gradient descent"},
     {class: Matrix, name: "matrix rain"},
-    //{class: MLinPL, name: "mlinpl"}, // Disabled cause it is not ready
+    {class: MLinPL, name: "mlinpl"}, // Disabled cause it is not ready
     {class: Network, name: "network"},
     //{class: NeuralNetwork, name: "neural network"}, // Disabled till updated
     {class: ParticlesAndAttractors, name: "particles and attractors"},
