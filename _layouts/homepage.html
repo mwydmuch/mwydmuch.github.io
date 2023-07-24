@@ -8,11 +8,11 @@
     <div id="main-content" class="main-content">
         <section class="container grid-lg">
             <div class="columns">
-              <div class="column">
-                <p style="margin-bottom: 1rem; font-size: 1.2em;">
-                  <span class="reverse-second">Welcome to my personal website, below you will find some of the things I've made and done:</span>
-                </p>
-              </div>
+                <div class="column">
+                    <p style="margin-bottom: 1rem; font-size: 1.2em;">
+                        <span class="reverse-second">Welcome to my personal website, below you will find some of the things I've made and done:</span>
+                    </p>
+                </div>
             </div>
         </section>
     
@@ -26,6 +26,10 @@
 
     {% include animation-controls.html controls-title="BACKGROUND SETTINGS" controls-style="left: 1rem; top: 1rem; display: none;" %}
     {% include footer.html %}
+
+    <!-- Main animations script -->
+    <script src="{{ './bundle.min.js' | relative_url }}"></script>
+
     {% include js.html %}
 </body>
 </html>
