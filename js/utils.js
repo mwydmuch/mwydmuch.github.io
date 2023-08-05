@@ -41,6 +41,11 @@ module.exports = {
         return Math.sqrt(-2.0 * Math.log( 1 - rndGen())) * Math.cos(2.0 * Math.PI * rndGen());
     },
 
+    // Standard Normal variate using Box-Muller transform.
+    randomNormal(mean, stdDev, rndGen = Math.random) {
+        return mean + this.randomBoxMuller(rndGen) * stdDev;
+    },
+
     randomArray(length, min, max, rndGen = Math.random){
         return Array(length).fill().map(() => this.randomRange(min, max, rndGen))
     },
@@ -209,7 +214,7 @@ module.exports = {
         ctx.lineTo(x2, y2);
     },
 
-    drawLine(ctx, x1, y1, x2, y2, width, color){
+    drawLine(ctx, x1, y1, x2, y2, width = 1, color){
         ctx.lineWidth = width;
         if(typeof color !== "undefined") ctx.strokeStyle = color;
         ctx.beginPath();

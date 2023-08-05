@@ -11,17 +11,16 @@ const Utils = require("./utils");
 
 class MLinPL extends Animation {
     constructor(canvas, colors, colorsAlt,
-                particlesDensityModifier = 1,
+                particlesDensity = 1,
                 connectionDistanceThreshold = 125) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
 
-        this.particlesDensityModifier = particlesDensityModifier;
+        this.particlesDensity = particlesDensity;
         this.connectionDistanceThreshold = connectionDistanceThreshold;
 
         this.width = 0;
         this.height = 0;
 
-        this.mainColors = ["#000000"];  // 
         this.bgParticles = []; // Background particles
         this.mgParticles = []; // Middle ground particles
         this.fgParticles = []; // Foreground particles
@@ -43,8 +42,11 @@ class MLinPL extends Animation {
             groups: [[]], // This group of particles has no connecting lines
             density: 0.00015
         };
+        let fgColors = {}
+        fgColors[this.colors[0]] = 0.4;
+        fgColors["#000"] = 0.6;
         this.fgParticlesCfg = {
-            colors: {1: 0.2, 0: 0.8},
+            colors: fgColors,
             lineColors: {"#000": 0.3, "#222": 0.3, "#444": 0.3},
             sizeMin: 2,
             sizeRange: 5,
@@ -54,27 +56,56 @@ class MLinPL extends Animation {
         };
     }
 
-    updateParticle(p, elapsed){
-        let prevSinVal = Math.sin(p.x / p.freq) * p.amp;
-        p.x += p.velX;
-        let nextSinVal = Math.sin(p.x / p.freq) * p.amp;
-        p.y += p.velY * (prevSinVal - nextSinVal);
+    updateParticles(particles, elapsed){
+        for (let p of particles) {
+            let prevSinVal = Math.sin(p.x / p.freq) * p.amp * elapsed / 33;
+            p.x += p.velX;
+            let nextSinVal = Math.sin(p.x / p.freq) * p.amp * elapsed / 33;
+            p.y += p.velY * (prevSinVal - nextSinVal);
+        
+            // Wrap around the left and right
+            if(p.x < -this.connectionDistanceThreshold) p.x = this.width + this.connectionDistanceThreshold; 
+            else if(p.x > this.width + this.connectionDistanceThreshold) p.x = -this.connectionDistanceThreshold;
+            if(p.y + p.size >= this.height) p.velY *= -1;
+        }
+    }
+
+    createParticles(x, y, width, height, particlesCfg) {
+        let newParticlesCount = width * height * particlesCfg.density * this.particlesDensity,
+            newParticles = [];
     
-        // Wrap around the left and right
-        if(p.x < -connectionDistanceThreshold) p.x = width + connectionDistanceThreshold; 
-        else if(p.x > width + connectionDistanceThreshold) p.x = -connectionDistanceThreshold;
-        if(p.y + p.size >= height) p.velY *= -1;
+        // Create new particles
+        for(let i = 0; i < newParticlesCount; i++){
+            newParticles.push({
+                x: this.rand() * (width + 2 * this.connectionDistanceThreshold) + x - this.connectionDistanceThreshold,
+                y: Utils.randomNormal(0, 1, this.rand) * 1 / 2 * height + y,
+                velX: (this.rand() * 2 - 1) * particlesCfg.speedMax,
+                velY: (this.rand() * 2 - 1) * particlesCfg.speedMax,
+                freq: this.rand() * 100 + 100,
+                amp: this.rand() * 100,
+                size: this.rand() * particlesCfg.sizeRange + particlesCfg.sizeMin,
+                color: typeof particlesCfg.colors === "string" ? particlesCfg.colors : Utils.randomRulletChoice(particlesCfg.colors, this.rand),
+                lineColor: typeof particlesCfg.lineColors === "string" ? particlesCfg.lineColors : Utils.randomRulletChoice(particlesCfg.lineColors, this.rand),
+                groups: Utils.randomChoice(particlesCfg.groups, this.rand),
+            });
+        }
+    
+        return newParticles;
     }
 
     spawnParticles(x, y, width, height) {
-        this.bgParticles.push(...this.createParticles(x, y, width, height, bgParticlesCfg));
-        this.mgParticles.push(...this.createParticles(x, y, width, height, mgParticlesCfg));
-        this.fgParticles.push(...this.createParticles(x, y, width, height, fgParticlesCfg));
+        this.bgParticles.push(...this.createParticles(x, y, width, height, this.bgParticlesCfg));
+        this.mgParticles.push(...this.createParticles(x, y, width, height, this.mgParticlesCfg));
+        this.fgParticles.push(...this.createParticles(x, y, width, height, this.fgParticlesCfg));
     }
 
     update(elapsed){
-        // Update position of particles
-        for (let p of particles) updateParticle(p, elapsed);
+        super.update(elapsed);
+
+        // Update all the groups of particles
+        this.updateParticles(this.bgParticles, elapsed);
+        this.updateParticles(this.mgParticles, elapsed);
+        this.updateParticles(this.fgParticles, elapsed);
     }
 
     drawParticles(particles){
@@ -88,11 +119,11 @@ class MLinPL extends Animation {
                       p2 = particles[j];
     
                 // This part can be done faster by creating indexes for groups, but I'm too lazy to implemt it
-                if(Utils.distVec2d(p1, p2) > connectionDistanceThreshold) continue;
+                if(Utils.distVec2d(p1, p2) > this.connectionDistanceThreshold) continue;
     
                 for (let g of p1.groups){  
                     if (p2.groups.includes(g)){
-                        Utils.drawLine(this.ctx, p1.x, p1.y, p2.x, p2.y, 1);
+                        Utils.drawLine(this.ctx, p1.x, p1.y, p2.x, p2.y, 1, p1.lineColor);
                         break;
                     }
                 }
@@ -100,10 +131,11 @@ class MLinPL extends Animation {
         }
     
         // Draw all particles
-        for (let p of particles) drawParticle(p);
+        for (let p of particles) Utils.fillCircle(this.ctx, p.x, p.y, p.size, p.color);
     }
 
     draw() {
+        // Draw all the groups of particles
         this.clear();
         this.drawParticles(this.bgParticles);
         this.drawParticles(this.mgParticles);
@@ -123,11 +155,13 @@ class MLinPL extends Animation {
         this.bgParticles = [];
         this.mgParticles = [];
         this.fgParticles = [];
-        spawnParticles(0, 0, this.width, this.height);
+        this.spawnParticles(0, 0, this.width, this.height);
     }
 
     getSettings() {
-        return [this.getSeedSettings()];
+        return [{prop: "particlesDensity", type: "float", min: 0, max: 2, step: 0.1, toCall: "resize"},
+                {prop: "connectionDistanceThreshold", type: "float", min: 0, max: 250, step: 1},
+                this.getSeedSettings()];
     }
 }
 

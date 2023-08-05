@@ -231,7 +231,8 @@ function render() {
 
     const now = getTime();
     let timeElapsed = now - then;
-        
+    
+    // Stop animation when tab is not visible to save resources
     if(document.hidden){
         trueThen = now;
         then = now;
