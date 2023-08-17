@@ -17,8 +17,8 @@ const Utils = require("./utils");
 
 class SandAutomata extends Grid {
     constructor(canvas, colors, colorsAlt,
-                cellSize = 4,
-                blockSize = 4) {
+                cellSize = 5,
+                blockSize = 5) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
         this.cellSize = cellSize;
         this.blockSize = blockSize;

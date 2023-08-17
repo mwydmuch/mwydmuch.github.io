@@ -12,21 +12,27 @@ const Utils = require("./utils");
 class MLinPL extends Animation {
     constructor(canvas, colors, colorsAlt,
                 particlesDensity = 1,
-                connectionDistanceThreshold = 125) {
+                connectionThreshold = 125,
+                originalColors = false) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
 
         this.particlesDensity = particlesDensity;
-        this.connectionDistanceThreshold = connectionDistanceThreshold;
+        this.connectionThreshold = connectionThreshold;
+        this.originalColors = originalColors;
 
         this.width = 0;
         this.height = 0;
+        
+        this.logo = new Image();
+        this.logo.src = "assets/logo-mlinpl.png";
 
+        this.particlesColors = [this.colors[0], "#000", "#222", "#444", "#AAA", "#EEE"];
         this.bgParticles = []; // Background particles
         this.mgParticles = []; // Middle ground particles
         this.fgParticles = []; // Foreground particles
         this.bgParticlesCfg = {
-            colors: "#EEE",
-            lineColors: "#EEE",
+            colors: {5: 1.0},
+            lineColors: {5: 1.0},
             sizeMin: 4,
             sizeRange: 3,
             speedMax: 0.5,
@@ -34,20 +40,17 @@ class MLinPL extends Animation {
             density: 0.00015
         };
         this.mgParticlesCfg = {
-            colors: "#AAA",
-            lineColors: "#AAA",
+            colors: {4: 1.0},
+            lineColors: {4: 1.0},
             sizeMin: 2,
             sizeRange: 2,
             speedMax: 0.75,
             groups: [[]], // This group of particles has no connecting lines
             density: 0.00015
         };
-        let fgColors = {}
-        fgColors[this.colors[0]] = 0.4;
-        fgColors["#000"] = 0.6;
         this.fgParticlesCfg = {
-            colors: fgColors,
-            lineColors: {"#000": 0.3, "#222": 0.3, "#444": 0.3},
+            colors: {0: 0.4, 1: 0.6},
+            lineColors: {1: 0.3, 2: 0.3, 3: 0.3},
             sizeMin: 2,
             sizeRange: 5,
             speedMax: 1,
@@ -64,8 +67,8 @@ class MLinPL extends Animation {
             p.y += p.velY * (prevSinVal - nextSinVal);
         
             // Wrap around the left and right
-            if(p.x < -this.connectionDistanceThreshold) p.x = this.width + this.connectionDistanceThreshold; 
-            else if(p.x > this.width + this.connectionDistanceThreshold) p.x = -this.connectionDistanceThreshold;
+            if(p.x < -this.connectionThreshold) p.x = this.width + this.connectionThreshold; 
+            else if(p.x > this.width + this.connectionThreshold) p.x = -this.connectionThreshold;
             if(p.y + p.size >= this.height) p.velY *= -1;
         }
     }
@@ -77,15 +80,15 @@ class MLinPL extends Animation {
         // Create new particles
         for(let i = 0; i < newParticlesCount; i++){
             newParticles.push({
-                x: this.rand() * (width + 2 * this.connectionDistanceThreshold) + x - this.connectionDistanceThreshold,
+                x: this.rand() * (width + 2 * this.connectionThreshold) + x - this.connectionThreshold,
                 y: Utils.randomNormal(0, 1, this.rand) * 1 / 2 * height + y,
                 velX: (this.rand() * 2 - 1) * particlesCfg.speedMax,
                 velY: (this.rand() * 2 - 1) * particlesCfg.speedMax,
                 freq: this.rand() * 100 + 100,
                 amp: this.rand() * 100,
                 size: this.rand() * particlesCfg.sizeRange + particlesCfg.sizeMin,
-                color: typeof particlesCfg.colors === "string" ? particlesCfg.colors : Utils.randomRulletChoice(particlesCfg.colors, this.rand),
-                lineColor: typeof particlesCfg.lineColors === "string" ? particlesCfg.lineColors : Utils.randomRulletChoice(particlesCfg.lineColors, this.rand),
+                color: Utils.randomRulletChoice(particlesCfg.colors, this.rand),
+                lineColor: Utils.randomRulletChoice(particlesCfg.lineColors, this.rand),
                 groups: Utils.randomChoice(particlesCfg.groups, this.rand),
             });
         }
@@ -119,11 +122,11 @@ class MLinPL extends Animation {
                       p2 = particles[j];
     
                 // This part can be done faster by creating indexes for groups, but I'm too lazy to implemt it
-                if(Utils.distVec2d(p1, p2) > this.connectionDistanceThreshold) continue;
+                if(Utils.distVec2d(p1, p2) > this.connectionThreshold) continue;
     
                 for (let g of p1.groups){  
                     if (p2.groups.includes(g)){
-                        Utils.drawLine(this.ctx, p1.x, p1.y, p2.x, p2.y, 1, p1.lineColor);
+                        Utils.drawLine(this.ctx, p1.x, p1.y, p2.x, p2.y, 1, this.particlesColors[p1.lineColor]);
                         break;
                     }
                 }
@@ -131,15 +134,22 @@ class MLinPL extends Animation {
         }
     
         // Draw all particles
-        for (let p of particles) Utils.fillCircle(this.ctx, p.x, p.y, p.size, p.color);
+        for (let p of particles) Utils.fillCircle(this.ctx, p.x, p.y, p.size, this.particlesColors[p.color]);
     }
 
     draw() {
+        if(this.originalColors) this.particlesColors[0] = "#E7322A";
+        else this.particlesColors[0] = this.colors[0];
+
         // Draw all the groups of particles
         this.clear();
         this.drawParticles(this.bgParticles);
         this.drawParticles(this.mgParticles);
         this.drawParticles(this.fgParticles);
+
+        if(this.originalColors){
+            this.ctx.drawImage(this.logo, (this.width - this.logo.width) / 2, (this.height - this.logo.height) / 2);
+        }
     }
 
     restart(){
@@ -160,7 +170,8 @@ class MLinPL extends Animation {
 
     getSettings() {
         return [{prop: "particlesDensity", type: "float", min: 0, max: 2, step: 0.1, toCall: "resize"},
-                {prop: "connectionDistanceThreshold", type: "float", min: 0, max: 250, step: 1},
+                {prop: "connectionThreshold", type: "float", min: 0, max: 250, step: 1},
+                {prop: "originalColors", type: "bool"},
                 this.getSeedSettings()];
     }
 }
