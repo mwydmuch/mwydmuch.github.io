@@ -107,10 +107,12 @@ class ThreeNPlusOne extends Animation {
         this.ctx.resetTransform();
 
         if(this.showStats){
+            let statsLines = [
+                `Current starting number: ${this.seqences.length}`,
+                `Highest reached number: ${this.max}`
+            ];
             this.resetFont();
-            const lineHeight = 20;
-            Utils.fillAndStrokeText(this.ctx, `Current starting number: ${this.seqences.length}`, lineHeight, this.ctx.canvas.height - 3 * lineHeight);
-            Utils.fillAndStrokeText(this.ctx, `Highest reached number: ${this.max}`, lineHeight, this.ctx.canvas.height - 2 * lineHeight);
+            this.drawTextLines(statsLines, this.lineHeight, this.ctx.canvas.height - (statsLines.length + 1) * this.lineHeight, true);
         }
     }
 
@@ -121,6 +123,7 @@ class ThreeNPlusOne extends Animation {
 
     restart(){
         this.seqences = [];
+        this.max = 0;
         super.restart();
     }
 

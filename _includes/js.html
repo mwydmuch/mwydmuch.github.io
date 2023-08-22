@@ -1,5 +1,5 @@
 <!-- Main animations script -->
-<script src="{{ './bundle.min.js' | relative_url }}?{{ page.date| date: "%Y%m%d" }}"></script>
+<script src="{{ './bundle.min.js' | relative_url }}?{{ site.time | date: "%Y%m%d%H%M" }}"></script>
 
 <!-- MathJax support -->
 {% if site.usemathjax or page.usemathjax %}

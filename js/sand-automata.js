@@ -1,7 +1,7 @@
 'use strict';
 
-const NAME = "Rock-paper-scissors automata",
-      FILE = "rock-paper-scissors-automata.js",
+const NAME = "sand automata",
+      FILE = "sand-automata.js",
       DESC = `
 Sand automata.
 

@@ -349,6 +349,6 @@ module.exports = {
     },
 
     addMultipleEventListener(element, events, handler) {
-        events.forEach(e => element.addEventListener(e, handler))
+        events.forEach(e => element.addEventListener(e, handler));
     }
 };

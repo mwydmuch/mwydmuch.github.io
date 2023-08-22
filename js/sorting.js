@@ -407,11 +407,12 @@ class Sorting extends Animation {
         }
 
         if(this.showStats){
-            this.resetFont();
-            const lineHeight = 20;
-            Utils.fillAndStrokeText(this.ctx, `Sorting algorithm: ${this.sortingAlgorithm}`, lineHeight, elementMaxHeight - 3 * lineHeight);
-            Utils.fillAndStrokeText(this.ctx, `Number of elements: ${this.numElements}`, lineHeight, elementMaxHeight - 2 * lineHeight);
-            Utils.fillAndStrokeText(this.ctx, `Number of elements comparisons: ${this.cmpCount} / ${this.cmpTotal}`, lineHeight, elementMaxHeight - lineHeight);
+            let statsLines = [
+                `Sorting algorithm: ${this.sortingAlgorithm}`,
+                `Number of elements: ${this.numElements}`,
+                `Number of elements comparisons: ${this.cmpCount} / ${this.cmpTotal}`
+            ];
+            this.drawTextLines(statsLines, this.lineHeight, this.ctx.canvas.height - (statsLines.length + 1) * this.lineHeight);
         }
     }
 

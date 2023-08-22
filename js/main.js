@@ -33,7 +33,7 @@ const SineWaves = require("./sine-waves");
 const Sorting = require("./sorting");
 const SpinningShapes = require("./spinning-shapes");
 const Spirograph = require("./spirograph");
-const Tree = require("./tree");
+const TreeVisualization = require("./tree-visualization");
 
 
 // Globals
@@ -113,7 +113,7 @@ const elemBgAnimationFps = document.getElementById("background-settings-animatio
 const elemBgAnimationSize = document.getElementById("background-settings-animation-size");
 
 if(canvas){
-    
+
     // Create the initial animation and initiate the animation loop
     // ---------------------------------------------------------------------------------------------------------------------
 
@@ -144,7 +144,7 @@ if(canvas){
         {class: SpinningShapes, name: "spinning shapes"},
         {class: Spirograph, name: "spirograph"},
         {class: SineWaves, name: "sine waves"},
-        //{class: Tree, name: "tree"}, // Disabled cause it is not ready
+        {class: TreeVisualization, name: "tree visualization"},
     ];
 
     const animationCount = animations.length;
