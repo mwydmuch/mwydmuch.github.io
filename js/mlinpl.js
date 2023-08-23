@@ -3,7 +3,13 @@
 const NAME = "ML in PL Network",
       FILE = "mlinpl.js",
       DESC = `
-Simple network animation, I've created for ML in PL websites.
+Simple network animation, I created for ML in PL.
+
+For the first time used on
+[ML in PL Conference 2023 website](https://conference2023.mlinpl.org/).
+and [MLSS^S 2023 website](https://mlss2023.mlinpl.org/).
+
+Coded with no external dependencies, using only canvas API.
 `;
 
 const Animation = require("./animation");

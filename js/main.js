@@ -216,7 +216,7 @@ if(canvas){
             avgDrawTime = (avgDrawTime * (sampleSize - 1) + drawTime) / sampleSize;
 
             if(frames % fps === 0){
-                elemBgStats.innerHTML = `canvas size: ${canvas.width} x ${canvas.height}</br>
+                elemBgStats.innerHTML = `canvas resolution: ${canvas.width} x ${canvas.height}</br>
                                         target frames interval: ${Math.round(framesInterval)} ms</br>
                                         target fps: ${fps}</br>
                                         avg. frames interval: ${Math.round(avgElapsedTime)} ms</br>
