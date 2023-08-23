@@ -11,12 +11,12 @@ Expects following parameters:
             <span class="setting-name">animation = </span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="animation" id="background-settings-animation-select"></select></span>
         </div>
         <div>
-            <span class="nowrap tooltip" data-tooltip="This will show you">[<a id="background-play-pause"><i class="fas fa-pause"></i> pause</a>]</span>
-            <span class="nowrap">[<a id="background-restart"><i class="fas fa-backward-step"></i> restart</a>]</span>
-            <span class="nowrap">[<a id="background-previous"><i class="fas fa-backward-fast"></i> prev.</a>]</span>
-            <span class="nowrap">[<a id="background-reset"><i class="fas fa-rotate-left"></i> reset</a>]</span>
-            <span class="nowrap">[<a id="background-next"><i class="fas fa-forward-fast"></i> next</a>]</span>
-            <span class="nowrap">[<a id="background-code"><i class="fas fa-file-code"></i> code</a>]</span>
+            <span class="nowrap tooltip" data-tooltip="Play/pause the animation">[<a id="background-play-pause"><i class="fas fa-pause"></i> pause</a>]</span>
+            <span class="nowrap tooltip" data-tooltip="Restart the animation keeping all the settings">[<a id="background-restart"><i class="fas fa-backward-step"></i> restart</a>]</span>
+            <span class="nowrap tooltip" data-tooltip="Change to the previous animation">[<a id="background-previous"><i class="fas fa-backward-fast"></i> prev.</a>]</span>
+            <span class="nowrap tooltip" data-tooltip="Rest animation to the initial state">[<a id="background-reset"><i class="fas fa-rotate-left"></i> reset</a>]</span>
+            <span class="nowrap tooltip" data-tooltip="Change to the next animation">[<a id="background-next"><i class="fas fa-forward-fast"></i> next</a>]</span>
+            <span class="nowrap tooltip" data-tooltip="Show code of the animation on GitHub">[<a id="background-code"><i class="fas fa-file-code"></i> code</a>]</span>
         </div>
     </div>
     <div class="accordion">
@@ -31,9 +31,11 @@ Expects following parameters:
         <label class="accordion-header c-hand" for="background-settings-controls-accordion"><i class="icon icon-arrow-right mr-1"></i>Animation settings</label>
         <div class="accordion-body justify">
             <div id="background-settings-default-list" class="settings-section">
+                <!-- <div class="tooltip" data-tooltip="Change resolution of the canvas"> -->
                 <div>
                     <span class="setting-name">canvas resolution = </span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="animation-size" id="background-settings-animation-size"></select></span>
                 </div>
+                <!-- <div class="tooltip" data-tooltip="Change target frames per second for the animation"> -->
                 <div>
                     <span class="setting-name">fps = </span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="animation-size" id="background-settings-animation-fps"></select></span>
                 </div>
