@@ -368,7 +368,7 @@ if(canvas){
 
     // Animation canvas size options
     if(elemBgAnimationSize) {
-        const animationSizes = ["fit", "512x512", "800x600", "1024x768", "1024x1024", "1280x720"];
+        const animationSizes = ["fit", "512x512", "800x600", "1024x768", "1024x1024", "1280x720", "1920x1080"];
         const animationSizeDefault = "fit";
         elemBgAnimationSize.innerHTML = "";
         for(let size of animationSizes) {
@@ -380,7 +380,9 @@ if(canvas){
             if(resizeMode !== "fit") {
                 fixedWidth = parseInt(resizeMode.split("x")[0]);
                 fixedHeight = parseInt(resizeMode.split("x")[1]);
+                canvas.classList.add("fixed-size");
             }
+            else canvas.classList.remove("fixed-size");
         });
     }
 
