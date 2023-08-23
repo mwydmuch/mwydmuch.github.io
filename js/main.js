@@ -128,7 +128,7 @@ if(canvas){
         {class: Glitch, name: "glitch"},
         {class: GradientDescent, name: "gradient descent"},
         {class: Matrix, name: "matrix rain"},
-        {class: MLinPL, name: "mlinpl"}, // Disabled cause it is not ready
+        {class: MLinPL, name: "mlinpl"},
         {class: Network, name: "network"},
         //{class: NeuralNetwork, name: "neural network"}, // Disabled till updated
         {class: ParticlesAndAttractors, name: "particles and attractors"},
@@ -144,7 +144,7 @@ if(canvas){
         {class: SpinningShapes, name: "spinning shapes"},
         {class: Spirograph, name: "spirograph"},
         {class: SineWaves, name: "sine waves"},
-        {class: TreeVisualization, name: "tree visualization"},
+        //{class: TreeVisualization, name: "tree visualization"}, // Disabled cause it is not ready
     ];
 
     const animationCount = animations.length;
