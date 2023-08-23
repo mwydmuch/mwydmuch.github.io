@@ -319,6 +319,7 @@ class ShortestPath extends Animation {
         this.ctx.resetTransform();
 
         if(this.showStats){
+            this.resetFont();
             let statsLines = [
                 `Search algorithm: ${this.searchAlgorithm}`,
                 `Number of visited nodes: ${this.visited}`,

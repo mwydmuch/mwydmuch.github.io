@@ -24,7 +24,7 @@ title: Marek Wydmuch
 email: mwydmuch@cs.put.poznan.pl
 description: >-
   Marek Wydmuch's personal website
-main-image: images/mlinpl-conference-2023-logo-black.png
+main-image: /assets/marek-wydmuch.jpg
 twitter-username: "@mwydmuch"
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://mwydmuch.pl" # the base hostname & protocol for your site, e.g. http://example.com

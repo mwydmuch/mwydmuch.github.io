@@ -407,6 +407,7 @@ class Sorting extends Animation {
         }
 
         if(this.showStats){
+            this.resetFont();
             let statsLines = [
                 `Sorting algorithm: ${this.sortingAlgorithm}`,
                 `Number of elements: ${this.numElements}`,
