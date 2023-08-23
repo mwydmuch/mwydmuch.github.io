@@ -3,29 +3,32 @@
 {% include head.html %}
 
 <body>
-    {% include homepage-header.html %}
-
-    <div id="main-content" class="main-content">
-        <section class="container grid-lg">
-            <div class="columns">
-                <div class="column">
-                    <p style="margin-bottom: 1rem; font-size: 1.2em;">
-                        <span class="reverse-second">Welcome to my personal website, below you will find some of the things I've made and done:</span>
-                    </p>
-                </div>
-            </div>
-        </section>
     
-        {% include homepage-news.html %}
-        {% include homepage-publications.html %}
-        {% include homepage-software.html %}
-        {% include homepage-mlinpl.html %}
-        {% include homepage-reviewing.html %}
-        {% include homepage-teaching.html %}
-    </div>
+{% include homepage-header.html %}
 
-    {% include animation-controls.html controls-title="BACKGROUND SETTINGS" controls-style="left: 1rem; top: 1rem; display: none;" %}
-    {% include footer.html %}
-    {% include js.html %}
+<div id="main-content" class="main-content">
+    <section class="container grid-lg">
+        <div class="columns">
+            <div class="column">
+                <p style="margin-bottom: 1rem; font-size: 1.2em;">
+                    <span class="reverse-second">Welcome to my personal website, below you will find some of the things I've made and done:</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    {% include homepage-news.html %}
+    {% include homepage-publications.html %}
+    {% include homepage-software.html %}
+    {% include homepage-mlinpl.html %}
+    {% include homepage-reviewing.html %}
+    {% include homepage-teaching.html %}
+</div>
+
+{% include animation-controls.html controls-title="BACKGROUND SETTINGS" controls-style="left: 1rem; top: 1rem; display: none;" %}
+{% include footer.html %}
+
+{% include js.html %}
+
 </body>
 </html>
