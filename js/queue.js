@@ -52,6 +52,10 @@ class Queue {
         this.size = 0;
         this.first = 0;
     }
+
+    size(){
+        return this.size;
+    }
 }
 
 module.exports = Queue;

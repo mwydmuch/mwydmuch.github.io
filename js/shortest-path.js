@@ -320,12 +320,12 @@ class ShortestPath extends Animation {
 
         if(this.showStats){
             this.resetFont();
-            const lineHeight = 20;
-            Utils.fillAndStrokeText(this.ctx, `Search algorithm: ${this.searchAlgorithm}`, lineHeight, this.ctx.canvas.height - 3 * lineHeight);
-            Utils.fillAndStrokeText(this.ctx, `Number of visited nodes: ${this.visited}`, lineHeight, this.ctx.canvas.height - 2 * lineHeight);
-            let pathText = this.queue.size === 0 ? 'Shortest path length: ' : 'Longest traveled path: ';
-            pathText += Utils.round(this.pathLenght);
-            Utils.fillAndStrokeText(this.ctx, pathText, lineHeight, this.ctx.canvas.height - lineHeight);
+            let statsLines = [
+                `Search algorithm: ${this.searchAlgorithm}`,
+                `Number of visited nodes: ${this.visited}`,
+                (this.queue.size === 0 ? 'Shortest path length: ' : 'Longest traveled path: ') + Utils.round(this.pathLenght)
+            ];
+            this.drawTextLines(statsLines, this.lineHeight, this.ctx.canvas.height - (statsLines.length + 1) * this.lineHeight);
         }
     }
 

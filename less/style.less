@@ -23,6 +23,7 @@
 
 // Other colors and gradients
 @mlinpl-red: #E52C2C;
+@mlss-blue: #6DB6C6;
 @mlinpl-purple: #7F4FB2;
 @put-blue: #006991;
 @yahoo-purple: #6000D3;
@@ -30,7 +31,7 @@
 @openai-blue: #21AEB9;
 @farama-green: #05505B;
 @vowpal-wabbit-pink: #FF81F9;
-@color-names: main, second, mlinpl-red, mlinpl-purple, put-blue, yahoo-purple, vizdoom-red, openai-blue, farama-green, vowpal-wabbit-pink;
+@color-names: main, second, mlinpl-red, mlss-blue, mlinpl-purple, put-blue, yahoo-purple, vizdoom-red, openai-blue, farama-green, vowpal-wabbit-pink;
 
 
 // Others
@@ -55,12 +56,19 @@ body {
   font-family: @font-family;
   color: @main-text;
   background: @background;
+  min-height: 100vh; 
+  display:flex; 
+  flex-direction:column;
 }
 
 a, a:link, a:visited, a:hover, a:active {
   color: @second;
   font-weight: @bold-font;
   cursor: pointer;
+}
+
+a:focus {
+  box-shadow: 0 0 0 .1rem rgba(67, 105, 107,.2) !important;
 }
 
 
@@ -170,41 +178,65 @@ ul{
 // LAYOUT
 // ---------------------------------------------------------------------------------------------------------------------
 
+.main-content {
+  flex: 1;
+}
 
 // Header
 // ---------------------------------------------------------------------------------------------------------------------
 
-.background, .animation-container {
-  box-shadow: 0px 0px 0px 2px @main;
+
+.animation-container{
+  width: 100%;
+  height: auto;
+  overflow: scroll;
+}
+
+.background-container{
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: block;
+  position: absolute;
+}
+
+.background, .animation {
+  overflow: hidden;
+  display: block;
+  top: 0;
+  left: 0;
   z-index: -1;
   margin: auto;
 }
 
 .background {
   position: absolute;
-  overflow: hidden;
 }
 
-.animation-container {
+.animation {
   position: relative;
-  display: block;
 }
 
-header {
+.fixed-size {
+  border: 2px solid @main;
+}
+
+.main-header {
   min-height: 100vh;
   width: 100%;
   display: table;
   border-bottom: 2px solid @main;
   margin-bottom: 5rem;
+}
 
-  .header-content {
-    display: table-cell;
-    vertical-align: middle;
-    text-align: center;
-    padding: 0;
-    position: relative;
-    height: 100%;
-  }
+.header-content {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  padding: 0;
+  position: relative;
+  height: 100%;
+  overflow: hidden;
 }
 
 
@@ -292,8 +324,6 @@ footer {
     }
   }
 }
-
-
 
 
 // Animations
@@ -555,4 +585,105 @@ input[type=range]::-moz-range-thumb {
   padding: 0 0 0 0.25rem;
   line-height: 1rem;
   font-size: unset;
+}
+
+
+// BLOG
+// ---------------------------------------------------------------------------------------------------------------------
+
+.post-header{
+  img {
+    width: 100%;
+    aspect-ratio: 3 / 1;
+    object-fit: cover;
+    object-position: top;
+  }
+
+  h1 {
+    margin-top: -5rem;
+    position: relative;
+  }
+}
+
+.post-item{
+  margin-bottom: 2rem;
+
+  .header-image-wrapper{
+    width: 100%;
+    display: block;
+    position: relative;
+    aspect-ratio: 4 / 1;
+
+    &::after{
+      transition: all 0.5s ease-in-out;
+      opacity: 1;
+      position: absolute;
+      content: "";
+      width: 100%;
+      top: 0;
+      left: 0;
+      background: linear-gradient(140deg, rgba(67, 105, 107, 0.25) 25%,rgba(67, 105, 107, 0.75) 100%);
+      aspect-ratio: 4 / 1;
+    }
+
+    img {
+      transition: all 0.5s ease-in-out;
+      width: 100%;
+      object-fit: cover;
+      filter: grayscale(1);
+      aspect-ratio: 4 / 1;
+      object-position: top;
+    }
+  }
+
+  &:hover{
+    .header-image-wrapper{
+      &::after{
+        opacity: 0;
+      }
+
+      img{
+        filter: grayscale(0);
+      }
+    }
+  }
+
+  h2 {
+    margin-top: -2rem;
+    position: relative;
+  }
+
+  p {
+    color: @main-text;
+    text-decoration: none !important;
+    font-weight: 400;
+
+    &:hover{
+      color: @main-text;
+      text-decoration: none !important;
+      font-weight: 400;
+    }
+  }
+}
+
+// Pagination fixes
+// ---------------------------------------------------------------------------------------------------------------------
+.pagination .page-item {
+  &.active a{
+    color: @background !important;
+    background: @main-gradient;
+    text-decoration: none;
+    padding: .2rem .4rem !important;
+  }
+
+  a, a:link, a:hover {
+    color: @second;
+    font-weight: @bold-font;
+    cursor: pointer;
+    padding: .2rem .2rem;
+  }
+
+  a:hover{
+    text-decoration: underline;
+  }
 }

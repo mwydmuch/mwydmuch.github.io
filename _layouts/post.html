@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include head.html %}
+
+<body>
+    <header>
+        {% include blog-nav.html %}
+        <div class="post-header">
+            <img src="{{ page.image | relative-url }}" alt="logo" style="width: 100%; height: auto;">
+            <div class="container grid-lg">
+                <div class="columns">
+                    <div class="column">
+                        <h1><span class="reverse-second">{{ page.title | escape }}</span></h1>
+                        <span class="reverse-second">Posted: {{ page.date | date: date_format }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div id="main-content" class="main-content">
+        <section class="container grid-lg">
+            <div class="columns">
+              <div class="column">
+                    {{ content }}
+                </div>
+            </div>
+        </section>
+        <section>
+            {%- if site.disqus.shortname -%}
+                {%- include disqus-comments.html -%}
+            {%- endif -%}
+        </section>
+    </div>
+
+    {% include footer.html %}
+    {% include js.html %}
+</body>
+</html>

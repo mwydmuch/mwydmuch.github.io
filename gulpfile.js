@@ -9,6 +9,7 @@ var cleanCSS = require('gulp-clean-css');
 var rename = require("gulp-rename");
 var uglify = require('gulp-uglify');
 var pkg = require('./package.json');
+var dest = "."
 
 // Set the banner content
 var banner = ['/*!\n',
@@ -20,9 +21,9 @@ var banner = ['/*!\n',
 
 // Compile LESS files from /less into /css
 gulpfile.task('less', function() {
-    return gulpfile.src('./src/style.less')
+    return gulpfile.src('./less/style.less')
         .pipe(less())
-        .pipe(gulpfile.dest('dist'))
+        .pipe(gulpfile.dest(dest))
         .pipe(browserSync.reload({
             stream: true
         }))
@@ -30,11 +31,11 @@ gulpfile.task('less', function() {
 
 // Minify compiled CSS
 gulpfile.task('minify-css', gulpfile.series('less', function() {
-    return gulpfile.src('./dist/style.css')
+    return gulpfile.src('./style.css')
         .pipe(cleanCSS({ compatibility: 'ie8' }))
         .pipe(rename({ suffix: '.min' }))
         .pipe(header(banner, { pkg: pkg }))
-        .pipe(gulpfile.dest('dist'))
+        .pipe(gulpfile.dest(dest))
         .pipe(browserSync.reload({
             stream: true
         }))
@@ -42,10 +43,10 @@ gulpfile.task('minify-css', gulpfile.series('less', function() {
 
 // Bundle JS
 gulpfile.task('bundle-js', function() {
-    return browserify('./src/main.js')
+    return browserify('./js/main.js')
         .bundle()
         .pipe(source('bundle.js'))
-        .pipe(gulpfile.dest('dist'))
+        .pipe(gulpfile.dest(dest))
         .pipe(browserSync.reload({
             stream: true
         }))
@@ -53,11 +54,11 @@ gulpfile.task('bundle-js', function() {
 
 // Minify JS
 gulpfile.task('minify-js', function() {
-    return gulpfile.src('./dist/bundle.js')
+    return gulpfile.src('./bundle.js')
         .pipe(uglify().on('error', util.log))
         .pipe(header(banner, { pkg: pkg }))
         .pipe(rename({ suffix: '.min' }))
-        .pipe(gulpfile.dest('dist'))
+        .pipe(gulpfile.dest(dest))
         .pipe(browserSync.reload({
             stream: true
         }))
@@ -76,9 +77,9 @@ gulpfile.task('browserSync', function() {
 
 // Dev task with browserSync
 gulpfile.task('dev', gulpfile.series('browserSync', 'less', 'minify-css', 'bundle-js', 'minify-js', function() {
-    gulpfile.watch('src/*.less', ['less', 'minify-css']);
-    gulpfile.watch('src/*.js', ['bundle-js', 'minify-js']);
+    gulpfile.watch('less/*.less', ['less', 'minify-css']);
+    gulpfile.watch('js/*.js', ['bundle-js', 'minify-js']);
     // Reloads the browser whenever HTML or JS files change
     gulpfile.watch('*.html', browserSync.reload);
-    gulpfile.watch('src/*.js', browserSync.reload);
+    gulpfile.watch('js/*.js', browserSync.reload);
 }));

@@ -1,3 +1,10 @@
+_site
+.sass-cache
+.jekyll-cache
+.jekyll-metadata
+style.css
+bundle.js
+vendor
 node_modules
 package-lock.json
 .DS_Store

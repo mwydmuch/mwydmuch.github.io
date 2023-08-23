@@ -41,6 +41,10 @@ class Animation {
         this.maxSeedValue = 999999;
         this.seed = this.assignIfRandom(seed, Math.round(Math.random() * this.maxSeedValue));
         this.setSeed(this.seed);
+        
+        // Text related variables
+        this.lineHeight = 20;
+        this.resetFont();
 
         // Debug flag
         this.debug = false;
@@ -54,6 +58,22 @@ class Animation {
         this.ctx.textBaseline = "alphabetic";        
         this.ctx.fillStyle = this.colors[0];
         this.ctx.strokeStyle = this.bgColor;
+        this.lineHeight = 20;
+    }
+
+    drawTextLines(lines, startX, startY, drawBg = false){
+        for(let i = 0; i < lines.length; ++i){
+            const line = lines[i],
+                  lineSize = this.ctx.measureText(line),
+                  y = startY + (i + 1) * this.lineHeight;
+            if(drawBg){
+                const prevFillStyle = this.ctx.fillStyle;
+                this.ctx.fillStyle = this.bgColor;
+                this.ctx.fillRect(startX, y - this.lineHeight, lineSize.width, this.lineHeight);
+                this.ctx.fillStyle = prevFillStyle;
+            }
+            Utils.fillAndStrokeText(this.ctx, line, startX, y);
+        }
     }
 
     setSeed(seed){
@@ -92,7 +112,7 @@ class Animation {
     }
 
     getCodeUrl(){
-        return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/src/" + this.file;
+        return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/src/js" + this.file;
     }
 
     getDescription(){

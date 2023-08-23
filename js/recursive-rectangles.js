@@ -129,6 +129,7 @@ class RecursiveRectangles extends Animation {
     draw() {
         this.clear();
         const size = Math.max(this.ctx.canvas.width, this.ctx.canvas.height);
+        this.ctx.lineWidth = 1;
         this.ctx.strokeStyle = this.colors[0];
         this.ctx.fillStyle = this.colors[0];
         this.ctx.translate(size / 2, size / 2);
@@ -141,7 +142,7 @@ class RecursiveRectangles extends Animation {
     }
 
     getSettings() {
-        return [{prop: "depth", type: "int", min: 3, max: 12, toCall: "updateDepth"},
+        return [{prop: "depth", type: "int", min: 3, max: 9, toCall: "updateDepth"},
                 {prop: "speed", type: "float", step: 0.25, min: 0.5, max: 8},
                 this.getSeedSettings()];
     }

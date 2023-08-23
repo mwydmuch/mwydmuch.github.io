@@ -1,7 +1,7 @@
 'use strict';
 
-const NAME = "Rock-paper-scissors automata",
-      FILE = "rock-paper-scissors-automata.js",
+const NAME = "sand automata",
+      FILE = "sand-automata.js",
       DESC = `
 Sand automata.
 
@@ -17,8 +17,8 @@ const Utils = require("./utils");
 
 class SandAutomata extends Grid {
     constructor(canvas, colors, colorsAlt,
-                cellSize = 4,
-                blockSize = 4) {
+                cellSize = 5,
+                blockSize = 5) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
         this.cellSize = cellSize;
         this.blockSize = blockSize;
