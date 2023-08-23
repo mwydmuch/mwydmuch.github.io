@@ -28,7 +28,7 @@ class GameOfLifeIsometric extends GameOfLife {
                  fadeDeadCells = true,
                  drawCellsGrid = true,
                  loopGrid = true,
-                 gridSize=1) {
+                 gridSize = 3/4) {
         super(canvas, colors, colorsAlt, cellSize, cellBasePadding, spawnProb, loopGrid);
 
         this.name = NAME;
@@ -36,6 +36,7 @@ class GameOfLifeIsometric extends GameOfLife {
         this.description = DESC;
         this.fadeDeadCells = fadeDeadCells;
         this.drawCellsGrid = drawCellsGrid;
+        this.gridSize = gridSize;
 
         this.sqrt3 = Math.sqrt(3);
         this.xShift = this.cellSize * this.sqrt3 / 2;
@@ -142,14 +143,14 @@ class GameOfLifeIsometric extends GameOfLife {
         if(this.drawCellsGrid) {
             if (!this.renderedGrid) {
                 let offCtx = Utils.createOffscreenCanvas(this.ctx.canvas.width, this.ctx.canvas.height).getContext('2d');
-                offCtx.translate(this.ctx.canvas.width / 2, 1 / 8 * this.ctx.canvas.height);
+                offCtx.translate(this.ctx.canvas.width / 2, (1 - this.gridSize) / 2 * this.ctx.canvas.height);
                 this.drawGrid(offCtx, 0, 0);
                 this.renderedGrid = offCtx.canvas;
             }
             this.ctx.drawImage(this.renderedGrid, 0, 0);
         }
 
-        this.ctx.translate(this.ctx.canvas.width / 2, 1/8 * this.ctx.canvas.height);
+        this.ctx.translate(this.ctx.canvas.width / 2, (1 - this.gridSize) / 2 * this.ctx.canvas.height);
 
         // Draw blocks
         for (let y = 0; y < this.gridHeight; ++y) {
@@ -168,8 +169,8 @@ class GameOfLifeIsometric extends GameOfLife {
     resize() {
         // Fill the whole screen (bad performance on low spec computers/mobile devices)
         //const newGridSize = Math.ceil((this.ctx.canvas.height + this.isoH) / this.cellSize);
-
-        const newGridSize = Math.ceil( 3/4 * this.ctx.canvas.height / this.cellSize);
+        const smallerSize = Math.min(this.ctx.canvas.width, this.ctx.canvas.height),
+              newGridSize = Math.ceil(this.gridSize * smallerSize / this.cellSize);
         this.resizeGrid(newGridSize, newGridSize);
         this.renderedGrid = null;
     }
@@ -178,6 +179,7 @@ class GameOfLifeIsometric extends GameOfLife {
         return [{prop: "loopGrid", type: "bool"},
                 {prop: "fadeDeadCells", type: "bool"},
                 {prop: "drawCellsGrid", type: "bool"},
+                {prop: "gridSize", type: "float", step: 0.01, min: 0, max: 2, toCall: "resize"},
                 {prop: "spawnProb", type: "float", step: 0.01, min: 0, max: 1, toCall: "restart"},
                 this.getSeedSettings()];
     }
