@@ -368,7 +368,7 @@ if(canvas){
 
     // Animation canvas size options
     if(elemBgAnimationSize) {
-        const animationSizes = ["fit", "512x512", "800x600", "1024x768", "1024x1024", "1280x720", "1920x1080"];
+        const animationSizes = ["fit", "512x512", "800x600", "1024x768", "1024x1024", "1280x720","1600x1200", "1920x1080", "2048x2048"];
         const animationSizeDefault = "fit";
         elemBgAnimationSize.innerHTML = "";
         for(let size of animationSizes) {
