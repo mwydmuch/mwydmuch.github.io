@@ -442,7 +442,7 @@ class ShortestPath extends Animation {
                 {prop: "startNewAfterFinish", type: "bool"},
                 {prop: "cellStyle", type: "select", values: this.cellStyles},
                 {prop: "showStats", type: "bool"},
-                //this.getSeedSettings()
+                this.getSeedSettings()
             ];
     }
 }

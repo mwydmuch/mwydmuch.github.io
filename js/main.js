@@ -137,8 +137,8 @@ if(canvas){
         {class: PerlinNoiseParticles, name: "perlin noise"},
         {class: RockPaperScissorsAutomata, name: "rock-paper-scissors automata"},
         {class: SandAutomata, name: "sand automata"},
-        {class: Quadtree, name: "quadtree"},
-        {class: RecursiveRectangles, name: "recursive rectangles"},
+        {class: Quadtree, name: "quadtree", startAnimation: false}, // Disable this as a start animation since it resurces heavy
+        {class: RecursiveRectangles, name: "recursive rectangles", startAnimation: false}, // Disable this as a start animation since it resurces heavy
         {class: ShortestPath, name: "shortest path"},
         {class: Sorting, name: "sorting"},
         {class: SpinningShapes, name: "spinning shapes"},
