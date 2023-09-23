@@ -99,12 +99,12 @@ class Matrix extends Animation {
 
                 this.drawCharacter(d.char, cellX, cellY, this.textColor);
 
-                d.char = Utils.randomChoice(this.characters);
+                d.char = Utils.randomChoice(this.characters, this.rand);
                 if(this.dropDespawn(d.y)) d.y = this.dropSpawnPoint(d.y);
 
                 if(this.rand() < this.errorProp){
-                    const yDiff = Utils.randomInt(-8, 8);
-                    this.drawCharacter(Utils.randomChoice(this.characters), cellX, Math.floor(yDiff + d.y) * this.cellHeight, this.textColor);
+                    const yDiff = Utils.randomInt(-8, 8, this.rand);
+                    this.drawCharacter(Utils.randomChoice(this.characters, this.rand), cellX, Math.floor(yDiff + d.y) * this.cellHeight, this.textColor);
                 }
             }
             else d.y += this.dropsSpeed;
@@ -125,7 +125,7 @@ class Matrix extends Animation {
 
         if(this.drops.length < this.columns){
             for(let i = this.drops.length; i < this.columns; ++i){
-                this.drops.push({char: Utils.randomChoice(this.characters), x: i, y: this.dropSpawnPoint(this.columnHeight)});
+                this.drops.push({char: Utils.randomChoice(this.characters, this.rand), x: i, y: this.dropSpawnPoint(this.columnHeight)});
             }
         }
     }
@@ -133,15 +133,14 @@ class Matrix extends Animation {
     restart(){
         this.drops = [];
         this.setColors();
-        this.resize();
-        this.clear();
+        super.restart();
     }
 
     getSettings() {
         return [{prop: "dropsSize", type: "int", min: 8, max: 64, toCall: "resize"},
                 {prop: "dropsSpeed", type: "float", min: 0, max: 1},
                 {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.5},
-                //this.getSeedSettings()
+                this.getSeedSettings()
                 //{prop: "originalMatrixColors", type: "bool", toCall: "restart"} // Not ready yet
             ];
     }

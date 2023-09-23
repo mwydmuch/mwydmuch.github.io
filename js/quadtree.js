@@ -13,7 +13,6 @@ Coded with no external dependencies, using only canvas API.
 
 const Animation = require("./animation");
 const Utils = require("./utils");
-const Noise = require("./noise");
 
 class Quadtree extends Animation {
     constructor(canvas, colors, colorsAlt,
@@ -37,9 +36,7 @@ class Quadtree extends Animation {
         this.noiseSpeed.y = this.assignIfRandom(this.noiseSpeed.y, Utils.round(Utils.randomRange(-1, 1), 1));
         
         this.minNodeSize = 4;
-
-        this.noise = Noise.noise;
-        this.noise.seed(Utils.randomRange(0, 1));
+        
         this.width = 0;
         this.height = 0;
         this.noisePos = {x: 0, y: 0, z: 0};

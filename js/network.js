@@ -136,7 +136,8 @@ class Network extends Animation {
                 {prop: "fillTriangles", type: "bool"},
                 {prop: "drawParticles", type: "bool"},
                 {prop: "distanceThreshold", type: "int", min: 0, max: 200},
-                {prop: "speed", type: "float", step: 0.1, min: -4, max: 4}];
+                {prop: "speed", type: "float", step: 0.1, min: -4, max: 4},
+                this.getSeedSettings()];
     }
 }
 

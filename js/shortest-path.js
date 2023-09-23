@@ -156,7 +156,7 @@ class ShortestPath extends Animation {
             ++this.frame;
         }
 
-        if (this.startNewAfterFinish && this.frame >= (this.visited + 300)) this.resize();
+        if (this.startNewAfterFinish && this.frame >= (this.visited + 300)) this.setupMaze();
     }
 
     // Drawing functions
@@ -346,34 +346,34 @@ class ShortestPath extends Animation {
         let wallX, wallY;
 
         if(wall1) {
-            do wallX = mazeX + Utils.randomInt(wallsMinDist, mazeW - wallsMinDist);
+            do wallX = mazeX + Utils.randomInt(wallsMinDist, mazeW - wallsMinDist, this.rand);
             while (this.map[this.getIdx(wallX, mazeY - 1)] !== WALL || this.map[this.getIdx(wallX, mazeEndY) !== WALL]);
         } else wallX = mazeX - 1;
 
         if(wall2) {
-            do wallY = mazeY + Utils.randomInt(wallsMinDist, mazeH - wallsMinDist);
+            do wallY = mazeY + Utils.randomInt(wallsMinDist, mazeH - wallsMinDist, this.rand);
             while(this.map[this.getIdx(mazeX - 1, wallY)] !== WALL || this.map[this.getIdx(mazeEndX, wallY)] !== WALL);
         } else wallY = mazeEndY;
 
         if(wall1) {
             for (let y = 0; y < mazeH; ++y) this.map[this.getIdx(wallX, mazeY + y)] = WALL;
-            this.map[this.getIdx(wallX, Utils.randomInt(mazeY, wallY))] = EMPTY;
-            if(wall2) this.map[this.getIdx(wallX, Utils.randomInt(wallY + 1, mazeEndY))] = EMPTY;
+            this.map[this.getIdx(wallX, Utils.randomInt(mazeY, wallY, this.rand))] = EMPTY;
+            if(wall2) this.map[this.getIdx(wallX, Utils.randomInt(wallY + 1, mazeEndY, this.rand))] = EMPTY;
 
             this.recursiveMaze(mazeX, mazeY, wallX - mazeX, wallY - mazeY);
             this.recursiveMaze(wallX + 1, mazeY, mazeEndX - wallX - 1, wallY - mazeY);
         }
         if(wall2){
             for (let x = 0; x < mazeW; ++x) this.map[this.getIdx(mazeX + x, wallY)] = WALL;
-            if(wall1) this.map[this.getIdx(Utils.randomInt(mazeX, wallX), wallY)] = EMPTY;
-            this.map[this.getIdx(Utils.randomInt(wallX + 1, mazeEndX), wallY)] = EMPTY;
+            if(wall1) this.map[this.getIdx(Utils.randomInt(mazeX, wallX, this.rand), wallY)] = EMPTY;
+            this.map[this.getIdx(Utils.randomInt(wallX + 1, mazeEndX, this.rand), wallY)] = EMPTY;
 
             this.recursiveMaze(mazeX, wallY + 1, wallX - mazeX, mazeEndY - wallY - 1);
             this.recursiveMaze(wallX + 1, wallY + 1, mazeEndX - wallX - 1, mazeEndY - wallY - 1);
         }
     }
 
-    resize() {
+    setupMaze() {
         this.mapWidth = Math.ceil(this.ctx.canvas.width / this.cellSize);
         this.mapHeight = Math.ceil(this.ctx.canvas.height / this.cellSize);
         this.mapSize = this.mapWidth * this.mapHeight;
@@ -397,23 +397,18 @@ class ShortestPath extends Animation {
 
         // Generate random start position that is not a wall
         while(this.map[this.startIdx] === WALL)
-            this.startIdx = this.getIdx(Utils.randomInt(1, this.mapWidth - 1), Utils.randomInt(1, this.mapHeight - 1));
+            this.startIdx = this.getIdx(Utils.randomInt(1, this.mapWidth - 1, this.rand), Utils.randomInt(1, this.mapHeight - 1, this.rand));
             
         // Generate random goal position that is not a wall and is far away from the start position
         const startNode = this.getXY(this.startIdx),
               minDistance = (this.mapHeight + this.mapWidth) / 6;
         while(this.map[this.goalIdx] === WALL || this.minDistance(this.getXY(this.goalIdx), startNode) < minDistance)
-            this.goalIdx = this.getIdx(Utils.randomInt(1, this.mapWidth - 1), Utils.randomInt(1, this.mapHeight - 1));
+            this.goalIdx = this.getIdx(Utils.randomInt(1, this.mapWidth - 1, this.rand), Utils.randomInt(1, this.mapHeight - 1, this.rand));
 
-        this.restart();
-        this.updateName();
+        this.setupStart();
     }
 
-    restart(){
-        this.frame = 0;
-        this.visited = 0;
-        this.pathLenght = 0;
-
+    resetMaze(){
         for (let y = 0; y < this.mapHeight; ++y) {
             for (let x = 0; x < this.mapWidth; ++x) {
                 const idx = this.getIdx(x, y),
@@ -426,12 +421,32 @@ class ShortestPath extends Animation {
             }
         }
 
+        this.setupStart();
+    }
+
+    setupStart(){
+        this.frame = 0;
+        this.visited = 0;
+        this.pathLenght = 0;
+
         this.map[this.startIdx] = START;
         this.dist[this.startIdx] = 0;
         this.map[this.goalIdx] = GOAL;
+
         this.priorityQueue = this.searchAlgorithm === "A*";
         this.queue = new Queue(this.mapSize, this.priorityQueue);
         this.queue.push({key: this.startIdx, value: 0});
+        this.updateName();
+    }
+
+    resize(){
+        this.setSeed(this.seed);
+        this.setupMaze();
+    }
+
+    restart(){
+        this.resetMaze();
+        super.restart();
     }
 
     getSettings() {
@@ -442,8 +457,7 @@ class ShortestPath extends Animation {
                 {prop: "startNewAfterFinish", type: "bool"},
                 {prop: "cellStyle", type: "select", values: this.cellStyles},
                 {prop: "showStats", type: "bool"},
-                this.getSeedSettings()
-            ];
+                this.getSeedSettings("resize")];
     }
 }
 

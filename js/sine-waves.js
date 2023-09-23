@@ -81,11 +81,19 @@ class SineWaves extends Animation {
         }
     }
 
+    restart(){
+        this.waves = [];
+        this.gridWidth = 0;
+        this.gridHeight = 0;
+        super.restart();
+    }
+
     getSettings() {
         return [{prop: "cellSize", type: "int", min: 16, max: 256, toCall: "resize"},
                 {prop: "cellMargin", type: "int", min: 8, max: 32, toCall: "resize"},
                 {prop: "rotateCells", type: "bool"},
-                {prop: "speed", type: "float", step: 0.1, min: -4, max: 4}];
+                {prop: "speed", type: "float", step: 0.1, min: -4, max: 4},
+                this.getSeedSettings()];
     }
 }
 

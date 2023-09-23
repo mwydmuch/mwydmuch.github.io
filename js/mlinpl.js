@@ -158,10 +158,6 @@ class MLinPL extends Animation {
         }
     }
 
-    restart(){
-        this.resize();
-    }
-
     resize() {
         this.width = this.ctx.canvas.width;
         this.height = this.ctx.canvas.height;

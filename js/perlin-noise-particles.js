@@ -92,12 +92,13 @@ class PerlinNoiseParticles extends Animation {
         }
     }
 
-    reset(){
+    restart(){
         this.clear();
         this.particles = []
         this.width = this.ctx.canvas.width;
         this.height = this.ctx.canvas.height;
         this.spawnParticles(0, 0, this.width, this.height);
+        super.restart();
     }
 
     resize() {
@@ -124,8 +125,8 @@ class PerlinNoiseParticles extends Animation {
     }
 
     getSettings() {
-        return [{prop: "noiseScale", type: "float", step: 0.001, min: 0.001, max: 0.01, toCall: "reset"},
-                {prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.005, toCall: "reset"},
+        return [{prop: "noiseScale", type: "float", step: 0.001, min: 0.001, max: 0.01, toCall: "retart"},
+                {prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.005, toCall: "restart"},
                 {prop: "particlesSpeed", type: "float", min: 0.25, max: 32},
                 {prop: "particlesSize", type: "float", step: 0.1, min: 1, max: 4},
                 {prop: "fadingSpeed", type: "float", step: 0.0001, min: 0, max: 0.01},

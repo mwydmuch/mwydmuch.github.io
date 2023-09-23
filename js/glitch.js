@@ -10,14 +10,19 @@ Coded with no external dependencies, using only canvas API.
 `;
 
 const Grid = require("./grid");
+const Utils = require("./utils");
 
 class Glitch extends Grid {
     constructor(canvas, colors, colorsAlt,
                 cellSize = 7,
+                initialPatern = "random",
                 noiseScale = 0.0051) {
         super(canvas, colors, colorsAlt, NAME, FILE, DESC);
         this.cellSize = cellSize;
         this.noiseScale = noiseScale;
+        
+        this.initialPaterns = ["1x1 checkerboard", "2x2 checkerboard", "4x4 checkerboard"];
+        this.initialPatern = this.assignIfRandom(initialPatern, Utils.randomChoice(this.initialPaterns));
     }
 
     update(elapsed){
@@ -61,7 +66,18 @@ class Glitch extends Grid {
     }
 
     newCellState(x, y) {
-        return (x + y) % 2 ? 1 : 0;
+        if(this.initialPatern == "1x1 checkerboard") return (x + y) % 2 ? 1 : 0;
+        else if(this.initialPatern == "2x2 checkerboard"){
+            const x2 = Math.floor(x / 2),
+                  y2 = Math.floor(y / 2);
+            return (x2 + y2) % 2 ? 1 : 0;
+        }
+        else if(this.initialPatern == "4x4 checkerboard"){
+            const x2 = Math.floor(x / 4),
+                  y2 = Math.floor(y / 4);
+            return (x2 + y2) % 2 ? 1 : 0;
+        }
+        return 0;
     }
 
     resize() {
@@ -72,6 +88,7 @@ class Glitch extends Grid {
 
     getSettings() {
         return [{prop: "cellSize", type: "int", min: 4, max: 12, toCall: "resize"},
+                {prop: "initialPatern", type: "select", values: this.initialPaterns, toCall: "restart"},
                 {prop: "noiseScale", type: "float", step: 0.0001, min: 0.001, max: 0.05},
                 this.getSeedSettings()];
     }

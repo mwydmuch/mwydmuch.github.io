@@ -140,8 +140,8 @@ class Animation {
         return [] // By default there is no settings
     }
 
-    getSeedSettings() {
-        return {prop: "seed", type: "int", min: 0, max: this.maxSeedValue, toCall: "restart"};
+    getSeedSettings(toCall = "restart") {
+        return {prop: "seed", type: "int", min: 0, max: this.maxSeedValue, toCall: toCall};
     }
 
     mouseAction(cords) {
