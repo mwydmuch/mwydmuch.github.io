@@ -90,7 +90,8 @@ ol, ul {
   margin: 0.25rem 0.75rem;
 
   li {
-    margin-top: 0.25rem;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
   }
 
   ol, ul {
@@ -146,31 +147,37 @@ each(@color-names, {
 }
 
 ul{
-  list-style-position: outside;
-  list-style-type: square;
+  //list-style-position: outside;
+  //list-style-type: square;
+  list-style-type: none;
   margin-left: 1rem;
   //text-align: justify;
-}
 
-.dates-ul{
-  list-style-type: none;
-  margin-left: 0;
+  li::before {
+    border: .1rem solid @main;
+    content: "";
+    display: block;
+    height: .4rem;
+    width: .4rem;
+    position: relative;
+    top: 0.9rem;
+    right: 0.8rem;
+  }
 
-  .date-li{
-    text-indent: -3.6rem;
-    margin-left: 3.6rem;
-    //border-left: 1px solid @main;
-    padding-left: 1rem;
+  ul {
+    list-style-type: none;
+    margin-left: 1rem;
 
-    .date-span{
-      width: 3.6rem;
-      display: inline-block;
-      padding-left: 2.6rem;
-    }
-
-    i{
-      text-indent: 0;
-    }
+    li::before {
+      border: .1rem solid @main;
+      content: "";
+      display: block;
+      height: .4rem;
+      width: .4rem;
+      position: relative;
+      top: 0.85rem;
+      right: 0.8rem;
+    }  
   }
 }
 
@@ -180,6 +187,38 @@ ul{
 
 .main-content {
   flex: 1;
+}
+
+.column{
+  margin-bottom: 1rem;
+}
+
+blockquote{
+  position: relative;
+  padding-left: 1rem;
+  
+  cite {
+    line-height: 1.5rem;
+
+    &::before{
+      color: #dadee4;
+      content: "“";
+      font-size: 2.5rem;
+      line-height: 0.5rem;
+      left: -0.5rem;
+      position: relative;
+      top: 0.75rem;
+    }
+
+    &::after{
+      color: #dadee4;
+      content: "”";
+      font-size: 2.5rem;
+      line-height: 0.5rem;
+      position: relative;
+      top: 0.75rem;
+    }
+  }
 }
 
 // Header
@@ -322,6 +361,40 @@ footer {
         background: @main;
         color: @background;
       }
+    }
+  }
+}
+
+
+// Timeline fixes
+// ---------------------------------------------------------------------------------------------------------------------
+
+.timeline {
+  padding-left: 70px;
+
+  .timeline-date{
+    position: absolute;
+    left: -70px;
+    padding-right: 0.8rem;
+    text-align: right;
+  }
+
+  .timeline-item {
+    margin-bottom: 0.6rem;
+
+    .timeline-icon{
+      border-radius: 0;
+
+      &::before {
+        border-color: @main;
+        border-radius: 0;
+        // background: @main;
+        top: .55rem;
+      }
+    }
+
+    &::before {
+      top: 1.05rem;
     }
   }
 }
@@ -539,7 +612,6 @@ each(@fade-show-values, {
     margin-left: 0.5rem;
   }
 }
-
 
 // Input fixes
 // ---------------------------------------------------------------------------------------------------------------------
