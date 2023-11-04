@@ -15,7 +15,7 @@ const Noise = require("./noise");
 const Utils = require("./utils");
 
 class ParticlesVortex extends Animation {
-    constructor (canvas, colors, colorsAlt,
+    constructor (canvas, colors, colorsAlt, bgColor,
                  particles = 1500,
                  radius = "random",
                  speed = "random",
@@ -23,7 +23,7 @@ class ParticlesVortex extends Animation {
                  dirX = "random",
                  dirY = "random",
                  scale = 1){
-        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
         this.noise = Noise.noise;
         this.noise.seed(Utils.randomRange(0, 1));
@@ -53,7 +53,7 @@ class ParticlesVortex extends Animation {
     }
 
     draw() {
-        Utils.clear(this.ctx, "#FFFFFF");
+        this.clear();
         this.ctx.lineWidth = 1;
         this.ctx.strokeStyle = this.colors[0];
 

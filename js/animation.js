@@ -8,7 +8,7 @@ const Noise = require("./noise");
 const Utils = require("./utils");
 
 class Animation {
-    constructor(canvas, colors, colorsAlt,
+    constructor(canvas, colors, colorsAlt, bgColor,
                 name = "",
                 file = "",
                 description = "",
@@ -16,7 +16,7 @@ class Animation {
         this.ctx = canvas.getContext("2d", { alpha: false });
 
         // Colors variables
-        this.bgColor = "#FFFFFF";
+        this.bgColor = bgColor;
         this.colors = colors;
         this.colorsAlt = colorsAlt;
         this.colorA = colors[0];
@@ -91,8 +91,9 @@ class Animation {
     }
 
     fadeOut(alpha) {  // Commonly used by some animations
-        // Assumes that bgColor is white or other light color
-        this.blendColorAlpha(this.bgColor, alpha, "lighter");
+        // Assumes that bgColor is black or white or other light color
+        if(this.bgColor == "#000000") this.blendColorAlpha(this.bgColor, alpha, "darker");
+        else this.blendColorAlpha(this.bgColor, alpha, "lighter");
     }
 
     blendColorAlpha(color, alpha, mode) {  // More general version of the above

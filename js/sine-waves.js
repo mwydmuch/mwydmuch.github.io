@@ -14,11 +14,11 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class SineWaves extends Animation {
-    constructor(canvas, colors, colorsAlt,
+    constructor(canvas, colors, colorsAlt, bgColor,
                 cellSize = 48,
                 cellMargin = 12,
                 rotateCells = false) {
-        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
         this.cellSize = cellSize;
         this.cellMargin = cellMargin;

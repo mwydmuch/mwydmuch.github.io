@@ -19,12 +19,12 @@ const Utils = require("./utils");
 const Delaunay = require("./delaunay");
 
 class Network extends Animation {
-    constructor(canvas, colors, colorsAlt,
+    constructor(canvas, colors, colorsAlt, bgColor,
                 particlesDensity = 0.0002,
                 fillTriangles = true,
                 drawParticles = false,
                 distanceThreshold = 125) {
-        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
         this.particlesDensity = particlesDensity;
         this.fillTriangles = fillTriangles;

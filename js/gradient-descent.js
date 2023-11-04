@@ -348,11 +348,11 @@ class GriewankFunc extends Func{
 
 
 class GradientDescent extends Animation {
-    constructor (canvas, colors, colorsAlt, 
+    constructor (canvas, colors, colorsAlt, bgColor, 
                 functionToOptimize = "random",
                 autoRestart = true,
                 rounding = 5) {
-        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
         this.funcNames = ["with saddle point", "Beale", "Rosenbrock", "Styblinski-Tang"];
         this.functionToOptimize = this.assignIfRandom(functionToOptimize, Utils.randomChoice(this.funcNames));
         this.funcClasses = [SaddlePointFunc, BealeFunc, RosenbrockFunc, StyblinskiTangFunc];

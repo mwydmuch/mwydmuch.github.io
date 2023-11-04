@@ -12,11 +12,11 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class FiguresSpiral extends Animation {
-    constructor(canvas, colors, colorsAlt,
+    constructor(canvas, colors, colorsAlt, bgColor,
                 number = 500,
                 size = 50,
                 sides = "random") {
-        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
         this.shapeSides = [0, 1, 2, 3, 4, 5, 6, 8];
         this.shapeNames = ["circles", "points", "lines", "triangles", "rectangles", "pentagons", "hexagons", "octagons"];

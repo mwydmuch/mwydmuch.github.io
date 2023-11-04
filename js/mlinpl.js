@@ -16,11 +16,11 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class MLinPL extends Animation {
-    constructor(canvas, colors, colorsAlt,
+    constructor(canvas, colors, colorsAlt, bgColor,
                 particlesDensity = 1,
                 connectionThreshold = 125,
                 originalColors = false) {
-        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
         this.particlesDensity = particlesDensity;
         this.connectionThreshold = connectionThreshold;
@@ -147,8 +147,10 @@ class MLinPL extends Animation {
         if(this.originalColors) this.particlesColors[0] = "#E7322A";
         else this.particlesColors[0] = this.colors[0];
 
-        // Draw all the groups of particles
+        this.bgColor = "#FFFFFF"; // Force white background
         this.clear();
+
+        // Draw all the groups of particles
         this.drawParticles(this.bgParticles);
         this.drawParticles(this.mgParticles);
         this.drawParticles(this.fgParticles);

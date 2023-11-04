@@ -21,7 +21,7 @@ const GameOfLife = require("./game-of-life");
 const Utils = require("./utils");
 
 class GameOfLifeIsometric extends GameOfLife {
-    constructor (canvas, colors, colorsAlt,
+    constructor (canvas, colors, colorsAlt, bgColor,
                  cellSize = 14,
                  cellBasePadding = 0,
                  spawnProb = 0.5,
@@ -29,7 +29,7 @@ class GameOfLifeIsometric extends GameOfLife {
                  drawCellsGrid = true,
                  loopGrid = true,
                  gridSize = 3/4) {
-        super(canvas, colors, colorsAlt, cellSize, cellBasePadding, spawnProb, loopGrid);
+        super(canvas, colors, colorsAlt, bgColor, cellSize, cellBasePadding, spawnProb, loopGrid);
 
         this.name = NAME;
         this.file = FILE;

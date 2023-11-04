@@ -12,14 +12,14 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class NoisyLines extends Animation {
-    constructor (canvas, colors, colorsAlt,
+    constructor (canvas, colors, colorsAlt, bgColor,
                  lines = 100,
                  noiseXIncr = "random",
                  noiseYIncr = "random",
                  noiseRange = "random",
                  speed = 1,
                  rotation = "random"){
-        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
         this.noiseXIncr = 0.07;
         this.noiseYIncr = 0.06;
         this.noiseRange = 0.5,
@@ -30,7 +30,7 @@ class NoisyLines extends Animation {
     }
 
     draw() {
-        Utils.clear(this.ctx, "#FFFFFF");
+        this.clear();
         this.ctx.lineWidth = 1;
         this.ctx.strokeStyle = this.colors[0];
 

@@ -17,12 +17,12 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class Matrix extends Animation {
-    constructor(canvas, colors, colorsAlt,
+    constructor(canvas, colors, colorsAlt, bgColor,
                 dropsSize = 20,
                 dropsSpeed = 0.6,
                 fadingSpeed = 0.01,
                 originalMatrixColors = false) {
-        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
         this.dropsSize = dropsSize;
         this.dropsSpeed = dropsSpeed;
@@ -39,7 +39,7 @@ class Matrix extends Animation {
         this.drops = [];
         this.textColor = null;
         this.imageData = null;
-        this.setColors();
+        this.textColor = this.colors[0];
 
         const katakana = "ｦｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾜﾝ",
               katakanaSubset = "ﾊﾋｼﾂｳｰﾅﾐﾓﾆｻﾜｵﾘﾎﾏｴｷﾑﾃｹﾒｶﾕﾗｾﾈｽﾀﾇ",
@@ -73,19 +73,8 @@ class Matrix extends Animation {
         } else this.ctx.fillText(char, cellX, cellY);
     }
 
-    setColors(){
-        if(this.originalMatrixColors){
-            this.bgColor = "#000000";
-            this.textColor = "#00FF00";
-        } else {
-            this.bgColor = "#FFFFFF";
-            this.textColor = this.colors[0];
-        }
-    }
-
     draw() {
-        if(this.originalMatrixColors) this.blendColorAlpha(this.bgColor, this.fadingSpeed, "darken");
-        else this.blendColorAlpha(this.bgColor, this.fadingSpeed, "lighter");
+        this.fadeOut(this.fadingSpeed);
 
         this.ctx.font = `${this.dropsSize}px monospace`;
         this.ctx.textAlign = "center"; // This helps with aligning flipped characters
@@ -132,7 +121,6 @@ class Matrix extends Animation {
 
     restart(){
         this.drops = [];
-        this.setColors();
         super.restart();
     }
 
@@ -141,7 +129,6 @@ class Matrix extends Animation {
                 {prop: "dropsSpeed", type: "float", min: 0, max: 1},
                 {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.5},
                 this.getSeedSettings()
-                //{prop: "originalMatrixColors", type: "bool", toCall: "restart"} // Not ready yet
             ];
     }
 }

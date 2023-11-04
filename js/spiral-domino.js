@@ -8,13 +8,13 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class SpiralDomino extends Animation {
-    constructor (canvas, colors, colorsAlt){
-        super(canvas, colors, colorsAlt, "spiral domino", "spiral-domino.js");
+    constructor (canvas, colors, colorsAlt, bgColor){
+        super(canvas, colors, colorsAlt, bgColor, "spiral domino", "spiral-domino.js");
         this.particles = 1000;
     }
 
     draw() {
-        Utils.clear(this.ctx, "#FFFFFF");
+        this.clear();
 
         const centerX = this.ctx.canvas.width / 2,
               centerY = this.ctx.canvas.height / 2;

@@ -14,7 +14,7 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class SpinningShapes extends Animation {
-    constructor (canvas, colors, colorsAlt, 
+    constructor (canvas, colors, colorsAlt, bgColor, 
                  shapes = 500,
                  vertices = 0,
                  rotateShapes = false,
@@ -22,7 +22,7 @@ class SpinningShapes extends Animation {
                  colorsScale = 1,
                  colorsShift = "random",
                  rainbowColors = false) {
-        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
         this.shapeNames = ["circles", "points", "lines", "triangles", "rectangles", "pentagons", "hexagons", "heptagons", "octagons"];
         this.vertices = this.assignIfRandom(vertices, Utils.randomInt(0, 8));

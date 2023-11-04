@@ -13,8 +13,8 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class NeuralNetwork extends Animation {
-    constructor(canvas, colors, colorsAlt) {
-        super(canvas, colors, colorsAlt, "visualization of simple neural network", "neural-network.js");
+    constructor(canvas, colors, colorsAlt, bgColor) {
+        super(canvas, colors, colorsAlt, bgColor, "visualization of simple neural network", "neural-network.js");
         this.network = [];
         this.nLayers = 0;
 
@@ -80,7 +80,7 @@ class NeuralNetwork extends Animation {
     }
 
     resize() {
-        Utils.clear(this.ctx, "#FFFFFF");
+        this.clear();
 
         // Create new network that will nicely fit to the entire page
         const width = this.ctx.canvas.width;

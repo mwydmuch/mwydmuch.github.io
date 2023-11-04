@@ -15,7 +15,7 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class Quadtree extends Animation {
-    constructor(canvas, colors, colorsAlt,
+    constructor(canvas, colors, colorsAlt, bgColor,
                 maxPointsInNode = 1,
                 pointsDensity = 0.4,
                 drawPoints = false,
@@ -23,7 +23,7 @@ class Quadtree extends Animation {
                 noiseSpeed = {x: "random", y: "random", z: 1},
                 noiseThreshold = 0.01,
                 drawLeafNode = true) {
-        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
         this.pointsDensity = pointsDensity;
         this.drawPoints = drawPoints;
         this.maxPointsInNode = maxPointsInNode;
@@ -97,7 +97,7 @@ class Quadtree extends Animation {
     }
 
     draw() {
-        Utils.clear(this.ctx, "#FFFFFF");
+        this.clear();
 
         this.width = this.ctx.canvas.width,
         this.height = this.ctx.canvas.height;

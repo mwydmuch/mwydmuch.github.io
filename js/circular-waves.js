@@ -13,14 +13,14 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class CircularWaves extends Animation {
-    constructor(canvas, colors, colorsAlt,
+    constructor(canvas, colors, colorsAlt, bgColor,
                 vertices = 180,
                 noiseScale = 0.5,
                 radiusScaleMin = 0.4,
                 radiusScaleMax = 1.2,
                 fadingSpeed = 0.001,
                 rainbowColors = false) {
-        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
         this.vertices = vertices;
         this.noiseScale = noiseScale;

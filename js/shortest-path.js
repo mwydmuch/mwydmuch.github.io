@@ -27,7 +27,7 @@ const EMPTY = 0,
       PATH = 6;
 
 class ShortestPath extends Animation {
-    constructor (canvas, colors, colorsAlt,
+    constructor (canvas, colors, colorsAlt, bgColor,
                  cellSize = 12,
                  searchAlgorithm = "A*", // or "BFS" or "random"
                  movementType = "random", // or "4-dir" or "8-dir"
@@ -35,7 +35,7 @@ class ShortestPath extends Animation {
                  startNewAfterFinish = true,
                  cellStyle = "random", // or "sharp" or "rounded"
                  showStats = false) {
-        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
         this.cellSize = cellSize;
         this.speed = speed;

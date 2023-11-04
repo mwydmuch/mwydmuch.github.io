@@ -23,13 +23,13 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class Spirograph extends Animation {
-    constructor (canvas, colors, colorsAlt, 
+    constructor (canvas, colors, colorsAlt, bgColor, 
                  vertices = 2500, 
                  lineLength = 2, 
                  gearCount = "random",
                  rescaleToFit = true,
                  scale = 1) {
-        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
         this.vertices = vertices;
         this.lineLength = lineLength;

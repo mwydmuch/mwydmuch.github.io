@@ -15,10 +15,10 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class Coding extends Animation {
-    constructor(canvas, colors, colorsAlt,
+    constructor(canvas, colors, colorsAlt, bgColor,
                 charSize = 20,
                 tabSize = 4) {
-        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
         this.charSize = charSize;
         this.lineX = this.padding;

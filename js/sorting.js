@@ -262,7 +262,7 @@ class ShakerSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Cock
 
 
 class Sorting extends Animation {
-    constructor (canvas, colors, colorsAlt,
+    constructor (canvas, colors, colorsAlt, bgColor,
                  sortingAlgorithm = "random",
                  numElements = 96,
                  elementPadding = 2,
@@ -270,7 +270,7 @@ class Sorting extends Animation {
                  swapDuration = 0.25,
                  speed = 1,
                  showStats = false) {
-        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
         this.numElements = numElements;
         this.elementPadding = elementPadding;

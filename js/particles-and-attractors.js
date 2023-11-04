@@ -18,7 +18,7 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class ParticlesAndAttractors extends Animation {
-    constructor (canvas, colors, colorsAlt,
+    constructor (canvas, colors, colorsAlt, bgColor,
                  numParticles= 10000,
                  particlesSpeed = "random",
                  fadingSpeed = 0.03,
@@ -29,7 +29,7 @@ class ParticlesAndAttractors extends Animation {
                  drawAttractors = false,
                  scale = 1,
                  rainbowColors = false) {
-        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
         this.particles = []
         this.numParticles = numParticles;

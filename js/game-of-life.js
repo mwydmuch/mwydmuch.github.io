@@ -21,14 +21,14 @@ const Grid = require("./grid");
 const Utils = require("./utils");
 
 class GameOfLife extends Grid {
-    constructor (canvas, colors, colorsAlt,
+    constructor (canvas, colors, colorsAlt, bgColor,
                  cellSize = 12,
                  cellPadding = 1,
                  spawnProb = 0.5,
                  loopGrid = true,
                  cellStyle = "random",
                  deadCellsFadingSteps = 5) {
-        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
         
         this.cellSize = cellSize;
         this.cellBasePadding = cellPadding;

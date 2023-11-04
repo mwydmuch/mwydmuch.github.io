@@ -25,13 +25,13 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class TreeVisualization extends Animation {
-    constructor (canvas, colors, colorsAlt, 
+    constructor (canvas, colors, colorsAlt, bgColor, 
                 maxDepth = 4, 
                 minChildren = 2,
                 maxChildren = 6, 
                 radius = 30,
                 treeAlgorithm = "random") {
-        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
         this.maxDepth = maxDepth;
         this.maxChildren = maxChildren;
         this.minChildren = minChildren;
@@ -188,7 +188,7 @@ class TreeVisualization extends Animation {
     }
 
     draw() {
-        Utils.clear(this.ctx, "#FFFFFF");
+        this.clear();
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
         for(let n of this.nodes){
             for(let c of n.children) Utils.drawLine(this.ctx, n.x, n.y, c.x, c.y, 1, "#000");

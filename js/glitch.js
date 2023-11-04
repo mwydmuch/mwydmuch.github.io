@@ -13,11 +13,11 @@ const Grid = require("./grid");
 const Utils = require("./utils");
 
 class Glitch extends Grid {
-    constructor(canvas, colors, colorsAlt,
+    constructor(canvas, colors, colorsAlt, bgColor,
                 cellSize = 7,
                 initialPatern = "random",
                 noiseScale = 0.0051) {
-        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
         this.cellSize = cellSize;
         this.noiseScale = noiseScale;
         

@@ -10,15 +10,14 @@ Coded with no external dependencies, using only canvas API.
 `;
 
 const Animation = require("./animation");
-const Noise = require("./noise");
 const Utils = require("./utils");
 
 class ParticlesStorm extends Animation {
-    constructor(canvas, colors, colorsAlt,
+    constructor(canvas, colors, colorsAlt, bgColor,
                 particlesDensity = 0.01,
                 noiseScale = 0.001,
                 fadingSpeed = 0.02) {
-        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
         this.particlesDensity = particlesDensity;
         this.noiseScale = noiseScale;

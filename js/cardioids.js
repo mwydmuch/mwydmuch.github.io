@@ -21,12 +21,12 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class Cardioids extends Animation {
-    constructor (canvas, colors, colorsAlt,
+    constructor (canvas, colors, colorsAlt, bgColor,
                  lines = 400,
                  scale = 1.0,
                  speed = 0.05,
                  rainbowColors = false) {
-        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
         this.lines = lines;
         this.scale = scale;

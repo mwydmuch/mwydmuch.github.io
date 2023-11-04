@@ -20,6 +20,7 @@ const Matrix = require("./matrix");
 const MLinPL = require("./mlinpl");
 const Network = require("./network");
 const NeuralNetwork = require("./neural-network");
+const NoisyLines = require("./noisy-lines");
 const ParticlesAndAttractors = require("./particles-and-attractors");
 const ParticlesVortex = require("./particles-vortex");
 const ParticlesWaves = require("./particles-waves");
@@ -60,7 +61,13 @@ let sampleSize = 30,
     avgElapsedTime = 0, 
     trueThen = 0;
 
-const colors = [ // Green palette
+const bgColors = {
+    "black": "#000000", 
+    "white": "#FFFFFF"
+};
+let bgColor = "#FFFFFF";
+
+let colors = [ // Green palette
     "#349BA9",
     "#41B8AD",
     "#73D4AD",
@@ -79,7 +86,7 @@ const colors = [ // Green palette
 //     "#362f73"
 // ];
 
-const colorsAlt = [ // Alt palette
+let colorsAlt = [ // Alt palette
     "#602180",
     "#B6245C",
     "#E14F3B",
@@ -111,6 +118,7 @@ const elemBgStats = document.getElementById("background-stats");
 const elemBgAnimationSelect = document.getElementById("background-settings-animation-select");
 const elemBgAnimationFps = document.getElementById("background-settings-animation-fps");
 const elemBgAnimationSize = document.getElementById("background-settings-animation-size");
+const elemBgColor = document.getElementById("background-settings-bg-color");
 
 if(canvas){
 
@@ -131,6 +139,7 @@ if(canvas){
         {class: MLinPL, name: "mlinpl"},
         {class: Network, name: "network"},
         //{class: NeuralNetwork, name: "neural network"}, // Disabled till updated
+        {class: NoisyLines, name: "noisy lines"},
         {class: ParticlesAndAttractors, name: "particles and attractors"},
         {class: ParticlesVortex, name: "particles vortex"},
         {class: ParticlesWaves, name: "particles waves"},
@@ -179,7 +188,7 @@ if(canvas){
         avgDrawTime = 0;
         avgElapsedTime = 0;
         animationId = newAnimationId;
-        animation = new animations[animationId].class(canvas, colors, colorsAlt);
+        animation = new animations[animationId].class(canvas, colors, colorsAlt, bgColor);
         then = getTime();
         trueThen = then;
         animation.resize();
@@ -259,9 +268,9 @@ if(canvas){
             const drawTime = getTime() - drawStart;
             updateStats(now - trueThen, drawTime);
             trueThen = now;
-    }
+        }
 
-    requestAnimationFrame(render);
+        requestAnimationFrame(render);
     }
 
     updateAnimation(animationId);
@@ -392,6 +401,15 @@ if(canvas){
         elemBgAnimationFps.addEventListener("input", function (e) {
             fps = parseInt(e.target.value);
             framesInterval = 1000 / fps;
+        });
+    }
+
+    // Background color
+    if(elemBgColor) {
+        elemBgColor.innerHTML = '<option value="#FFFFFF" selected>white</option><option value="#000000">black</option>';
+        elemBgColor.addEventListener("input", function (e) {
+            bgColor = e.target.value;
+            animation.bgColor = e.target.value;
         });
     }
 

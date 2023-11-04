@@ -14,13 +14,13 @@ const Noise = require("./noise");
 const Utils = require("./utils");
 
 class PerlinNoiseParticles extends Animation {
-    constructor(canvas, colors, colorsAlt,
+    constructor(canvas, colors, colorsAlt, bgColor,
                 particlesDensity = 0.0006,
                 noiseScale = 0.001,
                 particlesSpeed = 1,
                 particlesSize = 1,
                 fadingSpeed = 0) {
-        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
         this.particlesDensity = particlesDensity;
         this.noiseScale = noiseScale;

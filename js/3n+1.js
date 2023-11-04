@@ -21,14 +21,14 @@ const Animation = require("./animation");
 const Utils = require("./utils");
 
 class ThreeNPlusOne extends Animation {
-    constructor(canvas, colors, colorsAlt,
+    constructor(canvas, colors, colorsAlt, bgColor,
                 length = 30,
                 evenAngle = 8,
                 oddAngle = -20,
                 drawNumbers = false,
                 scale = 1,
                 showStats = false) {
-        super(canvas, colors, colorsAlt, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
         this.length = length;
         this.evenAngle = evenAngle;
         this.oddAngle = oddAngle;

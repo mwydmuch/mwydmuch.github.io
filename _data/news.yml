@@ -1,3 +1,7 @@
+- date: '10.2023'
+  text: >-
+    <span class="reverse-mlinpl-red"><a href="https://conference2023.mlinpl.org/">ML in PL Conference 2023</a></span>, that I co-organized, took place in Warsaw
+
 - date: '09.2023'
   text: >-
     Our paper titled "Generalized test utilities for long-tail performance in extreme multi-label classification" was accepted at NeurIPS 2023.
@@ -8,7 +12,7 @@
 
 - date: '05.2023'
   text: >-
-    New release of <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i>&nbsp;ViZDoom</a></span> (1.2.0) library with a new official <span class="reverse-openai-blue"><a href="https://gym.openai.com/"><i class="fa fa-dumbbell"></i>&nbsp;Gymnasium</a></span> wrapper, support for ARM/Arch64 architectures including M1/M2 Macs and other improvments.
+    New release of <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i>&nbsp;ViZDoom</a></span> (1.2.0) library with a new official <span class="reverse-openai-blue"><a href="https://gymnasium.farama.org/"><i class="fa fa-dumbbell"></i>&nbsp;Gymnasium</a></span> wrapper, support for ARM/Arch64 architectures including M1/M2 Macs and other improvments.
 
 - date: '02.2023'
   text: >-
@@ -20,7 +24,7 @@
 
 - date: '11.2022'
   text: >-
-    <span class="reverse-mlinpl-red"><a href="https://conference2022.mlinpl.org/">ML in PL Conference 2022</a></span> that I co-organized took place in Warsaw.
+    <span class="reverse-mlinpl-red"><a href="https://conference2022.mlinpl.org/">ML in PL Conference 2022</a></span>, that I co-organized, took place in Warsaw.
 
 - date: '06.2022'
   text: >-
@@ -44,7 +48,7 @@
 
 - date: '11.2021'
   text: >-
-    <span class="reverse-mlinpl-red"><a href="https://conference2021.mlinpl.org/">ML in PL Conference 2021</a></span> that I co-organized took place virtualy.
+    <span class="reverse-mlinpl-red"><a href="https://conference2021.mlinpl.org/">ML in PL Conference 2021</a></span>, that I co-organized, took place virtualy.
 
 - date: '08.2021'
   text: >-
