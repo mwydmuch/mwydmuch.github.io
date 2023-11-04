@@ -42,6 +42,38 @@
 @bold-font: 700;
 
 
+// Custom icons
+.fa-custom{
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  position: relative;
+  top: 0.15em;
+}
+
+a {
+  .fa-custom {
+    background-color: @main;
+  }
+
+  &:hover, &:active, &:focus{
+    .fa-custom {
+      background-color: @background;
+    }
+  }
+}
+
+.fa-google-scholar {
+	mask: url(/assets/icons/google-scholar.svg);
+	-webkit-mask: url(/assets/icons/google-scholar.svg);
+}
+
+.fa-dblp {
+	mask: url(/assets/icons/dblp.svg);
+	-webkit-mask: url(/assets/icons/dblp.svg);
+}
+
+
 // Base Styles
 // ---------------------------------------------------------------------------------------------------------------------
 
