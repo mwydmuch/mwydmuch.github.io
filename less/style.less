@@ -564,10 +564,10 @@ each(@fade-show-values, {
 
 #background-settings-controls {
   transition: opacity @global-animation-duration;
-  width: 19rem;
+  max-width: 19rem;
   //max-height: 100%;
-  overflow-x: visible;
-  overflow-y: clip;
+  overflow-x: hidden;
+  overflow-y: scroll;
   font-size: 0.7rem;
   display: inline-block;
   height: fit-content;

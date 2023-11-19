@@ -133,7 +133,7 @@ if(canvas){
         //{class: FiguresSpiral, name: "figures spiral"},  // Disabled since it's not that interesting
         {class: GameOfLife, name: "game of life"},
         {class: GameOfLifeIsometric, name: "isometric game of life"},
-        {class: Glitch, name: "glitch"},
+        {class: Glitch, name: "glitch", startAnimation: false},  // Disable as a start animation, as it may not be visually pleasing for everyone
         {class: GradientDescent, name: "gradient descent"},
         {class: Matrix, name: "matrix rain"},
         {class: MLinPL, name: "mlinpl"},
@@ -146,8 +146,8 @@ if(canvas){
         {class: PerlinNoiseParticles, name: "perlin noise"},
         {class: RockPaperScissorsAutomata, name: "rock-paper-scissors automata"},
         {class: SandAutomata, name: "sand automata"},
-        {class: Quadtree, name: "quadtree", startAnimation: false}, // Disable this as a start animation since it resurces heavy
-        {class: RecursiveRectangles, name: "recursive rectangles", startAnimation: false}, // Disable this as a start animation since it resurces heavy
+        {class: Quadtree, name: "quadtree", startAnimation: false}, // Disable as a start animation since it resources heavy
+        {class: RecursiveRectangles, name: "recursive rectangles", startAnimation: false}, // Disable as a start animation since it resources heavy
         {class: ShortestPath, name: "shortest path"},
         {class: Sorting, name: "sorting"},
         {class: SpinningShapes, name: "spinning shapes"},
@@ -436,24 +436,33 @@ if(canvas){
             closeSettings();
         });
 
-        // Events for dragging the background settings panel, TODO: make it work on mobile
-        elemBgSettingsControls.addEventListener('mousedown', function (e) {
-            if(e.target !== e.currentTarget) return;
-            e.target.classList.add('moving');
-            e.target.clickAnchorX = e.clientX - parseInt(e.target.style.left);
-            e.target.clickAnchorY = e.clientY - parseInt(e.target.style.top);
+        // Events for dragging the background settings panel
+        ["mousedown", "touchstart"].forEach(function(eventName){
+            elemBgSettingsControls.addEventListener(eventName, function (e) {
+                if(e.target !== e.currentTarget) return;
+                if(e.touches) e = e.touches[0];
+                e.target.classList.add('moving');
+                e.target.clickAnchorX = e.clientX - parseInt(e.target.style.left);
+                e.target.clickAnchorY = e.clientY - parseInt(e.target.style.top);
+            })
         });
 
-        addEventListener('mousemove', function (e) {
-            if(elemBgSettingsControls.classList.contains('moving')){
-                elemBgSettingsControls.style.left = e.clientX - elemBgSettingsControls.clickAnchorX + 'px';
-                elemBgSettingsControls.style.top = e.clientY - elemBgSettingsControls.clickAnchorY  + 'px';
-                elemBgSettingsControls.style.maxHeight = elemBgSettingsControls.parentNode.offsetHeight - (e.clientY - elemBgSettingsControls.clickAnchorY) - 10 + 'px';
-            }
+        ["mousemove", "touchmove"].forEach(function(eventName){
+            addEventListener(eventName, function (e) {
+                if(elemBgSettingsControls.classList.contains('moving')){
+                    if(e.touches) e = e.touches[0];
+                    elemBgSettingsControls.style.left = e.clientX - elemBgSettingsControls.clickAnchorX + 'px';
+                    if(elemBgSettingsControls.style.left[0] == "-") elemBgSettingsControls.style.left = '0px';
+                    elemBgSettingsControls.style.top = e.clientY - elemBgSettingsControls.clickAnchorY  + 'px';
+                    elemBgSettingsControls.style.maxHeight = elemBgSettingsControls.parentNode.offsetHeight - (e.clientY - elemBgSettingsControls.clickAnchorY) + 'px';
+                }
+            })
         });
 
-        addEventListener('mouseup', function (e) {
-            elemBgSettingsControls.classList.remove('moving');
+        ["mouseup", "touchend"].forEach(function(eventName){
+            addEventListener(eventName, function (e) {
+                elemBgSettingsControls.classList.remove('moving');
+            })
         });
     }
 
