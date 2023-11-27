@@ -408,9 +408,9 @@ class GradientDescent extends Animation {
         for(let i = 0; i < this.optims.length; ++i){
             optimTextYOffset += this.lineHeight;
             this.ctx.fillStyle = this.colorsAlt[i];
-            const x = Utils.round(this.optims[i].w[0], this.rounding),
-                  y = Utils.round(this.optims[i].w[1], this.rounding),
-                  text = `${this.optims[i].getName()}: f(${x}, ${y}) = ${Utils.round(this.func.val([x, y]), this.rounding)}`;
+            const x = this.optims[i].w[0].toFixed(this.rounding),
+                  y = this.optims[i].w[1].toFixed(this.rounding),
+                  text = `${this.optims[i].getName()}: f(${x}, ${y}) = ${this.func.val([x, y]).toFixed(this.rounding)}`;
             Utils.fillAndStrokeText(this.ctx, text, this.textXOffset + 16, optimTextYOffset);
             Utils.fillCircle(this.ctx, this.textXOffset + 3, optimTextYOffset - 4, 3, this.colorsAlt[i]);
         }
@@ -528,23 +528,12 @@ class GradientDescent extends Animation {
         if(this.func.hasGlobalMin()) {
             this.textYOffset += this.lineHeight;
             const globalMin = this.func.getGlobalMin()
-            Utils.fillAndStrokeText(this.ctx, `Optimum: f(x*) = ${Utils.round(this.func.val(globalMin), this.rounding)}, at x* =  (${globalMin[0]}, ${globalMin[1]})`, this.textXOffset, this.textYOffset, 2);
+            Utils.fillAndStrokeText(this.ctx, `Optimum: f(x*) = ${this.func.val(globalMin).toFixed(this.rounding)}, at x* =  (${globalMin[0]}, ${globalMin[1]})`, this.textXOffset, this.textYOffset, 2);
             Utils.fillCircle(this.ctx, centerX + globalMin[0] * this.scale, centerY + -globalMin[1] * this.scale, 2, this.colors[0]);
         }
 
         this.textYOffset += this.lineHeight;
         Utils.fillAndStrokeText(this.ctx, `Starting point: x0 = (${start[0]}, ${start[1]})`, this.textXOffset, this.textYOffset);
-
-        // textYOffset += 2 * lineHeight;
-        // Utils.fillAndStrokeText(this.ctx, "Optimizers:", textXOffset, textYOffset);
-
-        // for(let i = 0; i < this.optims.length; ++i){
-        //     textYOffset += lineHeight;
-        //     this.ctx.fillStyle = this.colorsAlt[i];
-        //     Utils.fillAndStrokeText(this.ctx, `${this.optims[i].getName()}`, textXOffset + 20, textYOffset);
-        //     Utils.fillCircle(this.ctx, textXOffset + 3, textYOffset - 4, 3, this.colorsAlt[i]);
-        // }
-
         this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     }
 

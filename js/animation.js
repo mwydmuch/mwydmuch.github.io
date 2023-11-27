@@ -53,6 +53,7 @@ class Animation {
     resetFont(){
         // Reset text settings
         this.ctx.font = '14px sans-serif';
+        //this.ctx.font = '14px monospace';
         this.ctx.lineWidth = 2;
         this.ctx.textAlign = "left";
         this.ctx.textBaseline = "alphabetic";        

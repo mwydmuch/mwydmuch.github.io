@@ -3,7 +3,9 @@
 const NAME = "noisy lines",
       FILE = "noisy-lines.js",
       DESC = `
-TODO: description
+Another animation based on Perlin noise. 
+The lines are disorted by adding noise to the position of each vertex.
+The disortion are larger as the vertices are further from the center.
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -14,17 +16,16 @@ const Utils = require("./utils");
 class NoisyLines extends Animation {
     constructor (canvas, colors, colorsAlt, bgColor,
                  lines = 100,
-                 noiseXIncr = "random",
-                 noiseYIncr = "random",
-                 noiseRange = "random",
-                 speed = 1,
-                 rotation = "random"){
+                 noiseXIncr = 0.07,
+                 noiseYIncr = 0.06,
+                 noiseRange = 0.5,
+                 speed = 1){
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
         this.noiseXIncr = 0.07;
         this.noiseYIncr = 0.06;
         this.noiseRange = 0.5,
         this.lines = lines;
-        this.speed = 1;
+        this.speed = speed;
         this.rotation = 0;
         this.margin = 0.1;
     }
@@ -38,14 +39,15 @@ class NoisyLines extends Animation {
             centerY = this.ctx.canvas.height / 2,
             drawX = centerX * (1 - this.margin),
             drawY = centerY * (1 - this.margin),
-            linesDist = drawY * 2 / this.lines;
+            linesDist = drawY * 2 / (this.lines - 1);
             
         this.ctx.translate(centerX, centerY);
 
         let yNoise = this.time * 0.3;
-        for (let y = -drawY; y <= drawY; y += linesDist) {
+        for (let i = 0; i < this.lines; ++i) {
+            let y = -drawY + i * linesDist,
+                xNoise = this.time * 0.3;
             yNoise += this.noiseYIncr;
-            let xNoise = this.time * 0.3;
 
             this.ctx.beginPath();
             for (let x = -drawX ; x <= drawX; x += 5) {
@@ -63,12 +65,11 @@ class NoisyLines extends Animation {
     }
 
     getSettings() {
-        return [{prop: "lines", type: "int", min: 1, max: 250},
+        return [{prop: "lines", type: "int", min: 2, max: 250},
                 {prop: "noiseXIncr", type: "float", min: -0.2, max: 0.2, step: 0.001},
                 {prop: "noiseYIncr", type: "float", min: -0.2, max: 0.2, step: 0.001},
                 {prop: "noiseRange", type: "float", min: 0, max: 1, step: 0.01},
                 {prop: "speed", type: "float", min: -8, max: 8},
-                //{prop: "rotation", type: "float", min: 0, max: 360}
                 this.getSeedSettings()];
     }
 }

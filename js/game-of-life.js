@@ -24,7 +24,7 @@ class GameOfLife extends Grid {
     constructor (canvas, colors, colorsAlt, bgColor,
                  cellSize = 12,
                  cellPadding = 1,
-                 spawnProb = 0.5,
+                 spawnProb = 0.4,
                  loopGrid = true,
                  cellStyle = "random",
                  deadCellsFadingSteps = 5) {

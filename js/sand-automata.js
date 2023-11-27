@@ -201,7 +201,7 @@ class SandAutomata extends Grid {
 
     getSettings() {
         return [{prop: "cellSize", type: "int", min: 2, max: 12, toCall: "resize"},
-                {prop: "blockSize", type: "int", min: 1, max: this.maxBlockSize, toCall: "generateBlocks"},
+                {prop: "blockSize", type: "int", min: 2, max: this.maxBlockSize, toCall: "generateBlocks"},
                 this.getSeedSettings()];
     }
 }

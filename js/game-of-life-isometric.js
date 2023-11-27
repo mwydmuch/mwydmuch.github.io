@@ -24,7 +24,7 @@ class GameOfLifeIsometric extends GameOfLife {
     constructor (canvas, colors, colorsAlt, bgColor,
                  cellSize = 14,
                  cellBasePadding = 0,
-                 spawnProb = 0.5,
+                 spawnProb = 0.4,
                  fadeDeadCells = true,
                  drawCellsGrid = true,
                  loopGrid = true,

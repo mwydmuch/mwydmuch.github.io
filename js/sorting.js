@@ -4,6 +4,8 @@ const NAME = "sorting algorithm visualization",
       FILE = "sorting.js",
       DESC = `
 Animated visualization of different sorting algorithms.
+Like many, sorting algorithms were one of the first things I studied in computer science.
+Since then, I have found watching a nice visualization of sorting algorithms quite satisfying.
 
 Coded with no external dependencies, using only canvas API.
 `;

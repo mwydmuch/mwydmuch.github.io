@@ -113,7 +113,7 @@ class RecursiveRectangle {
 }
 
 class RecursiveRectangles extends Animation {
-    constructor(canvas, colors, colorsAlt, bgColor, depth = 8, speed = 1) {
+    constructor(canvas, colors, colorsAlt, bgColor, depth = 7, speed = 1) {
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
         this.depth = depth;
         this.speed = speed;
