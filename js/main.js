@@ -425,6 +425,18 @@ if(canvas){
             elemBgSettingsControls.style.display = "block";
         }
 
+        function setMaxHeight(){
+            elemBgSettingsControls.style.maxHeight = elemBgSettingsControls.parentNode.offsetHeight - parseInt(elemBgSettingsControls.style.top) + 'px';
+        }
+
+        function checkIfFits(){
+            if(elemBgSettingsControls.parentNode.offsetWidth < 376)
+                elemBgSettingsControls.style.left = '0px';
+        }
+
+        checkIfFits();
+        setMaxHeight();
+        
         // Show/hide the background settings panel
         elemBgSettings.addEventListener("click", function () {
             if (elemBgSettingsControls.classList.contains("fade-out") || 
@@ -454,7 +466,9 @@ if(canvas){
                     elemBgSettingsControls.style.left = e.clientX - elemBgSettingsControls.clickAnchorX + 'px';
                     if(elemBgSettingsControls.style.left[0] == "-") elemBgSettingsControls.style.left = '0px';
                     elemBgSettingsControls.style.top = e.clientY - elemBgSettingsControls.clickAnchorY  + 'px';
-                    elemBgSettingsControls.style.maxHeight = elemBgSettingsControls.parentNode.offsetHeight - (e.clientY - elemBgSettingsControls.clickAnchorY) + 'px';
+                    if(elemBgSettingsControls.style.top[0] == "-") elemBgSettingsControls.style.top = '0px';
+                    //elemBgSettingsControls.style.maxHeight = elemBgSettingsControls.parentNode.offsetHeight - (e.clientY - elemBgSettingsControls.clickAnchorY) + 'px';
+                    setMaxHeight();
                 }
             })
         });
