@@ -463,11 +463,14 @@ if(canvas){
             addEventListener(eventName, function (e) {
                 if(elemBgSettingsControls.classList.contains('moving')){
                     if(e.touches) e = e.touches[0];
-                    elemBgSettingsControls.style.left = e.clientX - elemBgSettingsControls.clickAnchorX + 'px';
-                    if(elemBgSettingsControls.style.left[0] == "-") elemBgSettingsControls.style.left = '0px';
-                    elemBgSettingsControls.style.top = e.clientY - elemBgSettingsControls.clickAnchorY  + 'px';
-                    if(elemBgSettingsControls.style.top[0] == "-") elemBgSettingsControls.style.top = '0px';
-                    //elemBgSettingsControls.style.maxHeight = elemBgSettingsControls.parentNode.offsetHeight - (e.clientY - elemBgSettingsControls.clickAnchorY) + 'px';
+                    let leftPos = e.clientX - elemBgSettingsControls.clickAnchorX,
+                        topPos = e.clientY - elemBgSettingsControls.clickAnchorY;
+
+                    if(leftPos < 0) leftPos = 0;
+                    if(topPos < 0) topPos = 0;
+
+                    elemBgSettingsControls.style.left = leftPos + 'px';
+                    elemBgSettingsControls.style.top = topPos + 'px';
                     setMaxHeight();
                 }
             })
