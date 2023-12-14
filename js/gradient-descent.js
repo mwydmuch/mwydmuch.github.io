@@ -7,7 +7,9 @@ Visualization of gradient descent-based optimizers.
 Default hyperparameters are set to recommended values.
 
 The functions were taken from this very nice 
-[website](https://www.sfu.ca/~ssurjano/optimization.html)
+[website](https://www.sfu.ca/~ssurjano/optimization.html).
+
+You can select the starting point by clicking/touching the canvas.
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -37,7 +39,7 @@ class Optim {
 }
 
 class SGD extends Optim {
-    constructor(eta=0.01) {
+    constructor(eta=0.001) {
         super("SGD");
         this.eta = eta;
     }
@@ -50,7 +52,7 @@ class SGD extends Optim {
 }
 
 class Momentum extends Optim {
-    constructor(eta=0.01, beta=0.9) {
+    constructor(eta=0.001, beta=0.9) {
         super("Momentum");
         this.eta = eta;
         this.beta = beta;
@@ -319,7 +321,7 @@ class RosenbrockFunc extends Func{
 }
 
 
-class GriewankFunc extends Func{
+class GriewankFunc extends Func{ // This one is not used as it doesn't look good
     constructor() {
         let scale = 5,
             start = 0.9 * scale;
@@ -363,6 +365,9 @@ class GradientDescent extends Animation {
         this.optims = null;
         this.imageData = null;
 
+        this.functionImageData = null;
+        this.functionImageDataName = "";
+
         this.sgd = new SGD();
         this.momentum = new Momentum();
         this.adagrad = new AdaGrad();
@@ -372,8 +377,6 @@ class GradientDescent extends Animation {
         this.amsgrad = new AMSGrad();
 
         this.optims = [this.sgd, this.momentum, this.adagrad, this.rmsprop, this.adam, this.adamax, this.amsgrad];
-
-        
     }
 
     draw() {
@@ -391,10 +394,6 @@ class GradientDescent extends Animation {
             if(isNaN(x1) || isNaN(y1) || isNaN(x2) || isNaN(y2)) continue;
             if(Math.abs(x1) > 1e4 || Math.abs(y1) > 1e4 || Math.abs(x2) > 1e4 || Math.abs(y2) > 1e4) continue;
             Utils.drawLine(this.ctx, x1 * this.scale, -y1 * this.scale, x2 * this.scale, -y2 * this.scale, 2, this.colorsAlt[i]);
-            
-            // Draw dots instead of lines
-            //this.ctx.fillStyle = this.colorsAlt[i];
-            //this.ctx.fillRect(x2 * this.scale, -y2 * this.scale, 1, 1);
         }
         this.ctx.resetTransform();
 
@@ -417,23 +416,31 @@ class GradientDescent extends Animation {
 
         if (this.frame >= this.func.getSteps() && this.autoRestart) this.resize();
     }
-    
-    resize() {
+
+    drawFunction() {
         this.clear();
-        
+
         // Create function
         let funcCls = this.funcClasses[this.funcNames.indexOf(this.functionToOptimize)];
         this.func = new funcCls();
-        
-        this.frame = 0;
-        this.imageData = null;
 
+        if(this.functionImageData 
+            && this.functionImageDataName === this.func.getName()
+            && this.functionImageData.width === this.ctx.canvas.width
+            && this.functionImageData.height === this.ctx.canvas.height
+        ){
+            this.ctx.putImageData(this.functionImageData, 0, 0);
+            return;
+        }
+
+        this.functionImageDataName = this.func.getName();
         const width = this.ctx.canvas.width,
               height = this.ctx.canvas.height,
               centerX = width / 2,
               centerY = height / 2;
         this.scale = Math.min(width, height) / this.func.getScale() / 2;
         this.ctx.fillStyle = this.colors[0];
+        this.ctx.strokeStyle = this.bgColor;
         this.ctx.font = '12px sans-serif';
 
         // Create visualization of the function
@@ -449,7 +456,7 @@ class GradientDescent extends Animation {
         } else {
             shiftVal = 0;
             const scale = this.func.getScale(),
-                  vals = [
+                    vals = [
                     this.func.val([0, 0]),
                     this.func.val([scale, 0]),
                     this.func.val([0, scale]),
@@ -459,9 +466,9 @@ class GradientDescent extends Animation {
                     this.func.val([-scale, -scale]),
                     this.func.val([scale, -scale]),
                     this.func.val([-scale, scale]),
-                  ],
-                  min = Math.min(...vals),
-                  max = Math.max(...vals);
+                    ],
+                    min = Math.min(...vals),
+                    max = Math.max(...vals);
             isolines = [min];
             exp = 1;
             plusVal = (max - min) / 15;
@@ -515,11 +522,15 @@ class GradientDescent extends Animation {
             if(i !== 0) this.ctx.fillText((i).toFixed(1), 10, centerY - i * this.scale);
         }
 
-        // Set optimizers
-        const start = this.func.getStartPoint();
-        for(let o of this.optims) o.init(start);
+        this.functionImageData = this.ctx.getImageData(0, 0, width, height);
+    }
 
-        // Draw legend
+    drawLegend(start) {
+        const width = this.ctx.canvas.width,
+              height = this.ctx.canvas.height,
+              centerX = width / 2,
+              centerY = height / 2;
+
         this.textYOffset = 22;
         this.textXOffset = 50;
         this.resetFont();
@@ -533,27 +544,49 @@ class GradientDescent extends Animation {
         }
 
         this.textYOffset += this.lineHeight;
-        Utils.fillAndStrokeText(this.ctx, `Starting point: x0 = (${start[0]}, ${start[1]})`, this.textXOffset, this.textYOffset);
-        this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        Utils.fillAndStrokeText(this.ctx, `Starting point: x0 = (${start[0].toFixed(this.rounding)}, ${start[1].toFixed(this.rounding)})`, this.textXOffset, this.textYOffset);
+        this.imageData = this.ctx.getImageData(0, 0, width, height);
+    }
+
+    mouseAction(cords, event) {
+        if(event === "click"){
+            let start = [(cords.x - this.ctx.canvas.width / 2) / this.scale, -(cords.y - this.ctx.canvas.height / 2) / this.scale];
+            this.resize(start);
+        }
+    }
+    
+    resize(start = null) {
+        this.frame = 0;
+        
+        // Draw function using isolines
+        this.drawFunction();
+
+        // Set optimizers
+        if(start === null) start = this.func.getStartPoint();
+        for(let o of this.optims) o.init(start);
+
+        // Draw legend
+        this.drawLegend(start);
     }
 
     getSettings() {
         return [{prop: "functionToOptimize", type: "select", values: this.funcNames, toCall: "resize"},
+                {prop: "selectStartingPoint", type: "text", value: "<click/touch>"},
                 {prop: "autoRestart", type: "bool"},
-                {prop: "sgd.eta", type: "float", step: 0.0001, min: 0, max: 1},
-                {prop: "momentum.eta", type: "float", step: 0.0001, min: 0, max: 1},
+                {prop: "sgd.eta", type: "float", step: 0.00001, min: 0, max: 0.1},
+                {prop: "momentum.eta", type: "float", step: 0.00001, min: 0, max: 0.1},
                 {prop: "momentum.beta", type: "float", step: 0.0001, min: 0, max: 1},
-                {prop: "adagrad.eta", type: "float", step: 0.0001, min: 0, max: 1},
-                {prop: "rmsprop.eta", type: "float", step: 0.0001, min: 0, max: 1},
-                {prop: "adam.eta", type: "float", step: 0.0001, min: 0, max: 1},
-                {prop: "adam.beta1", type: "float", step: 0.0001, min: 0, max: 1},
-                {prop: "adam.beta2", type: "float", step: 0.0001, min: 0, max: 1},
-                {prop: "adamax.alpha", type: "float", step: 0.0001, min: 0, max: 1},
-                {prop: "adamax.beta1", type: "float", step: 0.0001, min: 0, max: 1},
-                {prop: "adamax.beta2", type: "float", step: 0.0001, min: 0, max: 1},
-                {prop: "amsgrad.alpha", type: "float", step: 0.0001, min: 0, max: 1},
-                {prop: "amsgrad.beta1", type: "float", step: 0.0001, min: 0, max: 1},
-                {prop: "amsgrad.beta2", type: "float", step: 0.0001, min: 0, max: 1},
+                {prop: "adagrad.eta", type: "float", step: 0.00001, min: 0, max: 1},
+                {prop: "rmsprop.eta", type: "float", step: 0.00001, min: 0, max: 1},
+                {prop: "adam.eta", type: "float", step: 0.00001, min: 0, max: 1},
+                {prop: "adam.beta1", type: "float", step: 0.00001, min: 0, max: 1},
+                {prop: "adam.beta2", type: "float", step: 0.00001, min: 0, max: 1},
+                {prop: "adamax.alpha", type: "float", step: 0.00001, min: 0, max: 1},
+                {prop: "adamax.beta1", type: "float", step: 0.00001, min: 0, max: 1},
+                {prop: "adamax.beta2", type: "float", step: 0.00001, min: 0, max: 1},
+                {prop: "amsgrad.alpha", type: "float", step: 0.00001, min: 0, max: 1},
+                {prop: "amsgrad.beta1", type: "float", step: 0.00001, min: 0, max: 1},
+                {prop: "amsgrad.beta2", type: "float", step: 0.00001, min: 0, max: 1},
                 ];
     }
 }

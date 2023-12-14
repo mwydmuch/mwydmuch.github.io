@@ -22,7 +22,7 @@ class ParticlesAndAttractors extends Animation {
                  numParticles= 10000,
                  particlesSpeed = "random",
                  fadingSpeed = 0.03,
-                 numAttractors = 5,
+                 numAttractors = "random",
                  centralAttractor = "random",
                  attractorsSystem = "random",
                  attractorsSpeed = "random",
@@ -33,13 +33,15 @@ class ParticlesAndAttractors extends Animation {
 
         this.particles = []
         this.numParticles = numParticles;
-        this.particlesSpeed = this.assignIfRandom(particlesSpeed, Utils.round(Utils.randomRange(5, 15)));
+        this.particlesSpeed = this.assignIfRandom(particlesSpeed, Utils.round(Utils.randomRange(0.2, 0.5)));
         this.fadingSpeed = fadingSpeed;
-
+        this.nextFadeStep = 0;
+        
+        this.attractors = [];
         this.drawAttractors = drawAttractors;
-        this.numAttractors = numAttractors;
+        this.numAttractors = this.assignIfRandom(numAttractors, Utils.randomRange(4, 7));
         this.centralAttractor = this.assignIfRandom(centralAttractor, Utils.randomChoice([false, true]));
-        this.attractorsSystems = ["orbits", "eights"]
+        this.attractorsSystems = ["orbits", "eights", "circle"];
         this.attractorsSystem = this.assignIfRandom(attractorsSystem, Utils.randomChoice(this.attractorsSystems));
         this.attractorsSpeed = this.assignIfRandom(attractorsSpeed, Utils.round(Utils.randomRange(0.05, 0.1) * Utils.randomChoice([-1, 1])));
         this.attractorsPosition = 0;
@@ -48,61 +50,80 @@ class ParticlesAndAttractors extends Animation {
         this.scale = scale;
         this.rainbowColors = rainbowColors;
 
+        this.mouseDown = false;
+        this.mouseAttractor = {x: 0, y: 0};
+
         this.setup();
     }
 
     setup(){
         this.particles = []
         for (let i = 0; i < this.numParticles; ++i)
-            this.particles.push(Utils.rotateVec2d(Utils.createVec2d(Utils.randomRange(1, 100, this.rand), 0), i));
+            this.particles.push(Utils.rotateVec2d({
+                x: Utils.randomRange(1, 100, this.rand),
+                y: 0,
+                prevX: 0,
+                prevY: 0,
+            }, i));
     }
 
     update(elapsed){
         super.update(elapsed);
+        this.nextFadeStep = this.fadingSpeed * elapsed / 33;
+
         this.attractorsPosition += elapsed / 1000 * this.attractorsSpeed;
-    }
-
-    draw() {
-        this.fadeOut(this.fadingSpeed);
-
-        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
-        this.ctx.scale(this.scale, this.scale);
 
         const pos = this.startingPosition + this.attractorsPosition,
-              numA = this.numAttractors + 1 - this.centralAttractor,
-              startI = 1 - this.centralAttractor
+        numA = this.numAttractors + 1 - this.centralAttractor,
+        startI = 1 - this.centralAttractor
 
         // Calculate positions of attractors
-        let attractors = [];
+        this.attractors = [];
         if(this.attractorsSystem === "orbits") {
-            const s = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / (2 * (this.numAttractors - 1));
+            const r = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / (2 * (this.numAttractors - 1));
             for (let i = startI; i < numA; ++i)
-                attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * s, 0), pos * i));
+                this.attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * r, 0), pos * i));
         } else if (this.attractorsSystem === "eights") {
-            const s = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / this.numAttractors;
+            const r = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / this.numAttractors;
             for (let i = startI; i < numA; ++i)
-                attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * Math.sin(pos * Math.PI / 2) * s, 0), pos * i));
+                this.attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * Math.sin(pos * Math.PI / 2) * r, 0), pos * i));
+        } else if (this.attractorsSystem === "circle") {
+            if(this.centralAttractor) this.attractors.push({x: 0, y: 0});
+            const r = Math.min(this.ctx.canvas.width, this.ctx.canvas.height) * 0.4;
+            for (let i = 1; i < numA; ++i)
+                this.attractors.push(Utils.rotateVec2d(Utils.createVec2d(r, 0), (pos + i) * 2 * Math.PI / (numA - 1)));
         }
+        if(this.mouseDown) this.attractors.push(this.mouseAttractor);
 
-        const color = this.rainbowColors ? `hsl(${this.time / 5 * 360}, 100%, 75%)` : this.colors[0];
-        
         for (let p of this.particles) {
             let d = 0
 
             // Calculate direction of velocity vector for each particle
-            for (let a of attractors) d += Math.atan2(a.y - p.y, a.x - p.x);
+            for (let a of this.attractors) d += Math.atan2(a.y - p.y, a.x - p.x);
 
             // Calculate new position of the particle
-            const prevX = p.x, prevY = p.y;
-            p.x += Math.cos(d) * this.particlesSpeed;
-            p.y += Math.sin(d) * this.particlesSpeed;
+            p.prevX = p.x;
+            p.prevY = p.y;
+            p.x += Math.cos(d) * this.particlesSpeed * elapsed;
+            p.y += Math.sin(d) * this.particlesSpeed * elapsed;
+        }
+    }
 
+    draw() {
+        this.fadeOut(this.nextFadeStep);
+
+        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        this.ctx.scale(this.scale, this.scale);
+
+        const color = this.rainbowColors ? `hsl(${this.time / 5 * 360}, 100%, 75%)` : this.colors[0];
+        
+        for (let p of this.particles) {
             // To make it look smooth even at high speeds, draw a line between the previous and new positions instead of a point
-            Utils.drawLine(this.ctx, prevX, prevY, p.x, p.y, 1, color);
+            Utils.drawLine(this.ctx, p.prevX, p.prevY, p.x, p.y, 1, color);
         }
 
         if(this.drawAttractors)
-            for (let a of attractors)
+            for (let a of this.attractors)
                 Utils.fillCircle(this.ctx, a.x, a.y, 5, this.colorsAlt[2])
 
         this.ctx.resetTransform();
@@ -118,14 +139,27 @@ class ParticlesAndAttractors extends Animation {
         this.setup();
     }
 
+    mouseAction(cords, event) {
+        if(event === "down") this.mouseDown = true;
+        else if(event === "up") this.mouseDown = false;
+        else if(event === "down" || (event === "move" && this.mouseDown)){
+            console.log("attractor!");
+            this.mouseAttractor = {
+                x: (cords.x - this.ctx.canvas.width / 2) / this.scale,
+                y: (cords.y - this.ctx.canvas.height / 2) / this.scale
+            };
+        }
+    }
+
     getSettings() {
         return [{prop: "numParticles", type: "int", min: 1000, max: 15000, toCall: "setup"},
-                {prop: "particlesSpeed", type: "float", min: 1, max: 20},
+                {prop: "particlesSpeed", type: "float", min: 0.1, max: 1},
                 {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.1},
                 {prop: "attractorsSystem", type: "select", values: this.attractorsSystems},
                 {prop: "numAttractors", type: "int", min: 3, max: 7},
                 {prop: "centralAttractor", type: "bool"},
                 {prop: "attractorsSpeed", type: "float", min: -0.2, max: 0.2},
+                {prop: "addAttractor", type: "text", value: "<hold mouse button/touch>"},
                 {prop: "drawAttractors", type: "bool"},
                 {prop: "scale", type: "float", min: 0.05, max: 1.95},
                 {prop: "rainbowColors", type: "bool"}];

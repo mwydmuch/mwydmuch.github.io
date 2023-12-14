@@ -277,21 +277,34 @@ if(canvas){
     render();
 
 
-    // Support for mouse click (WIP)
+    // Support for mouse click
     // ---------------------------------------------------------------------------------------------------------------------
 
-    // function getCursorPosition(canvas, event) {
-    //     const rect = canvas.getBoundingClientRect(),
-    //           x = event.clientX - rect.left,
-    //           y = event.clientY - rect.top;
-    //     return {x: x, y: y};
-    // }
-    //
-    // canvas.addEventListener('click', function(e) {
-    //     const cords = getCursorPosition(canvas, e);
-    //     console.log(`click!: ${cords.x}, ${cords.y}`)
-    //     animation.mouseAction(getCursorPosition(canvas, e));
-    // });
+    function getRelativeCursorPosition(elem, e) {
+        if(e.touches) e = e.touches[0];
+        const rect = elem.getBoundingClientRect(),
+              x = e.clientX - rect.left,
+              y = e.clientY - rect.top;
+        return {x: x, y: y};
+    }
+
+    let eventNames = {
+        "click": "click",
+        "mousedown": "down",
+        "touchstart": "down",
+        "mousemove": "move",
+        "touchmove": "move",
+        "mouseup": "up",
+        "touchend": "up",
+    };
+
+    ["click", "mousedown", "touchstart", "mousemove", "touchmove", "mouseup", "touchend"].forEach(function(eventName){
+        container.addEventListener(eventName, function (e) {
+            const cords = getRelativeCursorPosition(container, e);
+            console.log(`${eventName}!: ${cords.x}, ${cords.y}`)
+            animation.mouseAction(getRelativeCursorPosition(container, e), eventNames[eventName]);
+        })
+    });
 
 
     // Control functions
@@ -581,7 +594,7 @@ if(canvas){
                     else optionControls += `<input type="range" class="setting-input slider" ${inputParams}">`;
                     optionControls += `[<output class="setting-value">${value}</output>]`;
                 }
-                if(setting.type === 'select') {
+                else if(setting.type === 'select') {
                     optionControls += `<select class="form-select setting-select" name="${setting.prop}" id="${elemId}">`;
                     for(let v of setting['values']) {
                         if(v === value) optionControls += `<option selected value="${v}">${v}</option>`;
@@ -589,6 +602,7 @@ if(canvas){
                     }
                     optionControls += "</select>";
                 }
+                else if(setting.type === 'text') optionControls += `<span class="setting-text">${setting.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;")}</span>`;
                 optionControls += "</span></div>";
                 elemBgSettingsList.innerHTML += optionControls;
             });

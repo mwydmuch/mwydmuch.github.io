@@ -14,14 +14,17 @@ const Utils = require("./utils");
 
 class ParticlesStorm extends Animation {
     constructor(canvas, colors, colorsAlt, bgColor,
+                particlesSpeed = 0.5,
                 particlesDensity = 0.01,
                 noiseScale = 0.001,
                 fadingSpeed = 0.02) {
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
+        this.particlesSpeed = particlesSpeed;
         this.particlesDensity = particlesDensity;
         this.noiseScale = noiseScale;
         this.fadingSpeed = fadingSpeed;
+        this.nextFadeStep = 0;
 
         this.particles = [];
         this.width = 0;
@@ -30,13 +33,14 @@ class ParticlesStorm extends Animation {
 
     update(elapsed) {
         super.update(elapsed);
+        this.nextFadeStep = this.fadingSpeed * elapsed / 33;
 
         for(let p of this.particles){
             const theta = this.noise.perlin3(p.x * this.noiseScale * 2,
                                              p.y * this.noiseScale * 3,
                                              this.frame * this.noiseScale * 3) * 2 * Math.PI;
-            p.x += 2 * Math.tan(theta);
-            p.y += 2 * Math.sin(theta);
+            p.x += 100 * this.particlesSpeed * Math.tan(theta) * elapsed / 1000;
+            p.y += 100 * this.particlesSpeed * Math.sin(theta) * elapsed / 1000;
 
             // Wrap particles
             if (p.x < 0) p.x = this.width;
@@ -47,7 +51,7 @@ class ParticlesStorm extends Animation {
     }
 
     draw() {
-        this.fadeOut(this.fadingSpeed);
+        this.fadeOut(this.nextFadeStep);
         for(let p of this.particles){
             this.ctx.fillStyle = p.color;
             this.ctx.fillRect(p.x, p.y, 1, 1);
@@ -74,7 +78,8 @@ class ParticlesStorm extends Animation {
     }
 
     getSettings() {
-        return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.05, toCall: "resize"},
+        return [{prop: "particlesSpeed", type: "float", step: 0.01, min: 0.1, max: 2},
+                {prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.05, toCall: "resize"},
                 {prop: "noiseScale", type: "float", step: 0.001, min: 0.001, max: 0.01},
                 {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.1},
                 this.getSeedSettings()];

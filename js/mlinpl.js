@@ -67,10 +67,10 @@ class MLinPL extends Animation {
 
     updateParticles(particles, elapsed){
         for (let p of particles) {
-            let prevSinVal = Math.sin(p.x / p.freq) * p.amp * elapsed / 33;
-            p.x += p.velX;
-            let nextSinVal = Math.sin(p.x / p.freq) * p.amp * elapsed / 33;
-            p.y += p.velY * (prevSinVal - nextSinVal);
+            let prevSinVal = Math.sin(p.x / p.freq) * p.amp;
+            p.x += p.velX * elapsed / 33;
+            let nextSinVal = Math.sin(p.x / p.freq) * p.amp;
+            p.y += p.velY * (prevSinVal - nextSinVal) * elapsed / 33;
         
             // Wrap around the left and right
             if(p.x < -this.connectionThreshold) p.x = this.width + this.connectionThreshold; 
@@ -91,7 +91,7 @@ class MLinPL extends Animation {
                 velX: (this.rand() * 2 - 1) * particlesCfg.speedMax,
                 velY: (this.rand() * 2 - 1) * particlesCfg.speedMax,
                 freq: this.rand() * 100 + 100,
-                amp: this.rand() * 100,
+                amp: this.rand() * 200,
                 size: this.rand() * particlesCfg.sizeRange + particlesCfg.sizeMin,
                 color: Utils.randomRulletChoice(particlesCfg.colors, this.rand),
                 lineColor: Utils.randomRulletChoice(particlesCfg.lineColors, this.rand),

@@ -146,8 +146,8 @@ class Animation {
         return {prop: "seed", type: "int", min: 0, max: this.maxSeedValue, toCall: toCall};
     }
 
-    mouseAction(cords) {
-        // By default do nothing, this is not really implemented
+    mouseAction(cords, event) {
+        // By default do nothing
     }
 }
 

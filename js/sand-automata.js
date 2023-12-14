@@ -23,6 +23,9 @@ class SandAutomata extends Grid {
         this.cellSize = cellSize;
         this.blockSize = blockSize;
         this.maxBlockSize = 12;
+
+        this.mouseDown = false;
+        this.mouseValue = 0;
         
         // All tetris blocks with all rotations
         this.blocksTemplates = [
@@ -110,7 +113,7 @@ class SandAutomata extends Grid {
     update(elapsed){
         super.update(elapsed);
         
-        // Spawn some and very update
+        // Spawn new block every 30 frames
         if(this.frame % 30 == 0){
             const block = Utils.randomChoice(this.blocks, this.rand),
                   blockPos = Utils.randomInt(0, this.gridWidth - block[0].length, this.rand),
@@ -199,9 +202,25 @@ class SandAutomata extends Grid {
         this.gridHeight = newGridHeight;
     }
 
+    mouseAction(cords, event) {
+        if(event === "down"){
+            this.mouseDown = true;
+            this.mouseValue += 1;
+        }
+        else if(event === "up") this.mouseDown = false;
+        else if(event === "down" || (event === "move" && this.mouseDown)){
+            const x = Math.floor(cords.x / this.cellSize),
+                  y = Math.floor(cords.y / this.cellSize),
+                  cellCord = x + (y + 4 * this.maxBlockSize) * this.gridWidth;
+            this.grid[cellCord] = (this.mouseValue % this.colors.length) + 1;
+            this.draw();
+        }
+    }
+
     getSettings() {
         return [{prop: "cellSize", type: "int", min: 2, max: 12, toCall: "resize"},
                 {prop: "blockSize", type: "int", min: 2, max: this.maxBlockSize, toCall: "generateBlocks"},
+                {prop: "addSand", type: "text", value: "<click/touch>"},
                 this.getSeedSettings()];
     }
 }

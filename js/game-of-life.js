@@ -3,7 +3,7 @@
 const NAME = "Conway's game of life",
       FILE = "game-of-life.js",
       DESC = `
-Conway's game of life visualization. 
+Conway's game of life visualization - probably the most famous cellular automaton.
 You can read about the game of life on
 [Wikipedia](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
 Game of life is one of the first programs I wrote in my life.
@@ -13,6 +13,8 @@ a few steps after they die to achieve a nice effect.
 Especially, cells that died in the previous step keep the appearance 
 of the life cell resulting in a stable image 
 since flickering is not that good for a background image.
+
+You can pause the animation and set the cell states by clicking/touching the canvas.
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -37,6 +39,8 @@ class GameOfLife extends Grid {
         this.cellStyle = this.assignIfRandom(cellStyle, Utils.randomChoice(this.cellStyles));
         this.deadCellsFadingSteps = deadCellsFadingSteps;
         this.loopGrid = loopGrid;
+
+        this.mouseDown = false;
     }
 
     isAlive(x, y) {
@@ -132,21 +136,27 @@ class GameOfLife extends Grid {
         this.resizeGrid(newGridWidth, newGridHeight);
     }
 
+    mouseAction(cords, event) {
+        if(event === "down") this.mouseDown = true;
+        else if(event === "up") this.mouseDown = false;
+        else if(event === "down" || (event === "move" && this.mouseDown)){
+            const x = Math.floor(cords.x / this.cellSize),
+                  y = Math.floor(cords.y / this.cellSize),
+                  cellCord = x + y * this.gridWidth;
+            if (this.grid[cellCord] === 1) this.grid[cellCord] = -99999;
+            else this.grid[cellCord] = 1;
+            this.draw();
+        }
+    }
+
     getSettings() {
-        return [{prop: "loopGrid", type: "bool"},
+        return [{prop: "changeGrid", type: "text", value: "<click/touch>"},
+                {prop: "loopGrid", type: "bool"},
                 {prop: "cellSize", type: "int", min: 4, max: 32, toCall: "restart"},
                 {prop: "cellStyle", type: "select", values: this.cellStyles},
                 {prop: "deadCellsFadingSteps", type: "int", min: 0, max: 8},
                 {prop: "spawnProb", type: "float", step: 0.01, min: 0, max: 1, toCall: "restart"},
                 this.getSeedSettings()];
-    }
-
-    mouseAction(cords) {
-        // const x = Math.floor(cords.x / this.cellSize),
-        //       y = Math.floor(cords.y / this.cellSize),
-        //       cellCord = x + y * this.gridWidth;
-        // this.grid[cellCord] = 1;
-        // this.draw();
     }
 }
 

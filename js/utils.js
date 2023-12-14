@@ -139,11 +139,17 @@ module.exports = {
 
     rotateVec2d(vec, r){
         const cos = Math.cos(r), sin = Math.sin(r);
-        return {x: vec.x * cos - vec.y * sin, y: vec.x * sin + vec.y * cos};
+        let newVec = { ...vec };
+        newVec.x = vec.x * cos - vec.y * sin;
+        newVec.y = vec.x * sin + vec.y * cos;
+        return newVec;
     },
 
     mulVec2d(vec, val){
-        return {x: vec.x * val, y: vec.x * val};
+        let newVec = { ...vec };
+        newVec.x *= val;
+        newVec.y *= val;
+        return newVec;
     },
 
     distVec2d(vec1, vec2){
