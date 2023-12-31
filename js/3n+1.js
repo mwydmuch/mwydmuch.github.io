@@ -34,7 +34,7 @@ class ThreeNPlusOne extends Animation {
         this.oddAngle = oddAngle;
         this.scale = scale;
         this.drawNumbers = drawNumbers;
-        this.showStats = false;
+        this.showStats = showStats;
         
         this.seqences = [];
         this.max = 0;
@@ -112,7 +112,7 @@ class ThreeNPlusOne extends Animation {
                 `Highest reached number: ${this.max}`
             ];
             this.resetFont();
-            this.drawTextLines(statsLines, this.lineHeight, this.ctx.canvas.height - (statsLines.length + 1) * this.lineHeight, true);
+            this.drawTextLines(statsLines, this.lineHeight, this.ctx.canvas.height - (statsLines.length + 1) * this.lineHeight);
         }
     }
 

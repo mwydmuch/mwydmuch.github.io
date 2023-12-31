@@ -33,19 +33,20 @@ class ParticlesAndAttractors extends Animation {
 
         this.particles = []
         this.numParticles = numParticles;
-        this.particlesSpeed = this.assignIfRandom(particlesSpeed, Utils.round(Utils.randomRange(0.2, 0.5)));
+        this.particlesSpeed = this.assignIfRandom(particlesSpeed, Utils.round(Utils.randomRange(0.25, 0.5)));
         this.fadingSpeed = fadingSpeed;
         this.nextFadeStep = 0;
         
         this.attractors = [];
         this.drawAttractors = drawAttractors;
-        this.numAttractors = this.assignIfRandom(numAttractors, Utils.randomRange(4, 7));
+        this.numAttractors = this.assignIfRandom(numAttractors, Utils.randomInt(3, 7));
         this.centralAttractor = this.assignIfRandom(centralAttractor, Utils.randomChoice([false, true]));
         this.attractorsSystems = ["orbits", "eights", "circle"];
         this.attractorsSystem = this.assignIfRandom(attractorsSystem, Utils.randomChoice(this.attractorsSystems));
         this.attractorsSpeed = this.assignIfRandom(attractorsSpeed, Utils.round(Utils.randomRange(0.05, 0.1) * Utils.randomChoice([-1, 1])));
         this.attractorsPosition = 0;
         this.startingPosition = Utils.randomRange(0, 10);
+        this.directionScale = 1;
 
         this.scale = scale;
         this.rainbowColors = rainbowColors;
@@ -99,7 +100,7 @@ class ParticlesAndAttractors extends Animation {
             let d = 0
 
             // Calculate direction of velocity vector for each particle
-            for (let a of this.attractors) d += Math.atan2(a.y - p.y, a.x - p.x);
+            for (let a of this.attractors) d += Math.atan2(a.y - p.y, a.x - p.x) * this.directionScale;
 
             // Calculate new position of the particle
             p.prevX = p.x;
@@ -152,14 +153,15 @@ class ParticlesAndAttractors extends Animation {
     }
 
     getSettings() {
-        return [{prop: "numParticles", type: "int", min: 1000, max: 15000, toCall: "setup"},
-                {prop: "particlesSpeed", type: "float", min: 0.1, max: 1},
+        return [{prop: "numParticles", type: "int", min: 1000, max: 20000, toCall: "setup"},
+                {prop: "particlesSpeed", type: "float", min: 0.1, max: 1.5},
                 {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.1},
                 {prop: "attractorsSystem", type: "select", values: this.attractorsSystems},
                 {prop: "numAttractors", type: "int", min: 3, max: 7},
                 {prop: "centralAttractor", type: "bool"},
-                {prop: "attractorsSpeed", type: "float", min: -0.2, max: 0.2},
-                {prop: "addAttractor", type: "text", value: "<hold mouse button/touch>"},
+                {prop: "attractorsSpeed", type: "float", min: -0.25, max: 0.25},
+                {prop: "directionScale", type: "float", min: 0.0, max: 4.0},
+                {prop: "addAnAttractor", type: "text", value: "<hold mouse button/touch>"},
                 {prop: "drawAttractors", type: "bool"},
                 {prop: "scale", type: "float", min: 0.05, max: 1.95},
                 {prop: "rainbowColors", type: "bool"}];

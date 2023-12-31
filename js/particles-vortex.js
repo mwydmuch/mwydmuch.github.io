@@ -11,7 +11,6 @@ Coded with no external dependencies, using only canvas API.
 `;
 
 const Animation = require("./animation");
-const Noise = require("./noise");
 const Utils = require("./utils");
 
 class ParticlesVortex extends Animation {
@@ -24,9 +23,6 @@ class ParticlesVortex extends Animation {
                  dirY = "random",
                  scale = 1){
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
-
-        this.noise = Noise.noise;
-        this.noise.seed(Utils.randomRange(0, 1));
 
         this.particles = particles;
 
@@ -85,7 +81,8 @@ class ParticlesVortex extends Animation {
                 {prop: "speed", type: "float", min: -this.speedMax, max: this.speedMax},
                 {prop: "rotationSpeed", type: "float", min: -this.rotationSpeedMax, max: this.rotationSpeedMax},
                 {prop: "dirX", type: "float", min: -this.dirMax, max: this.dirMax},
-                {prop: "dirY", type: "float", min: -this.dirMax, max: this.dirMax}];
+                {prop: "dirY", type: "float", min: -this.dirMax, max: this.dirMax},
+                this.getSeedSettings()];
     }
 }
 

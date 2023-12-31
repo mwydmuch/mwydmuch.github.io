@@ -24,7 +24,7 @@ const Utils = require("./utils");
 
 class Spirograph extends Animation {
     constructor (canvas, colors, colorsAlt, bgColor, 
-                 vertices = 2500, 
+                 vertices = 4000, 
                  lineLength = 2, 
                  gearCount = "random",
                  rescaleToFit = true,
@@ -101,8 +101,8 @@ class Spirograph extends Animation {
     }
 
     getSettings() {
-        let settings = [{prop: "vertices", type: "int", min: 100, max: 15000},
-                        {prop: "lineLength", type: "float", step: 0.25, min: 1, max: 8},
+        let settings = [{prop: "vertices", type: "int", min: 100, max: 32000},
+                        {prop: "lineLength", type: "float", step: 0.25, min: 1, max: 16},
                         {prop: "gearCount", type: "int", min: 2, max: this.maxGears, toCall: "updateName"},
                         {prop: "rescaleToFit", type: "bool"},
                         {prop: "scale", type: "float", min: 0.25, max: 4},

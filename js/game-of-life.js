@@ -3,7 +3,7 @@
 const NAME = "Conway's game of life",
       FILE = "game-of-life.js",
       DESC = `
-Conway's game of life visualization - probably the most famous cellular automaton.
+Voisualization of Conway's game of life - probably the most famous cellular automaton.
 You can read about the game of life on
 [Wikipedia](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
 Game of life is one of the first programs I wrote in my life.
@@ -34,6 +34,7 @@ class GameOfLife extends Grid {
         
         this.cellSize = cellSize;
         this.cellBasePadding = cellPadding;
+        this.initialPaterns = ["random", "R Pentomino"]; // not used at the moment
         this.spawnProb = spawnProb;
         this.cellStyles = ["square", "circle"];
         this.cellStyle = this.assignIfRandom(cellStyle, Utils.randomChoice(this.cellStyles));
@@ -41,6 +42,7 @@ class GameOfLife extends Grid {
         this.loopGrid = loopGrid;
 
         this.mouseDown = false;
+        this.mouseVal = 0;
     }
 
     isAlive(x, y) {
@@ -139,13 +141,21 @@ class GameOfLife extends Grid {
     mouseAction(cords, event) {
         if(event === "down") this.mouseDown = true;
         else if(event === "up") this.mouseDown = false;
-        else if(event === "down" || (event === "move" && this.mouseDown)){
+        
+        if(event === "down" || (event === "move" && this.mouseDown)){
             const x = Math.floor(cords.x / this.cellSize),
                   y = Math.floor(cords.y / this.cellSize),
                   cellCord = x + y * this.gridWidth;
-            if (this.grid[cellCord] === 1) this.grid[cellCord] = -99999;
-            else this.grid[cellCord] = 1;
-            this.draw();
+            
+            if(event === "down"){
+                if (this.grid[cellCord] === 1) this.mouseVal = -99999;
+                else this.mouseVal = 1;
+            }
+            
+            if(this.grid[cellCord] !== this.mouseVal){
+                this.grid[cellCord] = this.mouseVal;
+                this.draw();
+            }
         }
     }
 

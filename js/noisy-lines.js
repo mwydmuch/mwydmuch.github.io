@@ -21,12 +21,11 @@ class NoisyLines extends Animation {
                  noiseRange = 0.5,
                  speed = 1){
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
-        this.noiseXIncr = 0.07;
-        this.noiseYIncr = 0.06;
-        this.noiseRange = 0.5,
+        this.noiseXIncr = noiseXIncr;
+        this.noiseYIncr = noiseYIncr;
+        this.noiseRange = noiseRange,
         this.lines = lines;
         this.speed = speed;
-        this.rotation = 0;
         this.margin = 0.1;
     }
 

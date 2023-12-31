@@ -34,6 +34,9 @@ class Network extends Animation {
         this.width = 0;
         this.height = 0;
         this.particles = [];
+
+        this.mouseDown = false;
+        this.mouseParticle = {x: 0, y: 0, color: null};
     }
 
     drawTriangle(p1, p2, p3){
@@ -67,6 +70,9 @@ class Network extends Animation {
 
     draw() {
         this.clear();
+
+        if(this.mouseDown) this.particles.push(this.mouseParticle);
+
         if (this.particles.length > 0) {
             // Run Delaunay traiangulation to get points to create triangles with.
             let data = Delaunay.triangulate(this.particles.map(function(p) {
@@ -87,6 +93,8 @@ class Network extends Animation {
         if(this.drawParticles) {
             for (let p of this.particles) Utils.fillCircle(this.ctx, p.x, p.y, 2, p.color);
         }
+
+        if(this.mouseDown) this.particles.pop();
     }
 
     spawnParticles(x, y, width, height) {
@@ -131,12 +139,25 @@ class Network extends Animation {
         });
     }
 
+    mouseAction(cords, event) {
+        if(event === "down"){
+            this.mouseDown = true;
+            this.mouseParticle.color = Utils.randomChoice(this.colors, this.rand);
+        }
+        else if(event === "up") this.mouseDown = false;
+        else if(event === "down" || (event === "move" && this.mouseDown)){
+            this.mouseParticle.x = cords.x;
+            this.mouseParticle.y = cords.y;
+        }
+    }
+
     getSettings() {
         return [{prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.002, toCall: "restart"},
                 {prop: "fillTriangles", type: "bool"},
                 {prop: "drawParticles", type: "bool"},
                 {prop: "distanceThreshold", type: "int", min: 0, max: 200},
                 {prop: "speed", type: "float", step: 0.1, min: -4, max: 4},
+                {prop: "addAParticle", type: "text", value: "<hold mouse button/touch>"},
                 this.getSeedSettings()];
     }
 }

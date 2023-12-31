@@ -199,8 +199,8 @@ if(canvas){
     function checkResize() {
         // Detect the change of container's size for smooth resizing
         if(resizeMode === "fit"){
-            width = Math.max(container.offsetWidth, window.innerWidth - canvas.offsetLeft);
-            height = Math.max(container.offsetHeight, window.innerHeight - canvas.offsetTop);
+            width = Math.max(container.parentElement.offsetWidth - canvas.offsetLeft);
+            height = Math.max(container.parentElement.offsetHeight - canvas.offsetTop);
             if(width !== lastWidth || height !== lastHeight){
                 canvas.width = width;
                 canvas.height = height;
@@ -283,8 +283,8 @@ if(canvas){
     function getRelativeCursorPosition(elem, e) {
         if(e.touches) e = e.touches[0];
         const rect = elem.getBoundingClientRect(),
-              x = e.clientX - rect.left,
-              y = e.clientY - rect.top;
+              x = (e.clientX - rect.left) / (rect.right - rect.left) * elem.width,
+              y = (e.clientY - rect.top) / (rect.bottom - rect.top) * elem.height;
         return {x: x, y: y};
     }
 
@@ -299,10 +299,10 @@ if(canvas){
     };
 
     ["click", "mousedown", "touchstart", "mousemove", "touchmove", "mouseup", "touchend"].forEach(function(eventName){
-        container.addEventListener(eventName, function (e) {
-            const cords = getRelativeCursorPosition(container, e);
-            console.log(`${eventName}!: ${cords.x}, ${cords.y}`)
-            animation.mouseAction(getRelativeCursorPosition(container, e), eventNames[eventName]);
+        canvas.addEventListener(eventName, function (e) {
+            const cords = getRelativeCursorPosition(canvas, e);
+            //console.log(`${eventName}!: ${cords.x}, ${cords.y}`)
+            animation.mouseAction(getRelativeCursorPosition(canvas, e), eventNames[eventName]);
         })
     });
 

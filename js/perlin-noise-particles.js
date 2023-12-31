@@ -10,25 +10,22 @@ Coded with no external dependencies, using only canvas API.
 `;
 
 const Animation = require("./animation");
-const Noise = require("./noise");
 const Utils = require("./utils");
 
 class PerlinNoiseParticles extends Animation {
     constructor(canvas, colors, colorsAlt, bgColor,
-                particlesDensity = 0.0006,
-                noiseScale = 0.001,
-                particlesSpeed = 1,
-                particlesSize = 1,
+                particlesDensity = 0.0007,
+                noiseScale = "random",
+                particlesSpeed = "random",
+                particlesSize = "random",
                 fadingSpeed = 0) {
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
         this.particlesDensity = particlesDensity;
-        this.noiseScale = noiseScale;
-        this.noise = Noise.noise;
-        this.noise.seed(Utils.randomRange(0, 1));
+        this.noiseScale = this.assignIfRandom(noiseScale, Utils.randomChoice([0.001, 0.002, 0.003]));
 
-        this.particlesSpeed = particlesSpeed;
-        this.particlesSize = particlesSize;
+        this.particlesSpeed = this.assignIfRandom(particlesSpeed, Utils.randomChoice([1, 1.5, 2]));
+        this.particlesSize = this.assignIfRandom(particlesSize, Utils.randomChoice([1, 1.5, 2]));
         this.fadingSpeed = fadingSpeed;
 
         this.width = 0;
@@ -93,12 +90,12 @@ class PerlinNoiseParticles extends Animation {
     }
 
     restart(){
+        super.restart();
         this.clear();
         this.particles = []
         this.width = this.ctx.canvas.width;
         this.height = this.ctx.canvas.height;
         this.spawnParticles(0, 0, this.width, this.height);
-        super.restart();
     }
 
     resize() {
@@ -125,7 +122,7 @@ class PerlinNoiseParticles extends Animation {
     }
 
     getSettings() {
-        return [{prop: "noiseScale", type: "float", step: 0.001, min: 0.001, max: 0.01, toCall: "retart"},
+        return [{prop: "noiseScale", type: "float", step: 0.001, min: 0.001, max: 0.01, toCall: "restart"},
                 {prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.005, toCall: "restart"},
                 {prop: "particlesSpeed", type: "float", min: 0.25, max: 32},
                 {prop: "particlesSize", type: "float", step: 0.1, min: 1, max: 4},

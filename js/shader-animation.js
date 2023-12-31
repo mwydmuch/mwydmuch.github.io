@@ -6,10 +6,8 @@
 
 
 const Animation = require("./animation");
-const Noise = require("./noise");
-const Utils = require("./utils");
 
-class AnimationShader extends Animation {
+class ShaderAnimation extends Animation {
     constructor(canvas, colors, colorsAlt, bgColor,
                 name = "",
                 file = "",
@@ -21,14 +19,14 @@ class AnimationShader extends Animation {
         let vertexShaderSource = document.querySelector("#vertex-shader-2d").text;
         let fragmentShaderSource = document.querySelector("#fragment-shader-2d").text;
       
-        // create GLSL shaders, upload the GLSL source, compile the shaders
+        // Create GLSL shaders, upload the GLSL source, compile the shaders
         var vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
         var fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
       
         // Link the two shaders into a program
         var program = createProgram(gl, vertexShader, fragmentShader);
       
-        // look up where the vertex data needs to go.
+        // Look up where the vertex data needs to go.
         var positionAttributeLocation = gl.getAttribLocation(program, "a_position");
       
         // Create a buffer and put three 2d clip space points in it
@@ -79,7 +77,6 @@ class AnimationShader extends Animation {
         var offset = 0;
         var count = 3;
         gl.drawArrays(primitiveType, offset, count);
-
     }
 
     createShader(type, source) {
@@ -114,4 +111,4 @@ class AnimationShader extends Animation {
     }
 }
 
-module.exports = Animation;
+module.exports = ShaderAnimation;

@@ -21,7 +21,7 @@ class Glitch extends Grid {
         this.cellSize = cellSize;
         this.noiseScale = noiseScale;
         
-        this.initialPaterns = ["1x1 checkerboard", "2x2 checkerboard", "4x4 checkerboard"];
+        this.initialPaterns = ["1x1 checkerboard", "2x2 checkerboard", "4x4 checkerboard", "vertical lines", "horizontal lines"];
         this.initialPatern = this.assignIfRandom(initialPatern, Utils.randomChoice(this.initialPaterns));
     }
 
@@ -71,12 +71,13 @@ class Glitch extends Grid {
             const x2 = Math.floor(x / 2),
                   y2 = Math.floor(y / 2);
             return (x2 + y2) % 2 ? 1 : 0;
-        }
-        else if(this.initialPatern == "4x4 checkerboard"){
+        } else if(this.initialPatern == "4x4 checkerboard"){
             const x2 = Math.floor(x / 4),
                   y2 = Math.floor(y / 4);
             return (x2 + y2) % 2 ? 1 : 0;
-        }
+        } else if(this.initialPatern == "vertical lines") return x % 4 ? 0 : 1;
+        else if(this.initialPatern == "horizontal lines") return y % 4 ? 0 : 1;
+        else return Math.round(Math.random());
         return 0;
     }
 
