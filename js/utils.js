@@ -50,6 +50,7 @@ module.exports = {
         return Array(length).fill().map(() => this.randomRange(min, max, rndGen))
     },
 
+    // Randomize array in-place using Durstenfeld shuffle algorithm (an optimized version of Fisher-Yates)
     randomShuffle(arr, rndGen = Math.random){
         for (let i = arr.length - 1; i > 0; --i) {
              const j = Math.floor(rndGen() * (i + 1)),

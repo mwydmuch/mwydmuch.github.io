@@ -6,7 +6,7 @@ const NAME = "sand automata",
 Sand automata.
 
 This cellular automata is a simple model of falling sand.
-I generates random tetris blocks and lets them fall to demonstrate
+It generates random tetris blocks and lets them fall to demonstrate
 the properties of automata.
 
 Coded with no external dependencies, using only canvas API.
@@ -18,13 +18,19 @@ const Utils = require("./utils");
 class SandAutomata extends Grid {
     constructor(canvas, colors, colorsAlt, bgColor,
                 cellSize = 5,
-                blockSize = 5) {
+                spawnTetrisBlocks = true,
+                tetrisBlocksSize = 5) {
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
         this.cellSize = cellSize;
-        this.blockSize = blockSize;
+        this.spawnTetrisBlocks = spawnTetrisBlocks;
+        this.tetrisBlocksSize = tetrisBlocksSize;
         this.maxBlockSize = 12;
 
+        this.updateOrder = null;
+        this.fullRows = 0;
+
         this.mouseDown = false;
+        this.mouseCellCord = 0;
         this.mouseValue = 0;
         
         // All tetris blocks with all rotations
@@ -94,13 +100,13 @@ class SandAutomata extends Grid {
         this.blocks = [];
         for(let tempalte of this.blocksTemplates){
             let newBlock = [];
-            for(let i = 0; i < tempalte.length * this.blockSize; ++i) newBlock.push([]);
+            for(let i = 0; i < tempalte.length * this.tetrisBlocksSize; ++i) newBlock.push([]);
             for(let i = 0; i < tempalte.length; ++i){
                 for(let j = 0; j < tempalte[i].length; ++j){
                     const val = 1 ? tempalte[i][j] == "X" : 0;
-                    for(let k = 0; k < this.blockSize; ++k){
-                        for(let l = 0; l < this.blockSize; ++l){
-                            newBlock[i * this.blockSize + k].push(val);
+                    for(let k = 0; k < this.tetrisBlocksSize; ++k){
+                        for(let l = 0; l < this.tetrisBlocksSize; ++l){
+                            newBlock[i * this.tetrisBlocksSize + k].push(val);
                         }
                     }
                 }
@@ -114,7 +120,7 @@ class SandAutomata extends Grid {
         super.update(elapsed);
         
         // Spawn new block every 30 frames
-        if(this.frame % 30 == 0){
+        if(this.frame % 30 == 0 && this.spawnTetrisBlocks){
             const block = Utils.randomChoice(this.blocks, this.rand),
                   blockPos = Utils.randomInt(0, this.gridWidth - block[0].length, this.rand),
                   blockVal = Utils.randomInt(0, this.colors.length, this.rand) + 1;
@@ -128,13 +134,33 @@ class SandAutomata extends Grid {
             }
         }
 
+        // Spawn mouse 
+        if(this.mouseDown) this.grid[this.mouseCellCord] = this.mouseValue;
+        
+        // Detections of full rows, to speed up the drawing
+        this.fullRows = 0;
+        let rowFull = true;
+        for (let x = 0; x < this.gridWidth; ++x){
+            if(this.getVal(x, this.gridHeight - 1) < 0){
+                rowFull = false;
+                break;
+            }
+        }
+        if(rowFull) ++this.fullRows;
+        
         // Update grid
-        for (let x = 0; x < this.gridWidth; ++x) {
-            for (let y = this.gridHeight - 2; y >= 0; --y) {
-                const cellIdx = this.getIdx(x, y),
+        for (let y = this.gridHeight - 2; y >= 0; --y) {
+            rowFull = true;
+            Utils.randomShuffle(this.updateOrder, this.rand);
+            for (let i = 0; i < this.gridWidth; ++i) {
+                const x = this.updateOrder[i],
+                      cellIdx = this.getIdx(x, y),
                       cellVal = this.grid[cellIdx];
                 
-                if(cellVal < 0) continue;
+                if(cellVal < 0){
+                    rowFull = false;
+                    continue;
+                }
 
                 const belowIdx = this.getIdx(x, y + 1),
                       belowVal = this.grid[belowIdx];
@@ -160,14 +186,17 @@ class SandAutomata extends Grid {
                     continue;
                 }
             }
+            if(rowFull) ++this.fullRows;
         }
     }
 
     draw() {
-        this.clear(); // Clear background to the color of the first state
+        // Only clear the rows that are not full (optimization)
+        this.ctx.fillStyle = this.bgColor;
+        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height - (this.fullRows - 1) * this.cellSize); 
 
         for (let x = 0; x < this.gridWidth; ++x) {
-            for (let y = 4 * this.blockSize; y < this.gridHeight; ++y) {
+            for (let y = 4 * this.tetrisBlocksSize; y < this.gridHeight - (this.fullRows - 1); ++y) {
                 const val = this.getVal(x, y),
                       drawY = y - 4 * this.maxBlockSize;
                 if(val >= 0){ // Do not draw if the state is the first state (small optimization)
@@ -200,27 +229,37 @@ class SandAutomata extends Grid {
         this.grid = newGrid;
         this.gridWidth = newGridWidth;
         this.gridHeight = newGridHeight;
+
+        this.updateOrder = new Array(this.gridWidth);
+        for(let i = 0; i < this.gridWidth; ++i) this.updateOrder[i] = i;
+
+        this.clear();
     }
 
     mouseAction(cords, event) {
         if(event === "down"){
             this.mouseDown = true;
-            this.mouseValue += 1;
+            this.mouseValue = (this.mouseValue % this.colors.length) + 1;
         }
         else if(event === "up") this.mouseDown = false;
-        else if(event === "down" || (event === "move" && this.mouseDown)){
+
+        if(event === "down" || (event === "move" && this.mouseDown)){
             const x = Math.floor(cords.x / this.cellSize),
-                  y = Math.floor(cords.y / this.cellSize),
-                  cellCord = x + (y + 4 * this.maxBlockSize) * this.gridWidth;
-            this.grid[cellCord] = (this.mouseValue % this.colors.length) + 1;
-            this.draw();
+                  y = Math.floor(cords.y / this.cellSize);
+            this.mouseCellCord = x + (y + 4 * this.maxBlockSize) * this.gridWidth;
+            
+            if(this.grid[this.mouseCellCord] !== this.mouseValue){
+                this.grid[this.mouseCellCord] = this.mouseValue;
+                this.draw();
+            }
         }
     }
 
     getSettings() {
         return [{prop: "cellSize", type: "int", min: 2, max: 12, toCall: "resize"},
-                {prop: "blockSize", type: "int", min: 2, max: this.maxBlockSize, toCall: "generateBlocks"},
-                {prop: "addSand", type: "text", value: "<click/touch>"},
+                {prop: "spawnTetrisBlocks", type: "bool"},
+                {prop: "tetrisBlocksSize", type: "int", min: 1, max: this.maxBlockSize, toCall: "generateBlocks"},
+                {prop: "spawnASand", type: "text", value: "<click/touch>"},
                 this.getSeedSettings()];
     }
 }
