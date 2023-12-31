@@ -6,6 +6,12 @@ const NAME = "sand automata",
 Sand automata.
 
 This cellular automata is a simple model of falling sand.
+The automata is updated in place, from the bottom to the top.
+The cell can "fall" down to the cell below it if the cell is empty. 
+If not it can move to the below left or right if one of those cells is empty.
+To reduce the bias of falling to the left or right, 
+the cells in each row are updated in random order.
+
 It generates random tetris blocks and lets them fall to demonstrate
 the properties of automata.
 
