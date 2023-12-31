@@ -265,7 +265,6 @@ blockquote{
 .background-container{
   width: 100%;
   height: 100%;
-  overflow: hidden;
   display: block;
   position: absolute;
 }
@@ -275,7 +274,7 @@ blockquote{
   display: block;
   top: 0;
   left: 0;
-  z-index: -1;
+  z-index: 1;
   margin: auto;
 }
 
@@ -301,16 +300,15 @@ blockquote{
   margin-bottom: 5rem;
 }
 
-.header-content {
-  display: table-cell;
+.header-content{
   vertical-align: middle;
+  display: table-cell;
   text-align: center;
   padding: 0;
   position: relative;
   height: 100%;
   overflow: hidden;
 }
-
 
 // Sections
 // ---------------------------------------------------------------------------------------------------------------------
@@ -546,6 +544,7 @@ each(@fade-show-values, {
   position: absolute;
   bottom: 0;
   right: 0;
+  z-index: 10;
 }
 
 #background-controls-bar {
