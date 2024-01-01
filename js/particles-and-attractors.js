@@ -152,6 +152,11 @@ class ParticlesAndAttractors extends Animation {
         }
     }
 
+    updateColors(colors, colorsAlt, bgColor) {
+        super.updateColors(colors, colorsAlt, bgColor);
+        this.resize();
+    }
+
     getSettings() {
         return [{prop: "numParticles", type: "int", min: 1000, max: 20000, toCall: "setup"},
                 {prop: "particlesSpeed", type: "float", min: 0.1, max: 1.5},

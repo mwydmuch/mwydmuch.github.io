@@ -16,9 +16,9 @@ class Animation {
         this.ctx = canvas.getContext("2d", { alpha: false });
 
         // Colors variables
-        this.bgColor = bgColor;
         this.colors = colors;
         this.colorsAlt = colorsAlt;
+        this.bgColor = bgColor;
         this.colorA = colors[0];
         this.colorB = colors[3];
 
@@ -129,6 +129,14 @@ class Animation {
 
     resize(){
         // By default do nothing
+    }
+
+    updateColors(colors, colorsAlt, bgColor){
+        this.colors = colors;
+        this.colorsAlt = colorsAlt;
+        this.bgColor = bgColor;
+        this.colorA = colors[0];
+        this.colorB = colors[3];
     }
 
     restart() {

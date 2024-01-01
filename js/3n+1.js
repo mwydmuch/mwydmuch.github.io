@@ -127,6 +127,11 @@ class ThreeNPlusOne extends Animation {
         super.restart();
     }
 
+    updateColors(colors, colorsAlt, bgColor) {
+        super.updateColors(colors, colorsAlt, bgColor);
+        this.resize();
+    }
+
     getSettings() {
         return [{prop: "length", type: "int", min: 1, max: 100, toCall: "resize"},
                 {prop: "evenAngle", type: "int", min: -45, max: 45, toCall: "resize"},

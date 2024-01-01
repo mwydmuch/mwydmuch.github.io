@@ -84,7 +84,7 @@ class PerlinNoiseParticles extends Animation {
                 prevY: particleY,
                 speed: this.rand() * 0.20 + 0.10,
                 radius: this.rand() * 0.5 + 0.5,
-                color: Utils.randomChoice(this.colors)
+                color: Utils.randomChoice(this.colors, this.rand)
             });
         }
     }
@@ -119,6 +119,11 @@ class PerlinNoiseParticles extends Animation {
         this.particles = this.particles.filter(function(p){
             return !(p.x < 0 || p.x > width || p.y < 0 || p.y > height);
         });
+    }
+
+    updateColors(colors, colorsAlt, bgColor) {
+        super.updateColors(colors, colorsAlt, bgColor);
+        this.restart();
     }
 
     getSettings() {

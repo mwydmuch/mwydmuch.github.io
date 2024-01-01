@@ -77,6 +77,11 @@ class ParticlesStorm extends Animation {
         }
     }
 
+    updateColors(colors, colorsAlt, bgColor) {
+        super.updateColors(colors, colorsAlt, bgColor);
+        this.resize();
+    }
+
     getSettings() {
         return [{prop: "particlesSpeed", type: "float", step: 0.01, min: 0.1, max: 2},
                 {prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.05, toCall: "resize"},

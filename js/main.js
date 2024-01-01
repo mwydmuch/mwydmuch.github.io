@@ -422,7 +422,7 @@ if(canvas){
         elemBgColor.innerHTML = '<option value="#FFFFFF" selected>white</option><option value="#000000">black</option>';
         elemBgColor.addEventListener("input", function (e) {
             bgColor = e.target.value;
-            animation.bgColor = e.target.value;
+            animation.updateColors(colors, colorsAlt, bgColor);
         });
     }
 
@@ -572,13 +572,18 @@ if(canvas){
 
             // Create settings controls
             settings.forEach(function(setting, index) {
+                if (setting.type === "separator"){
+                    elemBgSettingsList.innerHTML += '<div class="setting-separator"></div>';
+                    return;
+                }
+
                 const value = eval(`animation.${setting.prop}`),
-                    name = getPropId(setting.prop).replaceAll('-', ' '),
-                    elemId = getPropId(setting.prop) + "-controls";
+                      name = getPropId(setting.prop).replaceAll('-', ' '),
+                      elemId = getPropId(setting.prop) + "-controls";
 
                 let optionControls = `<div><span class="setting-name">${name}</span><span class="nowrap setting-value-control">`;
 
-                if(["int", "float", "bool"].includes(setting['type'])) {
+                if(["int", "float", "bool"].includes(setting.type)) {
                     // Set proper input parameters
                     let inputParams = `name="${setting.prop}" id="${elemId}" value="${value}"`;
                     if(["int", "float"].includes(setting.type)) {
@@ -594,7 +599,7 @@ if(canvas){
                     else optionControls += `<input type="range" class="setting-input slider" ${inputParams}">`;
                     optionControls += `[<output class="setting-value">${value}</output>]`;
                 }
-                else if(setting.type === 'select') {
+                else if(setting.type === "select") {
                     optionControls += `<select class="form-select setting-select" name="${setting.prop}" id="${elemId}">`;
                     for(let v of setting['values']) {
                         if(v === value) optionControls += `<option selected value="${v}">${v}</option>`;
@@ -602,13 +607,15 @@ if(canvas){
                     }
                     optionControls += "</select>";
                 }
-                else if(setting.type === 'text') optionControls += `<span class="setting-text">${setting.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;")}</span>`;
+                else if(setting.type === "text") optionControls += `<span class="setting-text">${setting.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;")}</span>`;
                 optionControls += "</span></div>";
                 elemBgSettingsList.innerHTML += optionControls;
             });
 
             // Add events
             settings.forEach(function(setting, index) {
+                if (["text", "separator"].includes(setting.type)) return;
+
                 const elemId = getPropId(setting.prop) + "-controls";
                 let elem = document.getElementById(elemId);
                 if(elem) {

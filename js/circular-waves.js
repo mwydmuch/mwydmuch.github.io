@@ -68,6 +68,11 @@ class CircularWaves extends Animation {
         this.clear();
     }
 
+    updateColors(colors, colorsAlt, bgColor) {
+        super.updateColors(colors, colorsAlt, bgColor);
+        this.resize();
+    }
+
     getSettings() {
         return [{prop: "vertices", type: "int", min: 3, max: 720, toCall: "resize"},
                 {prop: "radiusScaleMin", type: "float", min: 0, max: 2.0, toCall: "resize"},

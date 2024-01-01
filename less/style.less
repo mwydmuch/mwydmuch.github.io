@@ -3,6 +3,7 @@
 
 // Basic palette
 @background: #FFFFFF;
+@background-darkerer: #AAAAAA;
 @main-text: #252525;
 @main: #43696B;
 @second: #43696B;
@@ -598,6 +599,12 @@ each(@fade-show-values, {
     padding: 0.25rem 0;
     width: 100%;
     white-space: normal;
+
+    .setting-separator{
+      border-top: 1px solid @background-darkerer;
+      margin: 0.25rem 0;
+      padding: 0;
+    }
 
     .setting-name{
       //width: 9rem;

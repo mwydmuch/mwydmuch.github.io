@@ -106,7 +106,8 @@ class Spirograph extends Animation {
                         {prop: "gearCount", type: "int", min: 2, max: this.maxGears, toCall: "updateName"},
                         {prop: "rescaleToFit", type: "bool"},
                         {prop: "scale", type: "float", min: 0.25, max: 4},
-                        {prop: "speed", type: "float", step: 0.1, min: -4, max: 4}];
+                        {prop: "speed", type: "float", step: 0.1, min: -4, max: 4},
+                        {type: "separator"}];
         for(let i = 0; i < this.maxGears; ++i){
             settings = settings.concat([{prop: `gears[${i}].radius`, type: "float", step: 0.01, min: 0, max: 100},
                                         {prop: `gears[${i}].rate`, type: "float", step: 0.01, min: -100, max: 100},
