@@ -3,16 +3,16 @@
 const NAME = "sand automata",
       FILE = "sand-automata.js",
       DESC = `
-Sand automata.
+The visualization of a simple sand automata, that is a simple model of falling sand.
 
-This cellular automata is a simple model of falling sand.
-The automata is updated in place, from the bottom to the top.
-The cell can "fall" down to the cell below it if the cell is empty. 
-If not it can move to the below left or right if one of those cells is empty.
+There are many variations of this automata.
+This one is updated in place, from the bottom to the top.
+The cell can "fall" down to the cell below it if the cell below is empty. 
+If not, it can move to the below left or right cell if one of those cells is empty.
 To reduce the bias of falling to the left or right, 
 the cells in each row are updated in random order.
 
-It generates random tetris blocks and lets them fall to demonstrate
+It generates random Tetris blocks and lets them fall to demonstrate
 the properties of automata.
 
 Coded with no external dependencies, using only canvas API.
@@ -30,10 +30,11 @@ class SandAutomata extends Grid {
         this.cellSize = cellSize;
         this.spawnTetrisBlocks = spawnTetrisBlocks;
         this.tetrisBlocksSize = tetrisBlocksSize;
-        this.maxBlockSize = 12;
+        this.maxBlockSize = 16;
 
         this.updateOrder = null;
-        this.fullRows = 0;
+        this.toRedraw = [];
+        this.redrawAll = false;
 
         this.mouseDown = false;
         this.mouseCellCord = 0;
@@ -141,38 +142,28 @@ class SandAutomata extends Grid {
         }
 
         // Spawn mouse 
-        if(this.mouseDown) this.grid[this.mouseCellCord] = this.mouseValue;
-        
-        // Detections of full rows, to speed up the drawing
-        this.fullRows = 0;
-        let rowFull = true;
-        for (let x = 0; x < this.gridWidth; ++x){
-            if(this.getVal(x, this.gridHeight - 1) < 0){
-                rowFull = false;
-                break;
-            }
+        if(this.mouseDown){
+            this.grid[this.mouseCellCord] = this.mouseValue;
+            this.toRedraw[this.mouseCellCord] = 1;
         }
-        if(rowFull) ++this.fullRows;
-        
+    
         // Update grid
         for (let y = this.gridHeight - 2; y >= 0; --y) {
-            rowFull = true;
             Utils.randomShuffle(this.updateOrder, this.rand);
             for (let i = 0; i < this.gridWidth; ++i) {
                 const x = this.updateOrder[i],
                       cellIdx = this.getIdx(x, y),
                       cellVal = this.grid[cellIdx];
                 
-                if(cellVal < 0){
-                    rowFull = false;
-                    continue;
-                }
+                if(cellVal < 0) continue;
 
                 const belowIdx = this.getIdx(x, y + 1),
                       belowVal = this.grid[belowIdx];
                 if(belowVal < 0){
                     this.grid[cellIdx] = -1;
                     this.grid[belowIdx] = cellVal;
+                    this.toRedraw[cellIdx] = 2;
+                    this.toRedraw[belowIdx] = 2;
                     continue;
                 }
 
@@ -181,6 +172,8 @@ class SandAutomata extends Grid {
                 if(leftVal < 0){
                     this.grid[cellIdx] = -1;
                     this.grid[leftIdx] = cellVal;
+                    this.toRedraw[cellIdx] = 2;
+                    this.toRedraw[leftIdx] = 2;
                     continue;
                 }
 
@@ -189,25 +182,29 @@ class SandAutomata extends Grid {
                 if(rightVal < 0){
                     this.grid[cellIdx] = -1;
                     this.grid[rightIdx] = cellVal;
+                    this.toRedraw[cellIdx] = 2;
+                    this.toRedraw[rightIdx] = 2;
                     continue;
                 }
             }
-            if(rowFull) ++this.fullRows;
         }
     }
 
     draw() {
-        // Only clear the rows that are not full (optimization)
-        this.ctx.fillStyle = this.bgColor;
-        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height - (this.fullRows - 1) * this.cellSize); 
-
         for (let x = 0; x < this.gridWidth; ++x) {
-            for (let y = 4 * this.tetrisBlocksSize; y < this.gridHeight - (this.fullRows - 1); ++y) {
-                const val = this.getVal(x, y),
+            for (let y = 4 * this.tetrisBlocksSize; y < this.gridHeight; ++y) {
+                const idx = this.getIdx(x, y),
+                      val = this.grid[idx],
+                      redraw = this.toRedraw[idx],
                       drawY = y - 4 * this.maxBlockSize;
-                if(val >= 0){ // Do not draw if the state is the first state (small optimization)
+                if(redraw >= 1 && val >= 0){ 
                     this.ctx.fillStyle = this.colors[val];
                     this.ctx.fillRect(x * this.cellSize, drawY * this.cellSize, this.cellSize, this.cellSize);
+                    this.toRedraw[idx] = 0;
+                } else if (redraw >= 2) { // Do not redraw if this is full redraw
+                    this.ctx.fillStyle = this.bgColor;
+                    this.ctx.fillRect(x * this.cellSize, drawY * this.cellSize, this.cellSize, this.cellSize);
+                    this.toRedraw[idx] = 0;
                 }
             }
         }
@@ -236,6 +233,9 @@ class SandAutomata extends Grid {
         this.gridWidth = newGridWidth;
         this.gridHeight = newGridHeight;
 
+        this.toRedraw = new Array(this.gridWidth * this.gridHeight);
+        this.toRedraw.fill(1); // 1 for all cells to redraw
+
         this.updateOrder = new Array(this.gridWidth);
         for(let i = 0; i < this.gridWidth; ++i) this.updateOrder[i] = i;
 
@@ -254,8 +254,9 @@ class SandAutomata extends Grid {
                   y = Math.floor(cords.y / this.cellSize);
             this.mouseCellCord = x + (y + 4 * this.maxBlockSize) * this.gridWidth;
             
-            if(this.grid[this.mouseCellCord] !== this.mouseValue){
+            if(this.grid[this.mouseCellCord] < 0){
                 this.grid[this.mouseCellCord] = this.mouseValue;
+                this.toRedraw[this.mouseCellCord] = 1;
                 this.draw();
             }
         }

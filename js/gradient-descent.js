@@ -3,21 +3,24 @@
 const NAME = "visualization of gradient descent algorithms",
       FILE = "gradient-descent.js",
       DESC = `
-Visualization of gradient descent-based optimizers.
-Default hyperparameters are set to recommended values.
+Visualization of the popular gradient descent-based optimizers.
+Default hyperparameters are set to recommended values
+according to the original papers or/and PyTorch documentation.
 
-The functions were taken from this very nice 
+The objective functions were taken from this very nice 
 [website](https://www.sfu.ca/~ssurjano/optimization.html).
 
 You can select the starting point by clicking/touching the canvas.
 
+The interesting challenge related to this animation was 
+to efficiently visualize the optimized function. 
+This is done by using simplified version of the marching squares algorithm.
+
 Coded with no external dependencies, using only canvas API.
 `;
 
-
 const Animation = require("./animation");
 const Utils = require("./utils");
-
 
 // Optimizers
 class Optim {
@@ -232,10 +235,7 @@ class SaddlePointFunc extends Func {
 
     grad(w){
         const x = w[0] + this.shift[0], y = w[1] + this.shift[1];
-        return [
-            2 * x,
-            -2 * y
-        ]
+        return [2 * x, -2 * y];
     }
 }
 
@@ -253,15 +253,15 @@ class BealeFunc extends Func{
 
     grad(w){
         const x = w[0] + this.shift[0], y = w[1] + this.shift[1],
-            y2 = y * y,
-            y3 = y2 * y,
-            y4 = y3 * y,
-            y5 = y4 * y,
-            y6 = y5 * y;
+              y2 = y * y,
+              y3 = y2 * y,
+              y4 = y3 * y,
+              y5 = y4 * y,
+              y6 = y5 * y;
         return [
             2 * x * (y6 + y4 - 2 * y3 - y2 - 2 * y + 3) + 5.25 * y3 + 4.5 * y2 + 3 * y - 12.75,
             6 * x * (x * (y5 + 2/3 * y3 - y2 - 1/3 * y - 1/3) + 2.625 * y2 + 1.5 * y + 0.5)
-        ]
+        ];
     }
 }
 
@@ -274,21 +274,21 @@ class StyblinskiTangFunc extends Func{
 
     val(w) {
         const x = w[0] + this.shift[0], y = w[1] + this.shift[1],
-            x2 = x * x,
-            x4 = x2 * x2,
-            y2 = y * y,
-            y4 = y2 * y2;
+              x2 = x * x,
+              x4 = x2 * x2,
+              y2 = y * y,
+              y4 = y2 * y2;
         return ((x4 - 16 * x2 + 5 * x) + (y4 - 16 * y2 + 5 * y)) / 2 + 78.33233;
     }
 
     grad(w){
         const x = w[0] + this.shift[0], y = w[1] + this.shift[1],
-            x3 = Math.pow(x, 3),
-            y3 = Math.pow(y, 3);
+              x3 = Math.pow(x, 3),
+              y3 = Math.pow(y, 3);
         return [
             2 * x3 - 16 * x + 5 / 2,
             2 * y3 - 16 * y + 5 / 2
-        ]
+        ];
     }
 }
 
@@ -311,7 +311,7 @@ class RosenbrockFunc extends Func{
         return [
             2 * (-1 + x + 200 * x3 - 200 * x * y),
             200 * (-x2 + y)
-        ]
+        ];
     }
 }
 
@@ -339,7 +339,7 @@ class GriewankFunc extends Func{ // This one is not used as it doesn't look good
         return [
             x / 2000 + Math.cos(x / this.sqrt2) * Math.sin(x / this.sqrt2) / this.sqrt2,
             y / 2000 + Math.cos(y / this.sqrt2) * Math.sin(y / this.sqrt2) / this.sqrt2,
-        ]
+        ];
     }
 }
 
@@ -384,8 +384,8 @@ class GradientDescent extends Animation {
 
         this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
         for (let i = 0; i < this.optims.length; ++i) {
-            let x1, y1, x2, y2;
-            let o = this.optims[i];
+            let x1, y1, x2, y2,
+                o = this.optims[i];
             [x1, y1] = o.w;
             o.update(this.func.grad(o.w));
             [x2, y2] = o.w;
@@ -431,8 +431,11 @@ class GradientDescent extends Animation {
         const width = this.ctx.canvas.width,
               height = this.ctx.canvas.height,
               centerX = width / 2,
-              centerY = height / 2;
-        this.drawScale = Math.min(width, height) / this.func.getScale() / 2 * this.scale;
+              centerY = height / 2,
+              funcScale = this.func.getScale(),
+              visibleRange = funcScale / this.scale,
+              maxVisibleRange = funcScale / 0.5;
+        this.drawScale = Math.min(width, height) / funcScale / 2 * this.scale;
         this.ctx.fillStyle = this.colors[0];
         this.ctx.strokeStyle = this.bgColor;
         this.ctx.font = '12px sans-serif';
@@ -449,26 +452,25 @@ class GradientDescent extends Animation {
             plusVal = 0;
         } else {
             shiftVal = 0;
-            const scale = this.func.getScale(),
-                    vals = [
+            const vals = [
                     this.func.val([0, 0]),
-                    this.func.val([scale, 0]),
-                    this.func.val([0, scale]),
-                    this.func.val([-scale, 0]),
-                    this.func.val([0, -scale]),
-                    this.func.val([scale, scale]),
-                    this.func.val([-scale, -scale]),
-                    this.func.val([scale, -scale]),
-                    this.func.val([-scale, scale]),
-                    ],
-                    min = Math.min(...vals),
-                    max = Math.max(...vals);
+                    this.func.val([maxVisibleRange, 0]),
+                    this.func.val([0, maxVisibleRange]),
+                    this.func.val([-maxVisibleRange, 0]),
+                    this.func.val([0, -maxVisibleRange]),
+                    this.func.val([maxVisibleRange, maxVisibleRange]),
+                    this.func.val([-maxVisibleRange, -maxVisibleRange]),
+                    this.func.val([maxVisibleRange, -maxVisibleRange]),
+                    this.func.val([-maxVisibleRange, maxVisibleRange]),
+                  ],
+                  min = Math.min(...vals),
+                  max = Math.max(...vals);
             isolines = [min];
             exp = 1;
-            plusVal = (max - min) / 15;
+            plusVal = (max - min) / 29;
         }
 
-        // Very simple approach to draw the isolines (my simplified version of the marching squares algorithm)
+        // Very simple (but fast!) approach to draw the isolines (my simplified version of the marching squares algorithm)
         for(let i = 0; i < width; ++i) {
             for (let j = 0; j < height; ++j) {
                 const x = (i - centerX) / this.drawScale, y = -(j - centerY) / this.drawScale,
@@ -488,10 +490,11 @@ class GradientDescent extends Animation {
         // Calculate colors for the isolines
         let isolinesColors = [];
         for(let i = 0; i < isolines.length; ++i){
-            isolinesColors.push(Utils.lerpColor(this.colors[0], this.colors[3], (i + 1) / (isolines.length + 1)));
+            isolinesColors.push(Utils.lerpColor(this.colorA, this.colorB, (i + 1) / (isolines.length + 1)));
         }
 
-        // TODO: use imageData instead of fillRect for better performance
+        // Draw the isolines
+        // Note: consider using imageData instead of fillRect for better performance
         for(let i = 0; i < width; ++i) {
             for (let j = 0; j < height; ++j) {
                 const idx = i + j * width;
@@ -504,17 +507,18 @@ class GradientDescent extends Animation {
         // Add X and Y axis
         this.ctx.fillStyle = this.colors[0];
 
+        // Adjust X, Y axis labels
         let labelsDist = 0.5;
-        if(this.drawScale > 6.0) labelsDist = 2.0;
-        else if(this.drawScale > 3.0) labelsDist = 1.0;
+        if(visibleRange > 6.0) labelsDist = 2.0;
+        else if(visibleRange > 3.0) labelsDist = 1.0;
        
         for(let i = 0; i < centerX / this.drawScale; i += labelsDist){
-            this.ctx.fillText(i.toFixed(1), centerX + i * this.drawScale, height - 22);
-            if(i !== 0) this.ctx.fillText((-i).toFixed(1), centerX - i * this.drawScale, height - 22);
+            Utils.fillAndStrokeText(this.ctx, i.toFixed(1), centerX + i * this.drawScale, height - 22);
+            if(i !== 0) Utils.fillAndStrokeText(this.ctx, (-i).toFixed(1), centerX - i * this.drawScale, height - 22);
         }
         for(let i = 0; i < centerY / this.drawScale; i += labelsDist){
-            this.ctx.fillText((-i).toFixed(1), 10, centerY + i * this.drawScale);
-            if(i !== 0) this.ctx.fillText((i).toFixed(1), 10, centerY - i * this.drawScale);
+            Utils.fillAndStrokeText(this.ctx, (-i).toFixed(1), 10, centerY + i * this.drawScale);
+            if(i !== 0) Utils.fillAndStrokeText(this.ctx, (i).toFixed(1), 10, centerY - i * this.drawScale);
         }
 
         this.functionImageData = this.ctx.getImageData(0, 0, width, height);
