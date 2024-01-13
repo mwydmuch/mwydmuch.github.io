@@ -320,7 +320,6 @@ class Sorting extends Animation {
     }
 
     setup(){
-        this.setSeed();
         const valMax = this.numElements;
         this.animQueue = new AnimationQueue();
 
