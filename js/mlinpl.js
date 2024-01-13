@@ -3,7 +3,7 @@
 const NAME = "ML in PL Network",
       FILE = "mlinpl.js",
       DESC = `
-Simple network animation, I created for ML in PL.
+Simple network animation, I created for ML in PL websites.
 
 For the first time used on
 [ML in PL Conference 2023 website](https://conference2023.mlinpl.org/).
@@ -28,11 +28,18 @@ class MLinPL extends Animation {
 
         this.width = 0;
         this.height = 0;
+        this.logoScale = 0.5;
         
-        this.logo = new Image();
-        this.logo.src = "assets/logo-mlinpl.png";
+        this.logoBlack = new Image();
+        this.logoBlack.src = "assets/logo-mlinpl-black.png";
+        this.particlesColorsBlack = [this.colors[0], "#000", "#222", "#444", "#AAA", "#EEE"];
 
-        this.particlesColors = [this.colors[0], "#000", "#222", "#444", "#AAA", "#EEE"];
+        this.logoWhite = new Image();
+        this.logoWhite.src = "assets/logo-mlinpl-white.png";
+
+        this.particlesColorsWhite = [this.colors[0], "#FFF", "#DDD", "#BBB", "#555", "#111"];
+
+        this.particlesColors = null;
         this.bgParticles = []; // Background particles
         this.mgParticles = []; // Middle ground particles
         this.fgParticles = []; // Foreground particles
@@ -144,19 +151,28 @@ class MLinPL extends Animation {
     }
 
     draw() {
+        if(this.bgColor === "#000000"){
+            this.particlesColors = this.particlesColorsWhite;
+            this.logo = this.logoWhite;
+        } else {
+            this.particlesColors = this.particlesColorsBlack;
+            this.logo = this.logoBlack;
+        }
+
         if(this.originalColors) this.particlesColors[0] = "#E7322A";
         else this.particlesColors[0] = this.colors[0];
 
-        this.bgColor = "#FFFFFF"; // Force white background
         this.clear();
 
         // Draw all the groups of particles
         this.drawParticles(this.bgParticles);
         this.drawParticles(this.mgParticles);
         this.drawParticles(this.fgParticles);
-
-        if(this.originalColors){
-            this.ctx.drawImage(this.logo, (this.width - this.logo.width) / 2, (this.height - this.logo.height) / 2);
+        
+        if(this.originalColors) {
+            const logoWidth = this.logo.width * this.logoScale,
+                  logoHeight = this.logo.height * this.logoScale;
+            this.ctx.drawImage(this.logo, (this.width - logoWidth) / 2, (this.height - logoHeight) / 2, logoWidth, logoHeight);
         }
     }
 

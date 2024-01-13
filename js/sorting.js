@@ -7,6 +7,8 @@ Animated visualization of different sorting algorithms.
 Like many, sorting algorithms were one of the first things I studied in computer science.
 Since then, I have found watching a nice visualization of sorting algorithms quite satisfying.
 
+The animation first perform full sorting and records all the operations to the animation queue.
+
 Coded with no external dependencies, using only canvas API.
 `;
 
@@ -17,11 +19,17 @@ const Utils = require("./utils");
 
 // Base class for a sorting algorithm
 class SortingAlgorithm {
-    constructor(arr, name){
+    constructor(arr, name, worstComplexity, averageComplexity, bestComplexity, spaceComplexity){
         this.arr = arr;
         this.moves = []
         this.cmpCount = 0;
+        this.readCount = 0;
+        this.writeCount = 0;
         this.name = name;
+        this.worstComplexity = worstComplexity;
+        this.averageComplexity = averageComplexity;
+        this.bestComplexity = bestComplexity;
+        this.spaceComplexity = spaceComplexity;
         this.sort();
     }
 
@@ -29,9 +37,18 @@ class SortingAlgorithm {
         return this.name;
     }
 
+    getTimeComplexity(){
+        return `worst: ${this.worstComplexity}, average: ${this.averageComplexity}, best: ${this.bestComplexity}`;
+    }
+
+    getSpaceComplexity(){
+        return this.spaceComplexity;
+    }
+
     comp(arr, a, b){
         if(a !== b) {
             ++this.cmpCount;
+            this.readCount += 2;
             this.moves.push(["cmp", arr[a], arr[b]]);
         }
         return arr[a].val - arr[b].val;
@@ -40,16 +57,18 @@ class SortingAlgorithm {
     compVal(a, b){
         if(a !== b){
             ++this.cmpCount;
+            this.readCount += 2;
             this.moves.push(["cmp", a, b]);
         }
         return a.val - b.val;
     }
 
     swap(arr, a, b){
+        ++this.swapCount;
+        this.writeCount += 2;
+        
         this.moves.push(["swap", [arr[a], arr[b]], [arr[b], arr[a]]]);
-        let temp = arr[a];
-        arr[a] = arr[b];
-        arr[b] = temp;
+        [arr[a], arr[b]] = [arr[b], arr[a]];
     }
 
     rearrange(arr, a, b){
@@ -61,6 +80,8 @@ class SortingAlgorithm {
         }
         for(let i = 0; i < a.length; ++i) arr[a[i]] = elB[i];
         this.moves.push(["swap", elB, elA]);
+        if (a.length === 2) this.writeCount += 2; // Rearranging 2 elements is just a swap, don't need extre array
+        else this.writeCount += 2 * a.length;
     }
 
     sort(){}
@@ -72,7 +93,7 @@ class SortingAlgorithm {
 
 class BubbleSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Bubble_sort
     constructor(arr) {
-        super(arr, "bubble sort");
+        super(arr, "bubble sort", "O(n^2)", "O(n^2)", "O(n)", "O(1)");
     }
 
     sort(){
@@ -92,7 +113,7 @@ class BubbleSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Bubb
 
 class SelectionSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Selection_sort
     constructor(arr) {
-        super(arr, "selection sort");
+        super(arr, "selection sort", "O(n^2)", "O(n^2)", "O(n^2)", "O(1)");
     }
 
     sort(){
@@ -107,7 +128,7 @@ class SelectionSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/S
 
 class InsertionSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Insertion_sort
     constructor(arr) {
-        super(arr, "insertion sort");
+        super(arr, "insertion sort", "O(n^2)", "O(n^2)", "O(n)", "O(1)");
     }
 
     sort(){
@@ -124,7 +145,7 @@ class InsertionSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/I
 
 class MergeSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Merge_sort
     constructor(arr) {
-        super(arr, "merge sort");
+        super(arr, "merge sort", "O(n log n)", "O(n log n)", "O(n log n)", "O(n)");
     }
 
     sort(){
@@ -160,7 +181,7 @@ class MergeSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Merge
 
 class QuickSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Quicksort
     constructor(arr) {
-        super(arr, "quick sort");
+        super(arr, "quick sort", "O(n^2)", "O(n log n)", "O(n log n)", "O(log n)");
     }
 
     sort(){
@@ -188,7 +209,7 @@ class QuickSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Quick
 
 class HeapSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Heapsort
     constructor(arr) {
-        super(arr, "heap sort");
+        super(arr, "heap sort", "O(n log n)", "O(n log n)", "O(n log n)", "O(1)");
     }
 
     sort(){
@@ -216,7 +237,7 @@ class HeapSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Heapso
 
 class GnomeSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Gnome_sort
     constructor(arr) {
-        super(arr, "gnome sort");
+        super(arr, "gnome sort", "O(n^2)", "O(n^2)", "O(n)", "O(1)");
     }
 
     sort(){
@@ -235,7 +256,7 @@ class GnomeSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Gnome
 
 class ShakerSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Cocktail_shaker_sort
     constructor(arr) {
-        super(arr, "shaker sort");
+        super(arr, "shaker sort", "O(n^2)", "O(n^2)", "O(n)", "O(1)");
     }
 
     sort(){
@@ -287,26 +308,40 @@ class Sorting extends Animation {
             QuickSort, MergeSort, HeapSort, GnomeSort, ShakerSort];
         this.sortingAlgorithm = this.assignIfRandom(sortingAlgorithm, Utils.randomChoice(this.sortAlgoNames));
 
-        this.initialOrderTypes = ["random", "sorted", "reverse sorted", "evens then odds"];
+        this.initialOrderTypes = ["random", "sorted", "reverse sorted", "evens then odds", "nearly sorted", "few unique"];
         this.initialOrder = "random";
 
         this.cmpTotal = 0;
         this.cmpCount = 0;
+        this.accessTotal = 0;
+        this.accessCount = 0;
 
         this.setup();
     }
 
     setup(){
+        this.setSeed();
         const valMax = this.numElements;
         this.animQueue = new AnimationQueue();
 
         // Initial order of values
-        let values = Array.from({length: valMax}, (x, i) => i + 1);
+        let values = null;
+        if (this.initialOrder === "few unique") values = Array.from({length: valMax}, (x, i) => ((i % 10 + 1) / 10) * valMax);
+        else values = Array.from({length: valMax}, (x, i) => i + 1);
 
-        if(this.initialOrder === "random") Utils.randomShuffle(values, this.rand);
+        if(["random", "few unique"].includes(this.initialOrder)) Utils.randomShuffle(values, this.rand);
         else if(this.initialOrder === "reverse sorted") values = values.reverse();
         else if(this.initialOrder === "evens then odds")
             values = values.sort((a, b) => (a % 2 + a / (valMax + 1) - (b % 2 + b / (valMax + 1))));
+
+        if (this.initialOrder === "nearly sorted") {
+            const n = Math.floor(valMax / 5);
+            for (let i = 0; i < n; ++i) {
+                const a = Utils.randomInt(0, valMax, this.rand),
+                      b = Utils.randomInt(0, valMax, this.rand);
+                [values[a], values[b]] = [values[b], values[a]];
+            }
+        }
 
         // Create elements
         this.elements = [];
@@ -321,9 +356,13 @@ class Sorting extends Animation {
             sortAlgo = new sortAlgoCls(this.elements);
         this.moves = sortAlgo.getMoves();
         this.name = sortAlgo.getName() + " algorithm visualization";
+        this.timeComplexity = sortAlgo.getTimeComplexity();
+        this.spaceComplexity = sortAlgo.getSpaceComplexity();
 
         this.cmpTotal = sortAlgo.cmpCount;
         this.cmpCount = 0;
+        this.accessTotal = sortAlgo.readCount + sortAlgo.writeCount;
+        this.accessCount = 0;
 
         // Validate sorting
         /*
@@ -350,12 +389,14 @@ class Sorting extends Animation {
                   posEasing = Utils.easeInOutSine;
 
             if(s[0] === "cmp") {
-                ++this.cmpCount;
                 let e1 = s[1], e2 = s[2];
                 const color1 = e1.color,
                       color2 = e2.color,
                       colorSel = this.colorsAlt[3],
                       duration = this.cmpDuration;
+                
+                ++this.cmpCount;
+                this.accessCount += 2;
 
                 this.animQueue.push(function (time) {
                     const prog = Math.min(time, duration) / duration;
@@ -365,13 +406,18 @@ class Sorting extends Animation {
                 });
             }
             else if(s[0] === "swap") {
-                let e1 = s[1], e2 = s[2];
-                let pos1 = [],
+                let e1 = s[1], 
+                    e2 = s[2],
+                    pos1 = [],
                     pos2 = [],
                     color = [];
+
                 const colorSel = this.colorsAlt[1],
                       z = this.frame,
                       duration = this.swapDuration * e1.length;
+
+                if(e1.length === 2)  this.accessCount += 2;
+                else this.accessCount += 2 * e1.length;
 
                 for(let i = 0; i < e1.length; ++i){
                     pos1.push(e1[i].pos);
@@ -412,8 +458,11 @@ class Sorting extends Animation {
             this.resetFont();
             let statsLines = [
                 `Sorting algorithm: ${this.sortingAlgorithm}`,
+                `Theoretical time complexity: ${this.timeComplexity}`,
+                `Theoretical space complexity: ${this.spaceComplexity}`,
                 `Number of elements: ${this.numElements}`,
-                `Number of elements comparisons: ${this.cmpCount} / ${this.cmpTotal}`
+                `Number of elements comparisons: ${this.cmpCount} / ${this.cmpTotal}`,
+                `Number of array accesses (read/write): ${this.accessCount} / ${this.accessTotal}`,
             ];
             this.drawTextLines(statsLines, this.lineHeight, this.ctx.canvas.height - (statsLines.length + 1) * this.lineHeight);
         }
@@ -425,9 +474,9 @@ class Sorting extends Animation {
     }
 
     getSettings() {
-        return [{prop: "initialOrder", type: "select", values: this.initialOrderTypes, toCall: "setup"},
-                {prop: "sortingAlgorithm", type: "select", values: this.sortAlgoNames, toCall: "setup"},
-                {prop: "numElements", type: "int", min: 8, max: 256, toCall: "setup"},
+        return [{prop: "initialOrder", type: "select", values: this.initialOrderTypes, toCall: "restart"},
+                {prop: "sortingAlgorithm", type: "select", values: this.sortAlgoNames, toCall: "restart"},
+                {prop: "numElements", label: "number of elements (n)", type: "int", min: 8, max: 256, toCall: "restart"},
                 {prop: "speed", type: "float", step: 0.25, min: 0.5, max: 8},
                 {prop: "showStats", type: "bool"},
                 this.getSeedSettings()];

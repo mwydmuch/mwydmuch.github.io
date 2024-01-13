@@ -113,10 +113,11 @@ class RecursiveRectangle {
 }
 
 class RecursiveRectangles extends Animation {
-    constructor(canvas, colors, colorsAlt, bgColor, depth = 7, speed = 1) {
+    constructor(canvas, colors, colorsAlt, bgColor, depth = 7, speed = 1, contain = false) {
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
         this.depth = depth;
         this.speed = speed;
+        this.contain = contain;
         this.object = new RecursiveRectangle(this.depth, this.rand);
     }
 
@@ -128,7 +129,12 @@ class RecursiveRectangles extends Animation {
 
     draw() {
         this.clear();
-        const size = Math.max(this.ctx.canvas.width, this.ctx.canvas.height);
+        let size = 0;
+        if(this.contain){
+            size = Math.min(this.ctx.canvas.width, this.ctx.canvas.height);
+            this.ctx.translate((this.ctx.canvas.width - size) / 2, (this.ctx.canvas.height - size) / 2);
+        }
+        else size = Math.max(this.ctx.canvas.width, this.ctx.canvas.height);
         this.ctx.lineWidth = 1;
         this.ctx.strokeStyle = this.colors[0];
         this.ctx.fillStyle = this.colors[0];
@@ -142,8 +148,9 @@ class RecursiveRectangles extends Animation {
     }
 
     getSettings() {
-        return [{prop: "depth", type: "int", min: 3, max: 9, toCall: "updateDepth"},
+        return [{prop: "depth", type: "int", min: 2, max: 9, toCall: "updateDepth"},
                 {prop: "speed", type: "float", step: 0.25, min: 0.5, max: 8},
+                {prop: "contain", type: "bool"},
                 this.getSeedSettings()];
     }
 }

@@ -17,7 +17,7 @@ class NoisyLines extends Animation {
     constructor (canvas, colors, colorsAlt, bgColor,
                  lines = 100,
                  noiseXIncr = 0.07,
-                 noiseYIncr = 0.06,
+                 noiseYIncr = 0.05,
                  noiseRange = 0.5,
                  speed = 1){
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
@@ -44,9 +44,9 @@ class NoisyLines extends Animation {
 
         let yNoise = this.time * 0.3;
         for (let i = 0; i < this.lines; ++i) {
-            let y = -drawY + i * linesDist,
-                xNoise = this.time * 0.3;
-            yNoise += this.noiseYIncr;
+            const y = -drawY + i * linesDist;
+            let xNoise = this.time * 0.3;
+            yNoise += this.noiseYIncr * linesDist / 5;
 
             this.ctx.beginPath();
             for (let x = -drawX ; x <= drawX; x += 5) {

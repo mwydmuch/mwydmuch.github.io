@@ -124,6 +124,11 @@ class Matrix extends Animation {
         super.restart();
     }
 
+    updateColors(colors, colorsAlt, bgColor) {
+        super.updateColors(colors, colorsAlt, bgColor);
+        this.restart();
+    }
+
     getSettings() {
         return [{prop: "dropsSize", type: "int", min: 8, max: 64, toCall: "resize"},
                 {prop: "dropsSpeed", type: "float", min: 0, max: 1},

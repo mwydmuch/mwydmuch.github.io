@@ -136,7 +136,7 @@ if(canvas){
         {class: Glitch, name: "glitch", startAnimation: false},  // Disable as a start animation, as it may not be visually pleasing for everyone
         {class: GradientDescent, name: "gradient descent"},
         {class: Matrix, name: "matrix rain"},
-        {class: MLinPL, name: "mlinpl"},
+        {class: MLinPL, name: "ml in pl"},
         {class: Network, name: "network"},
         //{class: NeuralNetwork, name: "neural network"}, // Disabled till updated
         {class: NoisyLines, name: "noisy lines"},
@@ -578,8 +578,10 @@ if(canvas){
                 }
 
                 const value = eval(`animation.${setting.prop}`),
-                      name = getPropId(setting.prop).replaceAll('-', ' '),
                       elemId = getPropId(setting.prop) + "-controls";
+                
+                let name = getPropId(setting.prop).replaceAll('-', ' ');
+                if (setting.name) name = setting.name;
 
                 let optionControls = `<div><span class="setting-name">${name}</span><span class="nowrap setting-value-control">`;
 
