@@ -1,7 +1,7 @@
 <section id="news" class="container grid-lg">
     <div class="columns">
         <div class="column">
-            <h3>Most recent news & events</h3>
+            <h2 class="d-inline-block h-reversed-second"><i class="fa-solid fa-newspaper thinner-second"></i> Most recent news & events</h2>
             <div class="timeline">
                 {% for news in site.data.news %}
                 <div class="timeline-item" id="timeline-news-{{ news.date }}">
@@ -17,4 +17,4 @@
             </div>
         </div>
     </div>
-  </section>
+</section>
