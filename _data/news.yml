@@ -1,10 +1,14 @@
+- date: '01.2024'
+  text: >-
+    Our paper titled "Consistent algorithms for multi-label classification with macro-at-k metrics" was accepted to <span class="reverse-second"><i class="fa-solid fa-star"></i> ICLR 2024</span>. 
+
 - date: '10.2023'
   text: >-
     <span class="reverse-mlinpl-red"><a href="https://conference2023.mlinpl.org/">ML in PL Conference 2023</a></span>, that I co-organized, took place in Warsaw
 
 - date: '09.2023'
   text: >-
-    Our paper titled "Generalized test utilities for long-tail performance in extreme multi-label classification" was accepted at <span class="reverse-second"><i class="fa-solid fa-star"></i> NeurIPS 2023</span>.
+    Our paper titled "Generalized test utilities for long-tail performance in extreme multi-label classification" was accepted to <span class="reverse-second"><i class="fa-solid fa-star"></i> NeurIPS 2023</span>.
 
 - date: '06.2023'
   text: >-
@@ -32,7 +36,7 @@
 
 - date: '05.2022'
   text: >-
-    Our paper titled "On missing labels, long-tails and propensities in extreme multi-label classification" was accepted at <span class="reverse-second"><i class="fa-solid fa-star"></i> KDD'22</span>.
+    Our paper titled "On missing labels, long-tails and propensities in extreme multi-label classification" was accepted to <span class="reverse-second"><i class="fa-solid fa-star"></i> KDD'22</span>.
 
 - date: '04.2022'
   text: >-
@@ -56,7 +60,7 @@
 
 - date: '04.2021'
   text: >-
-    Our short paper titled "Propensity-scored Probabilistic Label Trees" was accepted at <span class="reverse-second"><i class="fa-solid fa-star"></i> SIGIR'21</span>.
+    Our short paper titled "Propensity-scored Probabilistic Label Trees" was accepted to <span class="reverse-second"><i class="fa-solid fa-star"></i> SIGIR'21</span>.
 
 - date: '03.2021'
   text: >-
@@ -64,7 +68,7 @@
 
 - date: '02.2021'
   text: >-
-    Our paper titled "Online probabilistic label trees" was accepted at <span class="reverse-second"><i class="fa-solid fa-star"></i> AISTATS 2021</span>.
+    Our paper titled "Online probabilistic label trees" was accepted to <span class="reverse-second"><i class="fa-solid fa-star"></i> AISTATS 2021</span>.
 
 - date: '12.2020'
   text: >-
