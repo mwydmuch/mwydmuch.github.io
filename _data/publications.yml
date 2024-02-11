@@ -1,79 +1,79 @@
 - title: "Consistent algorithms for multi-label classification with macro-at-k metrics"
   url: https://arxiv.org/abs/2401.16594
   authors: Erik Schultheis, Marek Wydmuch, Wojciech Kotłowski, Rohit Babbar, Strom Borman, Krzysztof Dembczyński
-  book: Proceedings of the 37nd International Conference on Neural Information Processing Systems (ICLR&nbsp;2024)
+  book: Proceedings of the 37nd International Conference on Neural Information Processing Systems (ICLR 2024)
   year: 2024
   links:
     - url: https://github.com/mwydmuch/xCOLUMNs
-      text: <i class="fa fa-github"></i>&nbsp;code
+      text: <i class="fa fa-github"></i> code
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2024_consistent_algorithms_for_macro-at-k_metrics_pu_iclr.pdf
-      text: <i class="fa fa-file-pdf"></i>&nbsp;paper
+      text: <i class="fa fa-file-pdf"></i> paper
     # - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2024_consistent_algorithms_macro-at-k_pu_poster_iclr.pdf
-    #   text: <i class="fa fa-file-image"></i>&nbsp;poster
+    #   text: <i class="fa fa-file-image"></i> poster
     # - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
-    #   text: <i class="fas fa-book"></i>&nbsp;bibtex
+    #   text: <i class="fas fa-book"></i> bibtex
 
 - title: "Generalized test utilities for long-tail performance in extreme multi-label classification"
   url: https://arxiv.org/abs/2311.05081
   authors: Erik Schultheis, Marek Wydmuch, Wojciech Kotłowski, Rohit Babbar, Krzysztof Dembczyński
-  book: Proceedings of the 37nd International Conference on Neural Information Processing Systems (NeurIPS&nbsp;2023)
+  book: Proceedings of the 37nd International Conference on Neural Information Processing Systems (NeurIPS 2023)
   year: 2023
   links:
     - url: https://github.com/mwydmuch/xCOLUMNs
-      text: <i class="fa fa-github"></i>&nbsp;code
+      text: <i class="fa fa-github"></i> code
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2023_generalized_test_utilities_etu_neurips.pdf
-      text: <i class="fa fa-file-pdf"></i>&nbsp;paper
+      text: <i class="fa fa-file-pdf"></i> paper
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2023_generalized_test_utilities_etu_poster_neurips.pdf
-      text: <i class="fa fa-file-image"></i>&nbsp;poster
+      text: <i class="fa fa-file-image"></i> poster
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
-      text: <i class="fas fa-book"></i>&nbsp;bibtex
+      text: <i class="fas fa-book"></i> bibtex
 
 - title: "On Missing Labels, Long-tails and Propensities in Extreme Multi-label Classification"
   url: https://dl.acm.org/doi/10.1145/3404835.3463084
   authors: Erik Schultheis, Marek Wydmuch, Rohit Babbar, Krzysztof Dembczyński
-  book: Proceedings of the 28th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD&nbsp;'22)
+  book: Proceedings of the 28th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD '22)
   year: 2022
   links:
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2022_xmlc_missing_labels_&_long_tail_kdd.pdf
-      text: <i class="fa fa-file-pdf"></i>&nbsp;paper
+      text: <i class="fa fa-file-pdf"></i> paper
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2022_xmlc_missing_labels_&_long_tail_poster_kdd.pdf
-      text: <i class="fa fa-file-image"></i>&nbsp;poster
+      text: <i class="fa fa-file-image"></i> poster
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
-      text: <i class="fas fa-book"></i>&nbsp;bibtex
+      text: <i class="fas fa-book"></i> bibtex
 
 - title: "Propensity-scored Probabilistic Label Trees"
   url: https://dl.acm.org/doi/10.1145/3404835.3463084
   authors: Marek Wydmuch, Kalina Jasinska-Kobus, Rohit Babbar, Krzysztof Dembczyński
-  book: Proceedings of the 44th International ACM SIGIR Conference on Research and Development in Information Retrieval (SIGIR&nbsp;'21)
+  book: Proceedings of the 44th International ACM SIGIR Conference on Research and Development in Information Retrieval (SIGIR '21)
   year: 2021
   links:
     - url: https://github.com/mwydmuch/napkinXC
-      text: <i class="fa fa-github"></i>&nbsp;code
+      text: <i class="fa fa-github"></i> code
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2021_psplt_sigir.pdf
-      text: <i class="fa fa-file-pdf"></i>&nbsp;paper
+      text: <i class="fa fa-file-pdf"></i> paper
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2021_psplt_poster_sigir.pdf
-      text: <i class="fa fa-file-image"></i>&nbsp;poster
+      text: <i class="fa fa-file-image"></i> poster
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
-      text: <i class="fas fa-book"></i>&nbsp;bibtex
+      text: <i class="fas fa-book"></i> bibtex
 
 - title: "Online probabilistic label trees"
   url: https://proceedings.mlr.press/v130/jasinska-kobus21a.html
   authors: Kalina Jasinska-Kobus, Marek Wydmuch, Devanathan Thiruvenkatachari, Krzysztof Dembczyński
-  book: Proceedings of the 24th International Conference on Artificial Intelligence and Statistics (AISTATS&nbsp;2021)
+  book: Proceedings of the 24th International Conference on Artificial Intelligence and Statistics (AISTATS 2021)
   year: 2021
   links:
     - url: https://github.com/mwydmuch/napkinXC
-      text: <i class="fa fa-github"></i>&nbsp;code
+      text: <i class="fa fa-github"></i> code
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2021_oplt_aistats.pdf
-      text: <i class="fa fa-file-pdf"></i>&nbsp;paper
+      text: <i class="fa fa-file-pdf"></i> paper
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2021_oplt_poster_aistats.pdf
-      text: <i class="fa fa-file-image"></i>&nbsp;poster
+      text: <i class="fa fa-file-image"></i> poster
     - url: https://slideslive.com/38953102/online-probabilistic-label-trees-oplts?ref=speaker-37667-latest
-      text: <i class="fa fa-video"></i>&nbsp;AISTATS 2021 talk
+      text: <i class="fa fa-video"></i> AISTATS 2021 talk
     - url: https://slideslive.com/38931292/online-probabilistic-label-trees-oplts?ref=speaker-37667-latest
-      text: <i class="fa fa-video"></i>&nbsp;ICML XC 2020 talk
+      text: <i class="fa fa-video"></i> ICML XC 2020 talk
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
-      text: <i class="fas fa-book"></i>&nbsp;bibtex
+      text: <i class="fas fa-book"></i> bibtex
 
 - title: "Efficient set-valued prediction in multi-class classification"
   url: https://link.springer.com/article/10.1007/s10618-021-00751-x
@@ -82,9 +82,9 @@
   year: 2021
   links:
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2021_efficient_set-valued_pred_dami.pdf
-      text: <i class="fa fa-file-pdf"></i>&nbsp;paper
+      text: <i class="fa fa-file-pdf"></i> paper
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
-      text: <i class="fas fa-book"></i>&nbsp;bibtex
+      text: <i class="fas fa-book"></i> bibtex
 
 - title: "Probabilistic Label Trees for Extreme Multi-label Classification"
   url: https://arxiv.org/abs/2009.11218
@@ -93,61 +93,59 @@
   year: 2020
   links:
     - url: https://github.com/mwydmuch/napkinXC
-      text: <i class="fa fa-github"></i>&nbsp;code
-    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2018_xt_neurips.pdf
-      text: <i class="fa fa-file-pdf"></i>&nbsp;paper
-    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2018_xt_poster_neurips.pdf
-      text: <i class="fa fa-file-image"></i>&nbsp;poster
+      text: <i class="fa fa-github"></i> code
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2020_plt_napkinxc.pdf
+      text: <i class="fa fa-file-pdf"></i> paper
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
-      text: <i class="fas fa-book"></i>&nbsp;bibtex
+      text: <i class="fas fa-book"></i> bibtex
 
 - title: "A no-regret generalization of hierarchical softmax to extreme multi-label classification"
   url: https://papers.nips.cc/paper/2018/hash/8b8388180314a337c9aa3c5aa8e2f37a-Abstract.html
   authors: Marek Wydmuch, Kalina Jasinska-Kobus, Mikhail Kuznetsov, Robert Busa-Fekete, Krzysztof Dembczyński
-  book: Proceedings of the 32nd International Conference on Neural Information Processing Systems (NeurIPS&nbsp;2018)
+  book: Proceedings of the 32nd International Conference on Neural Information Processing Systems (NeurIPS 2018)
   year: 2018
   links:
     - url: https://github.com/mwydmuch/extremeText
-      text: <i class="fa fa-github"></i>&nbsp;code
+      text: <i class="fa fa-github"></i> code
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2018_xt_neurips.pdf
-      text: <i class="fa fa-file-pdf"></i>&nbsp;paper
+      text: <i class="fa fa-file-pdf"></i> paper
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2018_xt_poster_neurips.pdf
-      text: <i class="fa fa-file-image"></i>&nbsp;poster
+      text: <i class="fa fa-file-image"></i> poster
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
-      text: <i class="fas fa-book"></i>&nbsp;bibtex
+      text: <i class="fas fa-book"></i> bibtex
 
 - title: "ViZDoom Competitions: Playing Doom From Pixels"
   url: https://ieeexplore.ieee.org/document/8500330
   authors: Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski
   book: IEEE Transactions on Games
   year: 2018
-  note: <span class="reverse-second"><a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9679692"><i class="fa fa-award"></i>&nbsp;2022 IEEE ToG Outstanding Paper Award</a></span>
+  note: <span class="reverse-second"><a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9679692"><i class="fa fa-award"></i> 2022 IEEE ToG Outstanding Paper Award</a></span>
   links:
     - url: http://vizdoom.cs.put.edu.pl
-      text: <i class="fa fa-globe"></i>&nbsp;www
+      text: <i class="fa fa-globe"></i> www
     - url: https://github.com/mwydmuch/ViZDoom
-      text: <i class="fa fa-github"></i>&nbsp;code
+      text: <i class="fa fa-github"></i> code
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2018_vizdoom_competitions.pdf
-      text: <i class="fa fa-file-pdf"></i>&nbsp;paper
+      text: <i class="fa fa-file-pdf"></i> paper
     - url: https://www.youtube.com/channel/UC8UghzsxS5uEFUEbvcAWwlQ
-      text: <i class="fa fa-youtube"></i>&nbsp;movies
+      text: <i class="fa fa-youtube"></i> movies
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
-      text: <i class="fas fa-book"></i>&nbsp;bibtex
+      text: <i class="fas fa-book"></i> bibtex
 
 - title: "ViZDoom: A Doom-based AI research platform for visual reinforcement learning"
   url: https://ieeexplore.ieee.org/document/7860433
   authors: Michał Kempka, Marek Wydmuch, Grzegorz Runc, Jakub Toczek, Wojciech Jaśkowski
   book: 2016 IEEE Conference on Computational Intelligence and Games (CIG 2016)
   year: 2016
-  note: <span class="reverse-second"><i class="fa fa-award"></i>&nbsp;2016 IEEE CIG The Best Paper Award</span>
+  note: <span class="reverse-second"><i class="fa fa-award"></i> 2016 IEEE CIG The Best Paper Award</span>
   links:
     - url: http://vizdoom.cs.put.edu.pl
-      text: <i class="fa fa-globe"></i>&nbsp;www
+      text: <i class="fa fa-globe"></i> www
     - url: https://vizdoom.farama.org
-      text: <i class="fa-solid fa-book"></i>&nbsp;docs
+      text: <i class="fa-solid fa-book"></i> docs
     - url: https://github.com/mwydmuch/ViZDoom
-      text: <i class="fa fa-github"></i>&nbsp;code
+      text: <i class="fa fa-github"></i> code
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2016_vizdoom.pdf
-      text: <i class="fa fa-file-pdf"></i>&nbsp;paper
+      text: <i class="fa fa-file-pdf"></i> paper
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
-      text: <i class="fas fa-book"></i>&nbsp;bibtex
+      text: <i class="fas fa-book"></i> bibtex
