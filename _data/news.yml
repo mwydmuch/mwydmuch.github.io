@@ -2,6 +2,10 @@
   text: >-
     Our paper titled "Consistent algorithms for multi-label classification with macro-at-k metrics" was accepted to <span class="reverse-second nowrap"><i class="fa-solid fa-star"></i> ICLR 2024</span>. 
 
+# - date: '11.2023'
+#   text: >-
+#      <span class="reverse-baby-pink">My doughter <i class="fa-solid fa-baby"></i> was born <i class="fa-solid fa-heart"></i></span>
+
 - date: '10.2023'
   text: >-
     <span class="reverse-mlinpl-red"><a href="https://conference2023.mlinpl.org/">ML in PL Conference 2023</a></span>, that I co-organized, took place in Warsaw
@@ -48,7 +52,7 @@
 
 - date: '11.2021'
   text: >-
-    A new version of <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i>&nbsp;ViZDoom</a></span> (1.1.11) library was released that introduce access to the game's audio buffer.
+    A new version of <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i>&nbsp;ViZDoom</a></span> (1.1.11) library was released that introduce access to the new <span class="reverse-vizdoom-red"><i class="fa-solid fa-volume-high"></i> audio buffer</span> allowing agents to not only see but also hear an environment.
 
 - date: '11.2021'
   text: >-
@@ -56,7 +60,7 @@
 
 - date: '08.2021'
   text: >-
-    Our paper "ViZDoom Competitions: Playing Doom From Pixels" received <span class="reverse-second"><a href="https://cis.ieee.org/awards/2019-cis-award-recipients"><i class="fa fa-award"></i>&nbsp;2022 IEEE ToG Outstanding Paper Award</a></span>.
+    Our paper "ViZDoom Competitions: Playing Doom From Pixels" received <span class="reverse-second"><a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9679692"><i class="fa fa-award"></i>&nbsp;2022 IEEE ToG Outstanding Paper Award</a></span>.
 
 - date: '04.2021'
   text: >-
@@ -76,4 +80,4 @@
 
 - date: '10.2020'
   text: >-
-    I gave a talk titled "Extreme classification: applications and algorithms" on GHOST Day: AMLC'20. <span class="nowrap">[<a href="https://www.youtube.com/watch?v=fgKohq6jpek"><i class="fa fa-youtube"></i> video</a>]</span>
+    I gave a talk titled "Extreme classification: applications and algorithms" on <span class="reverse-mlinpl-red"><i class="fa-solid fa-ghost"></i> GHOST Day: AMLC'20</span>. <span class="nowrap">[<a href="https://www.youtube.com/watch?v=fgKohq6jpek"><i class="fa fa-youtube"></i> video</a>]</span>

@@ -228,6 +228,12 @@ module.exports = {
         ctx.stroke();
     },
 
+    drawDashedLine(ctx, x1, y1, x2, y2, pattern, offset = 0, width = 1, color){
+        ctx.setLineDash(pattern);
+        ctx.lineDashOffset = offset;
+        this.drawLine(ctx, x1, y1, x2, y2, width, color);
+    },
+
     pathPolygon(ctx, x, y, radius, sides, rotation = 0){
         const angle = 2 * Math.PI / sides;
         ctx.moveTo(x + radius * Math.cos(rotation), y + radius * Math.sin(rotation));
@@ -249,7 +255,6 @@ module.exports = {
     },
 
     strokeCircle(ctx, x, y, radius, color){
-        ctx.strokeStyle = color;
         if(typeof color !== "undefined") ctx.strokeStyle = color;
         ctx.beginPath();
         ctx.arc(x, y, radius, 0, 2 * Math.PI, false);

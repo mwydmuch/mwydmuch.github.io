@@ -1,7 +1,7 @@
 'use strict';
 
 const NAME = "Code writing animation",
-      FILE = "codding.js",
+      FILE = "coding.js",
       DESC = `
 Work in progress.
 

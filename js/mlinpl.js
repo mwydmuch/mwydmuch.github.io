@@ -5,7 +5,7 @@ const NAME = "ML in PL Network",
       DESC = `
 Simple network animation, I created for ML in PL websites.
 
-For the first time used on
+It was used for the on
 [ML in PL Conference 2023 website](https://conference2023.mlinpl.org/).
 and [MLSS^S 2023 website](https://mlss2023.mlinpl.org/).
 
@@ -134,7 +134,7 @@ class MLinPL extends Animation {
                 const p1 = particles[i],
                       p2 = particles[j];
     
-                // This part can be done faster by creating indexes for groups, but I'm too lazy to implemt it
+                // This part can be done faster by creating indexes for groups, but I'm too lazy to implement it
                 if(Utils.distVec2d(p1, p2) > this.connectionThreshold) continue;
     
                 for (let g of p1.groups){  

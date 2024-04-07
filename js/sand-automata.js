@@ -105,12 +105,12 @@ class SandAutomata extends Grid {
     generateBlocks(){
         // Generate real blocks
         this.blocks = [];
-        for(let tempalte of this.blocksTemplates){
+        for(let template of this.blocksTemplates){
             let newBlock = [];
-            for(let i = 0; i < tempalte.length * this.tetrisBlocksSize; ++i) newBlock.push([]);
-            for(let i = 0; i < tempalte.length; ++i){
-                for(let j = 0; j < tempalte[i].length; ++j){
-                    const val = 1 ? tempalte[i][j] == "X" : 0;
+            for(let i = 0; i < template.length * this.tetrisBlocksSize; ++i) newBlock.push([]);
+            for(let i = 0; i < template.length; ++i){
+                for(let j = 0; j < template[i].length; ++j){
+                    const val = 1 ? template[i][j] == "X" : 0;
                     for(let k = 0; k < this.tetrisBlocksSize; ++k){
                         for(let l = 0; l < this.tetrisBlocksSize; ++l){
                             newBlock[i * this.tetrisBlocksSize + k].push(val);

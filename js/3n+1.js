@@ -22,35 +22,37 @@ const Utils = require("./utils");
 
 class ThreeNPlusOne extends Animation {
     constructor(canvas, colors, colorsAlt, bgColor,
-                length = 30,
-                evenAngle = 8,
-                oddAngle = -20,
+                length = 30.0,
+                evenAngle = 8.0,
+                oddAngle = -20.0,
                 drawNumbers = false,
                 scale = 1,
+                center = false,
                 showStats = false) {
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
         this.length = length;
         this.evenAngle = evenAngle;
         this.oddAngle = oddAngle;
         this.scale = scale;
+        this.center = center;
         this.drawNumbers = drawNumbers;
         this.showStats = showStats;
         
-        this.seqences = [];
+        this.sequences = [];
         this.max = 0;
     }
 
     generateNextSequence(){
-        let n = this.seqences.length + 1,
+        let n = this.sequences.length + 1,
             sequence = [n];
         while (n !== 1) {
             if (n % 2) n = 3 * n + 1;
             else n /= 2;
             if(n > this.max) this.max = n;
             sequence.push(n);
-            if(n < this.seqences.length) this.seqences[n - 1] = null;
+            if(n < this.sequences.length) this.sequences[n - 1] = null;
         }
-        this.seqences.push(sequence);
+        this.sequences.push(sequence);
     }
 
     update(elapsed){
@@ -97,18 +99,18 @@ class ThreeNPlusOne extends Animation {
         this.evenAngleRad = this.evenAngle * Math.PI / 180;
         this.oddAngleRad = this.oddAngle * Math.PI / 180;
 
-        this.ctx.translate(this.ctx.canvas.width / 2,  this.ctx.canvas.height);
+        this.ctx.translate(this.ctx.canvas.width / 2,  this.ctx.canvas.height / (this.center ? 2 : 1));
         this.ctx.scale(this.scale, this.scale);
 
-        while(this.frame < this.seqences.length){
-            this.drawSequence(this.seqences[this.frame]);
+        while(this.frame < this.sequences.length){
+            this.drawSequence(this.sequences[this.frame]);
             ++this.frame;
         }
         this.ctx.resetTransform();
 
         if(this.showStats){
             let statsLines = [
-                `Current starting number: ${this.seqences.length}`,
+                `Current starting number: ${this.sequences.length}`,
                 `Highest reached number: ${this.max}`
             ];
             this.resetFont();
@@ -122,7 +124,7 @@ class ThreeNPlusOne extends Animation {
     }
 
     restart(){
-        this.seqences = [];
+        this.sequences = [];
         this.max = 0;
         super.restart();
     }
@@ -133,12 +135,13 @@ class ThreeNPlusOne extends Animation {
     }
 
     getSettings() {
-        return [{prop: "length", type: "int", min: 1, max: 100, toCall: "resize"},
-                {prop: "evenAngle", type: "int", min: -45, max: 45, toCall: "resize"},
-                {prop: "oddAngle", type: "int", min: -45, max: 45, toCall: "resize"},
+        return [{prop: "length", type: "float", min: 1, max: 100, step: 0.1, toCall: "resize"},
+                {prop: "evenAngle", type: "float", min: -45, max: 45, step: 0.1, toCall: "resize"},
+                {prop: "oddAngle", type: "float", min: -45, max: 45, step: 0.1, toCall: "resize"},
                 {prop: "speed", type: "int", min: 1, max: 16},
                 {prop: "drawNumbers", type: "bool", toCall: "resize"},
                 {prop: "scale", type: "float", min: 0.05, max: 1.95, toCall: "resize"},
+                {prop: "center", type: "bool", toCall: "resize"},
                 {prop: "showStats", type: "bool"}];
     }
 }

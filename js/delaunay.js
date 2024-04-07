@@ -150,7 +150,7 @@ var Delaunay;
             vertices.push(st[0], st[1], st[2]);
 
             /* Initialize the open list (containing the supertriangle and nothing
-             * else) and the closed list (which is empty since we havn't processed
+             * else) and the closed list (which is empty since we haven't processed
              * any triangles yet). */
             open   = [circumcircle(vertices, n + 0, n + 1, n + 2)];
             closed = [];

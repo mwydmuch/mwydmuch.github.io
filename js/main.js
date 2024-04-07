@@ -11,7 +11,7 @@ const ThreeNPlusOne = require("./3n+1");
 const Cardioids = require("./cardioids");
 const CircularWaves = require("./circular-waves");
 const Coding = require("./coding");
-const FiguresSpiral = require("./figures-spiral");
+//const FiguresSpiral = require("./figures-spiral");
 const GameOfLife = require("./game-of-life");
 const GameOfLifeIsometric = require("./game-of-life-isometric");
 const Glitch = require("./glitch");
@@ -19,7 +19,7 @@ const GradientDescent = require("./gradient-descent");
 const Matrix = require("./matrix");
 const MLinPL = require("./mlinpl");
 const Network = require("./network");
-const NeuralNetwork = require("./neural-network");
+//const NeuralNetwork = require("./neural-network");
 const NoisyLines = require("./noisy-lines");
 const ParticlesAndAttractors = require("./particles-and-attractors");
 const ParticlesVortex = require("./particles-vortex");
@@ -34,7 +34,8 @@ const SineWaves = require("./sine-waves");
 const Sorting = require("./sorting");
 const SpinningShapes = require("./spinning-shapes");
 const Spirograph = require("./spirograph");
-const TreeVisualization = require("./tree-visualization");
+const Vectors = require("./vectors");
+//const TreeVisualization = require("./tree-visualization");
 
 
 // Globals
@@ -148,11 +149,12 @@ if(canvas){
         {class: SandAutomata, name: "sand automata"},
         {class: Quadtree, name: "quadtree", startAnimation: false}, // Disable as a start animation since it resources heavy
         {class: RecursiveRectangles, name: "recursive rectangles", startAnimation: false}, // Disable as a start animation since it resources heavy
+        {class: SineWaves, name: "sine waves"},
         {class: ShortestPath, name: "shortest path"},
         {class: Sorting, name: "sorting"},
         {class: SpinningShapes, name: "spinning shapes"},
         {class: Spirograph, name: "spirograph"},
-        {class: SineWaves, name: "sine waves"},
+        {class: Vectors, name: "vectors"},
         //{class: TreeVisualization, name: "tree visualization"}, // Disabled cause it is not ready
     ];
 

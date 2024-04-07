@@ -1,6 +1,6 @@
 - title: "Consistent algorithms for multi-label classification with macro-at-k metrics"
   url: https://arxiv.org/abs/2401.16594
-  authors: Erik Schultheis, Marek Wydmuch, Wojciech Kotłowski, Rohit Babbar, Strom Borman, Krzysztof Dembczyński
+  authors: Erik Schultheis, Wojciech Kotłowski, Marek Wydmuch, Rohit Babbar, Strom Borman, Krzysztof Dembczyński
   book: Proceedings of the 37nd International Conference on Neural Information Processing Systems (ICLR 2024)
   year: 2024
   links:
@@ -122,7 +122,7 @@
   note: <span class="reverse-second"><a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9679692"><i class="fa fa-award"></i> 2022 IEEE ToG Outstanding Paper Award</a></span>
   links:
     - url: http://vizdoom.cs.put.edu.pl
-      text: <i class="fa fa-globe"></i> www
+      text: <i class="fa fa-globe"></i> website
     - url: https://github.com/mwydmuch/ViZDoom
       text: <i class="fa fa-github"></i> code
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2018_vizdoom_competitions.pdf
@@ -139,12 +139,12 @@
   year: 2016
   note: <span class="reverse-second"><i class="fa fa-award"></i> 2016 IEEE CIG The Best Paper Award</span>
   links:
-    - url: http://vizdoom.cs.put.edu.pl
-      text: <i class="fa fa-globe"></i> www
     - url: https://vizdoom.farama.org
       text: <i class="fa-solid fa-book"></i> docs
     - url: https://github.com/mwydmuch/ViZDoom
       text: <i class="fa fa-github"></i> code
+    - url: http://vizdoom.cs.put.edu.pl
+      text: <i class="fa fa-globe"></i> website
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2016_vizdoom.pdf
       text: <i class="fa fa-file-pdf"></i> paper
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib

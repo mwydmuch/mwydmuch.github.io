@@ -224,7 +224,7 @@ class Func {
 
 class SaddlePointFunc extends Func {
     constructor() {
-        super("Two-dimensional non-convex function with saddle point: f(x) = x[0]^2 - x[1]^2",
+        super("Two-dimensional function with saddle point: f(x) = x[0]^2 - x[1]^2",
             null, [[-1, 0.001], [-1, -0.0001], [1, 0.01], [1, -0.001]], 1.1);
     }
 
@@ -240,9 +240,36 @@ class SaddlePointFunc extends Func {
 }
 
 
+class AckleyFunc extends Func{
+    constructor() {
+        super("Two-dimensional non-convex, multimodal Ackley function",
+            [0, 0], [[0, 5], [0, -5], [5, 0], [-5, 0], [0.5, 5], [5, 0.5], [0.5, -5], [-5, 0.5]], 5.5);
+        this.a = 20;
+        this.b = 0.2;
+        this.c = 2 * Math.PI;
+    }
+
+    val(w) {
+        const x = w[0] + this.shift[0], y = w[1] + this.shift[1], n = 2
+        //         return -a * exp(-b * sqrt(1.0/n * (x * x + y * y))) - exp(1.0/n * (cos(c * x) + cos(c * y))) + E + a;
+        return -this.a * Math.exp(-this.b * Math.sqrt(1.0/n * (x * x + y * y))) - Math.exp(1.0/n * (Math.cos(this.c * x) + Math.cos(this.c * y))) + Math.E + this.a;
+    }
+
+    grad(w){
+        const x = w[0] + this.shift[0], y = w[1] + this.shift[1];
+        const r = Math.sqrt(0.5 * (x * x + y * y));
+        return [
+            2 * Math.PI * Math.sin(2 * Math.PI * x) * Math.exp(0.5 * (Math.cos(2 * Math.PI * x) + Math.cos(2 * Math.PI * y))) + 0.4 * x * Math.exp(-0.2 * r) / r,
+            //(a b e^(-b sqrt((x^2 + y^2)/n)) x)/(n sqrt((x^2 + y^2)/n)) + (c e^((cos(c x) + cos(c y))/n) sin(c x))/n
+            2 * Math.PI * Math.sin(2 * Math.PI * y) * Math.exp(0.5 * (Math.cos(2 * Math.PI * x) + Math.cos(2 * Math.PI * y))) + 0.4 * y * Math.exp(-0.2 * r) / r
+        ];
+    }
+}
+
+
 class BealeFunc extends Func{
     constructor() {
-        super("Two-dimensional non-convex BEALE function",
+        super("Two-dimensional non-convex, multimodal BEALE function",
             [3, 0.5], [[0.2, 0.7], [2, 2], [-1, -1.3], [-1.4, -1.7], [4, -1.1]], 2.2, [2, 0]);
     }
 
@@ -268,7 +295,7 @@ class BealeFunc extends Func{
 
 class StyblinskiTangFunc extends Func{
     constructor() {
-        super("Two variables non-convex Stybliski-Tang function",
+        super("Two variables non-convex, multimodal Stybliski-Tang function",
             [-2.903534, -2.903534], [[0, 5], [0, -5], [5, 0], [-5, 0], [-0.5, -5], [-5, -0.5], [-5, -5]], 5.5);
     }
 
@@ -295,7 +322,7 @@ class StyblinskiTangFunc extends Func{
 
 class RosenbrockFunc extends Func{
     constructor() {
-        super("Two-dimensional non-convex Rosenbrock function",
+        super("Two-dimensional non-convex, multimodal Rosenbrock function",
             [1, 1], [[-2.5, -2.5], [2.5, -2.5], [0, 2.5]], 1.5 * 2.048);
     }
 
@@ -311,6 +338,31 @@ class RosenbrockFunc extends Func{
         return [
             2 * (-1 + x + 200 * x3 - 200 * x * y),
             200 * (-x2 + y)
+        ];
+    }
+}
+
+class JennrichSampsonkFunc extends Func{
+    constructor() {
+        super("Two-dimensional non-convex, multimodal Jennrich-Sampson function",
+            [0.257825, 0.257825], [[-0.75, -0.75]], 1);
+    }
+
+    val(w) {
+        const x = w[0] + this.shift[0], y = w[1] + this.shift[1];
+        let val = 0;
+        for(let i = 1; i <= 10; ++i){
+            val += Math.pow(2 + 2 * i - Math.exp(i * x) - Math.exp(i * y), 2);
+        }
+        return val;
+    }
+
+    grad(w){
+        const x = w[0] + this.shift[0], y = w[1] + this.shift[1],
+              x2 = x * x,
+              x3 = x2 * x;
+        return [
+            0, 0
         ];
     }
 }
@@ -352,9 +404,9 @@ class GradientDescent extends Animation {
                 autoRestart = true,
                 autoRestartSteps = 1000){
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
-        this.funcNames = ["with saddle point", "BEALE", "Rosenbrock", "Styblinski-Tang"];
+        this.funcNames = ["with saddle point", "BEALE", "Jennrich-Sampsonk", "Rosenbrock", "Styblinski-Tang"];
         this.functionToOptimize = this.assignIfRandom(functionToOptimize, Utils.randomChoice(this.funcNames));
-        this.funcClasses = [SaddlePointFunc, BealeFunc, RosenbrockFunc, StyblinskiTangFunc];
+        this.funcClasses = [SaddlePointFunc, BealeFunc, JennrichSampsonkFunc, RosenbrockFunc, StyblinskiTangFunc];
         this.scale = scale;
         this.rounding = rounding;
         this.autoRestart = autoRestart;
