@@ -154,7 +154,7 @@ if(canvas){
         {class: Sorting, name: "sorting"},
         {class: SpinningShapes, name: "spinning shapes"},
         {class: Spirograph, name: "spirograph"},
-        {class: Vectors, name: "vectors"},
+        //{class: Vectors, name: "vectors"}, // Disabled cause it is not ready
         //{class: TreeVisualization, name: "tree visualization"}, // Disabled cause it is not ready
     ];
 
