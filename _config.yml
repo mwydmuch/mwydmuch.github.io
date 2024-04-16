@@ -23,7 +23,7 @@
 title: Marek Wydmuch
 email: mwydmuch@cs.put.poznan.pl
 description: >-
-  Marek Wydmuch's personal website
+  Marek Wydmuch's personal website.
 main-image: /assets/marek-wydmuch.jpg
 twitter-username: "@mwydmuch"
 baseurl: "" # the subpath of your site, e.g. /blog
@@ -38,7 +38,7 @@ defaults:
   - scope:
       path: ""
     values:
-      image: /assets/marek-wydmuch.jpg
+      image: /assets/og-image-home.jpg
 
 
 # Build settings
