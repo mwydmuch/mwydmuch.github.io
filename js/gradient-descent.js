@@ -404,9 +404,11 @@ class GradientDescent extends Animation {
                 autoRestart = true,
                 autoRestartSteps = 1000){
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
-        this.funcNames = ["with saddle point", "BEALE", "Jennrich-Sampsonk", "Rosenbrock", "Styblinski-Tang"];
+        //this.funcNames = ["with saddle point", "BEALE", "Jennrich-Sampsonk", "Rosenbrock", "Styblinski-Tang"];
+        this.funcNames = ["with saddle point", "BEALE", "Rosenbrock", "Styblinski-Tang"];
         this.functionToOptimize = this.assignIfRandom(functionToOptimize, Utils.randomChoice(this.funcNames));
-        this.funcClasses = [SaddlePointFunc, BealeFunc, JennrichSampsonkFunc, RosenbrockFunc, StyblinskiTangFunc];
+        //this.funcClasses = [SaddlePointFunc, BealeFunc, JennrichSampsonkFunc, RosenbrockFunc, StyblinskiTangFunc];
+        this.funcClasses = [SaddlePointFunc, BealeFunc, RosenbrockFunc, StyblinskiTangFunc];
         this.scale = scale;
         this.rounding = rounding;
         this.autoRestart = autoRestart;
