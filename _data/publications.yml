@@ -8,8 +8,8 @@
       text: <i class="fa fa-github"></i> code
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2024_consistent_algorithms_for_macro-at-k_metrics_pu_iclr.pdf
       text: <i class="fa fa-file-pdf"></i> paper
-    # - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2024_consistent_algorithms_macro-at-k_pu_poster_iclr.pdf
-    #   text: <i class="fa fa-file-image"></i> poster
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2024_consistent_algorithms_for_macro-at-k_metrics_pu_poster_iclr.pdf
+      text: <i class="fa fa-file-image"></i> poster
     # - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
     #   text: <i class="fas fa-book"></i> bibtex
 
