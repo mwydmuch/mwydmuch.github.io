@@ -4,16 +4,29 @@
             <h2 class="d-inline-block h-reversed-second"><i class="fa-solid fa-file-lines thinner-second"></i> Scientific publications</h2>
             <ul>
             {% for publication in site.data.publications %}
-                <li>
-                    <a href="{{ publication.url }}">{{ publication.title }}</a><br>
-                    {{ publication.authors }}<br>
-                    <i>{{ publication.book }}</i>, {{ publication.year }}<br>
-                    {% if publication.note %}
-                        Note: {{ publication.note }}<br>
-                    {% endif %}
-                    {% for link in publication.links %}
-                        <span class="nowrap">[<a href="{{ link.url }}">{{ link.text }}</a>]</span>
-                    {% endfor %}
+                <li id="publication-{{ publication.id }}">
+                    <div class="columns">
+                        {% if publication.poster_thumbnail %}
+                        <div class="column col-8">
+                        {% else %}
+                        <div class="column col-12">
+                        {% endif %}
+                            <a href="{{ publication.url }}">{{ publication.title }}</a><br>
+                            {{ publication.authors }}<br>
+                            <i>{{ publication.book }}</i>, {{ publication.year }}<br>
+                            {% if publication.note %}
+                                Note: {{ publication.note }}<br>
+                            {% endif %}
+                            {% for link in publication.links %}
+                                <span class="nowrap">[<a href="{{ link.url }}">{{ link.text }}</a>]</span>
+                            {% endfor %}
+                        </div>
+                        {% if publication.poster_thumbnail %}
+                        <div class="column col-4 col-md-12 text-center">
+                            <img class="img-side-col" src="{{ publication.poster_thumbnail }}" style="max-height: 8rem;">
+                        </div>
+                        {% endif %}
+                    </div>
                 </li>
             {% endfor %}
             </ul>

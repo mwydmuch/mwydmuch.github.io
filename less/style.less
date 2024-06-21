@@ -28,6 +28,7 @@
 @mlss-blue: #6DB6C6;
 @mlinpl-purple: #7F4FB2;
 @put-blue: #006991;
+//@put-blue: #086690;
 @yahoo-purple: #6000D3;
 @vizdoom-red: #8B0000;
 @openai-blue: #21AEB9;
@@ -139,7 +140,13 @@ ol, ul {
 img {
   max-width: 100%;
   height: auto;
-  display: block;
+  display: inline-block;
+}
+
+.img-side-col {
+  object-fit: contain;
+  padding: 0 1rem;
+  height: 100%;
 }
 
 .nowrap{
@@ -250,9 +257,9 @@ ul{
   flex: 1;
 }
 
-.column{
-  margin-bottom: 1rem;
-}
+// .column{
+//   margin-bottom: 1rem;
+// }
 
 blockquote{
   position: relative;
