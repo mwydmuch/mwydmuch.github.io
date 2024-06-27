@@ -18,7 +18,21 @@
                                 Note: {{ publication.note }}<br>
                             {% endif %}
                             {% for link in publication.links %}
-                                <span class="nowrap">[<a href="{{ link.url }}">{{ link.text }}</a>]</span>
+                                {% assign link_text = link.text %}
+                                {% if link.type == "paper-pdf" %}
+                                    {% assign link_text = '<i class="fa fa-file-pdf"></i> paper' %}
+                                {% elsif link.type == "poster-pdf" %}
+                                    {% assign link_text = '<i class="fa-custom fa-poster-board"></i> poster' %}            
+                                {% elsif link.type == "github" %}
+                                    {% assign link_text = '<i class="fa fa-github"></i> code' %}
+                                {% elsif link.type == "website" %}
+                                    {% assign link_text = '<i class="fa fa-globe"></i> website' %}
+                                {% elsif link.type == "docs" %}
+                                    {% assign link_text = '<i class="fa fa-book"></i> docs' %}
+                                {% elsif link.type == "bibtex" %}
+                                    {% assign link_text = '<i class="fa-custom fa-books"></i> bibtex' %}
+                                {% endif %}
+                                <span class="nowrap">[<a href="{{ link.url }}">{{ link_text }}</a>]</span>
                             {% endfor %}
                         </div>
                         {% if publication.poster_thumbnail %}
