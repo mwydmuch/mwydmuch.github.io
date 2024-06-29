@@ -2,8 +2,9 @@
     <div class="columns">
         <div class="column">
             <h2 class="d-inline-block h-reversed-second"><i class="fa-solid fa-newspaper thinner-second"></i> Most recent news & events</h2>
-            <div class="timeline">
-                {% for news in site.data.news %}
+            <input type="checkbox" class="read-more-state" id="more-news" />
+            <div class="timeline read-more-wrap">
+                {% for news in site.data.news limit: 7 %}
                 <div class="timeline-item" id="timeline-news-{{ news.date }}">
                   <div class="timeline-left">
                     <span class="timeline-date">{{ news.date }}</span>
@@ -14,6 +15,21 @@
                   </div>
                 </div>
                 {% endfor %}
+                <div class="read-more-target">
+                  {% for news in site.data.news offset: 7 %}
+                  <div class="timeline-item" id="timeline-news-{{ news.date }}">
+                    <div class="timeline-left">
+                      <span class="timeline-date">{{ news.date }}</span>
+                      <a class="timeline-icon" href="#timeline-news-{{ news.date }}"></a>
+                    </div>
+                    <div class="timeline-content">
+                      {{ news.text }}
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              [<label style="display: inline-block; margin-top: 0.6rem;" for="more-news" class="read-more-trigger link-style"></label>]
             </div>
         </div>
     </div>

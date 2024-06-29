@@ -4,7 +4,11 @@
             <h2 class="d-inline-block h-reversed-second"><i class="fa-solid fa-file-lines thinner-second"></i> Scientific publications</h2>
             <ul>
             {% for publication in site.data.publications %}
+                {% if publication.id %}
                 <li id="publication-{{ publication.id }}">
+                {% else %}
+                <li>
+                {% endif %}
                     <div class="columns">
                         {% if publication.poster_thumbnail %}
                         <div class="column col-8">
