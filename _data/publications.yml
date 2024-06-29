@@ -9,6 +9,8 @@
     #   type: github
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2024_omma_icml.pdf
       type: paper-pdf
+    - url: https://arxiv.org/abs/2406.14743
+      type: arxiv
 
 - title: "Consistent algorithms for multi-label classification with macro-at-k metrics"
   url: https://openreview.net/forum?id=XOnya9gSdF
@@ -27,8 +29,8 @@
       type: poster-pdf
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
       type: bibtex
-    # - url: https://openreview.net/forum?id=XOnya9gSdF
-    #   text: <i class="fas fa-book"></i> reviews
+    - url: https://arxiv.org/abs/2401.16594
+      type: arxiv
 
 - title: "Generalized test utilities for long-tail performance in extreme multi-label classification"
   url: https://proceedings.neurips.cc/paper_files/paper/2023/hash/46994b3d6dd0fd5fca5f780af6259db5-Abstract-Conference.html
@@ -46,6 +48,8 @@
       type: poster-pdf
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
       type: bibtex
+    - url: https://arxiv.org/abs/2311.05081
+      type: arxiv
 
 - title: "On Missing Labels, Long-tails and Propensities in Extreme Multi-label Classification"
   url: https://dl.acm.org/doi/10.1145/3404835.3463084
@@ -61,6 +65,8 @@
       type: poster-pdf
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
       type: bibtex
+    - url: https://arxiv.org/abs/2207.13186
+      type: arxiv
 
 - title: "Propensity-scored Probabilistic Label Trees"
   url: https://dl.acm.org/doi/10.1145/3404835.3463084
@@ -77,6 +83,8 @@
       type: poster-pdf
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
       type: bibtex
+    - url: https://arxiv.org/abs/2110.10803
+      type: arxiv
 
 - title: "Online probabilistic label trees"
   url: https://proceedings.mlr.press/v130/jasinska-kobus21a.html
@@ -97,6 +105,8 @@
       text: <i class="fa fa-video"></i> ICML XC 2020 talk
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
       type: bibtex
+    - url: https://arxiv.org/abs/2007.04451
+      type: arxiv
 
 - title: "Efficient set-valued prediction in multi-class classification"
   url: https://link.springer.com/article/10.1007/s10618-021-00751-x
@@ -121,6 +131,8 @@
       type: paper-pdf
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
       type: bibtex
+    - url: https://arxiv.org/abs/2009.11218
+      type: arxiv
 
 - title: "A no-regret generalization of hierarchical softmax to extreme multi-label classification"
   url: https://papers.nips.cc/paper/2018/hash/8b8388180314a337c9aa3c5aa8e2f37a-Abstract.html
@@ -138,6 +150,8 @@
       type: poster-pdf
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
       type: bibtex
+    - url: https://arxiv.org/abs/1810.11671
+      type: arxiv
 
 - title: "ViZDoom Competitions: Playing Doom From Pixels"
   url: https://ieeexplore.ieee.org/document/8500330
@@ -157,6 +171,8 @@
       text: <i class="fa fa-youtube"></i> videos
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
       type: bibtex
+    - url: https://arxiv.org/abs/1809.03470
+      type: arxiv
 
 - title: "ViZDoom: A Doom-based AI research platform for visual reinforcement learning"
   url: https://ieeexplore.ieee.org/document/7860433
@@ -176,3 +192,5 @@
       type: paper-pdf
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
       type: bibtex
+    - url: https://arxiv.org/abs/1605.02097
+      type: arxiv

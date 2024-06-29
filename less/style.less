@@ -46,46 +46,6 @@
 @bold-font: 700;
 
 
-// Custom icons
-// ---------------------------------------------------------------------------------------------------------------------
-
-.fa-custom{
-  display: inline-block !important;
-  width: 1em;
-  height: 1em;
-  position: relative;
-  top: 0.15em;
-  background-color: @main;
-}
-
-.fa-books {
-	mask: url(/assets/icons/books.svg);
-	-webkit-mask: url(/assets/icons/books.svg);
-}
-
-.fa-dblp {
-	mask: url(/assets/icons/dblp.svg);
-	-webkit-mask: url(/assets/icons/dblp.svg);
-}
-
-.fa-google-scholar {
-	mask: url(/assets/icons/google-scholar.svg);
-	-webkit-mask: url(/assets/icons/google-scholar.svg);
-}
-
-.fa-poster-board {
-  height: 0.9em;
-	mask: url(/assets/icons/poster-board.svg);
-	-webkit-mask: url(/assets/icons/poster-board.svg);
-}
-
-.fa-rabbit {
-	mask: url(/assets/icons/rabbit.svg);
-	-webkit-mask: url(/assets/icons/rabbit.svg);
-}
-
-
-
 // Base Styles
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -101,14 +61,18 @@ body {
   color: @main-text;
   background: @background;
   min-height: 100vh; 
-  display:flex; 
-  flex-direction:column;
+  display: flex; 
+  flex-direction: column;
 }
 
-a, a:link, a:visited, a:hover, a:active {
+a, a:link, a:visited, a:hover, a:active, .link-style {
   color: @second;
   font-weight: @bold-font;
   cursor: pointer;
+}
+
+a:hover, .link-style:hover {
+  text-decoration: underline;
 }
 
 a:focus {
@@ -263,7 +227,81 @@ ul{
 }
 
 
-// LAYOUT
+// Custom icons
+// ---------------------------------------------------------------------------------------------------------------------
+
+.fa-custom{
+  display: inline-block !important;
+  width: 1em;
+  height: 1em;
+  position: relative;
+  top: 0.15em;
+  background-color: @main;
+}
+
+.fa-arxiv {
+  mask: url(/assets/icons/arxiv.svg);
+  -webkit-mask: url(/assets/icons/arxiv.svg);
+  width: 0.75em;
+}
+
+.fa-books {
+  mask: url(/assets/icons/books.svg);
+  -webkit-mask: url(/assets/icons/books.svg);
+}
+
+.fa-dblp {
+  mask: url(/assets/icons/dblp.svg);
+  -webkit-mask: url(/assets/icons/dblp.svg);
+}
+
+.fa-google-scholar {
+  mask: url(/assets/icons/google-scholar.svg);
+  -webkit-mask: url(/assets/icons/google-scholar.svg);
+}
+
+.fa-poster-board {
+  mask: url(/assets/icons/poster-board.svg);
+  -webkit-mask: url(/assets/icons/poster-board.svg);
+  height: 0.9em;
+}
+
+.fa-rabbit {
+  mask: url(/assets/icons/rabbit.svg);
+  -webkit-mask: url(/assets/icons/rabbit.svg);
+}
+
+
+// Read more
+// ---------------------------------------------------------------------------------------------------------------------
+
+.read-more-state {
+  display: none;
+}
+
+.read-more-target {
+  opacity: 0;
+  max-height: 0;
+  font-size: 0;
+  transition: .25s ease;
+}
+
+.read-more-state:checked ~ .read-more-wrap .read-more-target {
+  opacity: 1;
+  font-size: inherit;
+  max-height: 999em;
+}
+
+.read-more-state ~ .read-more-trigger:before {
+  content: 'show more';
+}
+
+.read-more-state:checked ~ .read-more-trigger:before {
+  content: 'show less';
+}
+
+
+// HOMEPAGE LAYOUT
 // ---------------------------------------------------------------------------------------------------------------------
 
 .main-content {
@@ -304,7 +342,6 @@ blockquote{
 
 // Header
 // ---------------------------------------------------------------------------------------------------------------------
-
 
 .animation-container{
   width: 100%;
@@ -749,7 +786,7 @@ input[type=range]::-moz-range-thumb {
 }
 
 
-// BLOG
+// BLOG LAYOUT
 // ---------------------------------------------------------------------------------------------------------------------
 
 .post-header{
