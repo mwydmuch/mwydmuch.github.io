@@ -7,35 +7,35 @@
 
 const Utils = require("./utils");
 
-const ThreeNPlusOne = require("./3n+1");
-const Cardioids = require("./cardioids");
-const CircularWaves = require("./circular-waves");
-const Coding = require("./coding");
-//const FiguresSpiral = require("./figures-spiral");
-const GameOfLife = require("./game-of-life");
-const GameOfLifeIsometric = require("./game-of-life-isometric");
-const Glitch = require("./glitch");
-const GradientDescent = require("./gradient-descent");
-const Matrix = require("./matrix");
-const MLinPL = require("./mlinpl");
-const Network = require("./network");
-//const NeuralNetwork = require("./neural-network");
-const NoisyLines = require("./noisy-lines");
-const ParticlesAndAttractors = require("./particles-and-attractors");
-const ParticlesVortex = require("./particles-vortex");
-const ParticlesWaves = require("./particles-waves");
-const PerlinNoiseParticles = require("./perlin-noise-particles");
-const RockPaperScissorsAutomata = require("./rock-paper-scissors-automata");
-const SandAutomata = require("./sand-automata");
-const Quadtree = require("./quadtree");
-const RecursiveRectangles = require("./recursive-rectangles");
-const ShortestPath = require("./shortest-path");
-const SineWaves = require("./sine-waves");
-const Sorting = require("./sorting");
-const SpinningShapes = require("./spinning-shapes");
-const Spirograph = require("./spirograph");
-const Vectors = require("./vectors");
-//const TreeVisualization = require("./tree-visualization");
+const ThreeNPlusOne = require("./animations/3n+1");
+const Cardioids = require("./animations/cardioids");
+const CircularWaves = require("./animations/circular-waves");
+const Coding = require("./animations/coding");
+//const FiguresSpiral = require("./animations/figures-spiral");
+const GameOfLife = require("./animations/game-of-life");
+const GameOfLifeIsometric = require("./animations/game-of-life-isometric");
+const Glitch = require("./animations/glitch");
+const GradientDescent = require("./animations/gradient-descent");
+const Matrix = require("./animations/matrix");
+const MLinPL = require("./animations/mlinpl");
+const Network = require("./animations/network");
+//const NeuralNetwork = require("./animations/neural-network");
+const NoisyLines = require("./animations/noisy-lines");
+const ParticlesAndAttractors = require("./animations/particles-and-attractors");
+const ParticlesVortex = require("./animations/particles-vortex");
+const ParticlesWaves = require("./animations/particles-waves");
+const PerlinNoiseParticles = require("./animations/perlin-noise-particles");
+const RockPaperScissorsAutomata = require("./animations/rock-paper-scissors-automata");
+const SandAutomata = require("./animations/sand-automata");
+const Quadtree = require("./animations/quadtree");
+const RecursiveRectangles = require("./animations/recursive-rectangles");
+const ShortestPath = require("./animations/shortest-path");
+const SineWaves = require("./animations/sine-waves");
+const Sorting = require("./animations/sorting");
+const SpinningShapes = require("./animations/spinning-shapes");
+const Spirograph = require("./animations/spirograph");
+const Vectors = require("./animations/vectors");
+//const TreeVisualization = require("./animations/tree-visualization");
 
 
 // Globals
@@ -232,8 +232,8 @@ if(canvas){
                                         target fps: ${fps}</br>
                                         avg. frames interval: ${Math.round(avgElapsedTime)} ms</br>
                                         avg. fps: ${Math.round(1000 / avgElapsedTime)}</br>
-                                        avg. draw time: ${Math.round(avgDrawTime + 1)} ms</br>
-                                        possible fps: ${Math.round(1000 / avgDrawTime + 1)}`;
+                                        avg. draw time: ${Math.round(avgDrawTime)} ms</br>
+                                        possible fps: ${Math.round(1000 / avgDrawTime)}`;
             }
         }
     }

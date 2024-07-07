@@ -16,7 +16,7 @@ class ShaderAnimation extends Animation {
         super(canvas, colors, colorsAlt, bgColor, name, file, description, seed);
         this.ctx = canvas.getContext("webgl", { alpha: false });
         
-        let vertexShaderSource = document.querySelector("#vertex-shader-2d").text;
+        let vertexShaderSource = this.get
         let fragmentShaderSource = document.querySelector("#fragment-shader-2d").text;
       
         // Create GLSL shaders, upload the GLSL source, compile the shaders
