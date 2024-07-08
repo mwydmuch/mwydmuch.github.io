@@ -111,6 +111,26 @@ module.exports = {
         return (1.0 - t) * v1 + t * v2;
     },
 
+    conv(data, width, height, kernel, kernelWidth, kernelHeight, kernelCenterX, kernelCenterY){
+        let output = new Array(data.length);
+        for(let dy = 0; y < height; ++y){
+            for(let dx = 0; x < width; ++x){
+                let sum = 0;
+                for(let ky = 0; ky < kernelHeight; ++ky){
+                    for(let kx = 0; kx < kernelWidth; ++kx){
+                        let x = dx + kx - kernelCenterX,
+                            y = dy + ky - kernelCenterY;
+                        if(x >= 0 && x < width && y >= 0 && y < height){
+                            sum += data[y * width + x] * kernel[ky * kernelWidth + kx];
+                        }
+                    }
+                }
+                output[dy * width + dx] = sum;
+            }
+        }
+        return output;
+    },
+
     // Based on: https://gist.github.com/rosszurowski/67f04465c424a9bc0dae
     lerpColor(a, b, t) {
         const ah = parseInt(a.replace('#', '0x'), 16),

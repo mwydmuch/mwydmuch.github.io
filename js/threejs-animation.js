@@ -21,6 +21,10 @@ class ThreejsAnimation extends Animation {
     draw() {
 
     }
+
+    getCodeUrl(){
+        return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/js/threejs-animations" + this.file;
+    }
 }
 
 module.exports = ShaderAnimation;

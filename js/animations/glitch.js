@@ -3,16 +3,18 @@
 const NAME = "Glitch animation",
       FILE = "glitch.js",
       DESC = `
-The animation is just cellular automata that apply to the cell 
+The animation is a type of cellular automata that apply to the cell 
 a state of one of the neighbor cells based on a noise function.
+
+https://en.wikipedia.org/wiki/Error_diffusion
 
 Coded with no external dependencies, using only canvas API.
 `;
 
-const Grid = require("./grid");
+const GridAnimation = require("../grid-animation");
 const Utils = require("../utils");
 
-class Glitch extends Grid {
+class Glitch extends GridAnimation {
     constructor(canvas, colors, colorsAlt, bgColor,
                 cellSize = 7,
                 initialPatern = "random",
@@ -21,7 +23,14 @@ class Glitch extends Grid {
         this.cellSize = cellSize;
         this.noiseScale = noiseScale;
         
-        this.initialPaterns = ["1x1 checkerboard", "2x2 checkerboard", "4x4 checkerboard", "vertical lines", "horizontal lines"];
+        this.initialPaterns = [
+            "1x1 checkerboard", 
+            "2x2 checkerboard", 
+            "4x4 checkerboard", 
+            "vertical lines", 
+            "horizontal lines", 
+            "photo"
+        ];
         this.initialPatern = this.assignIfRandom(initialPatern, Utils.randomChoice(this.initialPaterns));
     }
 
@@ -56,13 +65,13 @@ class Glitch extends Grid {
     }
 
     draw() {
-        this.clear();
-        this.ctx.fillStyle = this.colors[0];
-        for (let x = 0; x < this.gridWidth; ++x) {
-            for (let y = 0; y < this.gridHeight; ++y) {
-                if(this.grid[this.getIdx(x, y)] > 0) this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
-            }
-        }
+        // this.clear();
+        // this.ctx.fillStyle = this.colors[0];
+        // for (let x = 0; x < this.gridWidth; ++x) {
+        //     for (let y = 0; y < this.gridHeight; ++y) {
+        //         if(this.grid[this.getIdx(x, y)] > 0) this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
+        //     }
+        // }
     }
 
     newCellState(x, y) {
@@ -81,10 +90,67 @@ class Glitch extends Grid {
         return 0;
     }
 
+    setGridUsingImage(img){
+        console.log("Image loaded");
+
+        // Create a hidden canvas to draw the image, and get the image size
+        const hiddenCanvas = new OffscreenCanvas(this.gridWidth, this.gridHeight),
+              imgWidth = img.naturalWidth,
+              imgHeight = img.naturalHeight;
+
+        // Fit it into the visible canvas with the animation
+        const scale = Math.min(this.gridWidth / imgWidth, this.gridHeight / imgHeight),
+              scaledWidth = imgWidth * scale,
+              scaledHeight = imgHeight * scale,
+              hiddenCtx = hiddenCanvas.getContext("2d");
+        hiddenCtx.drawImage(img, 
+            (this.gridWidth - scaledWidth) / 2, 
+            (this.gridHeight - scaledHeight) / 2,
+            scaledWidth, scaledHeight);
+        const imgData = hiddenCtx.getImageData(0, 0, hiddenCanvas.width, hiddenCanvas.height);
+            
+        console.log("Image processed");
+        this.clear();
+        this.ctx.putImageData(imgData, 0, 0, this.gridWidth, this.gridHeight, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+
+        // Apply error diffusion dithering to the image
+        // for (let y = 0; y < this.gridHeight; ++y) {
+        //     for (let x = 0; x < this.gridWidth; ++x) {
+        //         const cellIdx = this.getIdx(x, y),
+        //               imgIdx = 4 * (y * imgWidth + x),
+        //               r = imgData.data[imgIdx],
+        //               g = imgData.data[imgIdx + 1],
+        //               b = imgData.data[imgIdx + 2],
+        //               luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        //         this.grid[cellIdx] = luma < 1 ? 1 : 0;
+        //     }
+        // }
+
+        // this.clear();
+        // this.ctx.fillStyle = this.colors[0];
+        // for (let x = 0; x < this.gridWidth; ++x) {
+        //     for (let y = 0; y < this.gridHeight; ++y) {
+        //         if(this.grid[this.getIdx(x, y)] > 0) this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
+        //     }
+        // }
+    }
+
     restart(){
-        this.gridWidth = 0;
-        this.gridHeight = 0;
-        super.restart();
+        if(this.initialPatern == "photo"){
+            console.log("Restart... using");
+
+            let img = new Image();
+            let self = this;
+            img.src = "./assets/blog/1.png";
+            img.onload = function() {
+                self.setGridUsingImage(img);
+            }
+        }
+        else {
+            this.gridWidth = 0;
+            this.gridHeight = 0;
+            super.restart();
+        }
     }
 
     getSettings() {

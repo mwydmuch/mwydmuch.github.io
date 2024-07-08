@@ -109,6 +109,10 @@ class ShaderAnimation extends Animation {
     draw() {
 
     }
+
+    getCodeUrl(){
+        return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/js/shader-animations" + this.file;
+    }
 }
 
 module.exports = ShaderAnimation;

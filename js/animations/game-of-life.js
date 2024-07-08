@@ -3,7 +3,7 @@
 const NAME = "Conway's game of life",
       FILE = "game-of-life.js",
       DESC = `
-Voisualization of Conway's game of life - probably the most famous cellular automaton.
+Voisualization of Conway's game of life - probably the most famous cellular automata.
 You can read about the game of life on
 [Wikipedia](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
 Game of life is one of the first programs I wrote in my life.
@@ -19,10 +19,10 @@ You can pause the animation and set the cell states by clicking/touching the can
 Coded with no external dependencies, using only canvas API.
 `;
 
-const Grid = require("./grid");
+const GridAnimation = require("../grid-animation");
 const Utils = require("../utils");
 
-class GameOfLife extends Grid {
+class GameOfLife extends GridAnimation {
     constructor (canvas, colors, colorsAlt, bgColor,
                  cellSize = 12,
                  cellPadding = 1,
@@ -53,20 +53,24 @@ class GameOfLife extends Grid {
         else return (this.getVal(x % this.gridWidth, y % this.gridHeight) >= 1) ? 1 : 0;
     }
 
+    numAliveInMooreNeighborhood(x, y) {
+        return this.isAlive(x - 1, y - 1)
+            + this.isAlive(x, y - 1)
+            + this.isAlive(x + 1, y - 1)
+            + this.isAlive(x - 1, y)
+            + this.isAlive(x + 1, y)
+            + this.isAlive(x - 1, y + 1)
+            + this.isAlive(x, y + 1)
+            + this.isAlive(x + 1, y + 1);
+    }
+
     update(elapsed){
         super.update(elapsed);
         
         for (let y = 0; y < this.gridHeight; ++y) {
             for (let x = 0; x < this.gridWidth; ++x) {
-                const numAlive = this.isAlive(x - 1, y - 1)
-                      + this.isAlive(x, y - 1)
-                      + this.isAlive(x + 1, y - 1)
-                      + this.isAlive(x - 1, y)
-                      + this.isAlive(x + 1, y)
-                      + this.isAlive(x - 1, y + 1)
-                      + this.isAlive(x, y + 1)
-                      + this.isAlive(x + 1, y + 1);
-                const cellIdx = this.getIdx(x, y);
+                const numAlive = this.numAliveInMooreNeighborhood(x, y),
+                      cellIdx = this.getIdx(x, y);
                 if (numAlive === 2 && this.grid[cellIdx] >= 1) this.gridNext[cellIdx] = this.grid[cellIdx] + 1;
                 else if (numAlive === 3) this.gridNext[cellIdx] = Math.max(1, this.grid[cellIdx] + 1);
                 else this.gridNext[cellIdx] = Math.min(0, this.grid[cellIdx] - 1);
@@ -137,9 +141,7 @@ class GameOfLife extends Grid {
         else if(event === "up") this.mouseDown = false;
         
         if(event === "down" || (event === "move" && this.mouseDown)){
-            const x = Math.floor(cords.x / this.cellSize),
-                  y = Math.floor(cords.y / this.cellSize),
-                  cellCord = x + y * this.gridWidth;
+            const cellCord = this.mouseCellCord(cords.x, cords.y);
             
             if(event === "down"){
                 if (this.grid[cellCord] === 1) this.mouseVal = -99999;
@@ -151,6 +153,12 @@ class GameOfLife extends Grid {
                 this.draw();
             }
         }
+    }
+
+    mouseCellCord(mouseX, mouseY) {
+        const x = Math.floor(mouseX / this.cellSize),
+              y = Math.floor(mouseY / this.cellSize);
+        return x + y * this.gridWidth;
     }
 
     getSettings() {

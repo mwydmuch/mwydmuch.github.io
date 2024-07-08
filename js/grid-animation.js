@@ -1,12 +1,12 @@
 'use strict';
 
 /*
- * Base class for all animations based on grid of cells.
+ * Base class for all animations based on grid of cells. E.g. cellular automata.
  */
 
-const Animation = require("../animation");
+const Animation = require("./animation");
 
-class Grid extends Animation {
+class GridAnimation extends Animation {
     constructor(canvas, colors, colorsAlt, bgColor, 
                 name = "",
                 file = "",
@@ -74,4 +74,4 @@ class Grid extends Animation {
     }
 }
 
-module.exports = Grid;
+module.exports = GridAnimation;

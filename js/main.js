@@ -8,9 +8,11 @@
 const Utils = require("./utils");
 
 const ThreeNPlusOne = require("./animations/3n+1");
+const BriansBrainAutomata = require("./animations/brians-brain-automata");
 const Cardioids = require("./animations/cardioids");
 const CircularWaves = require("./animations/circular-waves");
 const Coding = require("./animations/coding");
+const DayAndNightAutomata = require("./animations/day-and-night-automata");
 //const FiguresSpiral = require("./animations/figures-spiral");
 const GameOfLife = require("./animations/game-of-life");
 const GameOfLifeIsometric = require("./animations/game-of-life-isometric");
@@ -51,7 +53,7 @@ let fps = 30,
     height = 0,
     lastWidth = 0,
     lastHeight = 0,
-    resizeMode = "fit",
+    resolution = "fit",
     fixedWidth = 0,
     fixedHeight = 0;
 
@@ -118,7 +120,7 @@ const elemBgSettingsClose = document.getElementById("background-settings-close")
 const elemBgStats = document.getElementById("background-stats");
 const elemBgAnimationSelect = document.getElementById("background-settings-animation-select");
 const elemBgAnimationFps = document.getElementById("background-settings-animation-fps");
-const elemBgAnimationSize = document.getElementById("background-settings-animation-size");
+const elemBgAnimationResolution = document.getElementById("background-settings-animation-resolution");
 const elemBgColor = document.getElementById("background-settings-bg-color");
 
 if(canvas){
@@ -128,9 +130,11 @@ if(canvas){
 
     let animations = [
         {class: ThreeNPlusOne, name: "3n+1"},
+        {class: BriansBrainAutomata, name: "brian's brain automata"},
         {class: Cardioids, name: "cardioids"},
         {class: CircularWaves, name: "circular waves"},
         //{class: Coding, name: "coding"},  // Disabled till finished
+        {class: DayAndNightAutomata, name: "day and night automata"},
         //{class: FiguresSpiral, name: "figures spiral"},  // Disabled since it's not that interesting
         {class: GameOfLife, name: "game of life"},
         {class: GameOfLifeIsometric, name: "isometric game of life"},
@@ -158,49 +162,45 @@ if(canvas){
         //{class: TreeVisualization, name: "tree visualization"}, // Disabled cause it is not ready
     ];
 
-    const animationCount = animations.length;
-    let animationId = Utils.randomInt(0, animationCount);
-    while(animations[animationId].startAnimation === false) animationId = Utils.randomInt(0, animationCount);
-
-    // Get the animation from url search params
-    const urlParams = new URLSearchParams(window.location.search);
-    if(urlParams.has("animation")){
-        const animationParam = urlParams.get("animation").replaceAll("-", " ");
-        for(let i = 0; i < animationCount; ++i){
-            if(animationParam === animations[i].name) animationId = i;
-        }
-    }
-
-    let animation = null,
-        order = Array.from({length: animationCount}, (x, i) => i);
-
-    Utils.randomShuffle(order);
-    for(let i = 0; i < animationCount; ++i){
-        animations[order[i]].prev = order[(i + animationCount - 1) % animationCount];
-        animations[order[i]].next = order[(i + 1) % animationCount];
-    }
+    // Define functions related to the animation loop and control
+    // ---------------------------------------------------------------------------------------------------------------------
 
     function getTime(){
         return Date.now();
         //return window.performance.now(); // Alternative method for measruing time
     }
 
-    function updateAnimation(newAnimationId) {
+    function updateAnimation(newAnimationId, newAnimationSettings = null) {
         frames = 0;
         avgDrawTime = 0;
         avgElapsedTime = 0;
         animationId = newAnimationId;
         animation = new animations[animationId].class(canvas, colors, colorsAlt, bgColor);
+        if(newAnimationSettings) animation.setSettings(newAnimationSettings);
         then = getTime();
         trueThen = then;
         animation.resize();
         updateUI();
     }
 
+    function updateAnimationResolution(sizeStr) {
+        resolution = sizeStr;
+        if(sizeStr !== "fit") {
+            fixedWidth = parseInt(resolution.split("x")[0]);
+            fixedHeight = parseInt(resolution.split("x")[1]);
+            canvas.classList.add("fixed-size");
+        }
+        else canvas.classList.remove("fixed-size");
+    }
+
+    function updateAnimationFps(fpsStr) {
+        fps = parseInt(fpsStr);
+        framesInterval = 1000 / fps;
+    }
 
     function checkResize() {
         // Detect the change of container's size for smooth resizing
-        if(resizeMode === "fit"){
+        if(resolution === "fit"){
             width = Math.max(container.parentElement.offsetWidth - canvas.offsetLeft);
             height = Math.max(container.parentElement.offsetHeight - canvas.offsetTop);
             if(width !== lastWidth || height !== lastHeight){
@@ -275,7 +275,35 @@ if(canvas){
         requestAnimationFrame(render);
     }
 
-    updateAnimation(animationId);
+
+    // Initialize the animation
+
+    const animationCount = animations.length;
+    let animationId = Utils.randomInt(0, animationCount);
+    while(animations[animationId].startAnimation === false) animationId = Utils.randomInt(0, animationCount);
+
+    // Get the animation from url search params
+    const urlParams = new URLSearchParams(window.location.search);
+    if(urlParams.has("animation")){
+        const animationParam = urlParams.get("animation").replaceAll("-", " ");
+        for(let i = 0; i < animationCount; ++i){
+            if(animationParam === animations[i].name) animationId = i;
+        }
+    }
+    if(urlParams.has("resolution")) updateAnimationResolution(urlParams.get("resolution"));
+    if(urlParams.has("fps")) updateAnimationFps(urlParams.get("fps"));
+    if(urlParams.has("bg-color")) bgColor = urlParams.get("bg-color");
+
+    let animation = null,
+        order = Array.from({length: animationCount}, (x, i) => i);
+
+    Utils.randomShuffle(order);
+    for(let i = 0; i < animationCount; ++i){
+        animations[order[i]].prev = order[(i + animationCount - 1) % animationCount];
+        animations[order[i]].next = order[(i + 1) % animationCount];
+    }
+
+    updateAnimation(animationId, urlParams);
     render();
 
 
@@ -390,32 +418,36 @@ if(canvas){
         });
     }
 
-    // Animation canvas size options
-    if(elemBgAnimationSize) {
-        const animationSizes = ["fit", "512x512", "800x600", "1024x768", "1024x1024", "1280x720","1600x1200", "1920x1080", "2048x2048"];
-        const animationSizeDefault = "fit";
-        elemBgAnimationSize.innerHTML = "";
-        for(let size of animationSizes) {
-            if (size === animationSizeDefault) elemBgAnimationSize.innerHTML += `<option selected value="${size}">${size}</option>`;
-            else elemBgAnimationSize.innerHTML += `<option value="${size}">${size}</option>`;
-        }
-        elemBgAnimationSize.addEventListener("input", function (e) {
-            resizeMode = e.target.value;
-            if(resizeMode !== "fit") {
-                fixedWidth = parseInt(resizeMode.split("x")[0]);
-                fixedHeight = parseInt(resizeMode.split("x")[1]);
-                canvas.classList.add("fixed-size");
+    function buildOptionList(options, selected){
+        let optionsList = "",
+            selectedFound = false;
+        for(let opt of options) {
+            optionsList += "<option ";
+            if (opt === selected) {
+                optionsList += "selected";
+                selectedFound = true;
             }
-            else canvas.classList.remove("fixed-size");
+            optionsList += `value="${opt}">${opt}</option>`;
+        }
+        if(!selectedFound) optionsList += `<option selected value="${selected}">custom (${selected})</option>`;
+        return optionsList;
+    }
+
+    // Animation canvas size options
+    if(elemBgAnimationResolution) {
+        const animationSizes = ["fit", "512x512", "800x600", "1024x768", "1024x1024", "1280x720","1600x1200", "1920x1080", "2048x2048"];
+        elemBgAnimationResolution.innerHTML = buildOptionList(animationSizes, resolution);
+        elemBgAnimationResolution.addEventListener("input", function (e) {
+            updateAnimationResolution(e.target.value)
         });
     }
 
     // Animation FPS option
     if(elemBgAnimationFps) {
-        elemBgAnimationFps.innerHTML = '<option value="15">15</option><option selected value="30">30</option><option value="60">60</option>';
+        const fpsOptions = [15, 30, 60];
+        elemBgAnimationFps.innerHTML = buildOptionList(fpsOptions, fps);
         elemBgAnimationFps.addEventListener("input", function (e) {
-            fps = parseInt(e.target.value);
-            framesInterval = 1000 / fps;
+            updateAnimationFps(e.target.value);
         });
     }
 

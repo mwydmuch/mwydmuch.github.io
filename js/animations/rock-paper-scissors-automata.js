@@ -13,10 +13,10 @@ it changes its state to that state.
 Coded with no external dependencies, using only canvas API.
 `;
 
-const Grid = require("./grid");
+const GridAnimation = require("../grid-animation");
 const Utils = require("../utils");
 
-class RockPaperScissorsAutomata extends Grid {
+class RockPaperScissorsAutomata extends GridAnimation {
     constructor(canvas, colors, colorsAlt, bgColor,
                 cellSize = 9,
                 states = 3,

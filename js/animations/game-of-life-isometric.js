@@ -8,8 +8,8 @@ You can read about the game of life on
 [Wikipedia](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
 Game of life is one of the first programs I wrote in my life.
 
-As in the top-down version, cells leave 
-a trace for a few steps after they die to achieve a nice effect.
+As in the [top-down version](https://mwydmuch.pl/animations?name=game-of-life),
+cells leave a trace for a few steps after they die to achieve a nice effect.
 Especially, cells that died in the previous step keep the appearance 
 of the life cell resulting in a stable image 
 since flickering is not that good for a background image.
@@ -134,6 +134,10 @@ class GameOfLifeIsometric extends GameOfLife {
               isoY = (x + y + 1) * this.yShift;
 
         this.ctx.drawImage(this.renderedCubes[idx], isoX - 1 * this.xShift, isoY - 3 * this.yShift);
+    }
+
+    mouseCellCord(mouseX, mouseY) {
+
     }
 
     draw() {

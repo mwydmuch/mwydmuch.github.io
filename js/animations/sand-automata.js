@@ -3,7 +3,7 @@
 const NAME = "sand automata",
       FILE = "sand-automata.js",
       DESC = `
-The visualization of a simple sand automata, that is a simple model of falling sand.
+The visualization of a sand automata, that is a simple model of falling sand.
 
 There are many variations of this automata.
 This one is updated in place, from the bottom to the top.
@@ -18,10 +18,10 @@ the properties of automata.
 Coded with no external dependencies, using only canvas API.
 `;
 
-const Grid = require("./grid");
+const GridAnimation = require("../grid-animation");
 const Utils = require("../utils");
 
-class SandAutomata extends Grid {
+class SandAutomata extends GridAnimation {
     constructor(canvas, colors, colorsAlt, bgColor,
                 cellSize = 5,
                 spawnTetrisBlocks = true,

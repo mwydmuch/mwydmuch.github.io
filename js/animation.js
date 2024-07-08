@@ -114,7 +114,7 @@ class Animation {
     }
 
     getCodeUrl(){
-        return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/js/" + this.file;
+        return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/js/animations" + this.file;
     }
 
     getDescription(){
@@ -156,6 +156,30 @@ class Animation {
 
     mouseAction(cords, event) {
         // By default do nothing
+    }
+
+    setSettings(newSettings){
+        console.log(newSettings);
+        console.log(this.getSettings());
+        for (const setting of this.getSettings()) {
+            if (newSettings.has(setting.prop)){
+                console.log(`setting ${setting.prop}`);
+                console.log(newSettings[setting.prop]);
+                this[setting.prop] = newSettings.get(setting.prop);
+                if(setting.type === "int") this[setting.prop] = parseInt(this[setting.prop]);
+                else if (setting.type === "float") this[setting.prop] = parseFloat(this[setting.prop]);
+                else if (setting.type === "bool") this[setting.prop] = (this[setting.prop] === "true");
+            }
+        }
+        this.restart();
+    }
+
+    getURLWithSettings(){
+        let url = window.location.href.split("?")[0] + "?";
+        for (const setting of this.getSettings()) {
+            url += setting.prop + "=" + this[setting.prop] + "&";
+        }
+        return url;
     }
 }
 
