@@ -79,7 +79,7 @@ class CircularWaves extends Animation {
                 {prop: "radiusScaleMax", type: "float", min: 0, max: 2.0, toCall: "resize"},
                 {prop: "noiseScale", type: "float", min: 0, max: 2.0, toCall: "resize"},
                 {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.1},
-                {prop: "rainbowColors", type: "bool"},
+                {prop: "rainbowColors", name: '<i class="fa-solid fa-rainbow"></i> rainbow colors', type: "bool"},
                 this.getSeedSettings()];
     }
 }

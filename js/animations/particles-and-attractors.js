@@ -169,7 +169,7 @@ class ParticlesAndAttractors extends Animation {
                 {prop: "addAnAttractor", type: "text", value: "<hold mouse button/touch>"},
                 {prop: "drawAttractors", type: "bool"},
                 {prop: "scale", type: "float", min: 0.05, max: 1.95},
-                {prop: "rainbowColors", type: "bool"}];
+                {prop: "rainbowColors", name: '<i class="fa-solid fa-rainbow"></i> rainbow colors', type: "bool"}];
     }
 }
 

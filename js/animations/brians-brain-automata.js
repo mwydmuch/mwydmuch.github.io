@@ -22,10 +22,12 @@ const GameOfLife = require("./game-of-life");
 class BriansBrainAutomata extends GameOfLife {
     constructor (canvas, colors, colorsAlt, bgColor,
                  cellSize = 12,
-                 cellBasePadding = 1,
+                 cellPadding = 1,
                  spawnProb = 0.4,
-                 cellStyle = "random") {
-        super(canvas, colors, colorsAlt, bgColor, cellSize, cellBasePadding, spawnProb, true, cellStyle, 0);
+                 loopGrid = true,
+                 cellStyle = "random",
+                 deadCellsFadingSteps = 5) {
+        super(canvas, colors, colorsAlt, bgColor, cellSize, cellPadding, spawnProb, loopGrid, cellStyle, deadCellsFadingSteps);
 
         this.name = NAME;
         this.file = FILE;
@@ -33,26 +35,18 @@ class BriansBrainAutomata extends GameOfLife {
     }
 
     update(elapsed){
-        super.update(elapsed);
+        ++this.frame;
         
         for (let y = 0; y < this.gridHeight; ++y) {
             for (let x = 0; x < this.gridWidth; ++x) {
                 const numAlive = this.numAliveInMooreNeighborhood(x, y),
                       cellIdx = this.getIdx(x, y);                
                 if (numAlive === 2 && this.grid[cellIdx] < 0) this.gridNext[cellIdx] = 1;
-                else --this.gridNext[cellIdx];
+                else this.gridNext[cellIdx] = this.grid[cellIdx] - 1;
             }
         }
 
         [this.grid, this.gridNext] = [this.gridNext, this.grid]
-    }
-
-    getSettings() {
-        return [{prop: "changeGrid", type: "text", value: "<click/touch>"},
-                {prop: "cellSize", type: "int", min: 4, max: 32, toCall: "restart"},
-                {prop: "cellStyle", type: "select", values: this.cellStyles},
-                {prop: "spawnProb", type: "float", step: 0.01, min: 0, max: 1, toCall: "restart"},
-                this.getSeedSettings()];
     }
 }
 

@@ -29,7 +29,8 @@ class GameOfLife extends GridAnimation {
                  spawnProb = 0.4,
                  loopGrid = true,
                  cellStyle = "random",
-                 deadCellsFadingSteps = 5) {
+                 deadCellsFadingSteps = 5,
+                 deadCellsFadingStyle = "size+color") {
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
         
         this.cellSize = cellSize;
@@ -39,6 +40,8 @@ class GameOfLife extends GridAnimation {
         this.cellStyles = ["square", "circle"];
         this.cellStyle = this.assignIfRandom(cellStyle, Utils.randomChoice(this.cellStyles));
         this.deadCellsFadingSteps = deadCellsFadingSteps;
+        this.deadCellsFadingStyles = ["color", "size", "size+color"];
+        this.deadCellsFadingStyle = this.assignIfRandom(deadCellsFadingStyle, Utils.randomChoice(this.deadCellsFadingStyles));
         this.loopGrid = loopGrid;
 
         this.mouseDown = false;
@@ -50,7 +53,7 @@ class GameOfLife extends GridAnimation {
             if (x < 0 || x >= this.gridWidth || y < 0 || y >= this.gridHeight) return 0;
             else return (this.getVal(x, y) >= 1) ? 1 : 0;
         }
-        else return (this.getVal(x % this.gridWidth, y % this.gridHeight) >= 1) ? 1 : 0;
+        else return (this.getValWrap(x, y) >= 1) ? 1 : 0;
     }
 
     numAliveInMooreNeighborhood(x, y) {
@@ -103,7 +106,9 @@ class GameOfLife extends GridAnimation {
         else this.drawCell = this.drawCircleCell;
 
         const maxPadding = this.cellSize / 2 - this.cellBasePadding,
-              paddingPerStep = maxPadding / (this.deadCellsFadingSteps + 1);
+              paddingPerStep = maxPadding / (this.deadCellsFadingSteps + 1),
+              sizeFade = this.deadCellsFadingStyle.includes("size"),
+              colorFade = this.deadCellsFadingStyle.includes("color");
 
         for (let y = 0; y < this.gridHeight; ++y) {
             for (let x = 0; x < this.gridWidth; ++x) {
@@ -115,8 +120,9 @@ class GameOfLife extends GridAnimation {
                 else {
                     for (let i = 0; i < this.deadCellsFadingSteps; ++i) {
                         if (cellVal > valCond) {
-                            fillStyle = this.colors[Math.min(i, this.colors.length - 1)];
-                            cellPadding += i * paddingPerStep;
+                            if(colorFade) fillStyle = this.colors[Math.min(i, this.colors.length - 1)];
+                            else fillStyle = this.colors[0];
+                            if(sizeFade) cellPadding += i * paddingPerStep;
                             break;
                         }
                         valCond *= 2;
@@ -167,6 +173,7 @@ class GameOfLife extends GridAnimation {
                 {prop: "cellSize", type: "int", min: 4, max: 32, toCall: "restart"},
                 {prop: "cellStyle", type: "select", values: this.cellStyles},
                 {prop: "deadCellsFadingSteps", type: "int", min: 0, max: 8},
+                {prop: "deadCellsFadingStyle", type: "select", values: this.deadCellsFadingStyles},
                 {prop: "spawnProb", type: "float", step: 0.01, min: 0, max: 1, toCall: "restart"},
                 this.getSeedSettings()];
     }

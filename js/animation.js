@@ -159,12 +159,8 @@ class Animation {
     }
 
     setSettings(newSettings){
-        console.log(newSettings);
-        console.log(this.getSettings());
         for (const setting of this.getSettings()) {
             if (newSettings.has(setting.prop)){
-                console.log(`setting ${setting.prop}`);
-                console.log(newSettings[setting.prop]);
                 this[setting.prop] = newSettings.get(setting.prop);
                 if(setting.type === "int") this[setting.prop] = parseInt(this[setting.prop]);
                 else if (setting.type === "float") this[setting.prop] = parseFloat(this[setting.prop]);

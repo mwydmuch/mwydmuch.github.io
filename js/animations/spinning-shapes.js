@@ -84,7 +84,7 @@ class SpinningShapes extends Animation {
                 {prop: "speed", type: "float", step: 0.1, min: -4, max: 4},
                 {prop: "colorsShift", type: "float", min: 0, max: 3.14},
                 {prop: "colorsScale", type: "float", min: 0.05, max: 2},
-                {prop: "rainbowColors", type: "bool"}];
+                {prop: "rainbowColors", name: '<i class="fa-solid fa-rainbow"></i> rainbow colors', type: "bool"}];
     }
 }
 
