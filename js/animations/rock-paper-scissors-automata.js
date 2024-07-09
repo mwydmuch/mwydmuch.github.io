@@ -10,6 +10,13 @@ This cellular automata adapts the rules of the rock-paper-scissors game
 If the cell has more than a defined number of neighbors with the state it losses to, 
 it changes its state to that state.
 
+My other cellular automata visualizations:
+- [Conway's game of life](https://mwydmuch.pl/animations?animation=game-of-life)
+- [Brain's brain](https://mwydmuch.pl/animations?animation=brains-brain-automata)
+- [day and night](https://mwydmuch.pl/animations?animation=day-and-night-automata)
+- [isometric game of life](https://mwydmuch.pl/animations?animation=game-of-life-isometric)
+- [sand automata](https://mwydmuch.pl/animations?animation=sand-automata)
+
 Coded with no external dependencies, using only canvas API.
 `;
 

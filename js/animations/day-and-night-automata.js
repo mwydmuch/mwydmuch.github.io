@@ -1,12 +1,21 @@
 'use strict';
 
-const NAME = "Day and Night automata",
+const NAME = "day and night automata",
       FILE = "day-and-night-automata.js",
       DESC = `
 Visualization of Day and Night auromata.
-You can read about the automata on
-[Wikipedia](https://en.wikipedia.org/wiki/Day_and_Night_(cellular_automaton)).
-https://conwaylife.com/wiki/OCA:Day_%26_Night
+You can read abit about the automata on
+[Wikipedia](https://en.wikipedia.org/wiki/Day_and_Night_(cellular_automaton))
+or much more on [LifeWiki](https://conwaylife.com/wiki/OCA:Day_%26_Night).
+
+You can pause the animation and set the cell states by clicking/touching the canvas.
+
+My other cellular automata visualizations:
+- [Conway's game of life](https://mwydmuch.pl/animations?animation=game-of-life)
+- [Brain's brain](https://mwydmuch.pl/animations?animation=brains-brain-automata)
+- [isometric game of life](https://mwydmuch.pl/animations?animation=game-of-life-isometric)
+- [rock paper scissors](https://mwydmuch.pl/animations?animation=rock-paper-scissors-automata)
+- [sand automata](https://mwydmuch.pl/animations?animation=sand-automata)
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -17,7 +26,7 @@ class DayAndNightAutomata extends GameOfLife {
     constructor (canvas, colors, colorsAlt, bgColor,
                  cellSize = 12,
                  cellPadding = 1,
-                 spawnProb = 0.4,
+                 spawnProb = 0.5,
                  loopGrid = true,
                  cellStyle = "random",
                  deadCellsFadingSteps = 5) {

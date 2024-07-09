@@ -8,11 +8,19 @@ You can read about the game of life on
 [Wikipedia](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
 Game of life is one of the first programs I wrote in my life.
 
-As in the [top-down version](https://mwydmuch.pl/animations?name=game-of-life),
+As in the [top-down version](https://mwydmuch.pl/animations?animation=game-of-life),
 cells leave a trace for a few steps after they die to achieve a nice effect.
 Especially, cells that died in the previous step keep the appearance 
 of the life cell resulting in a stable image 
 since flickering is not that good for a background image.
+
+My other cellular automata visualizations:
+- [Conway's game of life](https://mwydmuch.pl/animations?animation=game-of-life)
+- [Brain's brain](https://mwydmuch.pl/animations?animation=brains-brain-automata)
+- [day and night](https://mwydmuch.pl/animations?animation=day-and-night-automata)
+- [isometric game of life](https://mwydmuch.pl/animations?animation=game-of-life-isometric)
+- [rock paper scissors](https://mwydmuch.pl/animations?animation=rock-paper-scissors-automata)
+- [sand automata](https://mwydmuch.pl/animations?animation=sand-automata)
 
 Coded with no external dependencies, using only canvas API.
 `;

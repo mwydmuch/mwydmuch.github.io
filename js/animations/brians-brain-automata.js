@@ -4,15 +4,18 @@ const NAME = "Brian's brain automata",
       FILE = "brians-brain-automata.js",
       DESC = `
 Visualization of Brain's brain auromata.
-You can read about the automata on
-[Wikipedia](https://en.wikipedia.org/wiki/Brian%27s_Brain).
+You can read a bit about the automata on
+[Wikipedia](https://en.wikipedia.org/wiki/Brian%27s_Brain)
+or much more on [LifeWiki](https://conwaylife.com/wiki/OCA:Brian%27s_Brain).
 
-You can pause the animation and use your mouse/touch to set the cell states.
+You can pause the animation and set the cell states by clicking/touching the canvas.
 
-Other cellular automata visualizations:
-- [Conway's game of life](https://mwydmuch.pl/animations?name=game-of-life)
-- [Day and Night automata](https://mwydmuch.pl/animations?name=day-and-night-automata)
-- [Isometric game of life](https://mwydmuch.pl/animations?name=game-of-life-isometric)
+My other cellular automata visualizations:
+- [Conway's game of life](https://mwydmuch.pl/animations?animation=game-of-life)
+- [day and night](https://mwydmuch.pl/animations?animation=day-and-night-automata)
+- [isometric game of life](https://mwydmuch.pl/animations?animation=game-of-life-isometric)
+- [rock paper scissors](https://mwydmuch.pl/animations?animation=rock-paper-scissors-automata)
+- [sand automata](https://mwydmuch.pl/animations?animation=sand-automata)
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -23,7 +26,7 @@ class BriansBrainAutomata extends GameOfLife {
     constructor (canvas, colors, colorsAlt, bgColor,
                  cellSize = 12,
                  cellPadding = 1,
-                 spawnProb = 0.4,
+                 spawnProb = 0.5,
                  loopGrid = true,
                  cellStyle = "random",
                  deadCellsFadingSteps = 5) {

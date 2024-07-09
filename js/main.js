@@ -232,8 +232,8 @@ if(canvas){
                                         target fps: ${fps}</br>
                                         avg. frames interval: ${Math.round(avgElapsedTime)} ms</br>
                                         avg. fps: ${Math.round(1000 / avgElapsedTime)}</br>
-                                        avg. draw time: ${Math.round(avgDrawTime)} ms</br>
-                                        possible fps: ${Math.round(1000 / avgDrawTime)}`;
+                                        avg. draw time: ${Math.round(avgDrawTime)} ms`;
+                                        //`</br> possible fps: ${Math.round(1000 / avgDrawTime)}`;
             }
         }
     }
@@ -292,7 +292,7 @@ if(canvas){
     }
     if(urlParams.has("resolution")) updateAnimationResolution(urlParams.get("resolution"));
     if(urlParams.has("fps")) updateAnimationFps(urlParams.get("fps"));
-    if(urlParams.has("bg-color")) bgColor = urlParams.get("bg-color");
+    if(urlParams.has("bgColor")) bgColor = urlParams.get("bgColor");
 
     let animation = null,
         order = Array.from({length: animationCount}, (x, i) => i);
@@ -331,7 +331,6 @@ if(canvas){
     ["click", "mousedown", "touchstart", "mousemove", "touchmove", "mouseup", "touchend"].forEach(function(eventName){
         canvas.addEventListener(eventName, function (e) {
             const cords = getRelativeCursorPosition(canvas, e);
-            //console.log(`${eventName}!: ${cords.x}, ${cords.y}`)
             animation.mouseAction(getRelativeCursorPosition(canvas, e), eventNames[eventName]);
         })
     });
@@ -424,7 +423,7 @@ if(canvas){
         for(let opt of options) {
             optionsList += "<option ";
             if (opt === selected) {
-                optionsList += "selected";
+                optionsList += "selected ";
                 selectedFound = true;
             }
             optionsList += `value="${opt}">${opt}</option>`;
@@ -552,12 +551,17 @@ if(canvas){
                 replaceStr: urlReplaceStrFormat('\$1', '\$3', '<i class="fa fa-github"></i> \$2', '\$4'), 
                 regexp: /(.*)\[(.*)\]\((https?:\/\/(?:www\.)?github\.com\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*))\)(.*)/g
             },
+            // Internal urls
+            {
+                replaceStr: urlReplaceStrFormat('\$1', '\$3', '\$2', '\$4'), 
+                regexp: /(.*)\[(.*)\]\((https?:\/\/(?:www\.)?mwydmuch\.pl\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*))\)(.*)/g
+            },
             // Other Markdown urls
             {
                 replaceStr: urlReplaceStrFormat('\$1', '\$3', '<i class="fas fa-link"></i> \$2', '\$4'),
                 regexp: /(.*)\[(.*)\]\((https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*))\)(.*)/g
             },
-            // lose urls
+            // Lose urls
             {
                 replaceStr: urlReplaceStrFormat('\$1', '\$2', '<i class="fas fa-link"></i> \$2', '\$3'),
                 regexp: /(.*)[^"](https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*))[^"](.*)/g
@@ -567,6 +571,9 @@ if(canvas){
         for(let r of regexpToReplace){
             description = description.replaceAll(r.regexp, r.replaceStr);
         }
+
+        // Replace ^- with </br>-
+        description = description.replaceAll("\n- ", "</br>- ");
 
         // Replace new lines \n with </br>
         description = description.trim().replaceAll("\n\n", "</p><p>");

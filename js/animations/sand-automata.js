@@ -15,6 +15,13 @@ the cells in each row are updated in random order.
 It generates random Tetris blocks and lets them fall to demonstrate
 the properties of automata.
 
+My other cellular automata visualizations:
+- [Conway's game of life](https://mwydmuch.pl/animations?animation=game-of-life)
+- [Brain's brain](https://mwydmuch.pl/animations?animation=brains-brain-automata)
+- [day and night](https://mwydmuch.pl/animations?animation=day-and-night-automata)
+- [isometric game of life](https://mwydmuch.pl/animations?animation=game-of-life-isometric)
+- [rock paper scissors](https://mwydmuch.pl/animations?animation=rock-paper-scissors-automata)
+
 Coded with no external dependencies, using only canvas API.
 `;
 

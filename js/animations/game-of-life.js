@@ -5,7 +5,8 @@ const NAME = "Conway's game of life",
       DESC = `
 Voisualization of Conway's game of life - probably the most famous cellular automata.
 You can read about the game of life on
-[Wikipedia](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
+[Wikipedia](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
+or [LifeWiki](https://conwaylife.com/wiki/Conway%27s_Game_of_Life) (it's a great website).
 Game of life is one of the first programs I wrote in my life.
 
 In this version, cells leave a trace for 
@@ -15,6 +16,13 @@ of the life cell resulting in a stable image
 since flickering is not that good for a background image.
 
 You can pause the animation and set the cell states by clicking/touching the canvas.
+
+My other cellular automata visualizations:
+- [Brain's brain](https://mwydmuch.pl/animations?animation=brains-brain-automata)
+- [day and night automata](https://mwydmuch.pl/animations?animation=day-and-night-automata)
+- [isometric game of life](https://mwydmuch.pl/animations?animation=game-of-life-isometric)
+- [rock paper scissors](https://mwydmuch.pl/animations?animation=rock-paper-scissors-automata)
+- [sand automata](https://mwydmuch.pl/animations?animation=sand-automata)
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -109,6 +117,11 @@ class GameOfLife extends GridAnimation {
               paddingPerStep = maxPadding / (this.deadCellsFadingSteps + 1),
               sizeFade = this.deadCellsFadingStyle.includes("size"),
               colorFade = this.deadCellsFadingStyle.includes("color");
+        
+        let fadeColors = new Array(this.deadCellsFadingSteps);
+        for (let i = 0; i < this.deadCellsFadingSteps; ++i) {
+            fadeColors[i] = Utils.lerpColor(this.colors[0], this.bgColor, i / this.deadCellsFadingSteps);
+        }
 
         for (let y = 0; y < this.gridHeight; ++y) {
             for (let x = 0; x < this.gridWidth; ++x) {
@@ -120,7 +133,7 @@ class GameOfLife extends GridAnimation {
                 else {
                     for (let i = 0; i < this.deadCellsFadingSteps; ++i) {
                         if (cellVal > valCond) {
-                            if(colorFade) fillStyle = this.colors[Math.min(i, this.colors.length - 1)];
+                            if(colorFade) fillStyle = fadeColors[i];
                             else fillStyle = this.colors[0];
                             if(sizeFade) cellPadding += i * paddingPerStep;
                             break;
