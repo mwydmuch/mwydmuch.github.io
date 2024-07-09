@@ -31,11 +31,11 @@ class MLinPL extends Animation {
         this.logoScale = 0.5;
         
         this.logoBlack = new Image();
-        this.logoBlack.src = "assets/logo-mlinpl-black.png";
+        this.logoBlack.src = "assets/logos/mlinpl-black.png";
         this.particlesColorsBlack = [this.colors[0], "#000", "#222", "#444", "#AAA", "#EEE"];
 
         this.logoWhite = new Image();
-        this.logoWhite.src = "assets/logo-mlinpl-white.png";
+        this.logoWhite.src = "assets/logos/mlinpl-white.png";
 
         this.particlesColorsWhite = [this.colors[0], "#FFF", "#DDD", "#BBB", "#555", "#111"];
 
