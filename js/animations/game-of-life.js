@@ -185,6 +185,7 @@ class GameOfLife extends GridAnimation {
                 {prop: "loopGrid", type: "bool"},
                 {prop: "cellSize", type: "int", min: 4, max: 32, toCall: "restart"},
                 {prop: "cellStyle", type: "select", values: this.cellStyles},
+                {prop: "cellBasePadding", name: "cell padding", type: "bool", values: this.cellBasePadding},
                 {prop: "deadCellsFadingSteps", type: "int", min: 0, max: 8},
                 {prop: "deadCellsFadingStyle", type: "select", values: this.deadCellsFadingStyles},
                 {prop: "spawnProb", type: "float", step: 0.01, min: 0, max: 1, toCall: "restart"},
