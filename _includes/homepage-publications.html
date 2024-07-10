@@ -17,7 +17,10 @@
                         {% endif %}
                             <a href="{{ publication.url }}">{{ publication.title }}</a><br>
                             {{ publication.authors }}<br>
-                            <i>{{ publication.book }}</i>, {{ publication.year }}<br>
+                            {% if publication.book %}
+                                <i>{{ publication.book }}</i>, 
+                            {% endif %}
+                            {{ publication.year }}<br>
                             {% if publication.note %}
                                 Note: {{ publication.note }}<br>
                             {% endif %}
@@ -25,6 +28,8 @@
                                 {% assign link_text = link.text %}
                                 {% if link.type == "paper-pdf" %}
                                     {% assign link_text = '<i class="fa fa-file-pdf"></i> paper' %}
+                                {% elsif link.type == "paper+supp-pdf" %}
+                                    {% assign link_text = '<i class="fa fa-file-pdf"></i> paper+supp.' %}
                                 {% elsif link.type == "poster-pdf" %}
                                     {% assign link_text = '<i class="fa-custom fa-poster-board"></i> poster' %}            
                                 {% elsif link.type == "github" %}

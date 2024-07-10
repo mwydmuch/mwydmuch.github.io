@@ -1,6 +1,7 @@
 - title: "A General Online Algorithm for Optimizing Complex Performance Metrics"
   url: https://openreview.net/forum?id=pfnBLXgFVS
   id: icml-2024
+  poster_thumbnail: assets/thumbnails/2024_omma_icml_poster.jpg
   authors: Wojciech Kotłowski, Marek Wydmuch, Erik Schultheis, Rohit Babbar, Krzysztof Dembczyński
   book: Proceedings of the 41st International Conference on Machine Learning (ICML 2024)
   year: 2024
@@ -9,23 +10,26 @@
     #   type: github
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2024_omma_icml.pdf
       type: paper-pdf
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2024_omma_icml_poster.pdf
+      type: poster-pdf
     - url: https://arxiv.org/abs/2406.14743
       type: arxiv
 
 - title: "Consistent algorithms for multi-label classification with macro-at-k metrics"
   url: https://openreview.net/forum?id=XOnya9gSdF
   id: iclr-2024
-  image: assets/thumbnails/iclr_2024_fw.png
-  poster_thumbnail: assets/thumbnails/2024_consistent_algorithms_for_macro-at-k_metrics_pu_poster_iclr.jpg
+  poster_thumbnail: assets/thumbnails/2024_consistent_algorithms_for_macro-at-k_metrics_pu_iclr_poster.jpg
   authors: Erik Schultheis, Wojciech Kotłowski, Marek Wydmuch, Rohit Babbar, Strom Borman, Krzysztof Dembczyński
   book: Proceedings of the 37nd International Conference on Neural Information Processing Systems (ICLR 2024)
   year: 2024
   links:
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2024_consistent_algorithms_for_macro-at-k_metrics_pu_iclr_paper.pdf
+      type: paper-pdf
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2024_consistent_algorithms_for_macro-at-k_metrics_pu_iclr_paper+supp.pdf
+      type: paper+supp-pdf
     - url: https://github.com/mwydmuch/xCOLUMNs
       type: github
-    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2024_consistent_algorithms_for_macro-at-k_metrics_pu_iclr.pdf
-      type: paper-pdf
-    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2024_consistent_algorithms_for_macro-at-k_metrics_pu_poster_iclr.pdf
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2024_consistent_algorithms_for_macro-at-k_metrics_pu_iclr_poster.pdf
       type: poster-pdf
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
       type: bibtex
@@ -35,16 +39,18 @@
 - title: "Generalized test utilities for long-tail performance in extreme multi-label classification"
   url: https://proceedings.neurips.cc/paper_files/paper/2023/hash/46994b3d6dd0fd5fca5f780af6259db5-Abstract-Conference.html
   id: neurips-2023
-  poster_thumbnail: assets/thumbnails/2023_generalized_test_utilities_etu_poster_neurips.jpg
+  poster_thumbnail: assets/thumbnails/2023_generalized_test_utilities_etu_neurips_poster.jpg
   authors: Erik Schultheis, Marek Wydmuch, Wojciech Kotłowski, Rohit Babbar, Krzysztof Dembczyński
   book: Proceedings of the 37nd International Conference on Neural Information Processing Systems (NeurIPS 2023)
   year: 2023
   links:
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2023_generalized_test_utilities_etu_neurips_paper.pdf
+      type: paper-pdf
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2023_generalized_test_utilities_etu_neurips_paper+supp.pdf
+      type: paper+supp-pdf
     - url: https://github.com/mwydmuch/xCOLUMNs
       type: github
-    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2023_generalized_test_utilities_etu_neurips.pdf
-      type: paper-pdf
-    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2023_generalized_test_utilities_etu_poster_neurips.pdf
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2023_generalized_test_utilities_etu_neurips_poster.pdf
       type: poster-pdf
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
       type: bibtex
@@ -54,14 +60,16 @@
 - title: "On Missing Labels, Long-tails and Propensities in Extreme Multi-label Classification"
   url: https://dl.acm.org/doi/10.1145/3404835.3463084
   id: kdd-2022
-  poster_thumbnail: assets/thumbnails/2022_xmlc_missing_labels_&_long_tail_poster_kdd.jpg
+  poster_thumbnail: assets/thumbnails/2022_xmlc_missing_labels_&_long_tail_kdd_poster.jpg
   authors: Erik Schultheis, Marek Wydmuch, Rohit Babbar, Krzysztof Dembczyński
   book: Proceedings of the 28th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD '22)
   year: 2022
   links:
-    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2022_xmlc_missing_labels_&_long_tail_kdd.pdf
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2022_xmlc_missing_labels_&_long_tail_kdd_paper.pdf
       type: paper-pdf
-    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2022_xmlc_missing_labels_&_long_tail_poster_kdd.pdf
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2022_xmlc_missing_labels_&_long_tail_kdd_paper+supp.pdf
+      type: paper+supp-pdf
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2022_xmlc_missing_labels_&_long_tail_kdd_poster.pdf
       type: poster-pdf
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
       type: bibtex
@@ -71,16 +79,18 @@
 - title: "Propensity-scored Probabilistic Label Trees"
   url: https://dl.acm.org/doi/10.1145/3404835.3463084
   id: sigir-2021
-  poster_thumbnail: assets/thumbnails/2021_psplt_poster_sigir.jpg
+  poster_thumbnail: assets/thumbnails/2021_psplt_sigir_poster.jpg
   authors: Marek Wydmuch, Kalina Jasinska-Kobus, Rohit Babbar, Krzysztof Dembczyński
   book: Proceedings of the 44th International ACM SIGIR Conference on Research and Development in Information Retrieval (SIGIR '21)
   year: 2021
   links:
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2021_psplt_sigir_paper.pdf
+      type: paper-pdf
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2021_psplt_sigir_paper+supp.pdf
+      type: paper+supp-pdf
     - url: https://github.com/mwydmuch/napkinXC
       type: github
-    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2021_psplt_sigir.pdf
-      type: paper-pdf
-    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2021_psplt_poster_sigir.pdf
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2021_psplt_sigir_poster.pdf
       type: poster-pdf
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
       type: bibtex
@@ -90,16 +100,18 @@
 - title: "Online probabilistic label trees"
   url: https://proceedings.mlr.press/v130/jasinska-kobus21a.html
   id: aistats-2021
-  poster_thumbnail: assets/thumbnails/2021_oplt_poster_aistats.jpg
+  poster_thumbnail: assets/thumbnails/2021_oplt_aistats_poster.jpg
   authors: Kalina Jasinska-Kobus, Marek Wydmuch, Devanathan Thiruvenkatachari, Krzysztof Dembczyński
   book: Proceedings of the 24th International Conference on Artificial Intelligence and Statistics (AISTATS 2021)
   year: 2021
   links:
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2021_oplt_aistats_paper.pdf
+      type: paper-pdf
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2021_oplt_aistats_paper+supp.pdf
+      type: paper+supp-pdf
     - url: https://github.com/mwydmuch/napkinXC
       type: github
-    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2021_oplt_aistats.pdf
-      type: paper-pdf
-    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2021_oplt_poster_aistats.pdf
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2021_oplt_aistats_poster.pdf
       type: poster-pdf
     - url: https://slideslive.com/38953102/online-probabilistic-label-trees-oplts?ref=speaker-37667-latest
       text: <i class="fa fa-video"></i> AISTATS 2021 talk
@@ -125,13 +137,12 @@
 - title: "Probabilistic Label Trees for Extreme Multi-label Classification"
   url: https://arxiv.org/abs/2009.11218
   authors: Kalina Jasinska-Kobus, Marek Wydmuch, Krzysztof Dembczynski, Mikhail Kuznetsov, Robert Busa-Fekete
-  book: Preprint
   year: 2020
   links:
-    - url: https://github.com/mwydmuch/napkinXC
-      type: github
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2020_plt_napkinxc.pdf
       type: paper-pdf
+    - url: https://github.com/mwydmuch/napkinXC
+      type: github
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
       type: bibtex
     - url: https://arxiv.org/abs/2009.11218
@@ -140,16 +151,18 @@
 - title: "A no-regret generalization of hierarchical softmax to extreme multi-label classification"
   url: https://papers.nips.cc/paper/2018/hash/8b8388180314a337c9aa3c5aa8e2f37a-Abstract.html
   image: assets/thumbnails/neurips_2018_xt.png
-  poster_thumbnail: assets/thumbnails/2018_xt_poster_neurips.jpg
+  poster_thumbnail: assets/thumbnails/2018_xt_neurips_poster.jpg
   authors: Marek Wydmuch, Kalina Jasinska-Kobus, Mikhail Kuznetsov, Robert Busa-Fekete, Krzysztof Dembczyński
   book: Proceedings of the 32nd International Conference on Neural Information Processing Systems (NeurIPS 2018)
   year: 2018
   links:
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2018_xt_neurips_paper.pdf
+      type: paper-pdf
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2018_xt_neurips_paper+supp.pdf
+      type: paper+supp-pdf
     - url: https://github.com/mwydmuch/extremeText
       type: github
-    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2018_xt_neurips.pdf
-      type: paper-pdf
-    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2018_xt_poster_neurips.pdf
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2018_xt_neurips_poster.pdf
       type: poster-pdf
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
       type: bibtex
