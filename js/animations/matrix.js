@@ -21,13 +21,13 @@ class Matrix extends Animation {
                 dropsSize = 20,
                 dropsSpeed = 0.6,
                 fadingSpeed = 0.01,
-                originalMatrixColors = false) {
+                glowEffect = true) {
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
         this.dropsSize = dropsSize;
         this.dropsSpeed = dropsSpeed;
         this.fadingSpeed = fadingSpeed;
-        this.originalMatrixColors = originalMatrixColors;
+        this.glowEffect = glowEffect;
 
         this.flipProp = 0.25; // Probability of flipping a character
         this.errorProp = 0.1; // Probability of drawing character in different row
@@ -37,9 +37,8 @@ class Matrix extends Animation {
         this.columns = 0;
         this.columnHeight = 0;
         this.drops = [];
-        this.textColor = null;
         this.imageData = null;
-        this.textColor = this.colors[0];
+        
 
         const katakana = "ｦｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾜﾝ",
               katakanaSubset = "ﾊﾋｼﾂｳｰﾅﾐﾓﾆｻﾜｵﾘﾎﾏｴｷﾑﾃｹﾒｶﾕﾗｾﾈｽﾀﾇ",
@@ -59,18 +58,28 @@ class Matrix extends Animation {
         return (this.rand() < Math.pow(y / this.columnHeight, 2) * 0.1) || (y > this.columnHeight);
     }
 
-    drawCharacter(char, cellX, cellY, color){
+    drawCharacter(char, x, y){
+        this.ctx.fillStyle = this.colors[0];
+        if(this.glowEffect){
+            this.ctx.filter = `blur(${this.dropsSize / 8}px)`;
+            this.ctx.fillText(char, x, y);
+            this.ctx.filter = "blur(0)";
+            this.ctx.fillStyle = this.colors[1];
+        }
+        this.ctx.fillText(char, x, y);
+    }
+
+    drawCharacterCell(char, cellX, cellY){
         this.ctx.fillStyle = this.bgColor;
         this.ctx.fillRect(cellX - this.cellWidth/2, cellY, this.cellWidth, this.cellHeight);
-        this.ctx.fillStyle = color;
 
         if(this.rand() < this.flipProp){ // Randomly flip character
             this.ctx.save();
             this.ctx.translate(cellX, cellY);
             this.ctx.scale(-1, 1);
-            this.ctx.fillText(char, 0, 0);
+            this.drawCharacter(char, 0, 0);
             this.ctx.restore();
-        } else this.ctx.fillText(char, cellX, cellY);
+        } else this.drawCharacter(char, cellX, cellY);
     }
 
     draw() {
@@ -86,14 +95,14 @@ class Matrix extends Animation {
                 const cellX = d.x * this.cellWidth + this.cellWidth / 2,
                       cellY = Math.floor(d.y) * this.cellHeight;
 
-                this.drawCharacter(d.char, cellX, cellY, this.textColor);
+                this.drawCharacterCell(d.char, cellX, cellY, this.textColor);
 
                 d.char = Utils.randomChoice(this.characters, this.rand);
                 if(this.dropDespawn(d.y)) d.y = this.dropSpawnPoint(d.y);
 
                 if(this.rand() < this.errorProp){
                     const yDiff = Utils.randomInt(-8, 8, this.rand);
-                    this.drawCharacter(Utils.randomChoice(this.characters, this.rand), cellX, Math.floor(yDiff + d.y) * this.cellHeight, this.textColor);
+                    this.drawCharacterCell(Utils.randomChoice(this.characters, this.rand), cellX, Math.floor(yDiff + d.y) * this.cellHeight, this.textColor);
                 }
             }
             else d.y += this.dropsSpeed;
@@ -132,7 +141,8 @@ class Matrix extends Animation {
     getSettings() {
         return [{prop: "dropsSize", type: "int", min: 8, max: 64, toCall: "resize"},
                 {prop: "dropsSpeed", type: "float", min: 0, max: 1},
-                {prop: "fadingSpeed", type: "float", step: 0.001, min: 0, max: 0.5},
+                {prop: "fadingSpeed", type: "float", step: 0.01, min: 0, max: 0.15},
+                {prop: "glowEffect", type: "bool"},
                 this.getSeedSettings()
             ];
     }
