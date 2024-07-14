@@ -7,44 +7,42 @@
 
 const Utils = require("./utils");
 
-const ThreeNPlusOne = require("./animations/3n+1");
-const BriansBrainAutomata = require("./animations/brians-brain-automata");
-const Cardioids = require("./animations/cardioids");
-const CircularWaves = require("./animations/circular-waves");
-const Coding = require("./animations/coding");
-const DayAndNightAutomata = require("./animations/day-and-night-automata");
-//const FiguresSpiral = require("./animations/figures-spiral");
-const GameOfLife = require("./animations/game-of-life");
-const GameOfLifeIsometric = require("./animations/game-of-life-isometric");
-const Glitch = require("./animations/glitch");
-const GradientDescent = require("./animations/gradient-descent");
-const Matrix = require("./animations/matrix");
-const MLinPL = require("./animations/mlinpl");
-const Network = require("./animations/network");
-//const NeuralNetwork = require("./animations/neural-network");
-const NoisyLines = require("./animations/noisy-lines");
-const ParticlesAndAttractors = require("./animations/particles-and-attractors");
-const ParticlesVortex = require("./animations/particles-vortex");
-const ParticlesWaves = require("./animations/particles-waves");
-const PerlinNoiseParticles = require("./animations/perlin-noise-particles");
-const RockPaperScissorsAutomata = require("./animations/rock-paper-scissors-automata");
-const SandAutomata = require("./animations/sand-automata");
-const Quadtree = require("./animations/quadtree");
-const RecursiveRectangles = require("./animations/recursive-rectangles");
-const ShortestPath = require("./animations/shortest-path");
-const SineWaves = require("./animations/sine-waves");
-const Sorting = require("./animations/sorting");
-const SpinningShapes = require("./animations/spinning-shapes");
-const Spirograph = require("./animations/spirograph");
-const Vectors = require("./animations/vectors");
+const ThreeNPlusOne = require("./animations/3n+1"),
+      BriansBrainAutomata = require("./animations/brians-brain-automata"),
+      Cardioids = require("./animations/cardioids"),
+      CircularWaves = require("./animations/circular-waves"),
+      Coding = require("./animations/coding"),
+      DayAndNightAutomata = require("./animations/day-and-night-automata"),
+//      FiguresSpiral = require("./animations/figures-spiral"),
+      GameOfLife = require("./animations/game-of-life"),
+      GameOfLifeIsometric = require("./animations/game-of-life-isometric"),
+      GlitchAutomata = require("./animations/glitch-automata"),
+      GradientDescent = require("./animations/gradient-descent"),
+      Matrix = require("./animations/matrix"),
+      MLinPL = require("./animations/mlinpl"),
+      Network = require("./animations/network"),
+//     NeuralNetwork = require("./animations/neural-network"),
+      NoisyLines = require("./animations/noisy-lines"),
+      ParticlesAndAttractors = require("./animations/particles-and-attractors"),
+      ParticlesVortex = require("./animations/particles-vortex"),
+      ParticlesWaves = require("./animations/particles-waves"),
+      PerlinNoiseParticles = require("./animations/perlin-noise-particles"),
+      RockPaperScissorsAutomata = require("./animations/rock-paper-scissors-automata"),
+      SandAutomata = require("./animations/sand-automata"),
+      Quadtree = require("./animations/quadtree"),
+      RecursiveSquares = require("./animations/recursive-squares"),
+      ShortestPath = require("./animations/shortest-path"),
+      SineWaves = require("./animations/sine-waves"),
+      Sorting = require("./animations/sorting"),
+      SpinningShapes = require("./animations/spinning-shapes"),
+      Spirograph = require("./animations/spirograph"),
+      Vectors = require("./animations/vectors");
 //const TreeVisualization = require("./animations/tree-visualization");
 
 
 // Globals
 // ---------------------------------------------------------------------------------------------------------------------
 
-const canvas = document.getElementById("background");
-const container = document.getElementById("background-container");
 let fps = 30,
     framesInterval = 1000 / fps,
     then = 0,
@@ -61,11 +59,11 @@ let fps = 30,
 let sampleSize = 30,
     frames = 0,
     avgDrawTime = 0,
-    avgElapsedTime = 0, 
+    avgElapsedTime = 0,
     trueThen = 0;
 
 const bgColors = {
-    "black": "#000000", 
+    "black": "#000000",
     "white": "#FFFFFF"
 };
 let bgColor = "#FFFFFF";
@@ -104,27 +102,30 @@ let colorsAlt = [ // Alt palette
 // Get elements for different animation controls
 // ---------------------------------------------------------------------------------------------------------------------
 
-const content = document.getElementById("me");
-const elemBgShow = document.getElementById("background-show");
-const elemBgName = document.getElementById("background-name");
-const elemBgDesc = document.getElementById("background-description");
-const elemBgPrev = document.getElementById("background-previous");
-const elemBgNext = document.getElementById("background-next");
-const elemBgCode = document.getElementById("background-code");
-const elemBgReset = document.getElementById("background-reset");
-const elemBgRestart = document.getElementById("background-restart");
-const elemBgPlayPause = document.getElementById("background-play-pause");
-const elemBgSettings = document.getElementById("background-settings");
-const elemBgSettingsControls = document.getElementById("background-settings-controls");
-const elemBgSettingsClose = document.getElementById("background-settings-close");
-const elemBgStats = document.getElementById("background-stats");
-const elemBgAnimationSelect = document.getElementById("background-settings-animation-select");
-const elemBgAnimationFps = document.getElementById("background-settings-animation-fps");
-const elemBgAnimationResolution = document.getElementById("background-settings-animation-resolution");
-const elemBgColor = document.getElementById("background-settings-bg-color");
+const canvas = document.getElementById("background"),
+      container = document.getElementById("background-container"),
+      content = document.getElementById("me"),
+      elemBgShow = document.getElementById("background-show"),
+      elemBgName = document.getElementById("background-name"),
+      elemBgDesc = document.getElementById("background-description"),
+      elemBgPrev = document.getElementById("background-previous"),
+      elemBgNext = document.getElementById("background-next"),
+      elemBgCode = document.getElementById("background-code"),
+      elemBgReset = document.getElementById("background-reset"),
+      elemBgRestart = document.getElementById("background-restart"),
+      elemBgPlayPause = document.getElementById("background-play-pause"),
+      elemBgSettings = document.getElementById("background-settings"),
+      elemBgSettingsControls = document.getElementById("background-settings-controls"),
+      elemBgSettingsClose = document.getElementById("background-settings-close"),
+      elemBgStats = document.getElementById("background-stats"),
+      elemBgAnimationSelect = document.getElementById("background-settings-animation-select"),
+      elemBgAnimationFps = document.getElementById("background-settings-animation-fps"),
+      elemBgAnimationResolution = document.getElementById("background-settings-animation-resolution"),
+      elemBgColor = document.getElementById("background-settings-bg-color");
 
+      
 if(canvas){
-
+    
     // Create the initial animation and initiate the animation loop
     // ---------------------------------------------------------------------------------------------------------------------
 
@@ -133,12 +134,12 @@ if(canvas){
         {class: BriansBrainAutomata, name: "brian's brain automata"},
         {class: Cardioids, name: "cardioids"},
         {class: CircularWaves, name: "circular waves"},
-        //{class: Coding, name: "coding"},  // Disabled till finished
+        {class: Coding, name: "coding"},  // Disabled till finished
         {class: DayAndNightAutomata, name: "day and night automata"},
         //{class: FiguresSpiral, name: "figures spiral"},  // Disabled since it's not that interesting
         {class: GameOfLife, name: "game of life"},
         {class: GameOfLifeIsometric, name: "isometric game of life"},
-        {class: Glitch, name: "glitch", startAnimation: false},  // Disable as a start animation, as it may not be visually pleasing for everyone
+        {class: GlitchAutomata, name: "glitch automata", startAnimation: false},  // Disable as a start animation, as it may not be visually pleasing for everyone
         {class: GradientDescent, name: "gradient descent"},
         {class: Matrix, name: "matrix rain"},
         {class: MLinPL, name: "ml in pl"},
@@ -152,7 +153,7 @@ if(canvas){
         {class: RockPaperScissorsAutomata, name: "rock-paper-scissors automata"},
         {class: SandAutomata, name: "sand automata"},
         {class: Quadtree, name: "quadtree", startAnimation: false}, // Disable as a start animation since it resources heavy
-        {class: RecursiveRectangles, name: "recursive rectangles", startAnimation: false}, // Disable as a start animation since it resources heavy
+        {class: RecursiveSquares, name: "recursive squares", startAnimation: false}, // Disable as a start animation since it resources heavy
         {class: SineWaves, name: "sine waves"},
         {class: ShortestPath, name: "shortest path"},
         {class: Sorting, name: "sorting"},
