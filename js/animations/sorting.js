@@ -476,8 +476,8 @@ class Sorting extends Animation {
         return [{prop: "initialOrder", type: "select", values: this.initialOrderTypes, toCall: "restart"},
                 {prop: "sortingAlgorithm", type: "select", values: this.sortAlgoNames, toCall: "restart"},
                 {prop: "numElements", label: "number of elements (n)", type: "int", min: 8, max: 256, toCall: "restart"},
-                {prop: "speed", type: "float", step: 0.25, min: 0.5, max: 8},
-                {prop: "showStats", type: "bool"},
+                {prop: "speed", icon: '<i class="fa-solid fa-gauge-high"></i>', type: "float", step: 0.25, min: 0.5, max: 8},
+                {prop: "showStats", icon: '<i class="fa-solid fa-info"></i>', type: "bool"},
                 this.getSeedSettings()];
     }
 }

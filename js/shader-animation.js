@@ -16,15 +16,15 @@ class ShaderAnimation extends Animation {
         super(canvas, colors, colorsAlt, bgColor, name, file, description, seed);
         this.ctx = canvas.getContext("webgl", { alpha: false });
         
-        let vertexShaderSource = this.get
+        let vertexShaderSource = document.querySelector("#vertex-shader-2d").text;
         let fragmentShaderSource = document.querySelector("#fragment-shader-2d").text;
       
         // Create GLSL shaders, upload the GLSL source, compile the shaders
-        var vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-        var fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+        let vertexShader = this.createShader(this.ctx.VERTEX_SHADER, vertexShaderSource),
+            fragmentShader = this.createShader(this.ctx.FRAGMENT_SHADER, fragmentShaderSource);
       
         // Link the two shaders into a program
-        var program = createProgram(gl, vertexShader, fragmentShader);
+        var program = this.createProgram(vertexShader, fragmentShader);
       
         // Look up where the vertex data needs to go.
         var positionAttributeLocation = gl.getAttribLocation(program, "a_position");

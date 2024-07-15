@@ -1,12 +1,23 @@
 'use strict';
 
-const NAME = "Glitch animation",
-      FILE = "glitch.js",
+const NAME = "glitch automata",
+      FILE = "glitch-automata.js",
       DESC = `
 The animation is a type of cellular automata that apply to the cell 
 a state of one of the neighbor cells based on a noise function.
+It reminds me the effect of glitching 
+
+TODO
 
 https://en.wikipedia.org/wiki/Error_diffusion
+
+My other cellular automata visualizations:
+- [Brain's brain](https://mwydmuch.pl/animations?animation=brains-brain-automata)
+- [day and night automata](https://mwydmuch.pl/animations?animation=day-and-night-automata)
+- [glitch automata](https://mwydmuch.pl/animations?animation=glitch-automata)
+- [isometric game of life](https://mwydmuch.pl/animations?animation=game-of-life-isometric)
+- [rock paper scissors](https://mwydmuch.pl/animations?animation=rock-paper-scissors-automata)
+- [sand automata](https://mwydmuch.pl/animations?animation=sand-automata)
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -14,7 +25,7 @@ Coded with no external dependencies, using only canvas API.
 const GridAnimation = require("../grid-animation");
 const Utils = require("../utils");
 
-class Glitch extends GridAnimation {
+class GlitchAutomata extends GridAnimation {
     constructor(canvas, colors, colorsAlt, bgColor,
                 cellSize = 7,
                 initialPatern = "random",
@@ -35,6 +46,7 @@ class Glitch extends GridAnimation {
     }
 
     update(elapsed){
+        //return 0;
         super.update(elapsed);
 
         for (let x = 0; x < this.gridWidth; ++x) {
@@ -65,13 +77,14 @@ class Glitch extends GridAnimation {
     }
 
     draw() {
-        // this.clear();
-        // this.ctx.fillStyle = this.colors[0];
-        // for (let x = 0; x < this.gridWidth; ++x) {
-        //     for (let y = 0; y < this.gridHeight; ++y) {
-        //         if(this.grid[this.getIdx(x, y)] > 0) this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
-        //     }
-        // }
+        //return 0;
+        this.clear();
+        this.ctx.fillStyle = this.colors[0];
+        for (let x = 0; x < this.gridWidth; ++x) {
+            for (let y = 0; y < this.gridHeight; ++y) {
+                if(this.grid[this.getIdx(x, y)] > 0) this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
+            }
+        }
     }
 
     newCellState(x, y) {
@@ -107,32 +120,34 @@ class Glitch extends GridAnimation {
             (this.gridWidth - scaledWidth) / 2, 
             (this.gridHeight - scaledHeight) / 2,
             scaledWidth, scaledHeight);
-        const imgData = hiddenCtx.getImageData(0, 0, hiddenCanvas.width, hiddenCanvas.height);
+        let imgData = hiddenCtx.getImageData(0, 0, hiddenCanvas.width, hiddenCanvas.height);
             
         console.log("Image processed");
         this.clear();
-        this.ctx.putImageData(imgData, 0, 0, this.gridWidth, this.gridHeight, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        //this.ctx.putImageData(imgData, 0, 0, this.gridWidth, this.gridHeight, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        this.ctx.putImageData(imgData, 200, 200);
 
         // Apply error diffusion dithering to the image
-        // for (let y = 0; y < this.gridHeight; ++y) {
-        //     for (let x = 0; x < this.gridWidth; ++x) {
-        //         const cellIdx = this.getIdx(x, y),
-        //               imgIdx = 4 * (y * imgWidth + x),
-        //               r = imgData.data[imgIdx],
-        //               g = imgData.data[imgIdx + 1],
-        //               b = imgData.data[imgIdx + 2],
-        //               luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-        //         this.grid[cellIdx] = luma < 1 ? 1 : 0;
-        //     }
-        // }
+        for (let i = 0; i < imgData.data.length; i += 4) {
+            const r = imgData.data[i],
+                  g = imgData.data[i + 1],
+                  b = imgData.data[i + 2],
+                  luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+            imgData.data[i] = luma;
+            imgData.data[i + 1] = luma;
+            imgData.data[i + 2] = luma;
+            this.grid[i / 4] = luma < 128 ? 1 : 0;
+        }
 
-        // this.clear();
-        // this.ctx.fillStyle = this.colors[0];
-        // for (let x = 0; x < this.gridWidth; ++x) {
-        //     for (let y = 0; y < this.gridHeight; ++y) {
-        //         if(this.grid[this.getIdx(x, y)] > 0) this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
-        //     }
-        // }
+        this.clear();
+        this.ctx.fillStyle = this.colors[0];
+        for (let x = 0; x < this.gridWidth; ++x) {
+            for (let y = 0; y < this.gridHeight; ++y) {
+                if(this.grid[this.getIdx(x, y)] > 0) this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
+            }
+        }
+
+        this.ctx.putImageData(imgData, 200 + this.gridWidth, 200 + this.gridHeight);
     }
 
     restart(){
@@ -141,7 +156,7 @@ class Glitch extends GridAnimation {
 
             let img = new Image();
             let self = this;
-            img.src = "./assets/blog/1.png";
+            img.src = "./assets/marek-wydmuch.jpg";
             img.onload = function() {
                 self.setGridUsingImage(img);
             }
@@ -161,4 +176,4 @@ class Glitch extends GridAnimation {
     }
 }
 
-module.exports = Glitch;
+module.exports = GlitchAutomata;

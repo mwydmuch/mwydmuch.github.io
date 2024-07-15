@@ -168,8 +168,8 @@ class ParticlesAndAttractors extends Animation {
                 {prop: "directionScale", type: "float", min: 0.0, max: 4.0},
                 {prop: "addAnAttractor", type: "text", value: "<hold mouse button/touch>"},
                 {prop: "drawAttractors", type: "bool"},
-                {prop: "scale", type: "float", min: 0.05, max: 1.95},
-                {prop: "rainbowColors", name: '<i class="fa-solid fa-rainbow"></i> rainbow colors', type: "bool"}];
+                {prop: "scale", icon: '<i class="fa-solid fa-maximize"></i>', type: "float", min: 0.05, max: 1.95},
+                {prop: "rainbowColors", icon: '<i class="fa-solid fa-rainbow"></i>', type: "bool"}];
     }
 }
 

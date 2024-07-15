@@ -13,7 +13,6 @@ Coded with no external dependencies, using only canvas API.
 const Animation = require("../animation");
 const AnimationQueue = require("../animation-queue");
 const Utils = require("../utils");
-const TreeVisualization = require("./tree-visualization");
 
 
 class RecursiveSquare {
@@ -130,7 +129,6 @@ class RecursiveSquares extends Animation {
     createSquares() {
         // This is needed to prevent to depth recursion, that may freze user brower (especially Firefox)
         let depth = this.depth;
-        console.log(Math.pow(this.squaresPerSide, depth + 1));
         while(Math.pow(this.squaresPerSide, depth + 1) > 2048) --depth; 
 
         this.mainSquare = new RecursiveSquare(0, 0, this.squaresPerSide, depth, this.rand);
@@ -172,7 +170,7 @@ class RecursiveSquares extends Animation {
     getSettings() {
         return [{prop: "squaresPerSide", type: "int", min: 2, max: 6, toCall: "restart"},
                 {prop: "depth", type: "int", min: 2, max: 8, toCall: "restart"},
-                {prop: "speed", type: "float", step: 0.25, min: 0.5, max: 8},
+                {prop: "speed", icon: '<i class="fa-solid fa-gauge-high"></i>', type: "float", step: 0.25, min: 0.5, max: 8},
                 {prop: "squareStyle", type: "select", values: this.squareStyles},
                 {prop: "contain", name: "contained fit", type: "bool"},
                 this.getSeedSettings()];

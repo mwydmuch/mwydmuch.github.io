@@ -75,16 +75,16 @@ class SpinningShapes extends Animation {
     }
 
     getSettings() {
-        return [{prop: "vertices", type: "int", min: 0, max: 8, toCall: "updateName"},
-                {prop: "shapes", type: "int", min: 0, max: 2500},
-                {prop: "rotateShapes", type: "bool" },
+        return [{prop: "vertices", icon: '<i class="fa-solid fa-shapes"></i>', name: "vertices per shape", type: "int", min: 0, max: 8, toCall: "updateName"},
+                {prop: "shapes", icon: '<i class="fa-solid fa-shapes"></i>', name: "number of shapes", type: "int", min: 0, max: 2500},
+                {prop: "rotateShapes", icon: '<i class="fa-solid fa-rotate"></i>', type: "bool" },
                 {prop: "distanceRange", type: "float", min: 0, max: this.distanceBase},
                 {prop: "sizeRange", type: "float", min: 0, max: this.sizeBase},
-                {prop: "scale", type: "float", min: 0.05, max: 1.95},
-                {prop: "speed", type: "float", step: 0.1, min: -4, max: 4},
+                {prop: "scale", icon: '<i class="fa-solid fa-maximize"></i>', type: "float", min: 0.05, max: 1.95},
+                {prop: "speed", icon: '<i class="fa-solid fa-gauge-high"></i>', type: "float", step: 0.1, min: -4, max: 4},
                 {prop: "colorsShift", type: "float", min: 0, max: 3.14},
                 {prop: "colorsScale", type: "float", min: 0.05, max: 2},
-                {prop: "rainbowColors", name: '<i class="fa-solid fa-rainbow"></i> rainbow colors', type: "bool"}];
+                {prop: "rainbowColors", icon: '<i class="fa-solid fa-rainbow"></i>', type: "bool"}];
     }
 }
 

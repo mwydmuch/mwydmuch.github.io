@@ -92,7 +92,7 @@ class SineWaves extends Animation {
         return [{prop: "cellSize", type: "int", min: 16, max: 256, toCall: "resize"},
                 {prop: "cellMargin", type: "int", min: 8, max: 32, toCall: "resize"},
                 {prop: "rotateCells", type: "bool"},
-                {prop: "speed", type: "float", step: 0.1, min: -4, max: 4},
+                {prop: "speed", icon: '<i class="fa-solid fa-gauge-high"></i>', type: "float", step: 0.1, min: -4, max: 4},
                 this.getSeedSettings()];
     }
 }

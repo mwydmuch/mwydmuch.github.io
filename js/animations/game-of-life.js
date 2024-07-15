@@ -20,6 +20,7 @@ You can pause the animation and set the cell states by clicking/touching the can
 My other cellular automata visualizations:
 - [Brain's brain](https://mwydmuch.pl/animations?animation=brains-brain-automata)
 - [day and night automata](https://mwydmuch.pl/animations?animation=day-and-night-automata)
+- [glitch automata](https://mwydmuch.pl/animations?animation=glitch-automata)
 - [isometric game of life](https://mwydmuch.pl/animations?animation=game-of-life-isometric)
 - [rock paper scissors](https://mwydmuch.pl/animations?animation=rock-paper-scissors-automata)
 - [sand automata](https://mwydmuch.pl/animations?animation=sand-automata)
@@ -185,10 +186,10 @@ class GameOfLife extends GridAnimation {
                 {prop: "loopGrid", type: "bool"},
                 {prop: "cellSize", type: "int", min: 4, max: 32, toCall: "restart"},
                 {prop: "cellStyle", type: "select", values: this.cellStyles},
-                {prop: "cellBasePadding", name: "cell padding", type: "bool", values: this.cellBasePadding},
+                {prop: "cellBasePadding", name: "cell padding", type: "bool"},
                 {prop: "deadCellsFadingSteps", type: "int", min: 0, max: 8},
                 {prop: "deadCellsFadingStyle", type: "select", values: this.deadCellsFadingStyles},
-                {prop: "spawnProb", type: "float", step: 0.01, min: 0, max: 1, toCall: "restart"},
+                {prop: "spawnProb", icon: '<i class="fa-solid fa-dice"></i>', type: "float", step: 0.01, min: 0, max: 1, toCall: "restart"},
                 this.getSeedSettings()];
     }
 }

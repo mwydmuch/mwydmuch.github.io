@@ -652,7 +652,7 @@ class GradientDescent extends Animation {
     getSettings() {
         return [{prop: "functionToOptimize", type: "select", values: this.funcNames, toCall: "resize"},
                 {prop: "selectStartingPoint", type: "text", value: "<click/touch>"},
-                {prop: "scale", type: "float", step: 0.1, min: 0.5, max: 1.5, toCall: "resize"},
+                {prop: "scale", icon: '<i class="fa-solid fa-maximize"></i>', type: "float", step: 0.1, min: 0.5, max: 1.5, toCall: "resize"},
                 {prop: "autoRestart", type: "bool"},
                 {prop: "autoRestartSteps", type: "int", step: 1, min: 100, max: 10000},
                 {type: "separator"},

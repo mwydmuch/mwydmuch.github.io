@@ -1,6 +1,6 @@
 'use strict';
 
-const NAME = "finding the shortest path",
+const NAME = "finding the shortest path in a grid world",
       FILE = "shortest-path.js",
       DESC = `
 Animation showing the process of finding the shortest path
@@ -453,10 +453,10 @@ class ShortestPath extends Animation {
         return [{prop: "searchAlgorithm", type: "select", values: this.searchAlgorithms, toCall: "restart"},
                 {prop: "movementType", type: "select", values: this.movementTypes, toCall: "restart"},
                 {prop: "cellSize", type: "int", min: 8, max: 48, toCall: "resize"},
-                {prop: "speed", type: "int", min: 1, max: 64},
+                {prop: "speed", icon: '<i class="fa-solid fa-gauge-high"></i>', type: "int", min: 1, max: 64},
                 {prop: "startNewAfterFinish", type: "bool"},
                 {prop: "cellStyle", type: "select", values: this.cellStyles},
-                {prop: "showStats", type: "bool"},
+                {prop: "showStats", icon: '<i class="fa-solid fa-info"></i>', type: "bool"},
                 this.getSeedSettings("resize")];
     }
 }

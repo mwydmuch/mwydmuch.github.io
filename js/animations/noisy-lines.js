@@ -68,7 +68,7 @@ class NoisyLines extends Animation {
                 {prop: "noiseXIncr", type: "float", min: -0.2, max: 0.2, step: 0.001},
                 {prop: "noiseYIncr", type: "float", min: -0.2, max: 0.2, step: 0.001},
                 {prop: "noiseRange", type: "float", min: 0, max: 1, step: 0.01},
-                {prop: "speed", type: "float", min: -8, max: 8},
+                {prop: "speed", icon: '<i class="fa-solid fa-gauge-high"></i>', type: "float", min: -8, max: 8},
                 this.getSeedSettings()];
     }
 }

@@ -1,6 +1,6 @@
 'use strict';
 
-const NAME = "Code writing animation",
+const NAME = "coding this website",
       FILE = "coding.js",
       DESC = `
 Work in progress.
@@ -10,6 +10,9 @@ It's only light themed to match website colors, personally I always use dark IDE
 
 Coded with no external dependencies, using only canvas API.
 `;
+
+//const HGJS = require('highlight.js/lib/core');
+//HGJS.registerLanguage('javascript', require('highlight.js/lib/languages/javascript'));
 
 const Animation = require("../animation");
 const Utils = require("../utils");
@@ -21,15 +24,6 @@ class Coding extends Animation {
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
         this.charSize = charSize;
-        this.lineX = this.padding;
-        this.lineY = this.padding;
-
-        this.tabSize = tabSize;
-        this.maxLines = 0;
-        this.line = 0;
-        this.tabs = 0;
-        this.words = 0;
-        this.wordLen = 0;
 
         this.editorTheme = { // Loosely based on Monokai Light theme
             keyword: "#33C5E1",
@@ -40,28 +34,6 @@ class Coding extends Animation {
             stringValue: "#F0763B",
             comment: "#737373",
         }
-
-        this.firstWordColors = [this.editorTheme.keyword,
-                                this.editorTheme.typeName,
-                                this.editorTheme.variable,
-                                this.editorTheme.comment];
-        this.afterTypeName = [this.editorTheme.argument,
-                              this.editorTheme.typeName,
-                              this.editorTheme.variable];
-        this.afterVariable = Utils.getValues(this.editorTheme);
-        this.otherCases = [this.editorTheme.keyword,
-                           this.editorTheme.typeName,
-                           this.editorTheme.variable,
-                           this.editorTheme.comment,
-                           this.editorTheme.numericValue,
-                           this.editorTheme.stringValue];
-
-        this.currentColor = null;
-        this.imageData = null;
-
-        this.updateCharSize();
-        this.newLine();
-        this.newWord();
     }
 
     updateCharSize(){

@@ -13,6 +13,7 @@ You can pause the animation and set the cell states by clicking/touching the can
 My other cellular automata visualizations:
 - [Conway's game of life](https://mwydmuch.pl/animations?animation=game-of-life)
 - [Brain's brain](https://mwydmuch.pl/animations?animation=brains-brain-automata)
+- [glitch automata](https://mwydmuch.pl/animations?animation=glitch-automata)
 - [isometric game of life](https://mwydmuch.pl/animations?animation=game-of-life-isometric)
 - [rock paper scissors](https://mwydmuch.pl/animations?animation=rock-paper-scissors-automata)
 - [sand automata](https://mwydmuch.pl/animations?animation=sand-automata)

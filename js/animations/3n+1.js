@@ -138,11 +138,11 @@ class ThreeNPlusOne extends Animation {
         return [{prop: "length", type: "float", min: 1, max: 100, step: 0.1, toCall: "resize"},
                 {prop: "evenAngle", type: "float", min: -45, max: 45, step: 0.1, toCall: "resize"},
                 {prop: "oddAngle", type: "float", min: -45, max: 45, step: 0.1, toCall: "resize"},
-                {prop: "speed", type: "int", min: 1, max: 16},
+                {prop: "speed", icon: '<i class="fa-solid fa-gauge-high"></i>', type: "int", min: 1, max: 16},
                 {prop: "drawNumbers", type: "bool", toCall: "resize"},
-                {prop: "scale", type: "float", min: 0.05, max: 1.95, toCall: "resize"},
-                {prop: "center", type: "bool", toCall: "resize"},
-                {prop: "showStats", type: "bool"}];
+                {prop: "scale", icon: '<i class="fa-solid fa-maximize"></i>', icon: '<i class="fa-solid fa-maximize"></i>', type: "float", min: 0.05, max: 1.95, toCall: "resize"},
+                {prop: "center", icon: '<i class="fa-solid fa-arrows-to-dot"></i>', type: "bool", toCall: "resize"},
+                {prop: "showStats", icon: '<i class="fa-solid fa-info"></i>', type: "bool"}];
     }
 }
 

@@ -61,7 +61,7 @@ class Matrix extends Animation {
     drawCharacter(char, x, y){
         this.ctx.fillStyle = this.colors[0];
         if(this.glowEffect){
-            this.ctx.filter = `blur(${this.dropsSize / 8}px)`;
+            this.ctx.filter = `blur(${this.dropsSize / 10}px)`;
             this.ctx.fillText(char, x, y);
             this.ctx.filter = "blur(0)";
             this.ctx.fillStyle = this.colors[1];
@@ -142,7 +142,7 @@ class Matrix extends Animation {
         return [{prop: "dropsSize", type: "int", min: 8, max: 64, toCall: "resize"},
                 {prop: "dropsSpeed", type: "float", min: 0, max: 1},
                 {prop: "fadingSpeed", type: "float", step: 0.01, min: 0, max: 0.15},
-                {prop: "glowEffect", type: "bool"},
+                {prop: "glowEffect", icon: '<i class="fa-solid fa-lightbulb"></i>', type: "bool"},
                 this.getSeedSettings()
             ];
     }

@@ -78,7 +78,7 @@ class ParticlesVortex extends Animation {
     getSettings() {
         return [{prop: "particles", type: "int", min: 1, max: 3000},
                 {prop: "radius", type: "float", min: this.radiusMin, max: this.radiusMax},
-                {prop: "speed", type: "float", min: -this.speedMax, max: this.speedMax},
+                {prop: "speed", icon: '<i class="fa-solid fa-gauge-high"></i>', type: "float", min: -this.speedMax, max: this.speedMax},
                 {prop: "rotationSpeed", type: "float", min: -this.rotationSpeedMax, max: this.rotationSpeedMax},
                 {prop: "dirX", type: "float", min: -this.dirMax, max: this.dirMax},
                 {prop: "dirY", type: "float", min: -this.dirMax, max: this.dirMax},

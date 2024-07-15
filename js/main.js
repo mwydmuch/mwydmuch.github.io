@@ -121,7 +121,8 @@ const canvas = document.getElementById("background"),
       elemBgAnimationSelect = document.getElementById("background-settings-animation-select"),
       elemBgAnimationFps = document.getElementById("background-settings-animation-fps"),
       elemBgAnimationResolution = document.getElementById("background-settings-animation-resolution"),
-      elemBgColor = document.getElementById("background-settings-bg-color");
+      elemBgColor = document.getElementById("background-settings-bg-color"),
+      elemBgGetSettingsURL = document.getElementById("background-copy-settings-url");
 
       
 if(canvas){
@@ -286,7 +287,7 @@ if(canvas){
     // Get the animation from url search params
     const urlParams = new URLSearchParams(window.location.search);
     if(urlParams.has("animation")){
-        const animationParam = urlParams.get("animation").replaceAll("-", " ");
+        const animationParam = urlParams.get("animation").replaceAll("-", " ").replaceAll("_", " ");
         for(let i = 0; i < animationCount; ++i){
             if(animationParam === animations[i].name) animationId = i;
         }
@@ -418,6 +419,24 @@ if(canvas){
         });
     }
 
+    if(elemBgGetSettingsURL) {
+        elemBgGetSettingsURL.addEventListener("click", function (){
+            // Create URL with animation params
+            let url = window.location.href.split("?")[0];
+            url += `?animation=${animations[animationId].name.replaceAll(" ", "-")}`
+            if(resolution !== "fit") url += `&resolution=${resolution}`;
+            if(fps !== 30) url += `&fps=${fps}`;
+            if(bgColor !== "#FFFFFF") url += `&bgColor=${bgColor}`;
+            url += `&${animation.getURLParams()}`;
+
+            // Copy to clipboard
+            navigator.clipboard.writeText(url);
+            
+            // Alert about the copied URL
+            alert("URL copied to clipboard!");
+        });
+    }
+
     function buildOptionList(options, selected){
         let optionsList = "",
             selectedFound = false;
@@ -444,7 +463,7 @@ if(canvas){
 
     // Animation FPS option
     if(elemBgAnimationFps) {
-        const fpsOptions = [15, 30, 60];
+        const fpsOptions = [5, 15, 30, 60];
         elemBgAnimationFps.innerHTML = buildOptionList(fpsOptions, fps);
         elemBgAnimationFps.addEventListener("input", function (e) {
             updateAnimationFps(e.target.value);
@@ -619,11 +638,15 @@ if(canvas){
                     return;
                 }
 
+                //const value = animation[setting.prop], 
+                // This is hack to make accessing arraies easier.
                 const value = eval(`animation.${setting.prop}`),
                       elemId = getPropId(setting.prop) + "-controls";
                 
-                let name = getPropId(setting.prop).replaceAll('-', ' ');
-                if (setting.name) name = setting.name;
+                let name = ""; 
+                if (setting.icon) name += setting.icon + " ";
+                if (setting.name) name += setting.name;
+                else name += getPropId(setting.prop).replaceAll('-', ' ');
 
                 let optionControls = `<div><span class="setting-name">${name}</span><span class="nowrap setting-value-control">`;
 
@@ -668,12 +691,14 @@ if(canvas){
                             if (e.target.parentNode.nextElementSibling !== null && 
                                 e.target.parentNode.nextElementSibling.type === "output")
                                 e.target.parentNode.nextElementSibling.value = e.target.checked;
+                            //animation[setting.prop] = e.target.checked;
                             eval(`animation.${setting.prop} = e.target.checked;`);
                         } else {
                             if(e.target.nextElementSibling !== null && e.target.nextElementSibling.type === "output") e.target.nextElementSibling.value = e.target.value;
                             let value = e.target.value;
-                            if (setting.type === "int") value = parseInt(e.target.value);
-                            else if (setting.type === "float") value = parseFloat(e.target.value);
+                            if (setting.type === "int") value = parseInt(value);
+                            else if (setting.type === "float") value = parseFloat(value);
+                            //animation[setting.prop] = value;
                             eval(`animation.${setting.prop} = value;`);
                         }
                         if (setting.toCall) animation[setting.toCall]();
@@ -684,5 +709,4 @@ if(canvas){
             });
         }
     }
-
 } // if(canvas)

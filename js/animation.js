@@ -151,7 +151,7 @@ class Animation {
     }
 
     getSeedSettings(toCall = "restart") {
-        return {prop: "seed", name: '<i class="fa-solid fa-dice"></i> seed', type: "int", min: 0, max: this.maxSeedValue, toCall: toCall};
+        return {prop: "seed", icon: '<i class="fa-solid fa-seedling"></i>', type: "int", min: 0, max: this.maxSeedValue, toCall: toCall};
     }
 
     mouseAction(cords, event) {
@@ -161,19 +161,23 @@ class Animation {
     setSettings(newSettings){
         for (const setting of this.getSettings()) {
             if (newSettings.has(setting.prop)){
-                this[setting.prop] = newSettings.get(setting.prop);
-                if(setting.type === "int") this[setting.prop] = parseInt(this[setting.prop]);
-                else if (setting.type === "float") this[setting.prop] = parseFloat(this[setting.prop]);
-                else if (setting.type === "bool") this[setting.prop] = (this[setting.prop] === "true");
+                let value = newSettings.get(setting.prop);
+                if(setting.type === "int") value = parseInt(value);
+                else if (setting.type === "float") value = parseFloat(value);
+                else if (setting.type === "bool") value = (value === "true");
+                // this[setting.prop] = value;
+                eval(`this.${setting.prop} = value;`);
             }
         }
         this.restart();
     }
 
-    getURLWithSettings(){
-        let url = window.location.href.split("?")[0] + "?";
+    getURLParams(){
+        let url = "";
         for (const setting of this.getSettings()) {
-            url += setting.prop + "=" + this[setting.prop] + "&";
+            if(url.length > 0) url += "&";
+            //url += setting.prop + "=" + this[setting.prop];
+            url += setting.prop + "=" + eval(`this.${setting.prop};`);
         }
         return url;
     }

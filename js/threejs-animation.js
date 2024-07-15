@@ -19,7 +19,7 @@ class ThreejsAnimation extends Animation {
     }
 
     draw() {
-
+        
     }
 
     getCodeUrl(){

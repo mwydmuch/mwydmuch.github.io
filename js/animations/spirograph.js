@@ -28,7 +28,8 @@ class Spirograph extends Animation {
                  lineLength = 2, 
                  gearCount = "random",
                  rescaleToFit = true,
-                 scale = 1) {
+                 scale = 1,
+                 rainbowColors = false) {
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
         this.vertices = vertices;
@@ -37,6 +38,7 @@ class Spirograph extends Animation {
         this.rescaleToFit = rescaleToFit;
         this.scale = scale;
         this.speed = 1;
+        this.rainbowColors = rainbowColors;
 
         this.gearCount = this.assignIfRandom(gearCount, Utils.randomInt(2, this.maxGears));
         this.gearNames = ["zero", "one", "two", "three", "four", "five"];
@@ -92,7 +94,9 @@ class Spirograph extends Animation {
         let start = this.getXY(0, this.time, scale);
         for (let i = 1; i < this.vertices; ++i) {
             let next = this.getXY(i * lenPerVertex, this.time, scale);
-            const color = Utils.lerpColor(this.colorA, this.colorB, i / this.vertices);
+            let color = null;
+            if(this.rainbowColors) color = 'hsl(' + i / this.vertices * 360 + ', 100%, 75%)';
+            else color = Utils.lerpColor(this.colorA, this.colorB, i / this.vertices);
             Utils.drawLine(this.ctx, start.x, start.y, next.x, next.y, 1, color);
             start = next;
         }
@@ -101,17 +105,18 @@ class Spirograph extends Animation {
     }
 
     getSettings() {
-        let settings = [{prop: "vertices", type: "int", min: 100, max: 32000},
-                        {prop: "lineLength", type: "float", step: 0.25, min: 1, max: 16},
-                        {prop: "gearCount", type: "int", min: 2, max: this.maxGears, toCall: "updateName"},
-                        {prop: "rescaleToFit", type: "bool"},
-                        {prop: "scale", type: "float", min: 0.25, max: 4},
-                        {prop: "speed", type: "float", step: 0.1, min: -4, max: 4},
+        let settings = [{prop: "vertices", icon: '<i class="fa-solid fa-draw-polygon"></i>', type: "int", min: 100, max: 32000},
+                        {prop: "lineLength", icon: '<i class="fa-solid fa-ruler"></i>', type: "float", step: 0.25, min: 1, max: 16},
+                        {prop: "gearCount", icon: '<i class="fa-solid fa-gears"></i>', type: "int", min: 2, max: this.maxGears, toCall: "updateName"},
+                        {prop: "rescaleToFit", icon: '<i class="fa-solid fa-expand"></i>', type: "bool"},
+                        {prop: "scale", icon: '<i class="fa-solid fa-maximize"></i>', type: "float", min: 0.25, max: 4},
+                        {prop: "speed", icon: '<i class="fa-solid fa-gauge-high"></i>', type: "float", step: 0.1, min: -4, max: 4},
+                        {prop: "rainbowColors", icon: '<i class="fa-solid fa-rainbow"></i>', type: "bool"},
                         {type: "separator"}];
         for(let i = 0; i < this.maxGears; ++i){
-            settings = settings.concat([{prop: `gears[${i}].radius`, type: "float", step: 0.01, min: 0, max: 100},
-                                        {prop: `gears[${i}].rate`, type: "float", step: 0.01, min: -100, max: 100},
-                                        {prop: `gears[${i}].phase`, type: "float", step: 0.001, min: -0.1, max: 0.1}]);
+            settings = settings.concat([{prop: `gears[${i}].radius`, icon: '<i class="fa-solid fa-gear"></i>', type: "float", step: 0.01, min: 0, max: 100},
+                                        {prop: `gears[${i}].rate`, icon: '<i class="fa-solid fa-gear"></i>', type: "float", step: 0.01, min: -100, max: 100},
+                                        {prop: `gears[${i}].phase`, icon: '<i class="fa-solid fa-gear"></i>', type: "float", step: 0.001, min: -0.1, max: 0.1}]);
         }
         return settings;
     }

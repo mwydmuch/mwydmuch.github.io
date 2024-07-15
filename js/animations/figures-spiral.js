@@ -52,7 +52,7 @@ class FiguresSpiral extends Animation {
         return [{prop: "sides", type: "int", min: 0, max: 8, toCall: "updateName"},
                 {prop: "number", type: "int", min: 1, max: 1024},
                 {prop: "size", type: "int", min: 1, max: 128},
-                {prop: "speed", type: "float", step: 0.1, min: -4, max: 4}];
+                {prop: "speed", icon: '<i class="fa-solid fa-gauge-high"></i>', type: "float", step: 0.1, min: -4, max: 4}];
     }
 }
 
