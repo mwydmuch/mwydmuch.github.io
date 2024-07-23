@@ -12,8 +12,17 @@ class Animation {
                 name = "",
                 file = "",
                 description = "",
-                seed = "random") {
-        this.ctx = canvas.getContext("2d", { alpha: false });
+                seed = "random",
+                contextType = "2d") {
+        console.log(`Starting ${name} animation`)
+
+        this.canvas = canvas;
+        if(contextType !== null){
+            this.ctx = canvas.getContext(contextType, { alpha: false });
+
+            if (this.ctx) console.log(`${contextType} context obtained successfully`);
+            else console.error(`Unable to initialize ${contextType} context. Your browser may not support it.`);
+        }
 
         // Colors variables
         this.colors = colors;
@@ -31,7 +40,6 @@ class Animation {
         this.time = 0;
         this.frame = 0;
         this.speed = 1;
-        this.fps = 30;
 
         // Noise, it is frequently used by many animations
         this.noise = Noise.noise;
@@ -42,8 +50,7 @@ class Animation {
         this.seed = this.assignIfRandom(seed, Math.round(Math.random() * this.maxSeedValue));
         this.setSeed(this.seed);
         
-        // Text related variables
-        this.lineHeight = 20;
+        // Text related variables (for 2D canvas)
         this.resetFont();
 
         // Debug flag
@@ -51,6 +58,8 @@ class Animation {
     }
 
     resetFont(){
+        if(!this.ctx) return;
+
         // Reset text settings
         this.ctx.font = '14px sans-serif';
         //this.ctx.font = '14px monospace';
@@ -105,16 +114,12 @@ class Animation {
         else Utils.blendColor(this.ctx, color, alpha, mode);
     }
 
-    getFPS(){
-        return this.fps;
-    }
-
     getName(){
         return this.name;
     }
 
     getCodeUrl(){
-        return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/js/" + this.file;
+        return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/js/animations" + this.file;
     }
 
     getDescription(){
@@ -151,11 +156,35 @@ class Animation {
     }
 
     getSeedSettings(toCall = "restart") {
-        return {prop: "seed", name: '<i class="fa-solid fa-dice"></i> seed', type: "int", min: 0, max: this.maxSeedValue, toCall: toCall};
+        return {prop: "seed", icon: '<i class="fa-solid fa-seedling"></i>', type: "int", min: 0, max: this.maxSeedValue, toCall: toCall};
     }
 
     mouseAction(cords, event) {
         // By default do nothing
+    }
+
+    setSettings(newSettings){
+        for (const setting of this.getSettings()) {
+            if (newSettings.has(setting.prop)){
+                let value = newSettings.get(setting.prop);
+                if(setting.type === "int") value = parseInt(value);
+                else if (setting.type === "float") value = parseFloat(value);
+                else if (setting.type === "bool") value = (value === "true");
+                // this[setting.prop] = value;
+                eval(`this.${setting.prop} = value;`);
+            }
+        }
+        this.restart();
+    }
+
+    getURLParams(){
+        let url = "";
+        for (const setting of this.getSettings()) {
+            if(url.length > 0) url += "&";
+            //url += setting.prop + "=" + this[setting.prop];
+            url += setting.prop + "=" + eval(`this.${setting.prop};`);
+        }
+        return url;
     }
 }
 

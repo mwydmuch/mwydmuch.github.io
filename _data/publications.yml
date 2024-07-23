@@ -1,5 +1,5 @@
 - title: "A General Online Algorithm for Optimizing Complex Performance Metrics"
-  url: https://openreview.net/forum?id=pfnBLXgFVS
+  url: https://proceedings.mlr.press/v235/kotlowski24a.html
   id: icml-2024
   poster_thumbnail: assets/thumbnails/2024_omma_icml_poster.jpg
   authors: Wojciech Kotłowski, Marek Wydmuch, Erik Schultheis, Rohit Babbar, Krzysztof Dembczyński
@@ -8,8 +8,10 @@
   links:
     # - url: https://github.com/mwydmuch/xCOLUMNs
     #   type: github
-    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2024_omma_icml.pdf
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2024_omma_icml_paper.pdf
       type: paper-pdf
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2024_omma_icml_paper+supp.pdf
+      type: paper+supp-pdf
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2024_omma_icml_poster.pdf
       type: poster-pdf
     - url: https://arxiv.org/abs/2406.14743
