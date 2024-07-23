@@ -177,8 +177,8 @@ class MLinPL extends Animation {
     }
 
     resize() {
-        this.width = this.ctx.canvas.width;
-        this.height = this.ctx.canvas.height;
+        this.width = this.canvas.width;
+        this.height = this.canvas.height;
     
         // Reset and generate new particles 
         // (this is easier than trying to resize the existing ones)

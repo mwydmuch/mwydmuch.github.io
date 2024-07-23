@@ -81,16 +81,16 @@ class ParticlesAndAttractors extends Animation {
         // Calculate positions of attractors
         this.attractors = [];
         if(this.attractorsSystem === "orbits") {
-            const r = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / (2 * (this.numAttractors - 1));
+            const r = Math.max(this.canvas.width, this.canvas.height) / (2 * (this.numAttractors - 1));
             for (let i = startI; i < numA; ++i)
                 this.attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * r, 0), pos * i));
         } else if (this.attractorsSystem === "eights") {
-            const r = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / this.numAttractors;
+            const r = Math.max(this.canvas.width, this.canvas.height) / this.numAttractors;
             for (let i = startI; i < numA; ++i)
                 this.attractors.push(Utils.rotateVec2d(Utils.createVec2d(i * Math.sin(pos * Math.PI / 2) * r, 0), pos * i));
         } else if (this.attractorsSystem === "circle") {
             if(this.centralAttractor) this.attractors.push({x: 0, y: 0});
-            const r = Math.min(this.ctx.canvas.width, this.ctx.canvas.height) * 0.4;
+            const r = Math.min(this.canvas.width, this.canvas.height) * 0.4;
             for (let i = 1; i < numA; ++i)
                 this.attractors.push(Utils.rotateVec2d(Utils.createVec2d(r, 0), (pos + i) * 2 * Math.PI / (numA - 1)));
         }
@@ -113,7 +113,7 @@ class ParticlesAndAttractors extends Animation {
     draw() {
         this.fadeOut(this.nextFadeStep);
 
-        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
         this.ctx.scale(this.scale, this.scale);
 
         const color = this.rainbowColors ? `hsl(${this.time / 5 * 360}, 100%, 75%)` : this.colors[0];
@@ -146,8 +146,8 @@ class ParticlesAndAttractors extends Animation {
         else if(event === "down" || (event === "move" && this.mouseDown)){
             console.log("attractor!");
             this.mouseAttractor = {
-                x: (cords.x - this.ctx.canvas.width / 2) / this.scale,
-                y: (cords.y - this.ctx.canvas.height / 2) / this.scale
+                x: (cords.x - this.canvas.width / 2) / this.scale,
+                y: (cords.y - this.canvas.height / 2) / this.scale
             };
         }
     }

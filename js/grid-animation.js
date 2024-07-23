@@ -41,8 +41,8 @@ class GridAnimation extends Animation {
     }
 
     resize() {
-        const newGridWidth = Math.ceil(this.ctx.canvas.width / this.cellSize),
-              newGridHeight = Math.ceil(this.ctx.canvas.height / this.cellSize);
+        const newGridWidth = Math.ceil(this.canvas.width / this.cellSize),
+              newGridHeight = Math.ceil(this.canvas.height / this.cellSize);
         this.resizeGrid(newGridWidth, newGridHeight);
     }
 

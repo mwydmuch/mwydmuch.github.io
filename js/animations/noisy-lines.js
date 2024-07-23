@@ -34,8 +34,8 @@ class NoisyLines extends Animation {
         this.ctx.lineWidth = 1;
         this.ctx.strokeStyle = this.colors[0];
 
-        let centerX = this.ctx.canvas.width / 2,
-            centerY = this.ctx.canvas.height / 2,
+        let centerX = this.canvas.width / 2,
+            centerY = this.canvas.height / 2,
             drawX = centerX * (1 - this.margin),
             drawY = centerY * (1 - this.margin),
             linesDist = drawY * 2 / (this.lines - 1);

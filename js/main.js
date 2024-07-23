@@ -13,7 +13,7 @@ const ThreeNPlusOne = require("./animations/3n+1"),
       CircularWaves = require("./animations/circular-waves"),
       Coding = require("./animations/coding"),
       DayAndNightAutomata = require("./animations/day-and-night-automata"),
-//      FiguresSpiral = require("./animations/figures-spiral"),
+      FiguresSpiral = require("./animations/figures-spiral"),
       GameOfLife = require("./animations/game-of-life"),
       GameOfLifeIsometric = require("./animations/game-of-life-isometric"),
       GlitchAutomata = require("./animations/glitch-automata"),
@@ -36,8 +36,9 @@ const ThreeNPlusOne = require("./animations/3n+1"),
       Sorting = require("./animations/sorting"),
       SpinningShapes = require("./animations/spinning-shapes"),
       Spirograph = require("./animations/spirograph"),
-      Vectors = require("./animations/vectors");
-//const TreeVisualization = require("./animations/tree-visualization");
+      Vectors = require("./animations/vectors"),
+      TestThreejs = require("./threejs-animations/test"),
+      TreeVisualization = require("./animations/tree-visualization");
 
 
 // Globals
@@ -102,8 +103,8 @@ let colorsAlt = [ // Alt palette
 // Get elements for different animation controls
 // ---------------------------------------------------------------------------------------------------------------------
 
-const canvas = document.getElementById("background"),
-      container = document.getElementById("background-container"),
+let canvas = document.getElementById("background");
+const container = document.getElementById("background-container"),
       content = document.getElementById("me"),
       elemBgShow = document.getElementById("background-show"),
       elemBgName = document.getElementById("background-name"),
@@ -130,14 +131,14 @@ if(canvas){
     // Create the initial animation and initiate the animation loop
     // ---------------------------------------------------------------------------------------------------------------------
 
-    let animations = [
+    let allAnimations = [
         {class: ThreeNPlusOne, name: "3n+1"},
         {class: BriansBrainAutomata, name: "brian's brain automata"},
         {class: Cardioids, name: "cardioids"},
         {class: CircularWaves, name: "circular waves"},
         {class: Coding, name: "coding"},  // Disabled till finished
         {class: DayAndNightAutomata, name: "day and night automata"},
-        //{class: FiguresSpiral, name: "figures spiral"},  // Disabled since it's not that interesting
+        {class: FiguresSpiral, name: "figures spiral", hide: true},  // Hide cause it's not that interesting
         {class: GameOfLife, name: "game of life"},
         {class: GameOfLifeIsometric, name: "isometric game of life"},
         {class: GlitchAutomata, name: "glitch automata", startAnimation: false},  // Disable as a start animation, as it may not be visually pleasing for everyone
@@ -160,8 +161,9 @@ if(canvas){
         {class: Sorting, name: "sorting"},
         {class: SpinningShapes, name: "spinning shapes"},
         {class: Spirograph, name: "spirograph"},
-        //{class: Vectors, name: "vectors"}, // Disabled cause it is not ready
-        //{class: TreeVisualization, name: "tree visualization"}, // Disabled cause it is not ready
+        {class: Vectors, name: "vectors", hide: true},  // Hide cause it's not that interesting
+        {class: TestThreejs, name: "threejs test"},
+        {class: TreeVisualization, name: "tree visualization", hide: true},  // Hide cause it's not that interesting
     ];
 
     // Define functions related to the animation loop and control
@@ -173,10 +175,18 @@ if(canvas){
     }
 
     function updateAnimation(newAnimationId, newAnimationSettings = null) {
+        // Reset variables
         frames = 0;
         avgDrawTime = 0;
         avgElapsedTime = 0;
         animationId = newAnimationId;
+
+        // Create a new canvas
+        let newCanvas = canvas.cloneNode(false);
+        canvas.parentNode.replaceChild(newCanvas, canvas);
+        canvas = newCanvas;
+
+        // Create a new animation
         animation = new animations[animationId].class(canvas, colors, colorsAlt, bgColor);
         if(newAnimationSettings) animation.setSettings(newAnimationSettings);
         then = getTime();
@@ -230,9 +240,9 @@ if(canvas){
 
             if(frames % fps === 0){
                 elemBgStats.innerHTML = `canvas resolution: ${canvas.width} x ${canvas.height}</br>
-                                        target frames interval: ${Math.round(framesInterval)} ms</br>
-                                        target fps: ${fps}</br>
-                                        avg. frames interval: ${Math.round(avgElapsedTime)} ms</br>
+                                        <i class="fa-solid fa-crosshairs"></i><i class="fa-solid fa-stopwatch"></i> target frames interval: ${Math.round(framesInterval)} ms</br>
+                                        <i class="fa-solid fa-crosshairs"></i> target fps: ${fps}</br>
+                                        <i class="fa-solid fa-stopwatch"></i> avg. frames interval: ${Math.round(avgElapsedTime)} ms</br>
                                         avg. fps: ${Math.round(1000 / avgElapsedTime)}</br>
                                         avg. draw time: ${Math.round(avgDrawTime)} ms`;
                                         //`</br> possible fps: ${Math.round(1000 / avgDrawTime)}`;
@@ -279,7 +289,7 @@ if(canvas){
 
 
     // Initialize the animation
-
+    let animations = allAnimations.filter((x) => !x.hide);  // Remove hidden animations
     const animationCount = animations.length;
     let animationId = Utils.randomInt(0, animationCount);
     while(animations[animationId].startAnimation === false) animationId = Utils.randomInt(0, animationCount);
@@ -288,9 +298,8 @@ if(canvas){
     const urlParams = new URLSearchParams(window.location.search);
     if(urlParams.has("animation")){
         const animationParam = urlParams.get("animation").replaceAll("-", " ").replaceAll("_", " ");
-        for(let i = 0; i < animationCount; ++i){
+        for(let i = 0; i < animationCount; ++i)
             if(animationParam === animations[i].name) animationId = i;
-        }
     }
     if(urlParams.has("resolution")) updateAnimationResolution(urlParams.get("resolution"));
     if(urlParams.has("fps")) updateAnimationFps(urlParams.get("fps"));

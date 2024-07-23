@@ -103,13 +103,13 @@ class Coding extends Animation {
             this.newWord();
         }
 
-        this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        this.imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
     }
 
     resize() {
         this.clear();
         if(this.imageData !== null) this.ctx.putImageData(this.imageData, 0, 0);
-        this.maxLines = Math.floor((this.ctx.canvas.height - 2 * this.padding) / this.lineHeight) - 1;
+        this.maxLines = Math.floor((this.canvas.height - 2 * this.padding) / this.lineHeight) - 1;
         this.newLine();
     }
 

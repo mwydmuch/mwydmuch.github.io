@@ -124,7 +124,7 @@ class GlitchAutomata extends GridAnimation {
             
         console.log("Image processed");
         this.clear();
-        //this.ctx.putImageData(imgData, 0, 0, this.gridWidth, this.gridHeight, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        //this.ctx.putImageData(imgData, 0, 0, this.gridWidth, this.gridHeight, 0, 0, this.canvas.width, this.canvas.height);
         this.ctx.putImageData(imgData, 200, 200);
 
         // Apply error diffusion dithering to the image

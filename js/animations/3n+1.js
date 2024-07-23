@@ -99,7 +99,7 @@ class ThreeNPlusOne extends Animation {
         this.evenAngleRad = this.evenAngle * Math.PI / 180;
         this.oddAngleRad = this.oddAngle * Math.PI / 180;
 
-        this.ctx.translate(this.ctx.canvas.width / 2,  this.ctx.canvas.height / (this.center ? 2 : 1));
+        this.ctx.translate(this.canvas.width / 2,  this.canvas.height / (this.center ? 2 : 1));
         this.ctx.scale(this.scale, this.scale);
 
         while(this.frame < this.sequences.length){
@@ -114,7 +114,7 @@ class ThreeNPlusOne extends Animation {
                 `Highest reached number: ${this.max}`
             ];
             this.resetFont();
-            this.drawTextLines(statsLines, this.lineHeight, this.ctx.canvas.height - (statsLines.length + 1) * this.lineHeight);
+            this.drawTextLines(statsLines, this.lineHeight, this.canvas.height - (statsLines.length + 1) * this.lineHeight);
         }
     }
 
@@ -142,7 +142,7 @@ class ThreeNPlusOne extends Animation {
                 {prop: "drawNumbers", type: "bool", toCall: "resize"},
                 {prop: "scale", icon: '<i class="fa-solid fa-maximize"></i>', icon: '<i class="fa-solid fa-maximize"></i>', type: "float", min: 0.05, max: 1.95, toCall: "resize"},
                 {prop: "center", icon: '<i class="fa-solid fa-arrows-to-dot"></i>', type: "bool", toCall: "resize"},
-                {prop: "showStats", icon: '<i class="fa-solid fa-info"></i>', type: "bool"}];
+                {prop: "showStats", icon: '<i class="fa-solid fa-circle-info"></i>', type: "bool"}];
     }
 }
 

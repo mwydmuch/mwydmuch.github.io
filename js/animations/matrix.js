@@ -108,7 +108,7 @@ class Matrix extends Animation {
             else d.y += this.dropsSpeed;
         }
 
-        this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        this.imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
     }
 
     resize() {
@@ -118,8 +118,8 @@ class Matrix extends Animation {
         this.cellHeight = this.dropsSize;
         this.cellWidth = Math.ceil(this.dropsSize / 1.618);
 
-        this.columns = this.ctx.canvas.width / this.cellWidth;
-        this.columnHeight = this.ctx.canvas.height / this.cellHeight;
+        this.columns = this.canvas.width / this.cellWidth;
+        this.columnHeight = this.canvas.height / this.cellHeight;
 
         if(this.drops.length < this.columns){
             for(let i = this.drops.length; i < this.columns; ++i){

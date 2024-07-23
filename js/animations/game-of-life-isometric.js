@@ -154,15 +154,15 @@ class GameOfLifeIsometric extends GameOfLife {
         // Draw grid
         if(this.drawCellsGrid) {
             if (!this.renderedGrid) {
-                let offCtx = Utils.createOffscreenCanvas(this.ctx.canvas.width, this.ctx.canvas.height).getContext('2d');
-                offCtx.translate(this.ctx.canvas.width / 2, (1 - this.gridSize) / 2 * this.ctx.canvas.height);
+                let offCtx = Utils.createOffscreenCanvas(this.canvas.width, this.canvas.height).getContext('2d');
+                offCtx.translate(this.canvas.width / 2, (1 - this.gridSize) / 2 * this.canvas.height);
                 this.drawGrid(offCtx, 0, 0);
                 this.renderedGrid = offCtx.canvas;
             }
             this.ctx.drawImage(this.renderedGrid, 0, 0);
         }
 
-        this.ctx.translate(this.ctx.canvas.width / 2, (1 - this.gridSize) / 2 * this.ctx.canvas.height);
+        this.ctx.translate(this.canvas.width / 2, (1 - this.gridSize) / 2 * this.canvas.height);
 
         // Draw blocks
         for (let y = 0; y < this.gridHeight; ++y) {
@@ -180,8 +180,8 @@ class GameOfLifeIsometric extends GameOfLife {
 
     resize() {
         // Fill the whole screen (bad performance on low spec computers/mobile devices)
-        //const newGridSize = Math.ceil((this.ctx.canvas.height + this.isoH) / this.cellSize);
-        const smallerSize = Math.min(this.ctx.canvas.width, this.ctx.canvas.height),
+        //const newGridSize = Math.ceil((this.canvas.height + this.isoH) / this.cellSize);
+        const smallerSize = Math.min(this.canvas.width, this.canvas.height),
               newGridSize = Math.ceil(this.gridSize * smallerSize / this.cellSize);
         this.resizeGrid(newGridSize, newGridSize);
         this.renderedGrid = null;

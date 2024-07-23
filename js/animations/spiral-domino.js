@@ -16,8 +16,8 @@ class SpiralDomino extends Animation {
     draw() {
         this.clear();
 
-        const centerX = this.ctx.canvas.width / 2,
-              centerY = this.ctx.canvas.height / 2;
+        const centerX = this.canvas.width / 2,
+              centerY = this.canvas.height / 2;
 
         for(let i = 1; i <= this.particles; i++){
             const r = 2 * i,

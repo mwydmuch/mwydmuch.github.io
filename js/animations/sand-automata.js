@@ -218,8 +218,8 @@ class SandAutomata extends GridAnimation {
     }
 
     resize() {
-        const newGridWidth = Math.ceil(this.ctx.canvas.width / this.cellSize),
-              newGridHeight = Math.ceil(this.ctx.canvas.height / this.cellSize) + 4 * this.maxBlockSize;
+        const newGridWidth = Math.ceil(this.canvas.width / this.cellSize),
+              newGridHeight = Math.ceil(this.canvas.height / this.cellSize) + 4 * this.maxBlockSize;
         
         let newGrid = new Array(newGridWidth * newGridHeight);
         newGrid.fill(-1);

@@ -107,8 +107,8 @@ class GameOfLife extends GridAnimation {
         this.clear();
 
         this.ctx.translate(
-            -(this.mapWidth * this.cellSize - this.ctx.canvas.width) / 2, 
-            -(this.mapHeight * this.cellSize - this.ctx.canvas.height) / 2
+            -(this.mapWidth * this.cellSize - this.canvas.width) / 2, 
+            -(this.mapHeight * this.cellSize - this.canvas.height) / 2
         );
 
         if(this.cellStyle === "square") this.drawCell = this.drawSquareCell;
@@ -182,7 +182,7 @@ class GameOfLife extends GridAnimation {
     }
 
     getSettings() {
-        return [{prop: "changeGrid", type: "text", value: "<click/touch>"},
+        return [{prop: "changeGrid", type: "text", value: '<<i class="fa-solid fa-computer-mouse"></i> click/touch>'},
                 {prop: "loopGrid", type: "bool"},
                 {prop: "cellSize", type: "int", min: 4, max: 32, toCall: "restart"},
                 {prop: "cellStyle", type: "select", values: this.cellStyles},

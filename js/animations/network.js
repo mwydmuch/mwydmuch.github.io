@@ -114,22 +114,22 @@ class Network extends Animation {
 
     restart(){
         this.particles = []
-        this.width = this.ctx.canvas.width;
-        this.height = this.ctx.canvas.height;
+        this.width = this.canvas.width;
+        this.height = this.canvas.height;
         this.spawnParticles(0, 0, this.width, this.height);
     }
 
     resize() {
         // Add particles to the new parts of the canvas.
-        const divWidth = this.ctx.canvas.width - this.width,
-              divHeight = this.ctx.canvas.height - this.height;
+        const divWidth = this.canvas.width - this.width,
+              divHeight = this.canvas.height - this.height;
 
         if(divWidth > 0) this.spawnParticles(this.width, 0, divWidth, this.height);
         if(divHeight > 0) this.spawnParticles(0, this.height, this.width, divHeight);
         if(divWidth > 0 || divHeight > 0) this.spawnParticles(this.width, this.height, divWidth, divHeight);
 
-        this.width = this.ctx.canvas.width;
-        this.height = this.ctx.canvas.height;
+        this.width = this.canvas.width;
+        this.height = this.canvas.height;
 
         // Remove particles that are out of bounds of the new canvas to improve performance.
         const width = this.width,

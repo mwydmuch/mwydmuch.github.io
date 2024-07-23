@@ -99,8 +99,8 @@ class Quadtree extends Animation {
     draw() {
         this.clear();
 
-        this.width = this.ctx.canvas.width,
-        this.height = this.ctx.canvas.height;
+        this.width = this.canvas.width,
+        this.height = this.canvas.height;
 
         let maxRectSize = Math.max(this.width, this.height),
             points = this.generatePoints();

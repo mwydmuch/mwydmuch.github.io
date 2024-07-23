@@ -41,7 +41,7 @@ class CircularWaves extends Animation {
         if(this.rainbowColors) this.ctx.strokeStyle = 'hsl(' + Math.abs(Math.sin(zoff * 5)) * 360 + ', 100%, 50%)';
         else this.ctx.strokeStyle = Utils.lerpColor(this.colorA, this.colorB, Math.abs(Math.sin(zoff * 5)));
 
-        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
 
         this.ctx.beginPath();
         for (let v = 0; v <= this.vertices; ++v) {
@@ -62,8 +62,8 @@ class CircularWaves extends Animation {
     }
 
     resize() {
-        this.radiusMin = Math.min(this.ctx.canvas.width, this.ctx.canvas.height) / 2 * this.radiusScaleMin;
-        this.radiusMax = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 2 * this.radiusScaleMax;
+        this.radiusMin = Math.min(this.canvas.width, this.canvas.height) / 2 * this.radiusScaleMin;
+        this.radiusMax = Math.max(this.canvas.width, this.canvas.height) / 2 * this.radiusScaleMax;
         if(this.radiusMin > this.radiusMax) [this.radiusMin, this.radiusMax] = [this.radiusMax, this.radiusMin];
         this.clear();
     }
@@ -74,7 +74,7 @@ class CircularWaves extends Animation {
     }
 
     getSettings() {
-        return [{prop: "vertices", type: "int", min: 3, max: 720, toCall: "resize"},
+        return [{prop: "vertices", icon: '<i class="fa-solid fa-draw-polygon"></i>', type: "int", min: 3, max: 720, toCall: "resize"},
                 {prop: "radiusScaleMin", type: "float", min: 0, max: 2.0, toCall: "resize"},
                 {prop: "radiusScaleMax", type: "float", min: 0, max: 2.0, toCall: "resize"},
                 {prop: "noiseScale", type: "float", min: 0, max: 2.0, toCall: "resize"},

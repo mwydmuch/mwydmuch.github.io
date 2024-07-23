@@ -82,10 +82,10 @@ class Spirograph extends Animation {
         if(this.rescaleToFit){
             let totalRadius = 0;
             for(let i = 0; i < this.gearCount; ++i) totalRadius += this.gears[i].radius;
-            scale = Math.min(this.ctx.canvas.width, this.ctx.canvas.height) / 2 / totalRadius;
+            scale = Math.min(this.canvas.width, this.canvas.height) / 2 / totalRadius;
         }
 
-        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
         this.ctx.scale(this.scale, this.scale);
 
         const length = Math.PI * this.lineLength,
@@ -109,7 +109,7 @@ class Spirograph extends Animation {
                         {prop: "lineLength", icon: '<i class="fa-solid fa-ruler"></i>', type: "float", step: 0.25, min: 1, max: 16},
                         {prop: "gearCount", icon: '<i class="fa-solid fa-gears"></i>', type: "int", min: 2, max: this.maxGears, toCall: "updateName"},
                         {prop: "rescaleToFit", icon: '<i class="fa-solid fa-expand"></i>', type: "bool"},
-                        {prop: "scale", icon: '<i class="fa-solid fa-maximize"></i>', type: "float", min: 0.25, max: 4},
+                        {prop: "scale", icon: '<i class="fa-solid fa-up-right-and-down-left-from-center"></i>', type: "float", min: 0.25, max: 4},
                         {prop: "speed", icon: '<i class="fa-solid fa-gauge-high"></i>', type: "float", step: 0.1, min: -4, max: 4},
                         {prop: "rainbowColors", icon: '<i class="fa-solid fa-rainbow"></i>', type: "bool"},
                         {type: "separator"}];

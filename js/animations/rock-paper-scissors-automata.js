@@ -26,11 +26,11 @@ const Utils = require("../utils");
 class RockPaperScissorsAutomata extends GridAnimation {
     constructor(canvas, colors, colorsAlt, bgColor,
                 cellSize = 9,
-                states = 3,
+                numStates = 3,
                 minimumLosses = 3) {
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
         this.cellSize = cellSize;
-        this.states = states;
+        this.numStates = numStates;
         this.minimumLosses = minimumLosses;
     }
 
@@ -41,8 +41,8 @@ class RockPaperScissorsAutomata extends GridAnimation {
             for (let y = 0; y < this.gridHeight; ++y) {
                 const cellIdx = this.getIdx(x, y),
                       cellVal = this.grid[cellIdx],
-                      nextVal = (cellVal + 1) % this.states;
-                let neighbours = Array(this.states).fill(0);
+                      nextVal = (cellVal + 1) % this.numStates;
+                let neighbours = Array(this.numStates).fill(0);
                 ++neighbours[this.getValWrap(x - 1, y - 1)];
                 ++neighbours[this.getValWrap(x, y - 1)];
                 ++neighbours[this.getValWrap(x + 1, y - 1)];
@@ -75,19 +75,19 @@ class RockPaperScissorsAutomata extends GridAnimation {
     }
 
     newCellState(x, y) {
-        return Utils.randomInt(0, this.states, this.rand);
+        return Utils.randomInt(0, this.numStates, this.rand);
     }
 
     resize() {
-        const newGridWidth = Math.ceil(this.ctx.canvas.width / this.cellSize),
-              newGridHeight = Math.ceil(this.ctx.canvas.height / this.cellSize);
+        const newGridWidth = Math.ceil(this.canvas.width / this.cellSize),
+              newGridHeight = Math.ceil(this.canvas.height / this.cellSize);
         this.resizeGrid(newGridWidth, newGridHeight);
     }
 
     getSettings() {
         return [{prop: "cellSize", type: "int", min: 4, max: 12, toCall: "resize"},
-                {prop: "states", type: "int", min: 2, max: 6, toCall: "restart"},
-                {prop: "minimumLosses", type: "int", min: 0, max: 8},
+                {prop: "numStates", name: "number of states", type: "int", min: 2, max: 6, toCall: "restart"},
+                {prop: "minimumLosses", name: "minimum number of losses", type: "int", min: 0, max: 8},
                 this.getSeedSettings()];
     }
 }

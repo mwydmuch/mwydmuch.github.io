@@ -53,9 +53,9 @@ class ParticlesVortex extends Animation {
         this.ctx.lineWidth = 1;
         this.ctx.strokeStyle = this.colors[0];
 
-        const offset = Math.min(this.ctx.canvas.width, this.ctx.canvas.height) / 4,
-              centerX = this.ctx.canvas.width / 2 + this.dirX * offset,
-              centerY = this.ctx.canvas.height / 2 + this.dirY * offset,
+        const offset = Math.min(this.canvas.width, this.canvas.height) / 4,
+              centerX = this.canvas.width / 2 + this.dirX * offset,
+              centerY = this.canvas.height / 2 + this.dirY * offset,
               s = Math.round(this.time * 10000) / 10;
 
         this.ctx.translate(centerX, centerY);

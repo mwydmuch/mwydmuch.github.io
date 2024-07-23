@@ -43,8 +43,8 @@ class Cardioids extends Animation {
     draw() {
         this.clear();
 
-        this.radius = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3 * this.scale;
-        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        this.radius = Math.max(this.canvas.width, this.canvas.height) / 3 * this.scale;
+        this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
         Utils.strokeCircle(this.ctx, 0, 0, this.radius, this.colors[0]);
 
         for (let i = 0; i <= this.lines; ++i) {

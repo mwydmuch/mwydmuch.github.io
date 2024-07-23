@@ -442,8 +442,8 @@ class Sorting extends Animation {
     draw() {
         this.clear();
 
-        const elementMaxHeight = this.ctx.canvas.height,
-              elementWidth = this.ctx.canvas.width / this.numElements;
+        const elementMaxHeight = this.canvas.height,
+              elementWidth = this.canvas.width / this.numElements;
 
         this.elements = this.elements.sort((e1, e2) => e1.z - e2.z)
         for(let e of this.elements){
@@ -463,7 +463,7 @@ class Sorting extends Animation {
                 `Number of elements comparisons: ${this.cmpCount} / ${this.cmpTotal}`,
                 `Number of array accesses (read/write): ${this.accessCount} / ${this.accessTotal}`,
             ];
-            this.drawTextLines(statsLines, this.lineHeight, this.ctx.canvas.height - (statsLines.length + 1) * this.lineHeight);
+            this.drawTextLines(statsLines, this.lineHeight, this.canvas.height - (statsLines.length + 1) * this.lineHeight);
         }
     }
 
@@ -473,11 +473,11 @@ class Sorting extends Animation {
     }
 
     getSettings() {
-        return [{prop: "initialOrder", type: "select", values: this.initialOrderTypes, toCall: "restart"},
+        return [{prop: "initialOrder", icon: '<i class="fa-solid fa-chart-simple"></i>', type: "select", values: this.initialOrderTypes, toCall: "restart"},
                 {prop: "sortingAlgorithm", type: "select", values: this.sortAlgoNames, toCall: "restart"},
                 {prop: "numElements", label: "number of elements (n)", type: "int", min: 8, max: 256, toCall: "restart"},
                 {prop: "speed", icon: '<i class="fa-solid fa-gauge-high"></i>', type: "float", step: 0.25, min: 0.5, max: 8},
-                {prop: "showStats", icon: '<i class="fa-solid fa-info"></i>', type: "bool"},
+                {prop: "showStats", icon: '<i class="fa-solid fa-circle-info"></i>', type: "bool"},
                 this.getSeedSettings()];
     }
 }

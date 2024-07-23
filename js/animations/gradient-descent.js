@@ -436,7 +436,7 @@ class GradientDescent extends Animation {
     draw() {
         if(this.imageData) this.ctx.putImageData(this.imageData, 0, 0);
 
-        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
         for (let i = 0; i < this.optims.length; ++i) {
             let x1, y1, x2, y2,
                 o = this.optims[i];
@@ -451,7 +451,7 @@ class GradientDescent extends Animation {
         }
         this.ctx.resetTransform();
 
-        this.imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        this.imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
 
         this.resetFont();
         let optimTextYOffset = this.textYOffset + 2 * this.lineHeight;
@@ -482,8 +482,8 @@ class GradientDescent extends Animation {
 
         this.clear();
 
-        const width = this.ctx.canvas.width,
-              height = this.ctx.canvas.height,
+        const width = this.canvas.width,
+              height = this.canvas.height,
               centerX = width / 2,
               centerY = height / 2,
               funcScale = this.func.getScale(),
@@ -581,8 +581,8 @@ class GradientDescent extends Animation {
     }
 
     drawLegend() {
-        const width = this.ctx.canvas.width,
-              height = this.ctx.canvas.height,
+        const width = this.canvas.width,
+              height = this.canvas.height,
               centerX = width / 2,
               centerY = height / 2;
 
@@ -605,7 +605,7 @@ class GradientDescent extends Animation {
 
     mouseAction(cords, event) {
         if(event === "click"){
-            this.start = [(cords.x - this.ctx.canvas.width / 2) / this.drawScale, -(cords.y - this.ctx.canvas.height / 2) / this.drawScale];
+            this.start = [(cords.x - this.canvas.width / 2) / this.drawScale, -(cords.y - this.canvas.height / 2) / this.drawScale];
             this.resize();
         }
     }
@@ -625,8 +625,8 @@ class GradientDescent extends Animation {
 
         // Check if the canvas size has changed
         if(this.functionImageData !== null 
-            && (this.functionImageData.width !== this.ctx.canvas.width
-            || this.functionImageData.height !== this.ctx.canvas.height
+            && (this.functionImageData.width !== this.canvas.width
+            || this.functionImageData.height !== this.canvas.height
             || this.functionImageData.scale !== this.scale))
             this.functionImageData = null;
 
@@ -650,10 +650,10 @@ class GradientDescent extends Animation {
     }
 
     getSettings() {
-        return [{prop: "functionToOptimize", type: "select", values: this.funcNames, toCall: "resize"},
+        return [{prop: "functionToOptimize", icon: '<i class="fa-solid fa-chart-area"></i>', type: "select", values: this.funcNames, toCall: "resize"},
                 {prop: "selectStartingPoint", type: "text", value: "<click/touch>"},
                 {prop: "scale", icon: '<i class="fa-solid fa-maximize"></i>', type: "float", step: 0.1, min: 0.5, max: 1.5, toCall: "resize"},
-                {prop: "autoRestart", type: "bool"},
+                {prop: "autoRestart", icon: '<i class="fa-solid fa-clock-rotate-left"></i>', type: "bool"},
                 {prop: "autoRestartSteps", type: "int", step: 1, min: 100, max: 10000},
                 {type: "separator"},
                 {prop: "sgd.eta", type: "float", step: 0.00001, min: 0, max: 0.1},

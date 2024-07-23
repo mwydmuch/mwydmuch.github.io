@@ -48,9 +48,9 @@ class SpinningShapes extends Animation {
     draw() {
         this.clear();
 
-        const scale = Math.max(this.ctx.canvas.width, this.ctx.canvas.height) / 3 * this.scale;
+        const scale = Math.max(this.canvas.width, this.canvas.height) / 3 * this.scale;
 
-        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
 
         for (let i = 0; i < this.shapes; ++i) {
             const theta = i / this.shapes * 2 * Math.PI,
@@ -76,7 +76,7 @@ class SpinningShapes extends Animation {
 
     getSettings() {
         return [{prop: "vertices", icon: '<i class="fa-solid fa-shapes"></i>', name: "vertices per shape", type: "int", min: 0, max: 8, toCall: "updateName"},
-                {prop: "shapes", icon: '<i class="fa-solid fa-shapes"></i>', name: "number of shapes", type: "int", min: 0, max: 2500},
+                {prop: "shapes", name: "number of shapes", type: "int", min: 0, max: 2500},
                 {prop: "rotateShapes", icon: '<i class="fa-solid fa-rotate"></i>', type: "bool" },
                 {prop: "distanceRange", type: "float", min: 0, max: this.distanceBase},
                 {prop: "sizeRange", type: "float", min: 0, max: this.sizeBase},

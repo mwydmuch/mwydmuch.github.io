@@ -1,8 +1,6 @@
 'use strict';
 
 /*
-Work in progress.
-
 Tree visualization algorithms:
 - the Reingold–Tilford algorithm,
 - the root-centric radial layout algorithm
@@ -19,7 +17,6 @@ Visualization of the tree using different algorithms.
 
 Coded with no external dependencies, using only canvas API.
 `;
-
 
 const Animation = require("../animation");
 const Utils = require("../utils");
@@ -145,7 +142,6 @@ class TreeVisualization extends Animation {
                     if(n.children.length == 1) c.theta = n.theta;
                     else if(d < 2) c.theta = n.theta - 180 / m + base;
                     else {
-                        console.log(j, m, n.theta, base);
                         if(n.children.length == 1) c.theta = n.theta;
                         else if (n.theta < n.parent.theta) c.theta = n.theta + base;
                         else if (n.theta > n.parent.theta) c.theta = n.theta - base;
@@ -166,7 +162,6 @@ class TreeVisualization extends Animation {
         this.treeRoot = this.genNode(null, 0);
         if(this.treeAlgorithm == "equal space") this.equalSpace();
         else if(this.treeAlgorithm == "proportional space") this.proportionalSpace();
-        //for(let n of this.nodes) console.log(n);
     }
 
     genNode(parent, depth){
@@ -189,7 +184,7 @@ class TreeVisualization extends Animation {
 
     draw() {
         this.clear();
-        this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
         for(let n of this.nodes){
             for(let c of n.children) Utils.drawLine(this.ctx, n.x, n.y, c.x, c.y, 1, "#000");
             Utils.fillCircle(this.ctx, n.x, n.y, 5, this.colors[n.depth]);
@@ -202,7 +197,8 @@ class TreeVisualization extends Animation {
                 {prop: "minChildren", type: "int", min: 0, max: 8, toCall: "restart"},
                 {prop: "maxChildren", type: "int", min: 1, max: 8, toCall: "restart"},
                 {prop: "radius", type: "int", min: 10, max: 300, toCall: "restart"},
-                {prop: "treeAlgorithm", type: "select", values: this.treeAlgoNames, toCall: "restart"}];
+                {prop: "treeAlgorithm", type: "select", values: this.treeAlgoNames, toCall: "restart"},
+                this.getSeedSettings()];
     }
 }
 

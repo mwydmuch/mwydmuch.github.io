@@ -12,8 +12,17 @@ class Animation {
                 name = "",
                 file = "",
                 description = "",
-                seed = "random") {
-        this.ctx = canvas.getContext("2d", { alpha: false });
+                seed = "random",
+                contextType = "2d") {
+        console.log(`Starting ${name} animation`)
+
+        this.canvas = canvas;
+        if(contextType !== null){
+            this.ctx = canvas.getContext(contextType, { alpha: false });
+
+            if (this.ctx) console.log(`${contextType} context obtained successfully`);
+            else console.error(`Unable to initialize ${contextType} context. Your browser may not support it.`);
+        }
 
         // Colors variables
         this.colors = colors;
@@ -31,7 +40,6 @@ class Animation {
         this.time = 0;
         this.frame = 0;
         this.speed = 1;
-        this.fps = 30;
 
         // Noise, it is frequently used by many animations
         this.noise = Noise.noise;
@@ -42,8 +50,7 @@ class Animation {
         this.seed = this.assignIfRandom(seed, Math.round(Math.random() * this.maxSeedValue));
         this.setSeed(this.seed);
         
-        // Text related variables
-        this.lineHeight = 20;
+        // Text related variables (for 2D canvas)
         this.resetFont();
 
         // Debug flag
@@ -51,6 +58,8 @@ class Animation {
     }
 
     resetFont(){
+        if(!this.ctx) return;
+
         // Reset text settings
         this.ctx.font = '14px sans-serif';
         //this.ctx.font = '14px monospace';
@@ -103,10 +112,6 @@ class Animation {
         else if (alpha <= 0.005 && this.frame % 2 === 0) Utils.blendColor(this.ctx, color, alpha * 2, mode);
         //else if(alpha > 0.005) Utils.blendColor(this.ctx, color, alpha, mode);
         else Utils.blendColor(this.ctx, color, alpha, mode);
-    }
-
-    getFPS(){
-        return this.fps;
     }
 
     getName(){

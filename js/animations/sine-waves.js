@@ -46,14 +46,14 @@ class SineWaves extends Animation {
 
         const wavesToDraw = this.gridCellsWidth * this.gridCellsHeight;
 
-        if(!this.rotateCells) this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        if(!this.rotateCells) this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
         for(let i = 0; i < wavesToDraw; ++i){
             const x = this.cellMargin + (i % this.gridCellsWidth) * this.cellTotalSize - this.gridWidth / 2 + this.cellSize / 2,
                   y = this.cellMargin + Math.floor(i / this.gridCellsWidth) * this.cellTotalSize - this.gridHeight / 2 + this.cellSize / 2,
                   w = this.waves[i];
             this.ctx.strokeStyle = w.color;
             if(this.rotateCells) {
-                this.ctx.translate(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+                this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
                 this.ctx.translate(x, y);
                 this.ctx.rotate(w.rotation * 2 * Math.PI);
                 this.drawWave(0, 0, w.freq, this.cellSize * w.noise * 0.5, w.noise * Math.PI + this.time * Math.PI);
@@ -65,8 +65,8 @@ class SineWaves extends Animation {
 
     resize() {
         this.cellTotalSize = this.cellMargin + this.cellSize;
-        this.gridCellsWidth = Math.floor((this.ctx.canvas.width - this.cellMargin) / this.cellTotalSize);
-        this.gridCellsHeight = Math.floor((this.ctx.canvas.height - this.cellMargin) / this.cellTotalSize);
+        this.gridCellsWidth = Math.floor((this.canvas.width - this.cellMargin) / this.cellTotalSize);
+        this.gridCellsHeight = Math.floor((this.canvas.height - this.cellMargin) / this.cellTotalSize);
         this.gridWidth = this.cellMargin + this.gridCellsWidth * this.cellTotalSize;
         this.gridHeight = this.cellMargin + this.gridCellsHeight * this.cellTotalSize;
 

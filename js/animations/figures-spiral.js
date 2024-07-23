@@ -32,7 +32,7 @@ class FiguresSpiral extends Animation {
 
     draw() {
         this.clear();
-        this.ctx.translate(this.ctx.canvas.width / 2,  this.ctx.canvas.height / 2);
+        this.ctx.translate(this.canvas.width / 2,  this.canvas.height / 2);
         this.ctx.scale(this.scale, this.scale);
 
         this.ctx.strokeStyle = this.colors[0];

@@ -24,10 +24,10 @@ class Vectors extends Animation {
 
     draw() {
         this.clear();
-        this.ctx.translate(this.ctx.canvas.width / 2,  this.ctx.canvas.height / 2);
+        this.ctx.translate(this.canvas.width / 2,  this.canvas.height / 2);
 
-        const pointsHori = Math.floor(this.ctx.canvas.width / this.distance),
-              pointsVert = Math.floor(this.ctx.canvas.height / this.distance);
+        const pointsHori = Math.floor(this.canvas.width / this.distance),
+              pointsVert = Math.floor(this.canvas.height / this.distance);
 
         let startPoints = [],
             endPoints = [];
@@ -57,7 +57,7 @@ class Vectors extends Animation {
 
     mouseAction(cords, event) {
         if(event === "move"){
-            this.mousePoint = Utils.createVec2d(cords.x - this.ctx.canvas.width / 2, cords.y - this.ctx.canvas.height / 2);
+            this.mousePoint = Utils.createVec2d(cords.x - this.canvas.width / 2, cords.y - this.canvas.height / 2);
         }
     }
 

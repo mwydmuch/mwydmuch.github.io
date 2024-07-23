@@ -83,8 +83,8 @@ class NeuralNetwork extends Animation {
         this.clear();
 
         // Create new network that will nicely fit to the entire page
-        const width = this.ctx.canvas.width;
-        const height = this.ctx.canvas.height;
+        const width = this.canvas.width;
+        const height = this.canvas.height;
 
         this.network = [];
 

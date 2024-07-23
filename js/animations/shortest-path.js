@@ -32,14 +32,14 @@ class ShortestPath extends Animation {
                  searchAlgorithm = "A*", // or "BFS" or "random"
                  movementType = "random", // or "4-dir" or "8-dir"
                  speed = 1,
-                 startNewAfterFinish = true,
+                 autoRestart = true,
                  cellStyle = "random", // or "sharp" or "rounded"
                  showStats = false) {
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
         this.cellSize = cellSize;
         this.speed = speed;
-        this.startNewAfterFinish = startNewAfterFinish;
+        this.autoRestart = autoRestart;
         this.showStats = showStats;
         this.searchAlgorithms = ["BFS", "A*"];
         this.searchAlgorithm = this.assignIfRandom(searchAlgorithm, Utils.randomChoice(this.searchAlgorithms));
@@ -156,7 +156,7 @@ class ShortestPath extends Animation {
             ++this.frame;
         }
 
-        if (this.startNewAfterFinish && this.frame >= (this.visited + 300)) this.setupMaze();
+        if (this.autoRestart && this.frame >= (this.visited + 300)) this.setupMaze();
     }
 
     // Drawing functions
@@ -269,8 +269,8 @@ class ShortestPath extends Animation {
 
         // Center the map
         this.ctx.translate(
-            -(this.mapWidth * this.cellSize - this.ctx.canvas.width) / 2, 
-            -(this.mapHeight * this.cellSize - this.ctx.canvas.height) / 2
+            -(this.mapWidth * this.cellSize - this.canvas.width) / 2, 
+            -(this.mapHeight * this.cellSize - this.canvas.height) / 2
         );
         
         // Draw nodes
@@ -325,7 +325,7 @@ class ShortestPath extends Animation {
                 `Number of visited nodes: ${this.visited}`,
                 (this.queue.size === 0 ? 'Shortest path length: ' : 'Longest traveled path: ') + Utils.round(this.pathLenght)
             ];
-            this.drawTextLines(statsLines, this.lineHeight, this.ctx.canvas.height - (statsLines.length + 1) * this.lineHeight);
+            this.drawTextLines(statsLines, this.lineHeight, this.canvas.height - (statsLines.length + 1) * this.lineHeight);
         }
     }
 
@@ -374,8 +374,8 @@ class ShortestPath extends Animation {
     }
 
     setupMaze() {
-        this.mapWidth = Math.ceil(this.ctx.canvas.width / this.cellSize);
-        this.mapHeight = Math.ceil(this.ctx.canvas.height / this.cellSize);
+        this.mapWidth = Math.ceil(this.canvas.width / this.cellSize);
+        this.mapHeight = Math.ceil(this.canvas.height / this.cellSize);
         this.mapSize = this.mapWidth * this.mapHeight;
         this.map = new Array(this.mapSize);
         this.dist = new Array(this.mapSize);
@@ -451,12 +451,12 @@ class ShortestPath extends Animation {
 
     getSettings() {
         return [{prop: "searchAlgorithm", type: "select", values: this.searchAlgorithms, toCall: "restart"},
-                {prop: "movementType", type: "select", values: this.movementTypes, toCall: "restart"},
+                {prop: "movementType", icon: '<i class="fa-solid fa-arrows-up-down-left-right"></i>', type: "select", values: this.movementTypes, toCall: "restart"},
                 {prop: "cellSize", type: "int", min: 8, max: 48, toCall: "resize"},
                 {prop: "speed", icon: '<i class="fa-solid fa-gauge-high"></i>', type: "int", min: 1, max: 64},
-                {prop: "startNewAfterFinish", type: "bool"},
+                {prop: "autoRestart", icon: '<i class="fa-solid fa-clock-rotate-left"></i>', type: "bool"},
                 {prop: "cellStyle", type: "select", values: this.cellStyles},
-                {prop: "showStats", icon: '<i class="fa-solid fa-info"></i>', type: "bool"},
+                {prop: "showStats", icon: '<i class="fa-solid fa-circle-info"></i>', type: "bool"},
                 this.getSeedSettings("resize")];
     }
 }
