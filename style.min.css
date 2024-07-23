@@ -1,5 +1,5 @@
 /*!
- * mwydmuch.pl v21
+ * mwydmuch.pl v22
  * Copyright 2024 Marek Wydmuch
  */
 
