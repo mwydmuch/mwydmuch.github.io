@@ -37,6 +37,7 @@ const ThreeNPlusOne = require("./animations/3n+1"),
       SpinningShapes = require("./animations/spinning-shapes"),
       Spirograph = require("./animations/spirograph"),
       Vectors = require("./animations/vectors"),
+      TestShader = require("./shader-animations/test"),
       TestThreejs = require("./threejs-animations/test"),
       TreeVisualization = require("./animations/tree-visualization");
 
@@ -136,7 +137,7 @@ if(canvas){
         {class: BriansBrainAutomata, name: "brian's brain automata"},
         {class: Cardioids, name: "cardioids"},
         {class: CircularWaves, name: "circular waves"},
-        {class: Coding, name: "coding"},  // Disabled till finished
+        //{class: Coding, name: "coding"},  // Disabled till finished
         {class: DayAndNightAutomata, name: "day and night automata"},
         {class: FiguresSpiral, name: "figures spiral", hide: true},  // Hide cause it's not that interesting
         {class: GameOfLife, name: "game of life"},
@@ -146,7 +147,7 @@ if(canvas){
         {class: Matrix, name: "matrix rain"},
         {class: MLinPL, name: "ml in pl"},
         {class: Network, name: "network"},
-        //{class: NeuralNetwork, name: "neural network"}, // Disabled till updated
+        //{class: NeuralNetwork, name: "neural network"},  // Disabled till updated
         {class: NoisyLines, name: "noisy lines"},
         {class: ParticlesAndAttractors, name: "particles and attractors"},
         {class: ParticlesVortex, name: "particles vortex"},
@@ -162,7 +163,8 @@ if(canvas){
         {class: SpinningShapes, name: "spinning shapes"},
         {class: Spirograph, name: "spirograph"},
         {class: Vectors, name: "vectors", hide: true},  // Hide cause it's not that interesting
-        {class: TestThreejs, name: "threejs test"},
+        {class: TestShader, name: "test shader", hide: true},
+        {class: TestThreejs, name: "test Three.js", hide: true},
         {class: TreeVisualization, name: "tree visualization", hide: true},  // Hide cause it's not that interesting
     ];
 
@@ -185,6 +187,7 @@ if(canvas){
         let newCanvas = canvas.cloneNode(false);
         canvas.parentNode.replaceChild(newCanvas, canvas);
         canvas = newCanvas;
+        if(registerMouseEvents) registerMouseEvents(canvas);
 
         // Create a new animation
         animation = new animations[animationId].class(canvas, colors, colorsAlt, bgColor);
@@ -192,7 +195,7 @@ if(canvas){
         then = getTime();
         trueThen = then;
         animation.resize();
-        updateUI();
+        if(updateUI) updateUI();
     }
 
     function updateAnimationResolution(sizeStr) {
@@ -329,23 +332,23 @@ if(canvas){
         return {x: x, y: y};
     }
 
-    let eventNames = {
-        "click": "click",
-        "mousedown": "down",
-        "touchstart": "down",
-        "mousemove": "move",
-        "touchmove": "move",
-        "mouseup": "up",
-        "touchend": "up",
-    };
+    function registerMouseEvents(canvas){
+        const eventMapping = {
+            "click": "click",
+            "mousedown": "down",
+            "touchstart": "down",
+            "mousemove": "move",
+            "touchmove": "move",
+            "mouseup": "up",
+            "touchend": "up",
+        };
 
-    ["click", "mousedown", "touchstart", "mousemove", "touchmove", "mouseup", "touchend"].forEach(function(eventName){
-        canvas.addEventListener(eventName, function (e) {
-            const cords = getRelativeCursorPosition(canvas, e);
-            animation.mouseAction(getRelativeCursorPosition(canvas, e), eventNames[eventName]);
-        })
-    });
-
+        Object.keys(eventMapping).forEach(function(eventName){
+            canvas.addEventListener(eventName, function (e) {
+                animation.mouseAction(getRelativeCursorPosition(canvas, e), eventMapping[eventName]);
+            })
+        });
+    }
 
     // Control functions
     // ---------------------------------------------------------------------------------------------------------------------

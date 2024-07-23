@@ -3,12 +3,12 @@
 const NAME = "Test Three.js animation",
       FILE = "test.js",
       DESC = `
-Just test animation.
+Just Three.js test animation.
 `;
 
 const ThreejsAnimation = require("../threejs-animation");
 
-class TestAnimation extends ThreejsAnimation {
+class TestThreejsAnimation extends ThreejsAnimation {
     constructor(canvas, colors, colorsAlt, bgColor) {
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
@@ -42,4 +42,4 @@ class TestAnimation extends ThreejsAnimation {
     }
 }
 
-module.exports = TestAnimation;
+module.exports = TestThreejsAnimation;

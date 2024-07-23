@@ -5,11 +5,6 @@ const NAME = "glitch automata",
       DESC = `
 The animation is a type of cellular automata that apply to the cell 
 a state of one of the neighbor cells based on a noise function.
-It reminds me the effect of glitching 
-
-TODO
-
-https://en.wikipedia.org/wiki/Error_diffusion
 
 My other cellular automata visualizations:
 - [Brain's brain](https://mwydmuch.pl/animations?animation=brains-brain-automata)
@@ -40,13 +35,12 @@ class GlitchAutomata extends GridAnimation {
             "4x4 checkerboard", 
             "vertical lines", 
             "horizontal lines", 
-            "photo"
+            //"photo" WORK IN PROGRESS
         ];
         this.initialPatern = this.assignIfRandom(initialPatern, Utils.randomChoice(this.initialPaterns));
     }
 
     update(elapsed){
-        //return 0;
         super.update(elapsed);
 
         for (let x = 0; x < this.gridWidth; ++x) {
@@ -77,7 +71,6 @@ class GlitchAutomata extends GridAnimation {
     }
 
     draw() {
-        //return 0;
         this.clear();
         this.ctx.fillStyle = this.colors[0];
         for (let x = 0; x < this.gridWidth; ++x) {
@@ -104,8 +97,6 @@ class GlitchAutomata extends GridAnimation {
     }
 
     setGridUsingImage(img){
-        console.log("Image loaded");
-
         // Create a hidden canvas to draw the image, and get the image size
         const hiddenCanvas = new OffscreenCanvas(this.gridWidth, this.gridHeight),
               imgWidth = img.naturalWidth,
@@ -121,13 +112,8 @@ class GlitchAutomata extends GridAnimation {
             (this.gridHeight - scaledHeight) / 2,
             scaledWidth, scaledHeight);
         let imgData = hiddenCtx.getImageData(0, 0, hiddenCanvas.width, hiddenCanvas.height);
-            
-        console.log("Image processed");
-        this.clear();
-        //this.ctx.putImageData(imgData, 0, 0, this.gridWidth, this.gridHeight, 0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.putImageData(imgData, 200, 200);
 
-        // Apply error diffusion dithering to the image
+        // Apply error diffusion (TODO) dithering to the image
         for (let i = 0; i < imgData.data.length; i += 4) {
             const r = imgData.data[i],
                   g = imgData.data[i + 1],
@@ -138,25 +124,13 @@ class GlitchAutomata extends GridAnimation {
             imgData.data[i + 2] = luma;
             this.grid[i / 4] = luma < 128 ? 1 : 0;
         }
-
-        this.clear();
-        this.ctx.fillStyle = this.colors[0];
-        for (let x = 0; x < this.gridWidth; ++x) {
-            for (let y = 0; y < this.gridHeight; ++y) {
-                if(this.grid[this.getIdx(x, y)] > 0) this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
-            }
-        }
-
-        this.ctx.putImageData(imgData, 200 + this.gridWidth, 200 + this.gridHeight);
     }
 
     restart(){
         if(this.initialPatern == "photo"){
-            console.log("Restart... using");
-
             let img = new Image();
             let self = this;
-            img.src = "./assets/marek-wydmuch.jpg";
+            img.src = "";
             img.onload = function() {
                 self.setGridUsingImage(img);
             }
