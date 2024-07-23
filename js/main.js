@@ -7,42 +7,44 @@
 
 const Utils = require("./utils");
 
-const ThreeNPlusOne = require("./3n+1");
-const Cardioids = require("./cardioids");
-const CircularWaves = require("./circular-waves");
-const Coding = require("./coding");
-//const FiguresSpiral = require("./figures-spiral");
-const GameOfLife = require("./game-of-life");
-const GameOfLifeIsometric = require("./game-of-life-isometric");
-const Glitch = require("./glitch");
-const GradientDescent = require("./gradient-descent");
-const Matrix = require("./matrix");
-const MLinPL = require("./mlinpl");
-const Network = require("./network");
-//const NeuralNetwork = require("./neural-network");
-const NoisyLines = require("./noisy-lines");
-const ParticlesAndAttractors = require("./particles-and-attractors");
-const ParticlesVortex = require("./particles-vortex");
-const ParticlesWaves = require("./particles-waves");
-const PerlinNoiseParticles = require("./perlin-noise-particles");
-const RockPaperScissorsAutomata = require("./rock-paper-scissors-automata");
-const SandAutomata = require("./sand-automata");
-const Quadtree = require("./quadtree");
-const RecursiveRectangles = require("./recursive-rectangles");
-const ShortestPath = require("./shortest-path");
-const SineWaves = require("./sine-waves");
-const Sorting = require("./sorting");
-const SpinningShapes = require("./spinning-shapes");
-const Spirograph = require("./spirograph");
-const Vectors = require("./vectors");
-//const TreeVisualization = require("./tree-visualization");
+const ThreeNPlusOne = require("./animations/3n+1"),
+      BriansBrainAutomata = require("./animations/brians-brain-automata"),
+      Cardioids = require("./animations/cardioids"),
+      CircularWaves = require("./animations/circular-waves"),
+      Coding = require("./animations/coding"),
+      DayAndNightAutomata = require("./animations/day-and-night-automata"),
+      FiguresSpiral = require("./animations/figures-spiral"),
+      GameOfLife = require("./animations/game-of-life"),
+      GameOfLifeIsometric = require("./animations/game-of-life-isometric"),
+      GlitchAutomata = require("./animations/glitch-automata"),
+      GradientDescent = require("./animations/gradient-descent"),
+      Matrix = require("./animations/matrix"),
+      MLinPL = require("./animations/mlinpl"),
+      Network = require("./animations/network"),
+//     NeuralNetwork = require("./animations/neural-network"),
+      NoisyLines = require("./animations/noisy-lines"),
+      ParticlesAndAttractors = require("./animations/particles-and-attractors"),
+      ParticlesVortex = require("./animations/particles-vortex"),
+      ParticlesWaves = require("./animations/particles-waves"),
+      PerlinNoiseParticles = require("./animations/perlin-noise-particles"),
+      RockPaperScissorsAutomata = require("./animations/rock-paper-scissors-automata"),
+      SandAutomata = require("./animations/sand-automata"),
+      Quadtree = require("./animations/quadtree"),
+      RecursiveSquares = require("./animations/recursive-squares"),
+      ShortestPath = require("./animations/shortest-path"),
+      SineWaves = require("./animations/sine-waves"),
+      Sorting = require("./animations/sorting"),
+      SpinningShapes = require("./animations/spinning-shapes"),
+      Spirograph = require("./animations/spirograph"),
+      Vectors = require("./animations/vectors"),
+      TestShader = require("./shader-animations/test"),
+      TestThreejs = require("./threejs-animations/test"),
+      TreeVisualization = require("./animations/tree-visualization");
 
 
 // Globals
 // ---------------------------------------------------------------------------------------------------------------------
 
-const canvas = document.getElementById("background");
-const container = document.getElementById("background-container");
 let fps = 30,
     framesInterval = 1000 / fps,
     then = 0,
@@ -51,7 +53,7 @@ let fps = 30,
     height = 0,
     lastWidth = 0,
     lastHeight = 0,
-    resizeMode = "fit",
+    resolution = "fit",
     fixedWidth = 0,
     fixedHeight = 0;
 
@@ -59,11 +61,11 @@ let fps = 30,
 let sampleSize = 30,
     frames = 0,
     avgDrawTime = 0,
-    avgElapsedTime = 0, 
+    avgElapsedTime = 0,
     trueThen = 0;
 
 const bgColors = {
-    "black": "#000000", 
+    "black": "#000000",
     "white": "#FFFFFF"
 };
 let bgColor = "#FFFFFF";
@@ -102,44 +104,50 @@ let colorsAlt = [ // Alt palette
 // Get elements for different animation controls
 // ---------------------------------------------------------------------------------------------------------------------
 
-const content = document.getElementById("me");
-const elemBgShow = document.getElementById("background-show");
-const elemBgName = document.getElementById("background-name");
-const elemBgDesc = document.getElementById("background-description");
-const elemBgPrev = document.getElementById("background-previous");
-const elemBgNext = document.getElementById("background-next");
-const elemBgCode = document.getElementById("background-code");
-const elemBgReset = document.getElementById("background-reset");
-const elemBgRestart = document.getElementById("background-restart");
-const elemBgPlayPause = document.getElementById("background-play-pause");
-const elemBgSettings = document.getElementById("background-settings");
-const elemBgSettingsControls = document.getElementById("background-settings-controls");
-const elemBgSettingsClose = document.getElementById("background-settings-close");
-const elemBgStats = document.getElementById("background-stats");
-const elemBgAnimationSelect = document.getElementById("background-settings-animation-select");
-const elemBgAnimationFps = document.getElementById("background-settings-animation-fps");
-const elemBgAnimationSize = document.getElementById("background-settings-animation-size");
-const elemBgColor = document.getElementById("background-settings-bg-color");
+let canvas = document.getElementById("background");
+const container = document.getElementById("background-container"),
+      content = document.getElementById("me"),
+      elemBgShow = document.getElementById("background-show"),
+      elemBgName = document.getElementById("background-name"),
+      elemBgDesc = document.getElementById("background-description"),
+      elemBgPrev = document.getElementById("background-previous"),
+      elemBgNext = document.getElementById("background-next"),
+      elemBgCode = document.getElementById("background-code"),
+      elemBgReset = document.getElementById("background-reset"),
+      elemBgRestart = document.getElementById("background-restart"),
+      elemBgPlayPause = document.getElementById("background-play-pause"),
+      elemBgSettings = document.getElementById("background-settings"),
+      elemBgSettingsControls = document.getElementById("background-settings-controls"),
+      elemBgSettingsClose = document.getElementById("background-settings-close"),
+      elemBgStats = document.getElementById("background-stats"),
+      elemBgAnimationSelect = document.getElementById("background-settings-animation-select"),
+      elemBgAnimationFps = document.getElementById("background-settings-animation-fps"),
+      elemBgAnimationResolution = document.getElementById("background-settings-animation-resolution"),
+      elemBgColor = document.getElementById("background-settings-bg-color"),
+      elemBgGetSettingsURL = document.getElementById("background-copy-settings-url");
 
+      
 if(canvas){
-
+    
     // Create the initial animation and initiate the animation loop
     // ---------------------------------------------------------------------------------------------------------------------
 
-    let animations = [
+    let allAnimations = [
         {class: ThreeNPlusOne, name: "3n+1"},
+        {class: BriansBrainAutomata, name: "brian's brain automata"},
         {class: Cardioids, name: "cardioids"},
         {class: CircularWaves, name: "circular waves"},
         //{class: Coding, name: "coding"},  // Disabled till finished
-        //{class: FiguresSpiral, name: "figures spiral"},  // Disabled since it's not that interesting
+        {class: DayAndNightAutomata, name: "day and night automata"},
+        {class: FiguresSpiral, name: "figures spiral", hide: true},  // Hide cause it's not that interesting
         {class: GameOfLife, name: "game of life"},
         {class: GameOfLifeIsometric, name: "isometric game of life"},
-        {class: Glitch, name: "glitch", startAnimation: false},  // Disable as a start animation, as it may not be visually pleasing for everyone
+        {class: GlitchAutomata, name: "glitch automata", startAnimation: false},  // Disable as a start animation, as it may not be visually pleasing for everyone
         {class: GradientDescent, name: "gradient descent"},
         {class: Matrix, name: "matrix rain"},
         {class: MLinPL, name: "ml in pl"},
         {class: Network, name: "network"},
-        //{class: NeuralNetwork, name: "neural network"}, // Disabled till updated
+        //{class: NeuralNetwork, name: "neural network"},  // Disabled till updated
         {class: NoisyLines, name: "noisy lines"},
         {class: ParticlesAndAttractors, name: "particles and attractors"},
         {class: ParticlesVortex, name: "particles vortex"},
@@ -148,59 +156,66 @@ if(canvas){
         {class: RockPaperScissorsAutomata, name: "rock-paper-scissors automata"},
         {class: SandAutomata, name: "sand automata"},
         {class: Quadtree, name: "quadtree", startAnimation: false}, // Disable as a start animation since it resources heavy
-        {class: RecursiveRectangles, name: "recursive rectangles", startAnimation: false}, // Disable as a start animation since it resources heavy
+        {class: RecursiveSquares, name: "recursive squares", startAnimation: false}, // Disable as a start animation since it resources heavy
         {class: SineWaves, name: "sine waves"},
         {class: ShortestPath, name: "shortest path"},
         {class: Sorting, name: "sorting"},
         {class: SpinningShapes, name: "spinning shapes"},
         {class: Spirograph, name: "spirograph"},
-        //{class: Vectors, name: "vectors"}, // Disabled cause it is not ready
-        //{class: TreeVisualization, name: "tree visualization"}, // Disabled cause it is not ready
+        {class: Vectors, name: "vectors", hide: true},  // Hide cause it's not that interesting
+        {class: TestShader, name: "test shader", hide: true},
+        {class: TestThreejs, name: "test Three.js", hide: true},
+        {class: TreeVisualization, name: "tree visualization", hide: true},  // Hide cause it's not that interesting
     ];
 
-    const animationCount = animations.length;
-    let animationId = Utils.randomInt(0, animationCount);
-    while(animations[animationId].startAnimation === false) animationId = Utils.randomInt(0, animationCount);
-
-    // Get the animation from url search params
-    const urlParams = new URLSearchParams(window.location.search);
-    if(urlParams.has("animation")){
-        const animationParam = urlParams.get("animation").replaceAll("-", " ");
-        for(let i = 0; i < animationCount; ++i){
-            if(animationParam === animations[i].name) animationId = i;
-        }
-    }
-
-    let animation = null,
-        order = Array.from({length: animationCount}, (x, i) => i);
-
-    Utils.randomShuffle(order);
-    for(let i = 0; i < animationCount; ++i){
-        animations[order[i]].prev = order[(i + animationCount - 1) % animationCount];
-        animations[order[i]].next = order[(i + 1) % animationCount];
-    }
+    // Define functions related to the animation loop and control
+    // ---------------------------------------------------------------------------------------------------------------------
 
     function getTime(){
         return Date.now();
         //return window.performance.now(); // Alternative method for measruing time
     }
 
-    function updateAnimation(newAnimationId) {
+    function updateAnimation(newAnimationId, newAnimationSettings = null) {
+        // Reset variables
         frames = 0;
         avgDrawTime = 0;
         avgElapsedTime = 0;
         animationId = newAnimationId;
+
+        // Create a new canvas
+        let newCanvas = canvas.cloneNode(false);
+        canvas.parentNode.replaceChild(newCanvas, canvas);
+        canvas = newCanvas;
+        if(registerMouseEvents) registerMouseEvents(canvas);
+
+        // Create a new animation
         animation = new animations[animationId].class(canvas, colors, colorsAlt, bgColor);
+        if(newAnimationSettings) animation.setSettings(newAnimationSettings);
         then = getTime();
         trueThen = then;
         animation.resize();
-        updateUI();
+        if(updateUI) updateUI();
     }
 
+    function updateAnimationResolution(sizeStr) {
+        resolution = sizeStr;
+        if(sizeStr !== "fit") {
+            fixedWidth = parseInt(resolution.split("x")[0]);
+            fixedHeight = parseInt(resolution.split("x")[1]);
+            canvas.classList.add("fixed-size");
+        }
+        else canvas.classList.remove("fixed-size");
+    }
+
+    function updateAnimationFps(fpsStr) {
+        fps = parseInt(fpsStr);
+        framesInterval = 1000 / fps;
+    }
 
     function checkResize() {
         // Detect the change of container's size for smooth resizing
-        if(resizeMode === "fit"){
+        if(resolution === "fit"){
             width = Math.max(container.parentElement.offsetWidth - canvas.offsetLeft);
             height = Math.max(container.parentElement.offsetHeight - canvas.offsetTop);
             if(width !== lastWidth || height !== lastHeight){
@@ -228,12 +243,12 @@ if(canvas){
 
             if(frames % fps === 0){
                 elemBgStats.innerHTML = `canvas resolution: ${canvas.width} x ${canvas.height}</br>
-                                        target frames interval: ${Math.round(framesInterval)} ms</br>
-                                        target fps: ${fps}</br>
-                                        avg. frames interval: ${Math.round(avgElapsedTime)} ms</br>
+                                        <i class="fa-solid fa-crosshairs"></i><i class="fa-solid fa-stopwatch"></i> target frames interval: ${Math.round(framesInterval)} ms</br>
+                                        <i class="fa-solid fa-crosshairs"></i> target fps: ${fps}</br>
+                                        <i class="fa-solid fa-stopwatch"></i> avg. frames interval: ${Math.round(avgElapsedTime)} ms</br>
                                         avg. fps: ${Math.round(1000 / avgElapsedTime)}</br>
-                                        avg. draw time: ${Math.round(avgDrawTime + 1)} ms</br>
-                                        possible fps: ${Math.round(1000 / avgDrawTime + 1)}`;
+                                        avg. draw time: ${Math.round(avgDrawTime)} ms`;
+                                        //`</br> possible fps: ${Math.round(1000 / avgDrawTime)}`;
             }
         }
     }
@@ -275,7 +290,34 @@ if(canvas){
         requestAnimationFrame(render);
     }
 
-    updateAnimation(animationId);
+
+    // Initialize the animation
+    let animations = allAnimations.filter((x) => !x.hide);  // Remove hidden animations
+    const animationCount = animations.length;
+    let animationId = Utils.randomInt(0, animationCount);
+    while(animations[animationId].startAnimation === false) animationId = Utils.randomInt(0, animationCount);
+
+    // Get the animation from url search params
+    const urlParams = new URLSearchParams(window.location.search);
+    if(urlParams.has("animation")){
+        const animationParam = urlParams.get("animation").replaceAll("-", " ").replaceAll("_", " ");
+        for(let i = 0; i < animationCount; ++i)
+            if(animationParam === animations[i].name) animationId = i;
+    }
+    if(urlParams.has("resolution")) updateAnimationResolution(urlParams.get("resolution"));
+    if(urlParams.has("fps")) updateAnimationFps(urlParams.get("fps"));
+    if(urlParams.has("bgColor")) bgColor = urlParams.get("bgColor");
+
+    let animation = null,
+        order = Array.from({length: animationCount}, (x, i) => i);
+
+    Utils.randomShuffle(order);
+    for(let i = 0; i < animationCount; ++i){
+        animations[order[i]].prev = order[(i + animationCount - 1) % animationCount];
+        animations[order[i]].next = order[(i + 1) % animationCount];
+    }
+
+    updateAnimation(animationId, urlParams);
     render();
 
 
@@ -290,24 +332,23 @@ if(canvas){
         return {x: x, y: y};
     }
 
-    let eventNames = {
-        "click": "click",
-        "mousedown": "down",
-        "touchstart": "down",
-        "mousemove": "move",
-        "touchmove": "move",
-        "mouseup": "up",
-        "touchend": "up",
-    };
+    function registerMouseEvents(canvas){
+        const eventMapping = {
+            "click": "click",
+            "mousedown": "down",
+            "touchstart": "down",
+            "mousemove": "move",
+            "touchmove": "move",
+            "mouseup": "up",
+            "touchend": "up",
+        };
 
-    ["click", "mousedown", "touchstart", "mousemove", "touchmove", "mouseup", "touchend"].forEach(function(eventName){
-        canvas.addEventListener(eventName, function (e) {
-            const cords = getRelativeCursorPosition(canvas, e);
-            //console.log(`${eventName}!: ${cords.x}, ${cords.y}`)
-            animation.mouseAction(getRelativeCursorPosition(canvas, e), eventNames[eventName]);
-        })
-    });
-
+        Object.keys(eventMapping).forEach(function(eventName){
+            canvas.addEventListener(eventName, function (e) {
+                animation.mouseAction(getRelativeCursorPosition(canvas, e), eventMapping[eventName]);
+            })
+        });
+    }
 
     // Control functions
     // ---------------------------------------------------------------------------------------------------------------------
@@ -390,32 +431,54 @@ if(canvas){
         });
     }
 
-    // Animation canvas size options
-    if(elemBgAnimationSize) {
-        const animationSizes = ["fit", "512x512", "800x600", "1024x768", "1024x1024", "1280x720","1600x1200", "1920x1080", "2048x2048"];
-        const animationSizeDefault = "fit";
-        elemBgAnimationSize.innerHTML = "";
-        for(let size of animationSizes) {
-            if (size === animationSizeDefault) elemBgAnimationSize.innerHTML += `<option selected value="${size}">${size}</option>`;
-            else elemBgAnimationSize.innerHTML += `<option value="${size}">${size}</option>`;
-        }
-        elemBgAnimationSize.addEventListener("input", function (e) {
-            resizeMode = e.target.value;
-            if(resizeMode !== "fit") {
-                fixedWidth = parseInt(resizeMode.split("x")[0]);
-                fixedHeight = parseInt(resizeMode.split("x")[1]);
-                canvas.classList.add("fixed-size");
+    if(elemBgGetSettingsURL) {
+        elemBgGetSettingsURL.addEventListener("click", function (){
+            // Create URL with animation params
+            let url = window.location.href.split("?")[0];
+            url += `?animation=${animations[animationId].name.replaceAll(" ", "-")}`
+            if(resolution !== "fit") url += `&resolution=${resolution}`;
+            if(fps !== 30) url += `&fps=${fps}`;
+            if(bgColor !== "#FFFFFF") url += `&bgColor=${bgColor}`;
+            url += `&${animation.getURLParams()}`;
+
+            // Copy to clipboard
+            navigator.clipboard.writeText(url);
+            
+            // Alert about the copied URL
+            alert("URL copied to clipboard!");
+        });
+    }
+
+    function buildOptionList(options, selected){
+        let optionsList = "",
+            selectedFound = false;
+        for(let opt of options) {
+            optionsList += "<option ";
+            if (opt === selected) {
+                optionsList += "selected ";
+                selectedFound = true;
             }
-            else canvas.classList.remove("fixed-size");
+            optionsList += `value="${opt}">${opt}</option>`;
+        }
+        if(!selectedFound) optionsList += `<option selected value="${selected}">custom (${selected})</option>`;
+        return optionsList;
+    }
+
+    // Animation canvas size options
+    if(elemBgAnimationResolution) {
+        const animationSizes = ["fit", "512x512", "800x600", "1024x768", "1024x1024", "1280x720","1600x1200", "1920x1080", "2048x2048"];
+        elemBgAnimationResolution.innerHTML = buildOptionList(animationSizes, resolution);
+        elemBgAnimationResolution.addEventListener("input", function (e) {
+            updateAnimationResolution(e.target.value)
         });
     }
 
     // Animation FPS option
     if(elemBgAnimationFps) {
-        elemBgAnimationFps.innerHTML = '<option value="15">15</option><option selected value="30">30</option><option value="60">60</option>';
+        const fpsOptions = [5, 15, 30, 60];
+        elemBgAnimationFps.innerHTML = buildOptionList(fpsOptions, fps);
         elemBgAnimationFps.addEventListener("input", function (e) {
-            fps = parseInt(e.target.value);
-            framesInterval = 1000 / fps;
+            updateAnimationFps(e.target.value);
         });
     }
 
@@ -520,12 +583,17 @@ if(canvas){
                 replaceStr: urlReplaceStrFormat('\$1', '\$3', '<i class="fa fa-github"></i> \$2', '\$4'), 
                 regexp: /(.*)\[(.*)\]\((https?:\/\/(?:www\.)?github\.com\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*))\)(.*)/g
             },
+            // Internal urls
+            {
+                replaceStr: urlReplaceStrFormat('\$1', '\$3', '\$2', '\$4'), 
+                regexp: /(.*)\[(.*)\]\((https?:\/\/(?:www\.)?mwydmuch\.pl\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*))\)(.*)/g
+            },
             // Other Markdown urls
             {
                 replaceStr: urlReplaceStrFormat('\$1', '\$3', '<i class="fas fa-link"></i> \$2', '\$4'),
                 regexp: /(.*)\[(.*)\]\((https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*))\)(.*)/g
             },
-            // lose urls
+            // Lose urls
             {
                 replaceStr: urlReplaceStrFormat('\$1', '\$2', '<i class="fas fa-link"></i> \$2', '\$3'),
                 regexp: /(.*)[^"](https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*))[^"](.*)/g
@@ -535,6 +603,9 @@ if(canvas){
         for(let r of regexpToReplace){
             description = description.replaceAll(r.regexp, r.replaceStr);
         }
+
+        // Replace ^- with </br>-
+        description = description.replaceAll("\n- ", "</br>- ");
 
         // Replace new lines \n with </br>
         description = description.trim().replaceAll("\n\n", "</p><p>");
@@ -579,11 +650,15 @@ if(canvas){
                     return;
                 }
 
+                //const value = animation[setting.prop], 
+                // This is hack to make accessing arraies easier.
                 const value = eval(`animation.${setting.prop}`),
                       elemId = getPropId(setting.prop) + "-controls";
                 
-                let name = getPropId(setting.prop).replaceAll('-', ' ');
-                if (setting.name) name = setting.name;
+                let name = ""; 
+                if (setting.icon) name += setting.icon + " ";
+                if (setting.name) name += setting.name;
+                else name += getPropId(setting.prop).replaceAll('-', ' ');
 
                 let optionControls = `<div><span class="setting-name">${name}</span><span class="nowrap setting-value-control">`;
 
@@ -628,12 +703,14 @@ if(canvas){
                             if (e.target.parentNode.nextElementSibling !== null && 
                                 e.target.parentNode.nextElementSibling.type === "output")
                                 e.target.parentNode.nextElementSibling.value = e.target.checked;
+                            //animation[setting.prop] = e.target.checked;
                             eval(`animation.${setting.prop} = e.target.checked;`);
                         } else {
                             if(e.target.nextElementSibling !== null && e.target.nextElementSibling.type === "output") e.target.nextElementSibling.value = e.target.value;
                             let value = e.target.value;
-                            if (setting.type === "int") value = parseInt(e.target.value);
-                            else if (setting.type === "float") value = parseFloat(e.target.value);
+                            if (setting.type === "int") value = parseInt(value);
+                            else if (setting.type === "float") value = parseFloat(value);
+                            //animation[setting.prop] = value;
                             eval(`animation.${setting.prop} = value;`);
                         }
                         if (setting.toCall) animation[setting.toCall]();
@@ -644,5 +721,4 @@ if(canvas){
             });
         }
     }
-
 } // if(canvas)

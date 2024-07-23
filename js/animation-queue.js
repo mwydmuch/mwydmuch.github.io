@@ -1,4 +1,9 @@
-// Simple class for managing animations
+'use strict';
+
+/*
+ * Simple class for managing animations.
+ */
+
 class AnimationQueue {
     constructor(){
         this.queue = [];
