@@ -59,6 +59,8 @@ class ShortestPath extends Animation {
         this.prev = null;
 
         this.pathLenght = 0;
+
+        this.setupMaze();
     }
 
     updateName(){
