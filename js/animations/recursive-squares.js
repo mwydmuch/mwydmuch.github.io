@@ -115,6 +115,7 @@ class RecursiveSquares extends Animation {
                 depth = 3, 
                 speed = 1, 
                 squareStyle = "padded stroke", 
+                blur = 1.0,
                 contain = false) {
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
         this.squaresPerSide = squaresPerSide;
@@ -122,6 +123,7 @@ class RecursiveSquares extends Animation {
         this.speed = speed;
         this.squareStyles = ["padded fill", "padded stroke", "stroke"];
         this.squareStyle = this.assignIfRandom(squareStyle, Utils.randomChoice(this.squareStyles));
+        this.blur = blur;
         this.contain = contain;
         this.createSquares();
     }
@@ -141,7 +143,10 @@ class RecursiveSquares extends Animation {
     }
 
     draw() {
-        this.clear();
+        if(this.blur){
+            this.fadeOut(this.blur)
+        } else this.clear();
+        
         let size = 0,
             fill = false,
             padding = false;
@@ -173,6 +178,7 @@ class RecursiveSquares extends Animation {
                 {prop: "speed", icon: '<i class="fa-solid fa-gauge-high"></i>', type: "float", step: 0.25, min: 0.5, max: 8},
                 {prop: "squareStyle", type: "select", values: this.squareStyles},
                 {prop: "contain", name: "contained fit", type: "bool"},
+                {prop: "blur", type: "float", step: 0.001, min: 0, max: 1},
                 this.getSeedSettings()];
     }
 }

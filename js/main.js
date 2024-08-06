@@ -11,7 +11,7 @@ const ThreeNPlusOne = require("./animations/3n+1"),
       BriansBrainAutomata = require("./animations/brians-brain-automata"),
       Cardioids = require("./animations/cardioids"),
       CircularWaves = require("./animations/circular-waves"),
-      Coding = require("./animations/coding"),
+//      Coding = require("./animations/coding"),
       DayAndNightAutomata = require("./animations/day-and-night-automata"),
       FiguresSpiral = require("./animations/figures-spiral"),
       GameOfLife = require("./animations/game-of-life"),
@@ -21,7 +21,7 @@ const ThreeNPlusOne = require("./animations/3n+1"),
       Matrix = require("./animations/matrix"),
       MLinPL = require("./animations/mlinpl"),
       Network = require("./animations/network"),
-//     NeuralNetwork = require("./animations/neural-network"),
+//      NeuralNetwork = require("./animations/neural-network"),
       NoisyLines = require("./animations/noisy-lines"),
       ParticlesAndAttractors = require("./animations/particles-and-attractors"),
       ParticlesVortex = require("./animations/particles-vortex"),
@@ -37,9 +37,13 @@ const ThreeNPlusOne = require("./animations/3n+1"),
       SpinningShapes = require("./animations/spinning-shapes"),
       Spirograph = require("./animations/spirograph"),
       Vectors = require("./animations/vectors"),
+      TreeVisualization = require("./animations/tree-visualization"),
+      // Shader animations
       TestShader = require("./shader-animations/test"),
-      TestThreejs = require("./threejs-animations/test"),
-      TreeVisualization = require("./animations/tree-visualization");
+      // Three.js animations
+//      Cubes = require("./threejs-animations/cubes"),
+      TestThreejs = require("./threejs-animations/test");
+
 
 
 // Globals
@@ -138,6 +142,7 @@ if(canvas){
         {class: Cardioids, name: "cardioids"},
         {class: CircularWaves, name: "circular waves"},
         //{class: Coding, name: "coding"},  // Disabled till finished
+        //{class: Cubes, name: "cubes"},  // Disabled till finished
         {class: DayAndNightAutomata, name: "day and night automata"},
         {class: FiguresSpiral, name: "figures spiral", hide: true},  // Hide cause it's not that interesting
         {class: GameOfLife, name: "game of life"},
@@ -156,16 +161,16 @@ if(canvas){
         {class: RockPaperScissorsAutomata, name: "rock-paper-scissors automata"},
         {class: SandAutomata, name: "sand automata"},
         {class: Quadtree, name: "quadtree", startAnimation: false}, // Disable as a start animation since it resources heavy
-        {class: RecursiveSquares, name: "recursive squares", startAnimation: false}, // Disable as a start animation since it resources heavy
+        {class: RecursiveSquares, name: "recursive squares"},
         {class: SineWaves, name: "sine waves"},
         {class: ShortestPath, name: "shortest path"},
         {class: Sorting, name: "sorting"},
         {class: SpinningShapes, name: "spinning shapes"},
         {class: Spirograph, name: "spirograph"},
-        {class: Vectors, name: "vectors", hide: true},  // Hide cause it's not that interesting
+        {class: Vectors, name: "vectors", hide: true},  // Hiden cause it's not that interesting
         {class: TestShader, name: "test shader", hide: true},
         {class: TestThreejs, name: "test Three.js", hide: true},
-        {class: TreeVisualization, name: "tree visualization", hide: true},  // Hide cause it's not that interesting
+        {class: TreeVisualization, name: "tree visualization", hide: true},  // Hiden cause it's not that interesting
     ];
 
     // Define functions related to the animation loop and control
@@ -242,12 +247,12 @@ if(canvas){
             avgDrawTime = (avgDrawTime * (sampleSize - 1) + drawTime) / sampleSize;
 
             if(frames % fps === 0){
-                elemBgStats.innerHTML = `canvas resolution: ${canvas.width} x ${canvas.height}</br>
-                                        <i class="fa-solid fa-crosshairs"></i><i class="fa-solid fa-stopwatch"></i> target frames interval: ${Math.round(framesInterval)} ms</br>
-                                        <i class="fa-solid fa-crosshairs"></i> target fps: ${fps}</br>
-                                        <i class="fa-solid fa-stopwatch"></i> avg. frames interval: ${Math.round(avgElapsedTime)} ms</br>
-                                        avg. fps: ${Math.round(1000 / avgElapsedTime)}</br>
-                                        avg. draw time: ${Math.round(avgDrawTime)} ms`;
+                elemBgStats.innerHTML = `<i class="fa-solid fa-display"></i> canvas resolution: ${canvas.width} x ${canvas.height}</br>
+                                         <i class="fa-solid fa-crosshairs"></i><i class="fa-solid fa-hourglass-half"></i> target frames interval: ${Math.round(framesInterval)} ms</br>
+                                         <i class="fa-solid fa-crosshairs"></i><i class="fa-solid fa-film"></i> target fps: ${fps}</br>
+                                         <i class="fa-solid fa-hourglass-half"></i> avg. frames interval: ${Math.round(avgElapsedTime)} ms</br>
+                                         <i class="fa-solid fa-film"></i> avg. fps: ${Math.round(1000 / avgElapsedTime)}</br>
+                                         <i class="fa-solid fa-stopwatch"></i> avg. draw time: ${Math.round(avgDrawTime)} ms`;
                                         //`</br> possible fps: ${Math.round(1000 / avgDrawTime)}`;
             }
         }

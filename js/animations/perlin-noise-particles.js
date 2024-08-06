@@ -19,7 +19,9 @@ class PerlinNoiseParticles extends Animation {
                 particlesSpeed = "random",
                 particlesSize = "random",
                 fadingSpeed = 0) {
-        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC); 
+              // "random", "2d", { alpha: false, willReadFrequently: true });
+              // Suggested by Chrome for frequent getImageData, but actually hurts performance.
 
         this.particlesDensity = particlesDensity;
         this.noiseScale = this.assignIfRandom(noiseScale, Utils.randomChoice([0.001, 0.002, 0.003]));

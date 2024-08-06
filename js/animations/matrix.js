@@ -23,6 +23,8 @@ class Matrix extends Animation {
                 fadingSpeed = 0.01,
                 glowEffect = true) {
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
+              //"random", "2d", { alpha: false, willReadFrequently: true }); 
+              // Suggested by Chrome for frequent getImageData, but actually hurts performance.
 
         this.dropsSize = dropsSize;
         this.dropsSpeed = dropsSpeed;
@@ -48,6 +50,34 @@ class Matrix extends Animation {
               oldItalic = "𐌀𐌁𐌂𐌃𐌄𐌅𐌆𐌇𐌈𐌉𐌊𐌋𐌌𐌍𐌎𐌏𐌐𐌑𐌒𐌓𐌔𐌕𐌖𐌗𐌘𐌙𐌚";
 
         this.characters = katakana + digits + symbols;
+        
+        // Prerender characters for better performance on Chrome
+        this.renderedCharacters = [];
+        this.prerenderCharacters();
+        this.usePrerenderElements = true;
+    }
+
+    setTextSetting(ctx){
+        ctx.font = `${this.dropsSize}px monospace`;
+        ctx.textAlign = "center"; // This helps with aligning flipped characters
+        ctx.textBaseline = "top"; // This nicely align characters in a cells
+    }
+
+    prerenderCharacter(char, flip){
+        const blurSize = Math.ceil(this.dropsSize / 10);
+        let offCtx = new OffscreenCanvas(this.cellWidth + 2 * blurSize, this.cellHeight + 2 * blurSize).getContext('2d', { alpha: true });
+        this.setTextSetting(offCtx);
+        this.drawCharacterCell(offCtx, char, this.cellWidth/2 + blurSize, blurSize, flip, false, false);
+        this.renderedCharacters.push(offCtx.canvas);
+    }
+
+    prerenderCharacters(){
+        this.renderedCharacters = [];
+
+        for(let i = 0; i < this.characters.length; ++i){
+            this.prerenderCharacter(this.characters[i], false);
+            this.prerenderCharacter(this.characters[i], true);
+        }
     }
 
     dropSpawnPoint(y){
@@ -58,36 +88,43 @@ class Matrix extends Animation {
         return (this.rand() < Math.pow(y / this.columnHeight, 2) * 0.1) || (y > this.columnHeight);
     }
 
-    drawCharacter(char, x, y){
-        this.ctx.fillStyle = this.colors[0];
+    drawCharacter(ctx, char, x, y){
+        ctx.fillStyle = this.colors[0];
         if(this.glowEffect){
-            this.ctx.filter = `blur(${this.dropsSize / 10}px)`;
-            this.ctx.fillText(char, x, y);
-            this.ctx.filter = "blur(0)";
-            this.ctx.fillStyle = this.colors[1];
+            ctx.filter = `blur(${this.dropsSize / 10}px)`;
+            ctx.fillText(char, x, y);
+            ctx.filter = "blur(0)";
+            ctx.fillStyle = this.colors[1];
         }
-        this.ctx.fillText(char, x, y);
+        ctx.fillText(char, x, y);
     }
 
-    drawCharacterCell(char, cellX, cellY){
-        this.ctx.fillStyle = this.bgColor;
-        this.ctx.fillRect(cellX - this.cellWidth/2, cellY, this.cellWidth, this.cellHeight);
+    drawCharacterCell(ctx, char, cellX, cellY, flip, fillBg=true, usePrerender=true){
+        if(fillBg){
+            ctx.fillStyle = this.bgColor;
+            ctx.fillRect(cellX - this.cellWidth/2, cellY, this.cellWidth, this.cellHeight);
+        }
 
-        if(this.rand() < this.flipProp){ // Randomly flip character
-            this.ctx.save();
-            this.ctx.translate(cellX, cellY);
-            this.ctx.scale(-1, 1);
-            this.drawCharacter(char, 0, 0);
-            this.ctx.restore();
-        } else this.drawCharacter(char, cellX, cellY);
+        if(usePrerender){
+            const blurSize = Math.ceil(this.dropsSize / 10);
+            let charIdx = this.characters.indexOf(char) * 2;
+            if(flip) ++charIdx;
+            ctx.drawImage(this.renderedCharacters[charIdx], cellX - this.cellWidth/2 - blurSize, cellY - blurSize);
+        } else {
+            if(flip){
+                ctx.save();
+                ctx.translate(cellX, cellY);
+                ctx.scale(-1, 1);
+                this.drawCharacter(ctx, char, 0, 0);
+                ctx.restore();
+            } else this.drawCharacter(ctx, char, cellX, cellY);
+        }
     }
 
     draw() {
         this.fadeOut(this.fadingSpeed);
 
-        this.ctx.font = `${this.dropsSize}px monospace`;
-        this.ctx.textAlign = "center"; // This helps with aligning flipped characters
-        this.ctx.textBaseline = "top"; // This nicely align characters in a cells
+        this.setTextSetting(this.ctx);
 
         for(let d of this.drops){
             if(Math.floor(d.y) !== Math.floor(d.y + this.dropsSpeed)){
@@ -95,14 +132,16 @@ class Matrix extends Animation {
                 const cellX = d.x * this.cellWidth + this.cellWidth / 2,
                       cellY = Math.floor(d.y) * this.cellHeight;
 
-                this.drawCharacterCell(d.char, cellX, cellY, this.textColor);
+                this.drawCharacterCell(this.ctx, d.char, cellX, cellY, this.rand() < this.flipProp, true, this.usePrerenderElements);
 
                 d.char = Utils.randomChoice(this.characters, this.rand);
                 if(this.dropDespawn(d.y)) d.y = this.dropSpawnPoint(d.y);
 
                 if(this.rand() < this.errorProp){
                     const yDiff = Utils.randomInt(-8, 8, this.rand);
-                    this.drawCharacterCell(Utils.randomChoice(this.characters, this.rand), cellX, Math.floor(yDiff + d.y) * this.cellHeight, this.textColor);
+                    this.drawCharacterCell(this.ctx, Utils.randomChoice(this.characters, this.rand), 
+                                           cellX, Math.floor(yDiff + d.y) * this.cellHeight, 
+                                           this.rand() < this.flipProp, true, this.usePrerenderElements);
                 }
             }
             else d.y += this.dropsSpeed;
@@ -126,6 +165,8 @@ class Matrix extends Animation {
                 this.drops.push({char: Utils.randomChoice(this.characters, this.rand), x: i, y: this.dropSpawnPoint(this.columnHeight)});
             }
         }
+
+        this.prerenderCharacters();
     }
 
     restart(){
@@ -135,6 +176,7 @@ class Matrix extends Animation {
 
     updateColors(colors, colorsAlt, bgColor) {
         super.updateColors(colors, colorsAlt, bgColor);
+        this.prerenderCharacters();
         this.restart();
     }
 
@@ -142,7 +184,8 @@ class Matrix extends Animation {
         return [{prop: "dropsSize", type: "int", min: 8, max: 64, toCall: "resize"},
                 {prop: "dropsSpeed", type: "float", min: 0, max: 1},
                 {prop: "fadingSpeed", type: "float", step: 0.01, min: 0, max: 0.15},
-                {prop: "glowEffect", icon: '<i class="fa-solid fa-lightbulb"></i>', type: "bool"},
+                {prop: "glowEffect", icon: '<i class="fa-solid fa-lightbulb"></i>', type: "bool", toCall: "prerenderCharacters"},
+                // {prop: "usePrerenderElements", type: "bool"},
                 this.getSeedSettings()
             ];
     }

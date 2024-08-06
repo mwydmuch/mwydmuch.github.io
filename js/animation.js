@@ -13,14 +13,17 @@ class Animation {
                 file = "",
                 description = "",
                 seed = "random",
-                contextType = "2d") {
+                contextType = "2d",
+                contextOptions = null) {
         console.log(`Starting ${name} animation`)
 
         this.canvas = canvas;
         if(contextType !== null){
-            this.ctx = canvas.getContext(contextType, { alpha: false });
+            if(contextOptions !== null) this.ctx = canvas.getContext(contextType, contextOptions);
+            else this.ctx = canvas.getContext(contextType, { alpha: false });
 
-            if (this.ctx) console.log(`${contextType} context obtained successfully`);
+            if (this.ctx) console.log(`${contextType} context obtained successfully with attributes 
+                                       ${JSON.stringify(this.ctx.getContextAttributes())}`);
             else console.error(`Unable to initialize ${contextType} context. Your browser may not support it.`);
         }
 

@@ -50,15 +50,23 @@ class GameOfLifeIsometric extends GameOfLife {
         this.xShift = this.cellSize * this.sqrt3 / 2;
         this.yShift = this.cellSize / 2;
 
-        // Prerender cubes for better performance
         this.renderedGrid = null;
+
+        // Prerender cubes for better performance
+        this.prerenderCubes();
         this.renderedCubes = [];
-        let offCtx = Utils.createOffscreenCanvas(4 * this.xShift, 4 * this.yShift).getContext('2d');
+
+        this.usePrerenderElements = true;
+    }
+
+    prerenderCubes(){
+        this.renderedCubes = [];
+        let offCtx = new OffscreenCanvas(4 * this.xShift, 4 * this.yShift).getContext('2d');
         this.drawIsoCube(offCtx, 0, 3 * this.yShift, true, true, this.colors, 0, this.cellSize);
         this.renderedCubes.push(offCtx.canvas);
 
         for(let i = 1; i < this.cellSize; ++i){
-            offCtx = Utils.createOffscreenCanvas(4 * this.xShift, 4 * this.yShift).getContext('2d');
+            offCtx = new OffscreenCanvas(4 * this.xShift, 4 * this.yShift).getContext('2d');
             this.drawIsoCube(offCtx, 0, 3 * this.yShift, true, true, this.colorsAlt, -i, this.cellSize);
             this.renderedCubes.push(offCtx.canvas);
         }
@@ -113,7 +121,7 @@ class GameOfLifeIsometric extends GameOfLife {
         this.drawIsoCube(this.ctx, isoX, isoY, !this.isAlive(x, y + 1), !this.isAlive(x + 1, y), colors, heightMod, this.cellSize - 2 * padding);
     }
 
-    drawGrid(ctx, x, y){
+    drawGrid(ctx){
         const westX = this.gridHeight * -this.xShift,
               westY = this.gridHeight * this.yShift,
               eastX = this.gridWidth * this.xShift,
@@ -125,7 +133,7 @@ class GameOfLifeIsometric extends GameOfLife {
         // Draw grid
         for (let i = 0; i < this.gridHeight; ++i) {
             const x = i * -this.xShift,
-                y = i * this.yShift;
+                  y = i * this.yShift;
             Utils.drawLine(ctx, x, y, x + eastX, y + eastY, 1, color);
             Utils.drawLine(ctx, -x, y, -x + westX, y + westY, 1, color);
         }
@@ -145,7 +153,7 @@ class GameOfLifeIsometric extends GameOfLife {
     }
 
     mouseCellCord(mouseX, mouseY) {
-
+        // Cancel mouse input for this animation
     }
 
     draw() {
@@ -154,9 +162,9 @@ class GameOfLifeIsometric extends GameOfLife {
         // Draw grid
         if(this.drawCellsGrid) {
             if (!this.renderedGrid) {
-                let offCtx = Utils.createOffscreenCanvas(this.canvas.width, this.canvas.height).getContext('2d');
+                let offCtx = new OffscreenCanvas(this.canvas.width, this.canvas.height).getContext('2d');
                 offCtx.translate(this.canvas.width / 2, (1 - this.gridSize) / 2 * this.canvas.height);
-                this.drawGrid(offCtx, 0, 0);
+                this.drawGrid(offCtx);
                 this.renderedGrid = offCtx.canvas;
             }
             this.ctx.drawImage(this.renderedGrid, 0, 0);
@@ -168,9 +176,10 @@ class GameOfLifeIsometric extends GameOfLife {
         for (let y = 0; y < this.gridHeight; ++y) {
             for (let x = 0; x < this.gridWidth; ++x) {
                 let cellVal = this.getVal(x, y);
-                if(this.fadeDeadCells && cellVal > -(this.cellSize - 2 * this.cellBasePadding))
-                    //this.drawCube(x, y, this.colorsAlt, Math.min(0, cellVal), this.cellBasePadding);
-                    this.drawPrerenderedCube(x, y, Math.max(0, -cellVal));
+                if(this.fadeDeadCells && cellVal > -(this.cellSize - 2 * this.cellBasePadding)){
+                    if(this.usePrerenderElements) this.drawPrerenderedCube(x, y, Math.max(0, -cellVal));
+                    else this.drawCube(x, y, this.colorsAlt, Math.min(0, cellVal), this.cellBasePadding);
+                }
                 else if (cellVal > 0) this.drawPrerenderedCube(x, y, 0);
             }
         }
@@ -179,20 +188,27 @@ class GameOfLifeIsometric extends GameOfLife {
     }
 
     resize() {
+        this.xShift = this.cellSize * this.sqrt3 / 2;
+        this.yShift = this.cellSize / 2;
+        
         // Fill the whole screen (bad performance on low spec computers/mobile devices)
         //const newGridSize = Math.ceil((this.canvas.height + this.isoH) / this.cellSize);
         const smallerSize = Math.min(this.canvas.width, this.canvas.height),
               newGridSize = Math.ceil(this.gridSize * smallerSize / this.cellSize);
+
         this.resizeGrid(newGridSize, newGridSize);
         this.renderedGrid = null;
+        this.prerenderCubes();
     }
 
     getSettings() {
         return [{prop: "loopGrid", type: "bool"},
                 {prop: "fadeDeadCells", type: "bool"},
                 {prop: "drawCellsGrid", type: "bool"},
-                {prop: "gridSize", type: "float", step: 0.01, min: 0, max: 2, toCall: "resize"},
+                {prop: "gridSize", type: "float", step: 0.01, min: 0, max: 2.5, toCall: "resize"},
+                {prop: "cellSize", type: "int", min: 8, max: 32, toCall: "resize"},
                 {prop: "spawnProb", icon: '<i class="fa-solid fa-dice"></i>', type: "float", step: 0.01, min: 0, max: 1, toCall: "restart"},
+                // {prop: "usePrerenderElements", type: "bool"},
                 this.getSeedSettings()];
     }
 }

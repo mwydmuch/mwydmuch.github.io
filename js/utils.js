@@ -315,13 +315,6 @@ module.exports = {
         return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     },
 
-    createOffscreenCanvas(width, height){
-        let canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        return canvas;
-    },
-
     // Set operations
     isSuperset(set, subset) {
         for (const elem of subset) {
