@@ -26,6 +26,7 @@ const ThreeNPlusOne = require("./animations/3n+1"),
       ParticlesAndAttractors = require("./animations/particles-and-attractors"),
       ParticlesVortex = require("./animations/particles-vortex"),
       ParticlesWaves = require("./animations/particles-waves"),
+      PerlinNoiseGrid = require("./animations/perlin-noise-grid"),
       PerlinNoiseParticles = require("./animations/perlin-noise-particles"),
       RockPaperScissorsAutomata = require("./animations/rock-paper-scissors-automata"),
       SandAutomata = require("./animations/sand-automata"),
@@ -50,7 +51,7 @@ const ThreeNPlusOne = require("./animations/3n+1"),
 // ---------------------------------------------------------------------------------------------------------------------
 
 let fps = 30,
-    framesInterval = 1000 / fps,
+    framesIntervalMs = 1000 / fps,
     then = 0,
     paused = false,
     width = 0,
@@ -64,8 +65,8 @@ let fps = 30,
 // For stats
 let sampleSize = 30,
     frames = 0,
-    avgDrawTime = 0,
-    avgElapsedTime = 0,
+    avgDrawTimeMs = 0,
+    avgElapsedTimeMs = 0,
     trueThen = 0;
 
 const bgColors = {
@@ -157,7 +158,8 @@ if(canvas){
         {class: ParticlesAndAttractors, name: "particles and attractors"},
         {class: ParticlesVortex, name: "particles vortex"},
         {class: ParticlesWaves, name: "particles waves"},
-        {class: PerlinNoiseParticles, name: "perlin noise"},
+        {class: PerlinNoiseGrid, name: "perlin noise grid"},
+        {class: PerlinNoiseParticles, name: "perlin noise particles"},
         {class: RockPaperScissorsAutomata, name: "rock-paper-scissors automata"},
         {class: SandAutomata, name: "sand automata"},
         {class: Quadtree, name: "quadtree", startAnimation: false}, // Disable as a start animation since it resources heavy
@@ -168,7 +170,7 @@ if(canvas){
         {class: SpinningShapes, name: "spinning shapes"},
         {class: Spirograph, name: "spirograph"},
         {class: Vectors, name: "vectors", hide: true},  // Hiden cause it's not that interesting
-        {class: TestShader, name: "test shader", hide: true},
+        {class: TestShader, name: "test shader", hide: false},
         {class: TestThreejs, name: "test Three.js", hide: true},
         {class: TreeVisualization, name: "tree visualization", hide: true},  // Hiden cause it's not that interesting
     ];
@@ -215,7 +217,7 @@ if(canvas){
 
     function updateAnimationFps(fpsStr) {
         fps = parseInt(fpsStr);
-        framesInterval = 1000 / fps;
+        framesIntervalMs = 1000 / fps;
     }
 
     function checkResize() {
@@ -240,19 +242,20 @@ if(canvas){
         lastHeight = canvas.height;
     }
 
-    function updateStats(timeElapsed, drawTime) {
+    function updateStats(timeElapsedMs, drawTimeMs) {
         if(elemBgStats) {
             ++frames;
-            avgElapsedTime = (avgElapsedTime * (sampleSize - 1) + timeElapsed) / sampleSize;
-            avgDrawTime = (avgDrawTime * (sampleSize - 1) + drawTime) / sampleSize;
+            avgElapsedTimeMs = (avgElapsedTimeMs * (sampleSize - 1) + timeElapsedMs) / sampleSize;
+            avgDrawTimeMs = (avgDrawTimeMs * (sampleSize - 1) + drawTimeMs) / sampleSize;
 
             if(frames % fps === 0){
                 elemBgStats.innerHTML = `<i class="fa-solid fa-display"></i> canvas resolution: ${canvas.width} x ${canvas.height}</br>
-                                         <i class="fa-solid fa-crosshairs"></i><i class="fa-solid fa-hourglass-half"></i> target frames interval: ${Math.round(framesInterval)} ms</br>
+                                         <i class="fa-solid fa-crosshairs"></i><i class="fa-solid fa-hourglass-half"></i> target frames interval: ${Math.round(framesIntervalMs)} ms</br>
                                          <i class="fa-solid fa-crosshairs"></i><i class="fa-solid fa-film"></i> target fps: ${fps}</br>
-                                         <i class="fa-solid fa-hourglass-half"></i> avg. frames interval: ${Math.round(avgElapsedTime)} ms</br>
-                                         <i class="fa-solid fa-film"></i> avg. fps: ${Math.round(1000 / avgElapsedTime)}</br>
-                                         <i class="fa-solid fa-stopwatch"></i> avg. draw time: ${Math.round(avgDrawTime)} ms`;
+                                         <i class="fa-solid fa-hourglass-half"></i> avg. frames interval: ${Math.round(avgElapsedTimeMs)} ms</br>
+                                         <i class="fa-solid fa-film"></i> avg. fps: ${Math.round(1000 / avgElapsedTimeMs)}</br>
+                                         <i class="fa-solid fa-stopwatch"></i> avg. draw time: ${Math.round(avgDrawTimeMs)} ms</br>
+                                         (over last ${sampleSize} frames)`;
                                         //`</br> possible fps: ${Math.round(1000 / avgDrawTime)}`;
             }
         }
@@ -262,20 +265,20 @@ if(canvas){
         if(paused) return;
 
         const now = getTime();
-        let timeElapsed = now - then;
+        let timeElapsedMs = now - then; // Get the time since the last frame in ms
         
         // Stop animation when tab is not visible to save resources
         if(document.hidden){
             trueThen = now;
             then = now;
-            timeElapsed = 0;
+            timeElapsedMs = 0;
         }
 
         // Limit framerate
-        if (timeElapsed >= framesInterval) {
+        if (timeElapsedMs >= framesIntervalMs) {
             // Get ready for the next frame by setting then=now,
             // also, adjust for the screen refresh rate
-            then = now - (timeElapsed % framesInterval);
+            then = now - (timeElapsedMs % framesIntervalMs);
             
             const drawStart = getTime();
 
@@ -283,12 +286,12 @@ if(canvas){
             checkResize();
 
             // Update the current animation and redraw the frame
-            animation.update(timeElapsed);
+            animation.update(timeElapsedMs);
             animation.draw();
 
             // Update the stats
-            const drawTime = getTime() - drawStart;
-            updateStats(now - trueThen, drawTime);
+            const drawTimeMs = getTime() - drawStart;
+            updateStats(now - trueThen, drawTimeMs);
             trueThen = now;
         }
 

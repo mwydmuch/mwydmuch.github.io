@@ -16,6 +16,7 @@ class ShaderAnimation extends Animation {
 
         const vertexShaderSource = `
             attribute vec4 aVertexPosition;
+
             void main(void) {
                 gl_Position = aVertexPosition;
             }

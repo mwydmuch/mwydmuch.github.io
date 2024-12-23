@@ -2,6 +2,7 @@
 
 const NAME = "recursive squares",
       FILE = "recursion-squares.js",
+      TAGS = ["framerate-independent", "2d", "recursive"],
       DESC = `
 Simple recursive animation. 
 Each rectangle contains three smaller squares, which move around.

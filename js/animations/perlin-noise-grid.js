@@ -1,11 +1,11 @@
 'use strict';
 
 // TODO: Improve this description
-const NAME = "particles moving through Perlin noise",
-      FILE = "perlin-noise-particles.js",
-      TAGS = ["framerate-independent", "2d", "perlin noise", "particles"],
+const NAME = "visualization of Perlin noise",
+      FILE = "perlin-noise-grid.js",
+      TAGS = ["framerate-independent", "2d", "perlin noise", "grid"],
       DESC = `
-Particles moving through Perlin noise.
+Grid of particles visualizing Perlin noise.
 
 Coded with no external dependencies, using only canvas API.
 `;
@@ -13,34 +13,38 @@ Coded with no external dependencies, using only canvas API.
 const Animation = require("../animation");
 const Utils = require("../utils");
 
-class PerlinNoiseParticles extends Animation {
+class PerlinNoiseGrid extends Animation {
     constructor(canvas, colors, colorsAlt, bgColor,
-                particlesDensity = 0.0007,
-                noiseScale = "random",
-                particlesSpeed = "random",
-                particlesSize = "random",
-                fadingSpeed = 0) {
-        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC); 
-        // "random", "2d", { alpha: false, willReadFrequently: true });
-        // Suggested by Chrome for frequent getImageData, but actually hurts performance.
+                cellSize = 12,
+                cellStyle = "square",
+                noiseScale = 0.002,
+                noiseSpeed = {x: "random", y: "random", z: 1}
+            ) {
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
+        this.pointsDensity = pointsDensity;
+        this.drawPoints = drawPoints;
+        this.maxPointsInNode = maxPointsInNode;
+        this.noiseThreshold = noiseThreshold;
+        this.drawLeafNodes = drawLeafNode;
 
-        this.particlesDensity = particlesDensity;
-        this.noiseScale = this.assignIfRandom(noiseScale, Utils.randomChoice([0.001, 0.002, 0.003]));
+        this.noiseScale = noiseScale;
+        this.noiseSpeed = noiseSpeed;
+        this.noisePos = {x: 0, y: 0, z: 0};
+        this.noiseSpeed.x = this.assignIfRandom(this.noiseSpeed.x, Utils.round(Utils.randomRange(-1, 1), 1));
+        this.noiseSpeed.y = this.assignIfRandom(this.noiseSpeed.y, Utils.round(Utils.randomRange(-1, 1), 1));
 
-        this.particlesSpeed = this.assignIfRandom(particlesSpeed, Utils.randomChoice([1, 1.5, 2]));
-        this.particlesSize = this.assignIfRandom(particlesSize, Utils.randomChoice([1, 1.5, 2]));
-        this.fadingSpeed = fadingSpeed;
+        this.minNodeSize = 4;
 
         this.width = 0;
         this.height = 0;
-        this.particles = [];
-        this.imageData = null;
+        this.noisePos = {x: 0, y: 0, z: 0};
     }
 
-    update(elapsedMs) {
-        const elapsedSec = super.update(elapsedMs);
+    update(elapsed) {
+        this.time += elapsed / 1000;
+        ++this.frame;
         let updates = 1,
-            particlesSpeed = this.particlesSpeed * elapsedSec * 1000 / 30;
+            particlesSpeed = this.particlesSpeed;
 
         while(particlesSpeed > 1.0){
             particlesSpeed /= 2;
@@ -72,24 +76,7 @@ class PerlinNoiseParticles extends Animation {
         this.imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    spawnParticles(x, y, width, height) {
-        let newParticles = width * height * this.particlesDensity;
 
-        // Create new particles
-        for(let i = 0; i < newParticles; i++){
-            const particleX = this.rand() * width + x,
-                  particleY = this.rand() * height + y;
-            this.particles.push({
-                x: particleX,
-                y: particleY,
-                prevX: particleX,
-                prevY: particleY,
-                speed: this.rand() * 0.20 + 0.10,
-                radius: this.rand() * 0.5 + 0.5,
-                color: Utils.randomChoice(this.colors, this.rand)
-            });
-        }
-    }
 
     restart(){
         super.restart();
@@ -132,10 +119,10 @@ class PerlinNoiseParticles extends Animation {
         return [{prop: "noiseScale", type: "float", step: 0.001, min: 0.001, max: 0.01, toCall: "restart"},
                 {prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.005, toCall: "restart"},
                 {prop: "particlesSpeed", type: "float", min: 0.25, max: 32},
-                {prop: "particlesSize", type: "float", step: 0.1, min: 1, max: 4},
+                {prop: "cellSize", type: "float", step: 0.1, min: 1, max: 4},
                 {prop: "fadingSpeed", type: "float", step: 0.0001, min: 0, max: 0.01},
                 this.getSeedSettings()];
     }
 }
 
-module.exports = PerlinNoiseParticles;
+module.exports = PerlinNoiseGrid;

@@ -2,6 +2,7 @@
 
 const NAME = "sand automata",
       FILE = "sand-automata.js",
+      TAGS = ["framerate-dependent", "2d", "cellular automata", "sand"],
       DESC = `
 The visualization of a sand automata, that is a simple model of falling sand.
 

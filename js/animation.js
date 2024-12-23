@@ -40,8 +40,11 @@ class Animation {
         this.description = description;
 
         // Time variables
-        this.time = 0;
-        this.frame = 0;
+        this.realTimeMs = 0; // Real time in milliseconds
+        this.realTime = 0; // Real time in seconds
+        this.timeMs = 0 // Time in milliseconds
+        this.time = 0; // Time in seconds
+        this.frame = 0; // Frame count
         this.speed = 1;
 
         // Noise, it is frequently used by many animations
@@ -122,17 +125,22 @@ class Animation {
     }
 
     getCodeUrl(){
-        return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/js/animations" + this.file;
+        return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/js/animations/" + this.file;
     }
 
     getDescription(){
         return this.description;
     }
 
-    update(elapsed){
+    update(elapsedMs){
         // By default just update timer and frame count
-        this.time += elapsed / 1000 * this.speed;
+        let elapsed = elapsedMs / 1000;
+        this.realTimeMs += elapsedMs;
+        this.realTime += elapsed;
+        this.timeMs += elapsedMs * this.speed;
+        this.time += elapsed * this.speed;
         ++this.frame;
+        return elapsed;
     }
 
     resize(){

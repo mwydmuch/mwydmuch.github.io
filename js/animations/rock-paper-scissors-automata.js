@@ -2,6 +2,7 @@
 
 const NAME = "rock-paper-scissors automata",
       FILE = "rock-paper-scissors-automata.js",
+      TAGS = ["framerate-dependent", "2d", "cellular automata", "rock-paper-scissors"],
       DESC = `
 Rock-paper-scissors automata.
 
