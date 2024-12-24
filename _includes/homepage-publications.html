@@ -31,7 +31,7 @@
                                 {% elsif link.type == "paper+supp-pdf" %}
                                     {% assign link_text = '<i class="fa fa-file-pdf"></i> paper+supp.' %}
                                 {% elsif link.type == "poster-pdf" %}
-                                    {% assign link_text = '<i class="fa-custom fa-poster-board"></i> poster' %}            
+                                    {% assign link_text = '<i class="fa-custom fa-poster-board" aria-hidden="true"></i> poster' %}            
                                 {% elsif link.type == "github" %}
                                     {% assign link_text = '<i class="fa fa-github"></i> code' %}
                                 {% elsif link.type == "website" %}
@@ -39,9 +39,9 @@
                                 {% elsif link.type == "docs" %}
                                     {% assign link_text = '<i class="fa fa-book"></i> docs' %}
                                 {% elsif link.type == "bibtex" %}
-                                    {% assign link_text = '<i class="fa-custom fa-books"></i> bibtex' %}
+                                    {% assign link_text = '<i class="fa-custom fa-books" aria-hidden="true"></i> bibtex' %}
                                 {% elsif link.type == "arxiv" %}
-                                    {% assign link_text = '<i class="fa-custom fa-arxiv"></i> arxiv' %}
+                                    {% assign link_text = '<i class="fa-custom fa-arxiv" aria-hidden="true"></i> arxiv' %}
                                 {% endif %}
                                 <span class="nowrap">[<a href="{{ link.url }}">{{ link_text }}</a>]</span>
                             {% endfor %}

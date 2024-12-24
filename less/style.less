@@ -35,7 +35,11 @@
 @farama-green: #05505B;
 @vowpal-wabbit-pink: #FF81F9;
 @baby-pink: #FAAF9C;
-@color-names: main, second, mlinpl-red, ghost-red, mlss-blue, mlinpl-purple, put-blue, yahoo-purple, vizdoom-red, openai-blue, farama-green, vowpal-wabbit-pink, baby-pink, background;
+@snowflake-blue: #29B5E8;
+@color-names: 
+  main, second, mlinpl-red, ghost-red, mlss-blue, mlinpl-purple, 
+  put-blue, yahoo-purple, vizdoom-red, openai-blue, farama-green, 
+  vowpal-wabbit-pink, baby-pink, snowflake-blue, background;
 
 
 // Others
@@ -237,6 +241,8 @@ ul{
   position: relative;
   top: 0.15em;
   background-color: @main;
+  mask-size: contain;
+  -webkit-mask-size: contain;
 }
 
 .fa-arxiv {
@@ -269,6 +275,18 @@ ul{
 .fa-rabbit {
   mask: url(/assets/icons/rabbit.svg);
   -webkit-mask: url(/assets/icons/rabbit.svg);
+}
+
+.fa-snowflake {
+  mask: url(/assets/icons/snowflake.svg);
+  -webkit-mask: url(/assets/icons/snowflake.svg);
+  top: 0.175em;
+}
+
+.fa-mlinpl {
+  mask: url(/assets/icons/mlinpl.svg);
+  -webkit-mask: url(/assets/icons/mlinpl.svg);
+  mask-size: contain;
 }
 
 

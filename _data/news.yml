@@ -1,10 +1,27 @@
+# - date: '01.2025'
+#   text: >-
+#     With a new version 1.3.0, <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i>&nbsp;ViZDoom</a></span> library,
+#     reached the status of Mature Farama Enviroment.
+
+- date: '11.2024'
+  text: >-
+    <span class="reverse-mlinpl-red"><i class="fa-custom fa-mlinpl" aria-hidden="true"></i>&nbsp;<a href="https://conference2024.mlinpl.org/">ML in PL Conference 2024</a></span> 
+    and <span class="reverse-mlinpl-red"><a href="https://aiart.mlinpl.org/">ML in PL AI Art Festival</a></span> 
+    that I co-organized, took place in Warsaw.
+
+- date: '08.2024'
+  text: >-
+    I joined <span class="reverse-snowflake-blue nowrap"><i class="fa-custom fa-snowflake" aria-hidden="true"></i>&nbsp;<a href="https://www.snowflake.com/en/">Snowflake AI Research, Poland</a></span> as Research Scientist
+
 - date: '05.2024'
   text: >-
-    Our paper titled "A General Online Algorithm for Optimizing Complex Performance Metrics" was accepted to <span class="reverse-second nowrap"><i class="fa-solid fa-star"></i> ICML 2024</span> [<a href="#publication-icml-2024"><i class="fa-solid fa-file-lines"></i> paper</a>]. 
+    Our paper titled "A General Online Algorithm for Optimizing Complex Performance Metrics" was accepted to 
+    <span class="reverse-second nowrap"><i class="fa-solid fa-star"></i> ICML 2024</span> [<a href="#publication-icml-2024"><i class="fa-solid fa-file-lines"></i> paper</a>]. 
 
 - date: '01.2024'
   text: >-
-    Our paper titled "Consistent algorithms for multi-label classification with macro-at-k metrics" was accepted to <span class="reverse-second nowrap"><i class="fa-solid fa-star"></i> ICLR 2024</span> [<a href="#publication-iclr-2024"><i class="fa-solid fa-file-lines"></i> paper</a>]. 
+    Our paper titled "Consistent algorithms for multi-label classification with macro-at-k metrics" was accepted to 
+    <span class="reverse-second nowrap"><i class="fa-solid fa-star"></i> ICLR 2024</span> [<a href="#publication-iclr-2024"><i class="fa-solid fa-file-lines"></i> paper</a>]. 
 
 # - date: '11.2023'
 #   text: >-
@@ -12,31 +29,38 @@
 
 - date: '10.2023'
   text: >-
-    <span class="reverse-mlinpl-red"><a href="https://conference2023.mlinpl.org/">ML in PL Conference 2023</a></span>, that I co-organized, took place in Warsaw.
+    <span class="reverse-mlinpl-red"><i class="fa-custom fa-mlinpl" aria-hidden="true"></i>&nbsp;<a href="https://conference2023.mlinpl.org/">ML in PL Conference 2023</a></span>, 
+    that I co-organized, took place in Warsaw.
 
 - date: '09.2023'
   text: >-
-    Our paper titled "Generalized test utilities for long-tail performance in extreme multi-label classification" was accepted to <span class="reverse-second nowrap"><i class="fa-solid fa-star"></i> NeurIPS 2023</span> [<a href="#publication-neurips-2023"><i class="fa-solid fa-file-lines"></i> paper</a>].
+    Our paper titled "Generalized test utilities for long-tail performance in extreme multi-label classification" was accepted to 
+    <span class="reverse-second nowrap"><i class="fa-solid fa-star"></i> NeurIPS 2023</span> [<a href="#publication-neurips-2023"><i class="fa-solid fa-file-lines"></i> paper</a>].
 
 - date: '06.2023'
   text: >-
-    <span class="reverse-mlss-blue"><a href="https://mlss2023.mlinpl.org/"><i class="fa-solid fa-school"></i> MLSS^S 2023 (Machine Learning Summer School on Applications in Science)</a></span> that I co-organized took place at Jagiellonian University in Kraków.
+    <span class="reverse-mlss-blue"><a href="https://mlss2023.mlinpl.org/"><i class="fa-solid fa-school"></i> MLSS^S 2023 (Machine Learning Summer School on Applications in Science)</a></span> 
+    that I co-organized, took place at Jagiellonian University in Kraków.
 
 - date: '05.2023'
   text: >-
-    A new version of <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i>&nbsp;ViZDoom</a></span> (1.2.0) library was released with official <span class="reverse-openai-blue"><a href="https://gymnasium.farama.org/"><i class="fa fa-dumbbell"></i>&nbsp;Gymnasium</a></span> wrapper, support for ARM/Arch64 architectures including M1/M2 Macs and other improvments.
+    A new version of <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i>&nbsp;ViZDoom</a></span> (1.2.0) library 
+    was released with official <span class="reverse-openai-blue"><a href="https://gymnasium.farama.org/"><i class="fa fa-dumbbell"></i>&nbsp;Gymnasium</a></span> wrapper, support for ARM/Arch64 architectures including M1/M2 Macs and other improvments.
 
 - date: '02.2023'
   text: >-
-    A new version of <span class="reverse-vowpal-wabbit-pink"><a href="https://vowpalwabbit.org/"><i class="fa-custom fa-rabbit"></i>&nbsp;Vowpal Wabbit</a></span> (9.7.0) was released with my improved implementation of PLT reduction.
+    A new version of <span class="reverse-vowpal-wabbit-pink"><a href="https://vowpalwabbit.org/"><i class="fa-custom fa-rabbit"></i>&nbsp;Vowpal Wabbit</a></span> (9.7.0) 
+    was released with my improved implementation of PLT reduction.
 
 - date: '11.2022'
   text: >-
-    Me and <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i>&nbsp;ViZDoom</a></span> project joined  <span class="reverse-farama-green"><a href="https://farama.org/"><i class="fa fa-leaf"></i>&nbsp;The Farama Foundation</a></span>.
+    Me and <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i>&nbsp;ViZDoom</a></span> 
+    project joined  <span class="reverse-farama-green"><a href="https://farama.org/"><i class="fa fa-leaf"></i>&nbsp;The Farama Foundation</a></span>.
 
 - date: '11.2022'
   text: >-
-    <span class="reverse-mlinpl-red"><a href="https://conference2022.mlinpl.org/">ML in PL Conference 2022</a></span>, that I co-organized, took place in Warsaw.
+    <span class="reverse-mlinpl-red"><i class="fa-custom fa-mlinpl" aria-hidden="true"></i>&nbsp;<a href="https://conference2022.mlinpl.org/">ML in PL Conference 2022</a></span>, 
+    that I co-organized, took place in Warsaw.
 
 - date: '06.2022'
   text: >-
@@ -44,23 +68,31 @@
 
 - date: '05.2022'
   text: >-
-    Our paper titled "On missing labels, long-tails and propensities in extreme multi-label classification" was accepted to <span class="reverse-second"><i class="fa-solid fa-star"></i> KDD'22</span> [<a href="#publication-kdd-2022"><i class="fa-solid fa-file-lines"></i> paper</a>].
+    Our paper titled "On missing labels, long-tails and propensities in extreme multi-label classification" was accepted to 
+    <span class="reverse-second"><i class="fa-solid fa-star"></i> KDD'22</span> [<a href="#publication-kdd-2022"><i class="fa-solid fa-file-lines"></i> paper</a>].
 
 - date: '04.2022'
   text: >-
-    A new version of <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i>&nbsp;ViZDoom</a></span> (1.1.12) library was released with an official <span class="reverse-openai-blue"><a href="https://gym.openai.com/"><i class="fa fa-dumbbell"></i>&nbsp;OpenAI Gym</a></span> wrapper.
+    A new version of <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i>&nbsp;ViZDoom</a></span> (1.1.12) library 
+    was released with an official <span class="reverse-openai-blue"><a href="https://gym.openai.com/"><i class="fa fa-dumbbell"></i>&nbsp;OpenAI Gym</a></span> wrapper.
 
 - date: '01.2022'
   text: >-
-    I joined the management board of <span class="reverse-mlinpl-red"><a href="https://mlinpl.org/"><i class="fa fa-people-group"></i>&nbsp;ML in PL Association</a></span>.
+    I joined the management board of <span class="reverse-mlinpl-red"><i class="fa fa-people-group"></i>&nbsp;<a href="https://mlinpl.org/">ML in PL Association</a></span>.
 
 - date: '11.2021'
   text: >-
-    A new version of <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i>&nbsp;ViZDoom</a></span> (1.1.11) library was released that introduce access to the new <span class="reverse-vizdoom-red"><i class="fa-solid fa-volume-high"></i> audio buffer</span> allowing agents to not only see but also hear an environment.
+    A new version of <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i>&nbsp;ViZDoom</a></span> (1.1.11) library 
+    was released that introduce access to the new <span class="reverse-vizdoom-red"><i class="fa-solid fa-volume-high"></i> audio buffer</span> allowing agents to not only see but also hear an environment.
 
 - date: '11.2021'
   text: >-
-    <span class="reverse-mlinpl-red"><a href="https://conference2021.mlinpl.org/">ML in PL Conference 2021</a></span>, that I co-organized, took place virtualy.
+    <span class="reverse-mlinpl-red"><i class="fa-custom fa-mlinpl" aria-hidden="true"></i>&nbsp;<a href="https://conference2021.mlinpl.org/">ML in PL Conference 2021</a></span>, 
+    that I co-organized, took place virtualy.
+
+# - date: '09.2023'
+#   text: >-
+#      <span class="reverse-baby-pink">My doughter <i class="fa-solid fa-baby"></i> was born <i class="fa-solid fa-heart"></i></span>
 
 - date: '08.2021'
   text: >-
