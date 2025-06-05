@@ -22,8 +22,7 @@ class Animation {
             if(contextOptions !== null) this.ctx = canvas.getContext(contextType, contextOptions);
             else this.ctx = canvas.getContext(contextType, { alpha: false });
 
-            if (this.ctx) console.log(`${contextType} context obtained successfully with attributes 
-                                       ${JSON.stringify(this.ctx.getContextAttributes())}`);
+            if (this.ctx) console.log(`${contextType} context obtained successfully with attributes ${JSON.stringify(this.ctx.getContextAttributes())}`);
             else console.error(`Unable to initialize ${contextType} context. Your browser may not support it.`);
         }
 
@@ -145,6 +144,7 @@ class Animation {
 
     resize(){
         // By default do nothing
+        console.log(`Resized animation to ${this.canvas.width}x${this.canvas.height}`);
     }
 
     updateColors(colors, colorsAlt, bgColor){
