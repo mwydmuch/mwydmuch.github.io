@@ -8,7 +8,7 @@ Spirograph is a drawing toy that use gears to create patterns. I used to play wi
 
 You can read about in on
 [Wikipedia](https://en.wikipedia.org/wiki/Spirograph).
-I also recommend to check this awesome [website] (http://www.eddaardvark.co.uk/v2/spirograph/spirograph2.html),
+I also recommend to check this awesome [website](http://www.eddaardvark.co.uk/v2/spirograph/spirograph2.html),
 which is the source of inspiration for this animation.
 And also this great [blogpost](https://www.bit-101.com/blog/2022/12/coding-curves-09-roulette-curves/)
 that step by step how it works.
@@ -16,7 +16,7 @@ that step by step how it works.
 Try play with the gears' settings or hit reset button few times 
 to get different random configurations.
 
-Coded with no external dependencies, using only canvas API.
+Coded by me (Marek Wydmuch) in 2022, with no external dependencies, using only canvas API.
 `;
 
 const Animation = require("../animation");

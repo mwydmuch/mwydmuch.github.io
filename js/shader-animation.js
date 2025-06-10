@@ -2,6 +2,7 @@
 
 /*
  * Base class for the background animations that are drawn using fragment shader.
+ * It is implemented using just WebGL.
  */
 
 const Animation = require("./animation");
@@ -16,7 +17,10 @@ class ShaderAnimation extends Animation {
 
         const vertexShaderSource = `
             attribute vec4 aVertexPosition;
+            varying vec2 vUv;
+
             void main(void) {
+                vUv = uv;
                 gl_Position = aVertexPosition;
             }
         `;
@@ -32,7 +36,8 @@ class ShaderAnimation extends Animation {
                 vertexPosition: this.ctx.getAttribLocation(shaderProgram, 'aVertexPosition'),
             },
             uniformLocations: {
-                resolution: this.ctx.getUniformLocation(shaderProgram, 'uResolution'),
+                time: this.ctx.getUniformLocation(shaderProgram, 'time'),
+                resolution: this.ctx.getUniformLocation(shaderProgram, 'resolution'),
             },
         };
 
@@ -77,18 +82,29 @@ class ShaderAnimation extends Animation {
     }
 
     draw() {
-      this.ctx.clearColor(0.0, 0.0, 0.0, 1.0);
-      this.ctx.clear(this.ctx.COLOR_BUFFER_BIT);
-  
-      this.ctx.useProgram(this.programInfo.program);
-  
-      this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, this.positionBuffer);
-      this.ctx.vertexAttribPointer(this.programInfo.attribLocations.vertexPosition, 2, this.ctx.FLOAT, false, 0, 0);
-      this.ctx.enableVertexAttribArray(this.programInfo.attribLocations.vertexPosition);
-  
-      this.ctx.uniform2f(this.programInfo.uniformLocations.resolution, this.canvas.width, this.canvas.height);
-  
-      this.ctx.drawArrays(this.ctx.TRIANGLE_STRIP, 0, 4);
+        this.ctx.clearColor(0.0, 0.0, 0.0, 1.0);
+        this.ctx.clear(this.ctx.COLOR_BUFFER_BIT);
+    
+        this.ctx.useProgram(this.programInfo.program);
+    
+        this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, this.positionBuffer);
+        this.ctx.vertexAttribPointer(this.programInfo.attribLocations.vertexPosition, 2, this.ctx.FLOAT, false, 0, 0);
+        this.ctx.enableVertexAttribArray(this.programInfo.attribLocations.vertexPosition);
+        
+        // Set time uniform
+        if (this.programInfo.uniformLocations.time) {
+            this.ctx.uniform1f(this.programInfo.uniformLocations.time, this.timeMs);
+        }
+
+        // Set the resolution uniform
+        this.ctx.uniform2f(this.programInfo.uniformLocations.resolution, this.canvas.width, this.canvas.height);
+    
+        this.ctx.drawArrays(this.ctx.TRIANGLE_STRIP, 0, 4);
+    }
+
+    resize() {
+        super.resize();
+        this.ctx.viewport(0, 0, this.canvas.width, this.canvas.height);
     }
 
     getCodeUrl(){

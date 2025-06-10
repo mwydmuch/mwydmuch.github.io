@@ -2,6 +2,7 @@
 
 const NAME = "rock-paper-scissors automata",
       FILE = "rock-paper-scissors-automata.js",
+      TAGS = ["framerate-dependent", "2d", "cellular automata", "rock-paper-scissors"],
       DESC = `
 Rock-paper-scissors automata.
 
@@ -17,7 +18,7 @@ My other cellular automata visualizations:
 - [isometric game of life](https://mwydmuch.pl/animations?animation=game-of-life-isometric)
 - [sand automata](https://mwydmuch.pl/animations?animation=sand-automata)
 
-Coded with no external dependencies, using only canvas API.
+Coded by me (Marek Wydmuch) in 2023, with no external dependencies, using only canvas API.
 `;
 
 const GridAnimation = require("../grid-animation");

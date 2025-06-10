@@ -5,7 +5,7 @@ const NAME = "figures spiral",
       DESC = `
 Very simple of figures spinning in the spiral.
 
-Coded with no external dependencies, using only canvas API.
+Coded by me (Marek Wydmuch) in 2022, with no external dependencies, using only canvas API.
 `;
 
 const Animation = require("../animation");

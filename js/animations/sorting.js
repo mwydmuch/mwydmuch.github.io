@@ -9,7 +9,7 @@ Since then, I have found watching a nice visualization of sorting algorithms qui
 
 The animation first perform full sorting and records all the operations to the animation queue.
 
-Coded with no external dependencies, using only canvas API.
+Coded by me (Marek Wydmuch) in 2022, with no external dependencies, using only canvas API.
 `;
 
 const Animation = require("../animation");
@@ -283,6 +283,55 @@ class ShakerSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Cock
     }
 }
 
+class CombSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Comb_sort
+    constructor(arr) {
+        super(arr, "comb sort", "O(n^2)", "O(n^2)", "O(n log n)", "O(1)");
+    }
+
+    sort(){
+        const n = this.arr.length;
+        let gap = n, shrink = 1.3, sorted = false;
+
+        while (!sorted) {
+            gap = Math.floor(gap / shrink);
+            if (gap <= 1){ 
+                gap = 1;
+                sorted = true;
+            } else if (gap == 9 || gap == 10) {
+                gap = 11; // The "rule of 11"
+            }
+            
+            for (let i = 0; i + gap < n; ++i) {
+                if (this.comp(this.arr, i, i + gap) > 0) {
+                    this.swap(this.arr, i, i + gap);
+                    sorted = false;
+                }
+            }
+        }
+    }
+}
+
+class ShellSort extends SortingAlgorithm{ // https://en.wikipedia.org/wiki/Shellsort
+    constructor(arr) {
+        super(arr, "shell sort", "O(n^2)", "O(n log n)", "O(n log n)", "O(1)");
+    }
+
+    sort(){
+        const n = this.arr.length;
+        let gap = Math.floor(n / 2);
+        while (gap > 0) {
+            for (let i = gap; i < n; ++i) {
+                let j = i;
+                while (j >= gap && this.comp(this.arr, j, j - gap) < 0) {
+                    this.swap(this.arr, j, j - gap);
+                    j -= gap;
+                }
+            }
+            gap = Math.floor(gap / 2);
+        }
+    }
+}
+
 
 class Sorting extends Animation {
     constructor (canvas, colors, colorsAlt, bgColor,
@@ -303,9 +352,9 @@ class Sorting extends Animation {
         this.showStats = showStats;
 
         this.sortAlgoNames = ["selection sort", "bubble sort", "insertion sort",
-            "quick sort", "merge sort", "heap sort", "gnome sort", "shaker sort"];
+            "quick sort", "merge sort", "heap sort", "gnome sort", "shaker sort", "comb sort", "shell sort"];
         this.sortAlgoClasses = [SelectionSort, BubbleSort, InsertionSort,
-            QuickSort, MergeSort, HeapSort, GnomeSort, ShakerSort];
+            QuickSort, MergeSort, HeapSort, GnomeSort, ShakerSort, CombSort, ShellSort];
         this.sortingAlgorithm = this.assignIfRandom(sortingAlgorithm, Utils.randomChoice(this.sortAlgoNames));
 
         this.initialOrderTypes = ["random", "sorted", "reverse sorted", "evens then odds", "nearly sorted", "few unique"];

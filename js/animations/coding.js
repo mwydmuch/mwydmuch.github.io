@@ -8,7 +8,7 @@ Work in progress.
 Code writing animation inspired by: https://openprocessing.org/sketch/1219550
 It's only light themed to match website colors, personally I always use dark IDE.
 
-Coded with no external dependencies, using only canvas API.
+Coded by me (Marek Wydmuch) in 2022, with no external dependencies, using only canvas API.
 `;
 
 //const HGJS = require('highlight.js/lib/core');

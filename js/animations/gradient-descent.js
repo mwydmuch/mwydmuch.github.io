@@ -16,7 +16,7 @@ The interesting challenge related to this animation was
 to efficiently visualize the optimized function. 
 This is done by using simplified version of the marching squares algorithm.
 
-Coded with no external dependencies, using only canvas API.
+Coded by me (Marek Wydmuch) in 2021, with no external dependencies, using only canvas API.
 `;
 
 const Animation = require("../animation");

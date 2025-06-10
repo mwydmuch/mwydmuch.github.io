@@ -71,10 +71,10 @@ const FRAGMENT_SHADER = `
 
 const ShaderAnimation = require("../shader-animation");
 
-class TestShaderAnimation extends ShaderAnimation {
+class PerlinNoiseIsolines extends ShaderAnimation {
     constructor(canvas, colors, colorsAlt, bgColor) {
         super(canvas, colors, colorsAlt, bgColor, FRAGMENT_SHADER, NAME, FILE, DESC);
     }
 }
 
-module.exports = TestShaderAnimation;
+module.exports = PerlinNoiseIsolines;
