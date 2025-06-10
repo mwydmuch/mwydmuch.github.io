@@ -45,8 +45,10 @@ const ThreeNPlusOne = require("./animations/3n+1"),
       FractionalBrownianMotion = require("./shader-animations/fbm"),
       
       // Three.js animations
-//      Cubes = require("./threejs-animations/cubes"),
+      Cubes = require("./threejs-animations/cubes"),
+      EvaporatingCubes = require("./threejs-animations/evaporating-cubes"),
       TestThreejs = require("./threejs-animations/test");
+      
 
 
 
@@ -148,6 +150,7 @@ if(canvas){
         //{class: Coding, name: "coding"},  // Disabled till finished
         //{class: Cubes, name: "cubes"},  // Disabled till finished
         {class: DayAndNightAutomata, name: "day and night automata"},
+        //{class: EvaporatingCubes, name: "evaporating cubes"},  // Disabled till finished
         {class: FiguresSpiral, name: "figures spiral", hide: true},  // Hide cause it's not that interesting
         {class: FractionalBrownianMotion, name: "fractional brownian motion", startAnimation: false},  // Disable as a start animation, as it may not be visually pleasing for everyone
         {class: GameOfLife, name: "game of life"},
