@@ -7,7 +7,7 @@ Another animation based on Perlin noise.
 The lines are disorted by adding noise to the position of each vertex.
 The disortion are larger as the vertices are further from the center.
 
-Coded with no external dependencies, using only canvas API.
+Coded by me (Marek Wydmuch) in 2023, with no external dependencies, using only canvas API.
 `;
 
 const Animation = require("../animation");

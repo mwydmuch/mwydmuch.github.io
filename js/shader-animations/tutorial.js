@@ -7,20 +7,20 @@ const NAME = "Test shader animation",
 Just shader test animation.
 `;
 
-https://www.shadertoy.com/view/4dXyRH
-https://www.shadertoy.com/view/XsVSDz
-https://www.shadertoy.com/view/3s2GR3
-https://www.shadertoy.com/view/WslcR2
-
 const ShaderAnimation = require("../shader-animation");
-
-
 
 /* This animation is the material of my first youtube tutorial about creative 
    coding, which is a video in which I try to introduce programmers to GLSL 
    and to the wonderful world of shaders, while also trying to share my recent 
    passion for this community.
                                        Video URL: https://youtu.be/f4s1h2YETNY
+
+    Other inspirations:
+
+    https://www.shadertoy.com/view/4dXyRH
+    https://www.shadertoy.com/view/XsVSDz
+    https://www.shadertoy.com/view/3s2GR3
+    https://www.shadertoy.com/view/WslcR2
 */
 
 const FRAGMENT_SHADER_1 = `

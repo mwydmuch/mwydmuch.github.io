@@ -6,7 +6,7 @@ const NAME = "circular waves",
 This animation draw a circle as a set of vertices and edges,
 noise is added to the position of each vertex to create a wave effect. 
 
-Coded with no external dependencies, using only canvas API.
+Coded by me (Marek Wydmuch) in 2021, with no external dependencies, using only canvas API.
 `;
 
 const Animation = require("../animation");

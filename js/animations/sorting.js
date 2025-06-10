@@ -9,7 +9,7 @@ Since then, I have found watching a nice visualization of sorting algorithms qui
 
 The animation first perform full sorting and records all the operations to the animation queue.
 
-Coded with no external dependencies, using only canvas API.
+Coded by me (Marek Wydmuch) in 2022, with no external dependencies, using only canvas API.
 `;
 
 const Animation = require("../animation");

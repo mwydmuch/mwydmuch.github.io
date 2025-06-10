@@ -8,7 +8,7 @@ Simple recursive animation.
 Each rectangle contains three smaller squares, which move around.
 One randomly chosen rectangle is always moving to the empty space.
 
-Coded with no external dependencies, using only canvas API.
+Coded by me (Marek Wydmuch) in 2024, with no external dependencies, using only canvas API.
 `;
 
 const Animation = require("../animation");

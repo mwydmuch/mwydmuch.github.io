@@ -11,7 +11,7 @@ Because the velocity does not depend on the distance to the attractors,
 and momentum is not preserved, the particles are not "catapulted" away from the attractors.
 This results in a system that is mesmerizing to watch.
 
-Coded with no external dependencies, using only canvas API.
+Coded by me (Marek Wydmuch) in 2021, with no external dependencies, using only canvas API.
 `;
 
 const Animation = require("../animation");

@@ -7,7 +7,7 @@ const NAME = "particles moving through Perlin noise",
       DESC = `
 Particles moving through Perlin noise.
 
-Coded with no external dependencies, using only canvas API.
+Coded by me (Marek Wydmuch) in 2020, with no external dependencies, using only canvas API.
 `;
 
 const Animation = require("../animation");

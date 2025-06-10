@@ -9,7 +9,7 @@ It was used for the on
 [ML in PL Conference 2023 website](https://conference2023.mlinpl.org/).
 and [MLSS^S 2023 website](https://mlss2023.mlinpl.org/).
 
-Coded with no external dependencies, using only canvas API.
+Coded by me (Marek Wydmuch) in 2023, with no external dependencies, using only canvas API.
 `;
 
 const Animation = require("../animation");

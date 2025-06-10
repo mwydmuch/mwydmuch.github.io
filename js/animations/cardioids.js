@@ -14,7 +14,7 @@ To see what is really happening, try to set the number of lines to small number.
 
 Playing with both number of lines and speed, allow to notice different interesting patterns.
 
-Coded with no external dependencies, using only canvas API.
+Coded by me (Marek Wydmuch) in 2022, with no external dependencies, using only canvas API.
 `;
 
 const Animation = require("../animation");

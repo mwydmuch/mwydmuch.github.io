@@ -15,7 +15,7 @@ const NAME = "tree visualization",
       DESC = `
 Visualization of the tree using different algorithms.
 
-Coded with no external dependencies, using only canvas API.
+Coded by me (Marek Wydmuch) in 2022, with no external dependencies, using only canvas API.
 `;
 
 const Animation = require("../animation");

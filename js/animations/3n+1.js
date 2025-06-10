@@ -13,7 +13,7 @@ for each number, the line is drawn from the point of the previous line's end.
 The next line is drawn at the angle of the previous line, rotated by the angle 
 that depends if the following number in the sequence is even or odd.
 
-Coded with no external dependencies, using only canvas API.
+Coded by me (Marek Wydmuch) in 2021, with no external dependencies, using only canvas API.
 `;
 
 
