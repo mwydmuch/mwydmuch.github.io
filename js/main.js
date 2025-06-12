@@ -164,8 +164,8 @@ if(canvas){
         {class: NoisyLines, name: "noisy lines"},
         {class: ParticlesAndAttractors, name: "particles and attractors"},
         {class: ParticlesVortex, name: "particles vortex"},
-        {class: ParticlesWaves, name: "particles waves"},
-        {class: PerlinNoiseGrid, name: "perlin noise grid"},
+        {class: ParticlesWaves, name: "particles waves"},  // Disabled till updated
+        //{class: PerlinNoiseGrid, name: "perlin noise grid"},
         {class: PerlinNoiseParticles, name: "perlin noise particles"},
         {class: RockPaperScissorsAutomata, name: "rock-paper-scissors automata"},
         {class: SandAutomata, name: "sand automata"},
