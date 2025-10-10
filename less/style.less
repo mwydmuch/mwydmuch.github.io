@@ -43,7 +43,7 @@
 
 
 // Others
-@font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+@font-family: "Montserrat", Arial, sans-serif;
 @global-radius: 4px;
 @global-border-width: 4px;
 @global-animation-duration: 0.5s;
@@ -428,6 +428,10 @@ section {
   margin: 5rem 0;
 }
 
+.section-title{
+  font-weight: bold;
+}
+
 
 // Footer
 // ---------------------------------------------------------------------------------------------------------------------
@@ -478,10 +482,10 @@ footer {
     font-weight: @bold-font;
   }
 
-  #profiles{
+  #profiles, #page-menu{
     font-weight: @bold-font;
 
-    .profile-link{
+    .profile-link, .page-link{
       padding: .15rem .5rem;
       border: 2px solid @main;
       color: @main;
@@ -669,7 +673,8 @@ each(@fade-show-values, {
 #background-settings-controls {
   transition: opacity @global-animation-duration;
   //width: 19rem;
-  max-width: 19rem;
+  //max-width: 19rem; // For Raleway font
+  max-width: 20.5rem; // For Montserrat font
   //max-height: 100%;
   //overflow-x: hidden;
   //overflow-y: scroll;
