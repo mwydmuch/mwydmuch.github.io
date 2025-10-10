@@ -46,13 +46,14 @@ class ShaderAnimation extends ThreejsAnimation {
 
     update(elapsed) {
         super.update(elapsed);
+        this.shaderMaterial.uniforms.bgColor.value.set(this.scene.background.r, this.scene.background.g, this.scene.background.b);
         this.shaderMaterial.uniforms.timeMs.value = this.timeMs;
         this.shaderMaterial.uniforms.time.value = this.time;
     }
 
     resize(){
         super.resize();
-        this.shaderMaterial.uniforms.resolution.value.set(this.canvas.width * 2, this.canvas.height * 2);
+        this.shaderMaterial.uniforms.resolution.value.set(this.canvas.width, this.canvas.height);
     }
 
     getCodeUrl(){

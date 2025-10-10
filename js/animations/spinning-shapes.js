@@ -61,7 +61,7 @@ class SpinningShapes extends Animation {
                   radius = (this.sizeBase + this.sizeRange * Math.cos(theta9)) * scale,
                   color = (Math.cos((theta9 + this.colorsShift) * this.colorsScale) + 1) / 2;
             if(this.rainbowColors) this.ctx.strokeStyle = `hsl(${color * 360}, 100%, 75%)`;
-            else this.ctx.strokeStyle = Utils.lerpColor(this.colorA, this.colorB, color);
+            else this.ctx.strokeStyle = Utils.lerpColorHex(this.colorA, this.colorB, color);
             this.ctx.lineWidth = 1;
 
             this.ctx.beginPath();

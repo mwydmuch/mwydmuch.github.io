@@ -22,6 +22,7 @@ class ThreejsAnimation extends Animation {
         
         // Create a new scene
         this.scene = new THREE.Scene();
+        this.scene.background = new THREE.Color(bgColor);
 
         // Create a camera, which determines what we'll see when we render the scene
         this.camera = new THREE.PerspectiveCamera(75, canvas.width / canvas.height, 1, 1000);
@@ -45,6 +46,11 @@ class ThreejsAnimation extends Animation {
         this.renderer.setSize(width, height);
         this.camera.aspect = width / height;
         this.camera.updateProjectionMatrix();
+    }
+
+    updateColors(colors, colorsAlt, bgColor){
+        super.updateColors(colors, colorsAlt, bgColor);
+        this.scene.background = new THREE.Color(bgColor);
     }
 
     getCodeUrl(){

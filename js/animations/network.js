@@ -48,7 +48,7 @@ class Network extends Animation {
 
         this.ctx.beginPath();
         Utils.pathClosedShape(this.ctx, [p1, p2, p3]);
-        const color = Utils.lerpColor(p1.color, this.bgColor, Utils.easeInSine(maxDist / this.distanceThreshold));
+        const color = Utils.lerpColorHex(p1.color, this.bgColor, Utils.easeInSine(maxDist / this.distanceThreshold));
         if(this.fillTriangles){
             this.ctx.fillStyle = color;
             this.ctx.fill();

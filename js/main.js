@@ -28,6 +28,7 @@ const ThreeNPlusOne = require("./animations/3n+1"),
       ParticlesWaves = require("./animations/particles-waves"),
       PerlinNoiseGrid = require("./animations/perlin-noise-grid"),
       PerlinNoiseParticles = require("./animations/perlin-noise-particles"),
+      Pong = require("./animations/pong"),
       RockPaperScissorsAutomata = require("./animations/rock-paper-scissors-automata"),
       SandAutomata = require("./animations/sand-automata"),
       Quadtree = require("./animations/quadtree"),
@@ -150,7 +151,7 @@ if(canvas){
         //{class: Coding, name: "coding"},  // Disabled till finished
         //{class: Cubes, name: "cubes"},  // Disabled till finished
         {class: DayAndNightAutomata, name: "day and night automata"},
-        //{class: EvaporatingCubes, name: "evaporating cubes"},  // Disabled till finished
+        {class: EvaporatingCubes, name: "evaporating cubes"},  // Disabled till finished
         {class: FiguresSpiral, name: "figures spiral", hide: true},  // Hide cause it's not that interesting
         {class: FractionalBrownianMotion, name: "fractional brownian motion", startAnimation: false},  // Disable as a start animation, as it may not be visually pleasing for everyone
         {class: GameOfLife, name: "game of life"},
@@ -167,6 +168,7 @@ if(canvas){
         {class: ParticlesWaves, name: "particles waves"},  // Disabled till updated
         //{class: PerlinNoiseGrid, name: "perlin noise grid"},
         {class: PerlinNoiseParticles, name: "perlin noise particles"},
+        {class: Pong, name: "pong"},
         {class: RockPaperScissorsAutomata, name: "rock-paper-scissors automata"},
         {class: SandAutomata, name: "sand automata"},
         {class: Quadtree, name: "quadtree", startAnimation: false}, // Disable as a start animation since it resources heavy

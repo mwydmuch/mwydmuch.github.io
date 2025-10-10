@@ -6,8 +6,9 @@ const NAME = "ML in PL Network",
 Simple network animation, I created for ML in PL websites.
 
 It was used for the on
-[ML in PL Conference 2023 website](https://conference2023.mlinpl.org/).
-and [MLSS^S 2023 website](https://mlss2023.mlinpl.org/).
+[ML in PL Conference 2023-2025 website](https://conference2023.mlinpl.org/),
+[MLSS^S 2023 website](https://mlss2023.mlinpl.org/),
+and [MLSS^D 2025 website](https://mlss2025.mlinpl.org/)
 
 Coded by me (Marek Wydmuch) in 2023, with no external dependencies, using only canvas API.
 `;

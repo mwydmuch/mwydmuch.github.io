@@ -544,7 +544,7 @@ class GradientDescent extends Animation {
         // Calculate colors for the isolines
         let isolinesColors = [];
         for(let i = 0; i < isolines.length; ++i){
-            isolinesColors.push(Utils.lerpColor(this.colorA, this.colorB, (i + 1) / (isolines.length + 1)));
+            isolinesColors.push(Utils.lerpColorHex(this.colorA, this.colorB, (i + 1) / (isolines.length + 1)));
         }
 
         // Draw the isolines

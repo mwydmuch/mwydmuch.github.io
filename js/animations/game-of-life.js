@@ -121,7 +121,7 @@ class GameOfLife extends GridAnimation {
         
         let fadeColors = new Array(this.deadCellsFadingSteps);
         for (let i = 0; i < this.deadCellsFadingSteps; ++i) {
-            fadeColors[i] = Utils.lerpColor(this.colors[0], this.bgColor, i / this.deadCellsFadingSteps);
+            fadeColors[i] = Utils.lerpColorHex(this.colors[0], this.bgColor, i / this.deadCellsFadingSteps);
         }
 
         for (let y = 0; y < this.gridHeight; ++y) {

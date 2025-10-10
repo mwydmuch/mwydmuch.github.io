@@ -72,7 +72,7 @@ class ParticlesStorm extends Animation {
             this.particles.push({
                 x: particleX,
                 y: particleY,
-                color: Utils.lerpColor(this.colorA, this.colorB, particleX / this.width)
+                color: Utils.lerpColorHex(this.colorA, this.colorB, particleX / this.width)
             });
         }
     }
