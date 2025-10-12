@@ -3,7 +3,9 @@
 const NAME = "fractional Brownian motion",
       FILE = "fbm.js",
       DESC = `
-Just shader test animation.
+This shader animation implements a dynamic pattern using fractional Brownian motion (fBm).
+
+
 `;
 
 const FRAGMENT_SHADER = `
@@ -49,6 +51,7 @@ const FRAGMENT_SHADER = `
 
     void main() {
         vec2 uv = vUv - 0.5;
+        uv.x *= resolution.x / resolution.y; // Correct aspect ratio
         vec2 st = uv * 2.0;
         
         // Create radial distortion
@@ -85,7 +88,8 @@ const FRAGMENT_SHADER = `
         contours *= blackShape;
         
         // Background color (turquoise)
-        vec3 bgColor = vec3(0.1, 0.7, 0.75);
+        //vec3 bgColor = vec3(0.1, 0.7, 0.75);
+        vec3 bgColor = vec3(1.0, 1.0, 1.0);
         
         // Add some grain/texture
         float grain = (hash(st * 100.0 + time).x * 0.5 + 0.5) * 0.05;
@@ -96,8 +100,11 @@ const FRAGMENT_SHADER = `
         color += vec3(contours);
         
         // Add subtle vignette
-        float vignette = 1.0 - length(uv) * 0.3;
-        color *= vignette;
+        //float vignette = 1.0 - length(uv) * 0.3;
+        //color *= vignette;
+
+        color *= vec3(0.9, 0.3, 0.25); // Apply turquoise color
+        color = vec3(1.0 - color); // Invert colors
         
         gl_FragColor = vec4(color, 1.0);
     }
