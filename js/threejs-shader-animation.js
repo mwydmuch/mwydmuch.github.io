@@ -28,14 +28,22 @@ class ShaderAnimation extends ThreejsAnimation {
 
         this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
         this.camera.position.z = 1;
+        this.scale = 1.0;
 
+        this.uMainColor = new THREE.Color(this.mainColor);
+        this.uSecColor = new THREE.Color(this.secColor);
+        this.uBgColor = new THREE.Color(this.bgColor);
         this.shaderMaterial = new THREE.ShaderMaterial({
             vertexShader: vertexShaderSource,
             fragmentShader: fragmentShaderSource,
             uniforms: {
                 timeMs: { value: this.timeMs },
                 time: { value: this.time },
-                resolution: { value: new THREE.Vector2(this.canvas.width, this.canvas.height) }
+                resolution: { value: new THREE.Vector2(this.canvas.width, this.canvas.height) },
+                scale: { value: this.scale },
+                mainColor: { value: this.uMainColor },
+                secColor: { value: this.uSecColor },
+                bgColor: { value: this.uBgColor }
             }
         });
 
@@ -46,9 +54,20 @@ class ShaderAnimation extends ThreejsAnimation {
 
     update(elapsed) {
         super.update(elapsed);
-        this.shaderMaterial.uniforms.bgColor.value.set(this.scene.background.r, this.scene.background.g, this.scene.background.b);
         this.shaderMaterial.uniforms.timeMs.value = this.timeMs;
         this.shaderMaterial.uniforms.time.value = this.time;
+        this.shaderMaterial.uniforms.scale.value = this.scale;
+        this.shaderMaterial.uniforms.mainColor.value.set(this.uMainColor);
+        this.shaderMaterial.uniforms.secColor.value.set(this.uSecColor);
+        this.shaderMaterial.uniforms.bgColor.value.set(this.uBgColor);
+        return elapsed;
+    }
+
+    updateColors(colors, colorsAlt, bgColor){
+        super.updateColors(colors, colorsAlt, bgColor);
+        this.uMainColor.set(this.mainColor);
+        this.uSecColor.set(this.secColor);
+        this.uBgColor.set(this.bgColor);
     }
 
     resize(){
@@ -58,6 +77,13 @@ class ShaderAnimation extends ThreejsAnimation {
 
     getCodeUrl(){
         return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/js/shader-animations" + this.file;
+    }
+
+    getSettings() {
+        return [
+            {prop: "scale", icon: '<i class="fa-solid fa-maximize"></i>', type: "float", min: 0.05, max: 1.95},
+            {prop: "speed", icon: '<i class="fa-solid fa-gauge-high"></i>', type: "float", step: 0.1, min: -4, max: 4},
+        ];
     }
 }
 

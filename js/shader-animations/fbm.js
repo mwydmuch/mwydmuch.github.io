@@ -4,16 +4,17 @@ const NAME = "fractional Brownian motion",
       FILE = "fbm.js",
       DESC = `
 This shader animation implements a dynamic pattern using fractional Brownian motion (fBm).
-
-
 `;
 
 const FRAGMENT_SHADER = `
     precision mediump float;
     uniform float timeMs;
     uniform float time;
+    uniform float scale;
     uniform vec2 resolution;
     varying vec2 vUv;
+    uniform vec3 mainColor;
+    uniform vec3 bgColor;
 
     // Noise functions
     vec2 hash(vec2 p) {
@@ -52,7 +53,7 @@ const FRAGMENT_SHADER = `
     void main() {
         vec2 uv = vUv - 0.5;
         uv.x *= resolution.x / resolution.y; // Correct aspect ratio
-        vec2 st = uv * 2.0;
+        vec2 st = uv * 2.0 * 1.0 / scale;
         
         // Create radial distortion
         float dist = length(st);
@@ -71,9 +72,9 @@ const FRAGMENT_SHADER = `
         float shape = fbm(st * 2.0 + vec2(time * 0.02, 0.0));
         shape += fbm(st * 4.0 - vec2(0.0, time * 0.03)) * 0.5;
         
-        // Create threshold for black shapes
+        // Create threshold for color shapes
         float threshold = 0.1 + sin(dist * 10.0 - time) * 0.1;
-        float blackShape = smoothstep(threshold - 0.1, threshold, shape);
+        float colorShape = smoothstep(threshold - 0.1, threshold, shape);
         
         // Create contour lines
         float contours = 0.0;
@@ -83,28 +84,19 @@ const FRAGMENT_SHADER = `
             contours += 1.0 - smoothstep(0.0, 0.02, line);
         }
         contours *= 0.5;
-        
-        // Apply contours only to black areas
-        contours *= blackShape;
-        
-        // Background color (turquoise)
-        //vec3 bgColor = vec3(0.1, 0.7, 0.75);
-        vec3 bgColor = vec3(1.0, 1.0, 1.0);
+ 
+        // Apply contours only to colored areas
+        contours *= colorShape;
         
         // Add some grain/texture
         float grain = (hash(st * 100.0 + time).x * 0.5 + 0.5) * 0.05;
-        bgColor += grain;
-        
-        // Final color
-        vec3 color = mix(bgColor, vec3(0.0), blackShape);
-        color += vec3(contours);
-        
-        // Add subtle vignette
-        //float vignette = 1.0 - length(uv) * 0.3;
-        //color *= vignette;
 
-        color *= vec3(0.9, 0.3, 0.25); // Apply turquoise color
-        color = vec3(1.0 - color); // Invert colors
+        // Final color
+        vec3 color = mix(bgColor + grain, mainColor, colorShape * (1.0 - contours));
+        //color += vec3(contours);
+
+        // color *= vec3(1.0, 1.0, 1.0) - mainColor; // Apply main color
+        // color = vec3(1.0 - color); // Invert colors
         
         gl_FragColor = vec4(color, 1.0);
     }
