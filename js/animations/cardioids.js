@@ -52,7 +52,7 @@ class Cardioids extends Animation {
                   b = this.getVec(i * this.time);
             let color;
             if(this.rainbowColors) color = 'hsl(' + i / this.lines * 360 + ', 100%, 75%)';
-            else color = Utils.lerpColorHexsPallet([this.colorA, this.colorB, this.colorA], i / this.lines);
+            else color = Utils.lerpColorHexsPallet([this.mainColor, this.secColor, this.mainColor], i / this.lines);
             this.ctx.strokeStyle = color;
             Utils.drawLine(this.ctx, a.x, a.y, b.x, b.y, 1, color);
         }

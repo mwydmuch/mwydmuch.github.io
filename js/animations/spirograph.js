@@ -96,7 +96,7 @@ class Spirograph extends Animation {
             let next = this.getXY(i * lenPerVertex, this.time, scale);
             let color = null;
             if(this.rainbowColors) color = 'hsl(' + i / this.vertices * 360 + ', 100%, 75%)';
-            else color = Utils.lerpColorHex(this.colorA, this.colorB, i / this.vertices);
+            else color = Utils.lerpColorHex(this.mainColor, this.secColor, i / this.vertices);
             Utils.drawLine(this.ctx, start.x, start.y, next.x, next.y, 1, color);
             start = next;
         }

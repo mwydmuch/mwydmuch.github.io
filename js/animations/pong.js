@@ -57,7 +57,7 @@ class Pong extends GridAnimation {
                 y: Utils.randomRange(this.cellSize, this.canvas.height - this.cellSize, this.rand),
                 vx: -1,
                 vy: 1,
-                color: this.colorA,
+                color: this.mainColor,
                 colorIndex: 1 // 1 for main color
             });
         }
@@ -167,7 +167,7 @@ class Pong extends GridAnimation {
             for (let x = 0; x < this.gridWidth; ++x) {
                 const cellVal = this.getVal(x, y);
                 
-                if (cellVal == 1) this.ctx.fillStyle = this.colorA;
+                if (cellVal == 1) this.ctx.fillStyle = this.mainColor;
                 else this.ctx.fillStyle = this.bgColor;
                 
                 this.ctx.fillRect(
@@ -188,7 +188,7 @@ class Pong extends GridAnimation {
         
         // Update ball colors
         this.ball0.color = this.bgColor;
-        this.ball1.color = this.colorA;
+        this.ball1.color = this.mainColor;
     }
 
     getSettings() {

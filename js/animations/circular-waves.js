@@ -39,7 +39,7 @@ class CircularWaves extends Animation {
         const zoff = this.frame * 0.005,
               radPerVertex = 2 * Math.PI / this.vertices;
         if(this.rainbowColors) this.ctx.strokeStyle = 'hsl(' + Math.abs(Math.sin(zoff * 5)) * 360 + ', 100%, 50%)';
-        else this.ctx.strokeStyle = Utils.lerpColorHex(this.colorA, this.colorB, Math.abs(Math.sin(zoff * 5)));
+        else this.ctx.strokeStyle = Utils.lerpColorHex(this.mainColor, this.secColor, Math.abs(Math.sin(zoff * 5)));
 
         this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
 
