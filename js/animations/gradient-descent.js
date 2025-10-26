@@ -29,10 +29,11 @@ class Optim {
     }
 
     update(grad){
-        return 0;
+        this.prevW = [...this.w];
     }
 
     init(w){
+        this.prevW = [...w];
         this.w = [...w];
     }
 
@@ -48,6 +49,7 @@ class SGD extends Optim {
     }
 
     update(grad){
+        super.update(grad);
         for(let i = 0; i < this.w.length; ++i){
             this.w[i] -= this.eta * grad[i];
         }
@@ -67,6 +69,7 @@ class Momentum extends Optim {
     }
 
     update(grad){
+        super.update(grad);
         for(let i = 0; i < this.w.length; ++i){
             this.m[i] = this.beta * this.m[i] + (1 - this.beta) * grad[i];
             this.w[i] -= this.eta * this.m[i];
@@ -86,6 +89,7 @@ class AdaGrad extends Optim {
     }
 
     update(grad){
+        super.update(grad);
         for(let i = 0; i < this.w.length; ++i){
             this.v[i] += grad[i] * grad[i];
             this.w[i] -= this.eta / Math.sqrt(this.v[i] + 0.000001) * grad[i];
@@ -106,6 +110,7 @@ class RMSProp extends Optim {
     }
 
     update(grad){
+        super.update(grad);
         for(let i = 0; i < this.w.length; ++i){
             this.v[i] = this.beta * this.v[i] + (1 - this.beta) * grad[i] * grad[i];
             this.w[i] -= this.eta / Math.sqrt(this.v[i] + 0.000001) * grad[i];
@@ -128,6 +133,7 @@ class Adam extends Optim {
     }
 
     update(grad){
+        super.update(grad);
         for(let i = 0; i < this.w.length; ++i){
             this.m[i] = this.beta1 * this.m[i] + (1 - this.beta1) * grad[i];
             this.v[i] = this.beta2 * this.v[i] + (1 - this.beta2) * grad[i] * grad[i];
@@ -151,6 +157,7 @@ class AdaMax extends Optim {
     }
 
     update(grad){
+        super.update(grad);
         for(let i = 0; i < this.w.length; ++i){
             this.m[i] = this.beta1 * this.m[i] + (1 - this.beta1) * grad[i];
             this.v[i] = Math.max(this.beta2 * this.v[i], Math.abs(grad[i]));
@@ -174,6 +181,7 @@ class AMSGrad extends Optim {
     }
 
     update(grad){
+        super.update(grad);
         for(let i = 0; i < this.w.length; ++i){
             this.m[i] = this.beta1 * this.m[i] + (1 - this.beta1) * grad[i];
             this.v[i] = Math.max(this.beta2 * this.v[i] + (1 - this.beta2) * grad[i] * grad[i], this.v[i]);
@@ -433,6 +441,14 @@ class GradientDescent extends Animation {
         this.optims = [this.sgd, this.momentum, this.adagrad, this.rmsprop, this.adam, this.adamax, this.amsgrad];
     }
 
+    update(elapsed){
+        super.update(elapsed);
+        for (let i = 0; i < this.optims.length; ++i) {
+            let o = this.optims[i];
+            o.update(this.func.grad(o.w));
+        }
+    }
+
     draw() {
         if(this.imageData) this.ctx.putImageData(this.imageData, 0, 0);
 
@@ -440,8 +456,7 @@ class GradientDescent extends Animation {
         for (let i = 0; i < this.optims.length; ++i) {
             let x1, y1, x2, y2,
                 o = this.optims[i];
-            [x1, y1] = o.w;
-            o.update(this.func.grad(o.w));
+            [x1, y1] = o.prevW;
             [x2, y2] = o.w;
 
             if(!isFinite(x1) || !isFinite(y1) || !isFinite(x2) || !isFinite(y2)) continue;
