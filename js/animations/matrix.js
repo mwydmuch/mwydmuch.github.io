@@ -9,7 +9,8 @@ of the original effect on this
 
 I'm a huge fan of the first movie.
 
-Coded by me (Marek Wydmuch) in 2022, with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2022.
 `;
 
 

@@ -7,7 +7,8 @@ Particles vortex with randomized speed and direction.
 The illusion of a 3D vortex is created by calculating the 2D position 
 of each particle, each frame, using simple trigonometry functions.
 
-Coded by me (Marek Wydmuch) in 2021, with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2021.
 `;
 
 const Animation = require("../animation");

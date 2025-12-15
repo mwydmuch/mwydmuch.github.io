@@ -10,7 +10,8 @@ It was used for the on
 [MLSS^S 2023 website](https://mlss2023.mlinpl.org/),
 and [MLSS^D 2025 website](https://mlss2025.mlinpl.org/)
 
-Coded by me (Marek Wydmuch) in 2023, with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2023.
 `;
 
 const Animation = require("../animation");

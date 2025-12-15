@@ -3,9 +3,10 @@
 const NAME = "vectors",
       FILE = "vectors.js",
       DESC = `
-Vectors.
+Vectors pointing from grid points to the mouse position.
 
-Coded with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2023.
 `;
 
 const Animation = require("../animation");

@@ -1,13 +1,14 @@
 'use strict';
 
-// TODO: Improve this description
-const NAME = "visualization of Perlin noise",
+const NAME = "perlin noise flow grid",
       FILE = "perlin-noise-grid.js",
       TAGS = ["framerate-independent", "2d", "perlin noise", "grid"],
       DESC = `
-Grid of particles visualizing Perlin noise.
+Particles spawned on a grid drift along a Perlin noise flow field, 
+leaving streaks that reveal the underlying noise pattern.
 
-Coded with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2025.
 `;
 
 const Animation = require("../animation");

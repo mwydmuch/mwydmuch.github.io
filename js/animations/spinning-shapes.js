@@ -7,7 +7,8 @@ Just same shape "dancing" in a circle.
 This animation recreates the effect 
 described in this [article](https://observablehq.com/@rreusser/instanced-webgl-circles).
 
-Coded by me (Marek Wydmuch) in 2021, with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2021.
 `;
 
 const Animation = require("../animation");

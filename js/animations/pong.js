@@ -5,7 +5,8 @@ const NAME = "Color Pong",
       DESC = `
 A variant of pong with two colors fighting for territory.
 
-Coded by me (Marek Wydmuch) in 2025, with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2025.
 `;
 
 const GridAnimation = require("../grid-animation");

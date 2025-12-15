@@ -16,7 +16,8 @@ that step by step how it works.
 Try play with the gears' settings or hit reset button few times 
 to get different random configurations.
 
-Coded by me (Marek Wydmuch) in 2022, with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2022.
 `;
 
 const Animation = require("../animation");

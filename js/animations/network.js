@@ -13,7 +13,8 @@ You can read about the Delaunay triangulation on [Wikipedia](https://en.wikipedi
 Source of Delaunay triangulation implementation used in this animation
 can be found in this [repository](https://github.com/darkskyapp/delaunay-fast).
 
-Coded by me (Marek Wydmuch) in 2018, with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2018.
 `;
 
 const Animation = require("../animation");

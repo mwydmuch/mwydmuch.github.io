@@ -18,7 +18,8 @@ My other cellular automata visualizations:
 - [isometric game of life](https://mwydmuch.pl/animations?animation=game-of-life-isometric)
 - [sand automata](https://mwydmuch.pl/animations?animation=sand-automata)
 
-Coded by me (Marek Wydmuch) in 2023, with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2023.
 `;
 
 const GridAnimation = require("../grid-animation");

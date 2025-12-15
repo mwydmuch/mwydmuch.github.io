@@ -7,7 +7,8 @@ Grid of random sine waves.
 The interesting "effects" for some waves is the artifact of drawing procedure
 that draw lines between coordinates that are evenly distributed on the x-axis.
 
-Coded by me (Marek Wydmuch) in 2022, with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2022.
 `;
 
 const Animation = require("../animation");

@@ -16,7 +16,8 @@ The interesting challenge related to this animation was
 to efficiently visualize the optimized function. 
 This is done by using simplified version of the marching squares algorithm.
 
-Coded by me (Marek Wydmuch) in 2021, with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2021.
 `;
 
 const Animation = require("../animation");
@@ -410,8 +411,10 @@ class GradientDescent extends Animation {
                 scale = 1,
                 rounding = 5,
                 autoRestart = true,
-                autoRestartSteps = 1000){
-        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
+                autoRestartSteps = 1000,
+                contextType = "2d"
+            ) {
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC, "random", contextType);
         //this.funcNames = ["with saddle point", "BEALE", "Jennrich-Sampsonk", "Rosenbrock", "Styblinski-Tang"];
         this.funcNames = ["with saddle point", "BEALE", "Rosenbrock", "Styblinski-Tang"];
         this.functionToOptimize = this.assignIfRandom(functionToOptimize, Utils.randomChoice(this.funcNames));
