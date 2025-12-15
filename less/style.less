@@ -310,6 +310,7 @@ ul{
   max-height: 50rem;
   margin-bottom: .6rem;
   transition: 0.3s ease;
+  pointer-events: auto;
 }
 
 .read-more-state ~ .read-more-trigger:before {
@@ -566,6 +567,29 @@ footer {
   z-index: 1;
 }
 
+#publication-doctoral-dissertation {
+  &::before {
+    border-color: @background;
+    color: @background;
+  }
+
+  .columns {
+    background: #006991;
+    color: @background;
+    margin-left: -1rem;
+    padding-left: 1rem;
+  }
+
+  a {
+    border-color: @background;
+    color: @background;
+  }
+
+  .fa-custom {
+    background-color: @background;
+  }
+}
+
 .generate-filter-rules(@index: 1) when (@index <= 20) {
   @nth: @index + 1;
 
@@ -573,6 +597,8 @@ footer {
     opacity: 1;
     pointer-events: auto;
     max-height: 1000px;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
   }
 
   #publication-tag-@{index}:checked ~ .filter-nav label[for="publication-tag-@{index}"] {
@@ -601,6 +627,8 @@ footer {
     list-style: none;
     padding: 0;
     margin: 0;
+    // margin-left: 0.75rem;
+    margin-left: 1rem;
   }
 
   .filter-item {

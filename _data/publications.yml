@@ -1,3 +1,23 @@
+# - title: "Addressing the long‑tail problem in extreme multi‑label classification"
+#   url: https://www.cs.put.poznan.pl/mwydmuch/pdf/
+#   id: doctoral-dissertation
+#   poster_thumbnail: assets/thumbnails/2025_addressing_the_long_tail_problem_in_xmlc.jpg
+#   authors: Marek Wydmuch
+#   year: 2025
+#   links:
+#     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2024_omma_icml_paper.pdf
+#       type: book-pdf
+#     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
+#       type: bibtex
+#   tags:
+#     - extreme classification
+#     - multi-label classification
+#     - metrics for long-tail labels
+#     - metrics@k
+#     - macro-averaged metrics
+#     - complex performance metrics
+#     - probabilistic label trees
+
 - title: "A General Online Algorithm for Optimizing Complex Performance Metrics"
   url: https://proceedings.mlr.press/v235/kotlowski24a.html
   id: icml-2024
@@ -16,6 +36,12 @@
       type: poster-pdf
     - url: https://arxiv.org/abs/2406.14743
       type: arxiv
+  tags:
+    - multi-label classification
+    - multi-class classification
+    - complex performance metrics
+    - macro-averaged metrics
+    - online methods
 
 - title: "Consistent algorithms for multi-label classification with macro-at-k metrics"
   url: https://openreview.net/forum?id=XOnya9gSdF
@@ -39,9 +65,12 @@
       type: arxiv
   tags:
     - multi-label classification
-    - extreme multi-label classification
-    - measures for long-tail labels
-    - macro-averaged measures
+    - macro-averaged metrics
+    - complex performance metrics
+    - metrics for long-tail labels
+    - extreme classification
+    - complex performance metrics
+    - metrics@k
 
 - title: "Generalized test utilities for long-tail performance in extreme multi-label classification"
   url: https://proceedings.neurips.cc/paper_files/paper/2023/hash/46994b3d6dd0fd5fca5f780af6259db5-Abstract-Conference.html
@@ -64,10 +93,12 @@
     - url: https://arxiv.org/abs/2311.05081
       type: arxiv
   tags:
+    - extreme classification
     - multi-label classification
-    - extreme multi-label classification
-    - measures for long-tail labels
-    - macro-averaged measures
+    - metrics for long-tail labels
+    - macro-averaged metrics
+    - complex performance metrics
+    - metrics@k
 
 - title: "On Missing Labels, Long-tails and Propensities in Extreme Multi-label Classification"
   url: https://dl.acm.org/doi/10.1145/3404835.3463084
@@ -88,9 +119,11 @@
     - url: https://arxiv.org/abs/2207.13186
       type: arxiv
   tags:
-    - extreme multi-label classification
+    - extreme classification
+    - multi-label classification
     - missing labels
-    - measures for long-tail labels
+    - metrics for long-tail labels
+    - complex performance metrics
 
 - title: "Propensity-scored Probabilistic Label Trees"
   url: https://dl.acm.org/doi/10.1145/3404835.3463084
@@ -113,10 +146,12 @@
     - url: https://arxiv.org/abs/2110.10803
       type: arxiv
   tags:
-    - extreme multi-label classification
+    - extreme classification
+    - multi-label classification
     - probabilistic label trees
     - missing labels
-    - measures for long-tail labels
+    - metrics for long-tail labels
+    - metrics@k
 
 - title: "Online probabilistic label trees"
   url: https://proceedings.mlr.press/v130/jasinska-kobus21a.html
@@ -143,7 +178,8 @@
     - url: https://arxiv.org/abs/2007.04451
       type: arxiv
   tags:
-    - extreme multi-label classification
+    - extreme classification
+    - multi-label classification
     - probabilistic label trees
     - online methods
 
@@ -158,6 +194,10 @@
       type: paper-pdf
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
       type: bibtex
+  tags:
+    - extreme classification
+    - multi-class classification
+    - set-valued prediction
 
 - title: "Probabilistic Label Trees for Extreme Multi-label Classification"
   url: https://arxiv.org/abs/2009.11218
@@ -173,7 +213,8 @@
     - url: https://arxiv.org/abs/2009.11218
       type: arxiv
   tags:
-    - extreme multi-label classification
+    - extreme classification
+    - multi-label classification
     - probabilistic label trees
 
 - title: "A no-regret generalization of hierarchical softmax to extreme multi-label classification"
@@ -199,6 +240,7 @@
   tags:
     - extreme multi-label classification
     - probabilistic label trees
+    - metrics@k
 
 - title: "ViZDoom Competitions: Playing Doom From Pixels"
   url: https://ieeexplore.ieee.org/document/8500330

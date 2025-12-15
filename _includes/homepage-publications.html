@@ -49,12 +49,13 @@
 
                 <!-- Filter items -->
                 <ul class="filter-body">
-                    {% for publication in site.data.publications %}
-                        {% if publication.id %}
-                        <li id="publication-{{ publication.id }}" class="filter-item publication-item"{% if publication.tags %} data-tag="{% for tag in publication.tags %}publication-tag-{% for sorted_tag in sorted_tags %}{% if sorted_tag == tag %}{{ forloop.index }}{% endif %}{% endfor %} {% endfor %}"{% else %} data-tag="publication-tag-0"{% endif %}>
-                        {% else %}
-                        <li class="filter-item publication-item"{% if publication.tags %} data-tag="{% for tag in publication.tags %}publication-tag-{% for sorted_tag in sorted_tags %}{% if sorted_tag == tag %}{{ forloop.index }}{% endif %}{% endfor %} {% endfor %}"{% else %} data-tag="publication-tag-0"{% endif %}>
-                        {% endif %}
+                {% for publication in site.data.publications %}
+                    <li 
+                        {% if publication.id %} id="publication-{{ publication.id }}" {% endif %}
+                        class="filter-item publication-item"
+                        {% if publication.tags %} data-tag="{% for tag in publication.tags %}publication-tag-{% for sorted_tag in sorted_tags %}{% if sorted_tag == tag %}{{ forloop.index }}{% endif %}{% endfor %} {% endfor %}"{% else %} 
+                        data-tag="publication-tag-0"{% endif %}
+                    >
                     <div class="columns">
                         {% if publication.poster_thumbnail %}
                         <div class="column col-8">
@@ -97,6 +98,8 @@
                                     {% assign link_text = '<i class="fa-custom fa-books" aria-hidden="true"></i> bibtex' %}
                                 {% elsif link.type == "arxiv" %}
                                     {% assign link_text = '<i class="fa-custom fa-arxiv" aria-hidden="true"></i> arxiv' %}
+                                {% elsif link.type == "book-pdf" %}
+                                    {% assign link_text = '<i class="fa fa-book"></i> full book' %}
                                 {% endif %}
                                 <span class="nowrap">[<a href="{{ link.url }}">{{ link_text }}</a>]</span>
                             {% endfor %}
@@ -108,8 +111,8 @@
                         </div>
                         {% endif %}
                     </div>
-                </li>
-            {% endfor %}
+                    </li>
+                {% endfor %}
                 </ul>
             </div>
         </div>
