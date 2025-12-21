@@ -77,8 +77,6 @@ class PerlinNoiseGrid extends Animation {
         this.imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
     }
 
-
-
     restart(){
         super.restart();
         this.clear();

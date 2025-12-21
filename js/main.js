@@ -42,16 +42,16 @@ const ThreeNPlusOne = require("./animations/3n+1"),
       TreeVisualization = require("./animations/tree-visualization"),
 
       // Shader animations
-//      TestShader = require("./shader-animations/test"),
-      Fractals = require("./shader-animations/fractals"),
-      FractionalBrownianMotion = require("./shader-animations/fbm"),
+      //TestShader = require("./shader-animations/test"),
+      //Fractals = require("./shader-animations/fractals"),
+      FractionalBrownianMotion = require("./shader-animations/fbm");
 
       
       // Three.js animations
-//      Cubes = require("./threejs-animations/cubes"),
-//      EvaporatingCubes = require("./threejs-animations/evaporating-cubes"),
-//      TestThreejs = require("./threejs-animations/test");
-      GradientDescent3D = require("./threejs-animations/gradient-descent");
+      //Cubes = require("./threejs-animations/cubes"),
+      //EvaporatingCubes = require("./threejs-animations/evaporating-cubes"),
+      //TestThreejs = require("./threejs-animations/test");
+      //GradientDescent3D = require("./threejs-animations/gradient-descent");
       
 
 
@@ -157,7 +157,7 @@ if(canvas){
         {class: DayAndNightAutomata, name: "day and night automata"},
         //{class: EvaporatingCubes, name: "evaporating cubes"},  // Disabled till finished
         {class: FiguresSpiral, name: "figures spiral", hide: true},  // Hide cause it's not that interesting
-        {class: Fractals, name: "fractals (shader)", hide: false},
+        //{class: Fractals, name: "fractals (shader)", hide: false},
         {class: FractionalBrownianMotion, name: "fractional brownian motion (shader)"},
         {class: GameOfLife, name: "game of life"},
         {class: GameOfLifeIsometric, name: "isometric game of life"},

@@ -156,6 +156,11 @@ class Animation {
     }
 
     restart() {
+        console.log(`Restarting ${this.name} animation`);
+
+        this.realTimeMs = 0;
+        this.realTime = 0;
+        this.timeMs = 0;
         this.time = 0;
         this.frame = 0;
         this.setSeed(this.seed);

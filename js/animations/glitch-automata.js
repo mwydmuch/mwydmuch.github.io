@@ -81,7 +81,7 @@ class GlitchAutomata extends GridAnimation {
         }
     }
 
-    newCellState(x, y) {
+    newCellState(x, y, newGridWidth, newGridHeight) {
         if(this.initialPatern == "1x1 checkerboard") return (x + y) % 2 ? 1 : 0;
         else if(this.initialPatern == "2x2 checkerboard"){
             const x2 = Math.floor(x / 2),

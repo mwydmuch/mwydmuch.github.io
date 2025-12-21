@@ -76,14 +76,8 @@ class RockPaperScissorsAutomata extends GridAnimation {
         }
     }
 
-    newCellState(x, y) {
+    newCellState(x, y, newGridWidth, newGridHeight) {
         return Utils.randomInt(0, this.numStates, this.rand);
-    }
-
-    resize() {
-        const newGridWidth = Math.ceil(this.canvas.width / this.cellSize),
-              newGridHeight = Math.ceil(this.canvas.height / this.cellSize);
-        this.resizeGrid(newGridWidth, newGridHeight);
     }
 
     getSettings() {

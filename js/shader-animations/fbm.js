@@ -4,6 +4,8 @@ const NAME = "fractional Brownian motion",
       FILE = "fbm.js",
       DESC = `
 This shader animation implements a dynamic pattern using fractional Brownian motion (fBm).
+
+Coded by me (Marek Wydmuch) in 2024.
 `;
 
 const FRAGMENT_SHADER = `

@@ -45,7 +45,6 @@ class GameOfLife extends GridAnimation {
         
         this.cellSize = cellSize;
         this.cellBasePadding = cellPadding;
-        this.initialPaterns = ["random", "R Pentomino"]; // not used at the moment
         this.spawnProb = spawnProb;
         this.cellStyles = ["square", "circle"];
         this.cellStyle = this.assignIfRandom(cellStyle, Utils.randomChoice(this.cellStyles));
@@ -153,7 +152,7 @@ class GameOfLife extends GridAnimation {
         this.ctx.resetTransform();
     }
 
-    newCellState(x, y) {
+    newCellState(x, y, newGridWidth, newGridHeight) {
         return (this.rand() < this.spawnProb) ? 1 : -99999;
     }
 
