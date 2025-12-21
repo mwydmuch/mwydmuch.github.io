@@ -16,7 +16,8 @@ The interesting challenge related to this animation was
 to efficiently visualize the optimized function. 
 This is done by using simplified version of the marching squares algorithm.
 
-Coded by me (Marek Wydmuch) in 2021, with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2021.
 `;
 
 const Animation = require("../animation");
@@ -29,10 +30,11 @@ class Optim {
     }
 
     update(grad){
-        return 0;
+        this.prevW = [...this.w];
     }
 
     init(w){
+        this.prevW = [...w];
         this.w = [...w];
     }
 
@@ -48,6 +50,7 @@ class SGD extends Optim {
     }
 
     update(grad){
+        super.update(grad);
         for(let i = 0; i < this.w.length; ++i){
             this.w[i] -= this.eta * grad[i];
         }
@@ -67,6 +70,7 @@ class Momentum extends Optim {
     }
 
     update(grad){
+        super.update(grad);
         for(let i = 0; i < this.w.length; ++i){
             this.m[i] = this.beta * this.m[i] + (1 - this.beta) * grad[i];
             this.w[i] -= this.eta * this.m[i];
@@ -86,6 +90,7 @@ class AdaGrad extends Optim {
     }
 
     update(grad){
+        super.update(grad);
         for(let i = 0; i < this.w.length; ++i){
             this.v[i] += grad[i] * grad[i];
             this.w[i] -= this.eta / Math.sqrt(this.v[i] + 0.000001) * grad[i];
@@ -106,6 +111,7 @@ class RMSProp extends Optim {
     }
 
     update(grad){
+        super.update(grad);
         for(let i = 0; i < this.w.length; ++i){
             this.v[i] = this.beta * this.v[i] + (1 - this.beta) * grad[i] * grad[i];
             this.w[i] -= this.eta / Math.sqrt(this.v[i] + 0.000001) * grad[i];
@@ -128,6 +134,7 @@ class Adam extends Optim {
     }
 
     update(grad){
+        super.update(grad);
         for(let i = 0; i < this.w.length; ++i){
             this.m[i] = this.beta1 * this.m[i] + (1 - this.beta1) * grad[i];
             this.v[i] = this.beta2 * this.v[i] + (1 - this.beta2) * grad[i] * grad[i];
@@ -151,6 +158,7 @@ class AdaMax extends Optim {
     }
 
     update(grad){
+        super.update(grad);
         for(let i = 0; i < this.w.length; ++i){
             this.m[i] = this.beta1 * this.m[i] + (1 - this.beta1) * grad[i];
             this.v[i] = Math.max(this.beta2 * this.v[i], Math.abs(grad[i]));
@@ -174,6 +182,7 @@ class AMSGrad extends Optim {
     }
 
     update(grad){
+        super.update(grad);
         for(let i = 0; i < this.w.length; ++i){
             this.m[i] = this.beta1 * this.m[i] + (1 - this.beta1) * grad[i];
             this.v[i] = Math.max(this.beta2 * this.v[i] + (1 - this.beta2) * grad[i] * grad[i], this.v[i]);
@@ -402,8 +411,10 @@ class GradientDescent extends Animation {
                 scale = 1,
                 rounding = 5,
                 autoRestart = true,
-                autoRestartSteps = 1000){
-        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
+                autoRestartSteps = 1000,
+                contextType = "2d"
+            ) {
+        super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC, "random", contextType);
         //this.funcNames = ["with saddle point", "BEALE", "Jennrich-Sampsonk", "Rosenbrock", "Styblinski-Tang"];
         this.funcNames = ["with saddle point", "BEALE", "Rosenbrock", "Styblinski-Tang"];
         this.functionToOptimize = this.assignIfRandom(functionToOptimize, Utils.randomChoice(this.funcNames));
@@ -433,6 +444,14 @@ class GradientDescent extends Animation {
         this.optims = [this.sgd, this.momentum, this.adagrad, this.rmsprop, this.adam, this.adamax, this.amsgrad];
     }
 
+    update(elapsed){
+        super.update(elapsed);
+        for (let i = 0; i < this.optims.length; ++i) {
+            let o = this.optims[i];
+            o.update(this.func.grad(o.w));
+        }
+    }
+
     draw() {
         if(this.imageData) this.ctx.putImageData(this.imageData, 0, 0);
 
@@ -440,8 +459,7 @@ class GradientDescent extends Animation {
         for (let i = 0; i < this.optims.length; ++i) {
             let x1, y1, x2, y2,
                 o = this.optims[i];
-            [x1, y1] = o.w;
-            o.update(this.func.grad(o.w));
+            [x1, y1] = o.prevW;
             [x2, y2] = o.w;
 
             if(!isFinite(x1) || !isFinite(y1) || !isFinite(x2) || !isFinite(y2)) continue;
@@ -544,7 +562,7 @@ class GradientDescent extends Animation {
         // Calculate colors for the isolines
         let isolinesColors = [];
         for(let i = 0; i < isolines.length; ++i){
-            isolinesColors.push(Utils.lerpColor(this.colorA, this.colorB, (i + 1) / (isolines.length + 1)));
+            isolinesColors.push(Utils.lerpColorHex(this.mainColor, this.secColor, (i + 1) / (isolines.length + 1)));
         }
 
         // Draw the isolines

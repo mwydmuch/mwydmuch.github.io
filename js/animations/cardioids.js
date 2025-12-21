@@ -14,7 +14,8 @@ To see what is really happening, try to set the number of lines to small number.
 
 Playing with both number of lines and speed, allow to notice different interesting patterns.
 
-Coded by me (Marek Wydmuch) in 2022, with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2022.
 `;
 
 const Animation = require("../animation");
@@ -52,7 +53,7 @@ class Cardioids extends Animation {
                   b = this.getVec(i * this.time);
             let color;
             if(this.rainbowColors) color = 'hsl(' + i / this.lines * 360 + ', 100%, 75%)';
-            else color = Utils.lerpColorsPallet([this.colorA, this.colorB, this.colorA], i / this.lines);
+            else color = Utils.lerpColorsHexPallet([this.mainColor, this.secColor, this.mainColor], i / this.lines);
             this.ctx.strokeStyle = color;
             Utils.drawLine(this.ctx, a.x, a.y, b.x, b.y, 1, color);
         }

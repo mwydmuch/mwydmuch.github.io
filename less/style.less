@@ -43,7 +43,7 @@
 
 
 // Others
-@font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+@font-family: "Montserrat", Arial, sans-serif;
 @global-radius: 4px;
 @global-border-width: 4px;
 @global-animation-duration: 0.5s;
@@ -297,17 +297,20 @@ ul{
   display: none;
 }
 
-.read-more-target {
+.read-more-state ~ .read-more-wrap .read-more-target .timeline-item {
   opacity: 0;
   max-height: 0;
-  font-size: 0;
-  transition: .25s ease;
+  margin-bottom: 0;
+  transition: 0.3s ease;
+  pointer-events: none;
 }
 
-.read-more-state:checked ~ .read-more-wrap .read-more-target {
+.read-more-state:checked ~ .read-more-wrap .read-more-target .timeline-item {
   opacity: 1;
-  font-size: inherit;
-  max-height: 999em;
+  max-height: 50rem;
+  margin-bottom: .6rem;
+  transition: 0.3s ease;
+  pointer-events: auto;
 }
 
 .read-more-state ~ .read-more-trigger:before {
@@ -317,15 +320,6 @@ ul{
 .read-more-state:checked ~ .read-more-trigger:before {
   content: 'show less';
 }
-
-#news {
-  z-index: 0;
-}
-
-#publications {
-  z-index: 1;
-}
-
 
 // HOMEPAGE LAYOUT
 // ---------------------------------------------------------------------------------------------------------------------
@@ -428,6 +422,10 @@ section {
   margin: 5rem 0;
 }
 
+.section-title{
+  font-weight: bold;
+}
+
 
 // Footer
 // ---------------------------------------------------------------------------------------------------------------------
@@ -478,10 +476,10 @@ footer {
     font-weight: @bold-font;
   }
 
-  #profiles{
+  #profiles, #page-menu{
     font-weight: @bold-font;
 
-    .profile-link{
+    .profile-link, .page-link{
       padding: .15rem .5rem;
       border: 2px solid @main;
       color: @main;
@@ -501,8 +499,35 @@ footer {
 }
 
 
-// Timeline fixes
+// Timeline and lists fixes
 // ---------------------------------------------------------------------------------------------------------------------
+
+#news {
+  z-index: 0;
+}
+
+.chip {
+  padding: .15rem .5rem;
+  // margin: .15rem .25rem;
+  margin: 0;
+  border: 1px solid @second;
+  background-color: @background;
+  color: @second;
+  cursor: pointer;
+  font-weight: @bold-font;
+  transition: all 0.2s ease;
+  border-radius: 0;
+
+  &:hover {
+    background-color: lighten(@main, 50%);
+  }
+
+  .tag-count {
+    margin-left: 0.25rem;
+    opacity: 0.7;
+    font-weight: 400;
+  }
+}
 
 .timeline {
   padding-left: 70px;
@@ -531,6 +556,110 @@ footer {
     &::before {
       top: 1.05rem;
     }
+  }
+}
+
+
+// Publication filter
+// ---------------------------------------------------------------------------------------------------------------------
+
+#publications {
+  z-index: 1;
+}
+
+#publication-doctoral-dissertation {
+  &::before {
+    border-color: @background;
+    color: @background;
+  }
+
+  .columns {
+    background: #006991;
+    color: @background;
+    margin-left: -1rem;
+    padding-left: 1rem;
+  }
+
+  a {
+    border-color: @background;
+    color: @background;
+  }
+
+  .fa-custom {
+    background-color: @background;
+  }
+}
+
+.generate-filter-rules(@index: 1) when (@index <= 20) {
+  @nth: @index + 1;
+
+  .filter-tag:nth-of-type(@{nth}):checked ~ .filter-body .filter-item[data-tag~="publication-tag-@{index}"] {
+    opacity: 1;
+    pointer-events: auto;
+    max-height: 1000px;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  #publication-tag-@{index}:checked ~ .filter-nav label[for="publication-tag-@{index}"] {
+    background: @main-gradient;
+    color: @background;
+    border-color: @second;
+  }
+
+  .generate-filter-rules(@index + 1);
+}
+
+.filter {
+  .filter-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+
+    .chip {
+      background-color: @background;
+      color: @second;
+    }
+  }
+
+  .filter-body {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    // margin-left: 0.75rem;
+    margin-left: 1rem;
+  }
+
+  .filter-item {
+    margin: 0.25rem 0;
+    opacity: 1;
+    pointer-events: auto;
+    max-height: 50rem;
+    transition: 0.3s ease;
+  }
+
+  .filter-tag:first-of-type:checked ~ .filter-body .filter-item {
+    opacity: 1;
+    pointer-events: auto;
+    max-height: 50rem;
+    transition: 0.3s ease;
+  }
+
+  .filter-tag:not(:first-of-type):checked ~ .filter-body .filter-item {
+    opacity: 0;
+    pointer-events: none;
+    max-height: 0;
+    margin: 0;
+    transition: 0.3s ease;
+  }
+
+  .generate-filter-rules();
+
+  #publication-tag-0:checked ~ .filter-nav label[for="publication-tag-0"] {
+    background: @main-gradient;
+    color: @background;
+    border-color: @second;
   }
 }
 
@@ -669,7 +798,8 @@ each(@fade-show-values, {
 #background-settings-controls {
   transition: opacity @global-animation-duration;
   //width: 19rem;
-  max-width: 19rem;
+  //max-width: 19rem; // For Raleway font
+  max-width: 20.5rem; // For Montserrat font
   //max-height: 100%;
   //overflow-x: hidden;
   //overflow-y: scroll;

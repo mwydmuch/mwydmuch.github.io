@@ -25,7 +25,8 @@ My other cellular automata visualizations:
 - [rock paper scissors](https://mwydmuch.pl/animations?animation=rock-paper-scissors-automata)
 - [sand automata](https://mwydmuch.pl/animations?animation=sand-automata)
 
-Coded by me (Marek Wydmuch) in 2019, with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2019.
 `;
 
 const GridAnimation = require("../grid-animation");
@@ -44,7 +45,6 @@ class GameOfLife extends GridAnimation {
         
         this.cellSize = cellSize;
         this.cellBasePadding = cellPadding;
-        this.initialPaterns = ["random", "R Pentomino"]; // not used at the moment
         this.spawnProb = spawnProb;
         this.cellStyles = ["square", "circle"];
         this.cellStyle = this.assignIfRandom(cellStyle, Utils.randomChoice(this.cellStyles));
@@ -121,7 +121,7 @@ class GameOfLife extends GridAnimation {
         
         let fadeColors = new Array(this.deadCellsFadingSteps);
         for (let i = 0; i < this.deadCellsFadingSteps; ++i) {
-            fadeColors[i] = Utils.lerpColor(this.colors[0], this.bgColor, i / this.deadCellsFadingSteps);
+            fadeColors[i] = Utils.lerpColorHex(this.colors[0], this.bgColor, i / this.deadCellsFadingSteps);
         }
 
         for (let y = 0; y < this.gridHeight; ++y) {
@@ -152,7 +152,7 @@ class GameOfLife extends GridAnimation {
         this.ctx.resetTransform();
     }
 
-    newCellState(x, y) {
+    newCellState(x, y, newGridWidth, newGridHeight) {
         return (this.rand() < this.spawnProb) ? 1 : -99999;
     }
 

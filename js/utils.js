@@ -132,7 +132,7 @@ module.exports = {
     },
 
     // Based on: https://gist.github.com/rosszurowski/67f04465c424a9bc0dae
-    lerpColor(a, b, t) {
+    lerpColorHex(a, b, t) {
         const ah = parseInt(a.replace('#', '0x'), 16),
               ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
               bh = parseInt(b.replace('#', '0x'), 16),
@@ -145,10 +145,10 @@ module.exports = {
         return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
     },
 
-    lerpColorsPallet(colors, t) {
+    lerpColorsHexPallet(colors, t) {
         const interval = 1.0 / (colors.length - 1),
               i = Math.floor(t / interval);
-        return this.lerpColor(colors[i % colors.length], colors[(i + 1) % colors.length], (t - i * interval) / interval);
+        return this.lerpColorHex(colors[i % colors.length], colors[(i + 1) % colors.length], (t - i * interval) / interval);
     },
 
     // Some basic vec operations
@@ -313,6 +313,12 @@ module.exports = {
 
     rgbToHex(r, g, b) {
         return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    },
+
+    hexToRgb(c) {
+        const ch = parseInt(c.replace('#', '0x'), 16);
+        const cr = ch >> 16, cg = ch >> 8 & 0xff, cb = ch & 0xff;
+        return {r: cr, g: cg, b: cb};
     },
 
     // Set operations

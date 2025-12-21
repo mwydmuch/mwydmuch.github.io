@@ -9,7 +9,8 @@ Quadtree is a data structure that is 2-dimensional, special variant of k-d trees
 
 You can read about quadtree on [Wikipedia](https://en.wikipedia.org/wiki/Quadtree).
 
-Coded by me (Marek Wydmuch) in 2022, with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2022.
 `;
 
 const Animation = require("../animation");

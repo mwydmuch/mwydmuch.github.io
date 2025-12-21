@@ -1,26 +1,82 @@
 <section id="publications" class="container grid-lg">
     <div class="columns">
         <div class="column">
-            <h2 class="d-inline-block h-reversed-second"><i class="fa-solid fa-file-lines thinner-second"></i> Scientific publications</h2>
-            <ul>
-            {% for publication in site.data.publications %}
-                {% if publication.id %}
-                <li id="publication-{{ publication.id }}">
-                {% else %}
-                <li>
-                {% endif %}
+            <h2 class="d-inline-block h-reversed-second section-title"><i class="fa-solid fa-file-lines thinner-second"></i> Scientific publications</h2>
+
+            <!-- Tag filter using Spectre -->
+            <div class="filter" id="tag-filter">
+                {% assign all_tags = "" | split: "" %}
+                {% for publication in site.data.publications %}
+                    {% if publication.tags %}
+                        {% for tag in publication.tags %}
+                            {% unless all_tags contains tag %}
+                                {% assign all_tags = all_tags | push: tag %}
+                            {% endunless %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+                {% assign sorted_tags = all_tags | sort %}
+
+                <!-- Hidden radio inputs for filter control -->
+                <input type="radio" id="publication-tag-0" class="filter-tag" name="publication-filter" hidden checked>
+                {% for tag in sorted_tags %}
+                    <input type="radio" id="publication-tag-{{ forloop.index }}" class="filter-tag" name="publication-filter" hidden>
+                {% endfor %}
+
+                <!-- Filter navigation with counters -->
+                <div class="filter-nav">
+                    Topics:
+                    <label class="chip active" for="publication-tag-0">
+                        all
+                        <span class="tag-count">(
+                        {%- assign total_count = site.data.publications | size -%}
+                        {{ total_count }})</span>
+                    </label>
+                    {% for tag in sorted_tags %}
+                        <label class="chip" for="publication-tag-{{ forloop.index }}">
+                            {{ tag }}
+                            <span class="tag-count">(
+                            {%- assign count = 0 -%}
+                            {%- for publication in site.data.publications -%}
+                                {%- if publication.tags contains tag -%}
+                                    {%- assign count = count | plus: 1 -%}
+                                {%- endif -%}
+                            {%- endfor -%}
+                            {{ count }})</span>
+                        </label>
+                    {% endfor %}
+                </div>
+
+                <!-- Filter items -->
+                <ul class="filter-body">
+                {% for publication in site.data.publications %}
+                    <li 
+                        {% if publication.id %} id="publication-{{ publication.id }}" {% endif %}
+                        class="filter-item publication-item"
+                        {% if publication.tags %} data-tag="{% for tag in publication.tags %}publication-tag-{% for sorted_tag in sorted_tags %}{% if sorted_tag == tag %}{{ forloop.index }}{% endif %}{% endfor %} {% endfor %}"{% else %} 
+                        data-tag="publication-tag-0"{% endif %}
+                    >
                     <div class="columns">
                         {% if publication.poster_thumbnail %}
                         <div class="column col-8">
                         {% else %}
                         <div class="column col-12">
                         {% endif %}
+                        <div>
                             <a href="{{ publication.url }}">{{ publication.title }}</a><br>
                             {{ publication.authors }}<br>
                             {% if publication.book %}
                                 <i>{{ publication.book }}</i>, 
                             {% endif %}
                             {{ publication.year }}<br>
+                            {% if publication.tags %}
+                        </div>
+                        <div>
+                            Topics:
+                            {% for tag in publication.tags %}
+                                {{ tag }}{% unless forloop.last %}, {% endunless %}
+                            {% endfor %}<br>
+                            {% endif %}
                             {% if publication.note %}
                                 Note: {{ publication.note }}<br>
                             {% endif %}
@@ -42,9 +98,12 @@
                                     {% assign link_text = '<i class="fa-custom fa-books" aria-hidden="true"></i> bibtex' %}
                                 {% elsif link.type == "arxiv" %}
                                     {% assign link_text = '<i class="fa-custom fa-arxiv" aria-hidden="true"></i> arxiv' %}
+                                {% elsif link.type == "book-pdf" %}
+                                    {% assign link_text = '<i class="fa fa-book"></i> full book' %}
                                 {% endif %}
                                 <span class="nowrap">[<a href="{{ link.url }}">{{ link_text }}</a>]</span>
                             {% endfor %}
+                        </div>
                         </div>
                         {% if publication.poster_thumbnail %}
                         <div class="column col-4 col-md-12 text-center">
@@ -52,9 +111,10 @@
                         </div>
                         {% endif %}
                     </div>
-                </li>
-            {% endfor %}
-            </ul>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
         </div>
     </div>
 </section>

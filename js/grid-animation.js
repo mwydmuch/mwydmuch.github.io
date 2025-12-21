@@ -18,6 +18,8 @@ class GridAnimation extends Animation {
         this.gridHeight = 0;
         this.grid = null;
         this.gridNext = null;
+        this.centerResize = false;
+        this.resetOnResize = false;
     }
 
     getIdx(x, y) {
@@ -36,24 +38,38 @@ class GridAnimation extends Animation {
         return this.grid[this.getIdxWrap(x, y)];
     }
 
-    newCellState(x, y) {
+    newCellState(x, y, newGridWidth, newGridHeight) {
         return 0;
     }
 
     resize() {
+        console.log(`Resized grid animation to ${this.canvas.width}x${this.canvas.height} px`);
         const newGridWidth = Math.ceil(this.canvas.width / this.cellSize),
               newGridHeight = Math.ceil(this.canvas.height / this.cellSize);
-        this.resizeGrid(newGridWidth, newGridHeight);
+        this.resizeGrid(newGridWidth, newGridHeight, this.resetOnResize, this.centerResize);
     }
 
-    resizeGrid(newGridWidth, newGridHeight){
+    resizeGrid(newGridWidth, newGridHeight, reset = false, center = false) {
+        console.log(`Resizing grid from ${this.gridWidth}x${this.gridHeight} to ${newGridWidth}x${newGridHeight}, reset=${reset}, center=${center}...`);
+        
         let newGrid = new Array(newGridWidth * newGridHeight);
 
         for (let y = 0; y < newGridHeight; ++y) {
             for (let x = 0; x < newGridWidth; ++x) {
                 const cellCord = x + y * newGridWidth;
-                if(x < this.gridWidth && y < this.gridHeight) newGrid[cellCord] = this.grid[this.getIdx(x, y)];
-                else newGrid[cellCord] = this.newCellState(x, y);
+                if(reset) newGrid[cellCord] = this.newCellState(x, y, newGridWidth, newGridHeight);
+                else if (center) {
+                    // Center old grid in new grid
+                    const oldX = x - Math.floor((newGridWidth - this.gridWidth) / 2),
+                          oldY = y - Math.floor((newGridHeight - this.gridHeight) / 2);
+                    if(oldX >= 0 && oldX < this.gridWidth && oldY >= 0 && oldY < this.gridHeight) newGrid[cellCord] = this.grid[this.getIdx(oldX, oldY)];
+                    else newGrid[cellCord] = this.newCellState(x, y, newGridWidth, newGridHeight);
+                }
+                else {
+                    // Copy as much as possible from old grid to new grid (top-left aligned)
+                    if(x < this.gridWidth && y < this.gridHeight) newGrid[cellCord] = this.grid[this.getIdx(x, y)];
+                    else newGrid[cellCord] = this.newCellState(x, y, newGridWidth, newGridHeight);
+                }
             }
         }
 

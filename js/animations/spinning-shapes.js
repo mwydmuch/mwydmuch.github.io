@@ -7,7 +7,8 @@ Just same shape "dancing" in a circle.
 This animation recreates the effect 
 described in this [article](https://observablehq.com/@rreusser/instanced-webgl-circles).
 
-Coded by me (Marek Wydmuch) in 2021, with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2021.
 `;
 
 const Animation = require("../animation");
@@ -61,7 +62,7 @@ class SpinningShapes extends Animation {
                   radius = (this.sizeBase + this.sizeRange * Math.cos(theta9)) * scale,
                   color = (Math.cos((theta9 + this.colorsShift) * this.colorsScale) + 1) / 2;
             if(this.rainbowColors) this.ctx.strokeStyle = `hsl(${color * 360}, 100%, 75%)`;
-            else this.ctx.strokeStyle = Utils.lerpColor(this.colorA, this.colorB, color);
+            else this.ctx.strokeStyle = Utils.lerpColorHex(this.mainColor, this.secColor, color);
             this.ctx.lineWidth = 1;
 
             this.ctx.beginPath();

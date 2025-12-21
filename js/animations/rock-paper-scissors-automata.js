@@ -18,7 +18,8 @@ My other cellular automata visualizations:
 - [isometric game of life](https://mwydmuch.pl/animations?animation=game-of-life-isometric)
 - [sand automata](https://mwydmuch.pl/animations?animation=sand-automata)
 
-Coded by me (Marek Wydmuch) in 2023, with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2023.
 `;
 
 const GridAnimation = require("../grid-animation");
@@ -75,14 +76,8 @@ class RockPaperScissorsAutomata extends GridAnimation {
         }
     }
 
-    newCellState(x, y) {
+    newCellState(x, y, newGridWidth, newGridHeight) {
         return Utils.randomInt(0, this.numStates, this.rand);
-    }
-
-    resize() {
-        const newGridWidth = Math.ceil(this.canvas.width / this.cellSize),
-              newGridHeight = Math.ceil(this.canvas.height / this.cellSize);
-        this.resizeGrid(newGridWidth, newGridHeight);
     }
 
     getSettings() {

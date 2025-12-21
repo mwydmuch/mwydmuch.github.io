@@ -1,7 +1,7 @@
 <section id="news" class="container grid-lg">
     <div class="columns">
         <div class="column">
-            <h2 class="d-inline-block h-reversed-second"><i class="fa-solid fa-newspaper thinner-second"></i> Most recent news & events</h2>
+            <h2 class="d-inline-block h-reversed-second section-title"><i class="fa-solid fa-newspaper thinner-second"></i> Most recent news & events</h2>
             <input type="checkbox" class="read-more-state" id="more-news" />
             <div class="timeline read-more-wrap">
                 {% for news in site.data.news limit: 7 %}
@@ -29,7 +29,7 @@
                   {% endfor %}
                 </div>
               </div>
-              [<label style="display: inline-block; margin-top: 0.6rem;" for="more-news" class="read-more-trigger link-style"></label>]
+              <label style="display: inline-block; margin-top: 0.6rem;" for="more-news" class="chip read-more-trigger link-style"></label>
             </div>
         </div>
     </div>

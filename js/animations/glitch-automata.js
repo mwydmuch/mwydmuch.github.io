@@ -14,7 +14,8 @@ My other cellular automata visualizations:
 - [rock paper scissors](https://mwydmuch.pl/animations?animation=rock-paper-scissors-automata)
 - [sand automata](https://mwydmuch.pl/animations?animation=sand-automata)
 
-Coded by me (Marek Wydmuch) in 2023, with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2023.
 `;
 
 const GridAnimation = require("../grid-animation");
@@ -80,7 +81,7 @@ class GlitchAutomata extends GridAnimation {
         }
     }
 
-    newCellState(x, y) {
+    newCellState(x, y, newGridWidth, newGridHeight) {
         if(this.initialPatern == "1x1 checkerboard") return (x + y) % 2 ? 1 : 0;
         else if(this.initialPatern == "2x2 checkerboard"){
             const x2 = Math.floor(x / 2),

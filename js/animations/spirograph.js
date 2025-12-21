@@ -16,7 +16,8 @@ that step by step how it works.
 Try play with the gears' settings or hit reset button few times 
 to get different random configurations.
 
-Coded by me (Marek Wydmuch) in 2022, with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2022.
 `;
 
 const Animation = require("../animation");
@@ -96,7 +97,7 @@ class Spirograph extends Animation {
             let next = this.getXY(i * lenPerVertex, this.time, scale);
             let color = null;
             if(this.rainbowColors) color = 'hsl(' + i / this.vertices * 360 + ', 100%, 75%)';
-            else color = Utils.lerpColor(this.colorA, this.colorB, i / this.vertices);
+            else color = Utils.lerpColorHex(this.mainColor, this.secColor, i / this.vertices);
             Utils.drawLine(this.ctx, start.x, start.y, next.x, next.y, 1, color);
             start = next;
         }

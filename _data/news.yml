@@ -1,13 +1,21 @@
-# - date: '01.2025'
+# - date: '12.2025'
 #   text: >-
 #     With a new version 1.3.0, <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i>&nbsp;ViZDoom</a></span> library,
 #     reached the status of Mature Farama Enviroment.
 
+- date: '12.2025'
+  text: >-
+    I sucessfully defended my <span class="reverse-put-blue"><i class="fa-solid fa-graduation-cap"></i> Ph.D.</span>
+
+# - date: '12.2025'
+#   text: >-
+#      <span class="reverse-baby-pink">My doughter <i class="fa-solid fa-baby"></i> was born <i class="fa-solid fa-heart"></i></span>
+
 - date: '11.2024'
   text: >-
     <span class="reverse-mlinpl-red"><i class="fa-custom fa-mlinpl" aria-hidden="true"></i>&nbsp;<a href="https://conference2024.mlinpl.org/">ML in PL Conference 2024</a></span> 
-    and <span class="reverse-mlinpl-red"><a href="https://aiart.mlinpl.org/">ML in PL AI Art Festival</a></span> 
-    that I co-organized, took place in Warsaw.
+    and <span class="reverse-mlinpl-red"><a href="https://aiart.mlinpl.org/">ML in PL AI Art Festival</a></span>,
+    which I co-organized, took place in Warsaw.
 
 - date: '08.2024'
   text: >-
@@ -30,7 +38,7 @@
 - date: '10.2023'
   text: >-
     <span class="reverse-mlinpl-red"><i class="fa-custom fa-mlinpl" aria-hidden="true"></i>&nbsp;<a href="https://conference2023.mlinpl.org/">ML in PL Conference 2023</a></span>, 
-    that I co-organized, took place in Warsaw.
+    which I co-organized, took place in Warsaw.
 
 - date: '09.2023'
   text: >-
@@ -40,12 +48,12 @@
 - date: '06.2023'
   text: >-
     <span class="reverse-mlss-blue"><a href="https://mlss2023.mlinpl.org/"><i class="fa-solid fa-school"></i> MLSS^S 2023 (Machine Learning Summer School on Applications in Science)</a></span> 
-    that I co-organized, took place at Jagiellonian University in Kraków.
+    which I co-organized, took place at Jagiellonian University in Kraków.
 
 - date: '05.2023'
   text: >-
     A new version of <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i>&nbsp;ViZDoom</a></span> (1.2.0) library 
-    was released with official <span class="reverse-openai-blue"><a href="https://gymnasium.farama.org/"><i class="fa fa-dumbbell"></i>&nbsp;Gymnasium</a></span> wrapper, support for ARM/Arch64 architectures including M1/M2 Macs and other improvments.
+    was released with an official <span class="reverse-openai-blue"><a href="https://gymnasium.farama.org/"><i class="fa fa-dumbbell"></i>&nbsp;Gymnasium</a></span> wrapper, support for ARM/Arch64 architectures including M1/M2 Macs, and other improvements.
 
 - date: '02.2023'
   text: >-
@@ -60,7 +68,7 @@
 - date: '11.2022'
   text: >-
     <span class="reverse-mlinpl-red"><i class="fa-custom fa-mlinpl" aria-hidden="true"></i>&nbsp;<a href="https://conference2022.mlinpl.org/">ML in PL Conference 2022</a></span>, 
-    that I co-organized, took place in Warsaw.
+    which I co-organized, took place in Warsaw.
 
 - date: '06.2022'
   text: >-
@@ -83,14 +91,14 @@
 - date: '11.2021'
   text: >-
     A new version of <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i>&nbsp;ViZDoom</a></span> (1.1.11) library 
-    was released that introduce access to the new <span class="reverse-vizdoom-red"><i class="fa-solid fa-volume-high"></i> audio buffer</span> allowing agents to not only see but also hear an environment.
+    was released that introduces access to the new <span class="reverse-vizdoom-red"><i class="fa-solid fa-volume-high"></i> audio buffer</span> allowing agents to not only see but also hear an environment.
 
 - date: '11.2021'
   text: >-
     <span class="reverse-mlinpl-red"><i class="fa-custom fa-mlinpl" aria-hidden="true"></i>&nbsp;<a href="https://conference2021.mlinpl.org/">ML in PL Conference 2021</a></span>, 
-    that I co-organized, took place virtualy.
+    which I co-organized, took place virtually.
 
-# - date: '09.2023'
+# - date: '09.2021'
 #   text: >-
 #      <span class="reverse-baby-pink">My doughter <i class="fa-solid fa-baby"></i> was born <i class="fa-solid fa-heart"></i></span>
 
@@ -112,7 +120,7 @@
 
 - date: '12.2020'
   text: >-
-    I gave a talk titled "Probabilistic Label Trees in Vowpal Wabbit" at Vowpal Wabbit Workshop at NeurIPS'20. <span class="nowrap">[<a href="https://slideslive.com/38942331/vowpal-wabbit?ref=speaker-37667-latest"><i class="fa fa-video"></i> video</a>]</span>
+    I gave a talk titled "Probabilistic Label Trees in Vowpal Wabbit" at the Vowpal Wabbit Workshop at NeurIPS'20. <span class="nowrap">[<a href="https://slideslive.com/38942331/vowpal-wabbit?ref=speaker-37667-latest"><i class="fa fa-video"></i> video</a>]</span>
 
 - date: '10.2020'
   text: >-

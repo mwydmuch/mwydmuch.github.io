@@ -30,8 +30,8 @@ class Animation {
         this.colors = colors;
         this.colorsAlt = colorsAlt;
         this.bgColor = bgColor;
-        this.colorA = colors[0];
-        this.colorB = colors[3];
+        this.mainColor = colors[0];
+        this.secColor = colors[3];
 
         // Basic info
         this.name = name;
@@ -151,11 +151,16 @@ class Animation {
         this.colors = colors;
         this.colorsAlt = colorsAlt;
         this.bgColor = bgColor;
-        this.colorA = colors[0];
-        this.colorB = colors[3];
+        this.mainColor = colors[0];
+        this.secColor = colors[3];
     }
 
     restart() {
+        console.log(`Restarting ${this.name} animation`);
+
+        this.realTimeMs = 0;
+        this.realTime = 0;
+        this.timeMs = 0;
         this.time = 0;
         this.frame = 0;
         this.setSeed(this.seed);

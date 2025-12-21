@@ -1,15 +1,17 @@
 
 'use strict';
 
-const NAME = "Test shader animation",
-      FILE = "test.js",
+const NAME = "Perlin noise",
+      FILE = "perlin-noise.js",
       DESC = `
-Just shader test animation.
+Animated Perlin noise field rendered with a fragment shader.
 `;
 
 const FRAGMENT_SHADER = `
     precision mediump float;
-    uniform vec2 uResolution;
+    uniform float time;
+    uniform vec2 resolution;
+    varying vec2 vUv;
 
     vec4 permute(vec4 x){
         return mod(((x*34.0)+1.0)*x, 289.0);
@@ -60,21 +62,25 @@ const FRAGMENT_SHADER = `
     }
 
     void main() {
-        vec2 st = gl_FragCoord.xy / uResolution;
-        // Scale the UV coordinates to increase the noise frequency
-        float noiseValue = cnoise(st * 10.0);
-        // Map noise from [-1,1] to [0,1]
+        vec2 uv = vUv;
+        vec2 noiseCoord = uv - 0.5;
+        noiseCoord.x *= resolution.x / resolution.y;
+        noiseCoord = noiseCoord * 8.0 + vec2(time * 0.02, time * 0.015);
+
+        float noiseValue = cnoise(noiseCoord);
         noiseValue = noiseValue * 0.5 + 0.5;
+
         gl_FragColor = vec4(vec3(noiseValue), 1.0);
     }
 `;
 
-const ShaderAnimation = require("../shader-animation");
+//const ShaderAnimation = require("../shader-animation");
+const ShaderAnimation = require("../threejs-shader-animation");
 
-class PerlinNoiseIsolines extends ShaderAnimation {
+class PerlinNoise extends ShaderAnimation {
     constructor(canvas, colors, colorsAlt, bgColor) {
         super(canvas, colors, colorsAlt, bgColor, FRAGMENT_SHADER, NAME, FILE, DESC);
     }
 }
 
-module.exports = PerlinNoiseIsolines;
+module.exports = PerlinNoise;

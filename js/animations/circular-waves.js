@@ -6,7 +6,8 @@ const NAME = "circular waves",
 This animation draw a circle as a set of vertices and edges,
 noise is added to the position of each vertex to create a wave effect. 
 
-Coded by me (Marek Wydmuch) in 2021, with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2021.
 `;
 
 const Animation = require("../animation");
@@ -39,7 +40,7 @@ class CircularWaves extends Animation {
         const zoff = this.frame * 0.005,
               radPerVertex = 2 * Math.PI / this.vertices;
         if(this.rainbowColors) this.ctx.strokeStyle = 'hsl(' + Math.abs(Math.sin(zoff * 5)) * 360 + ', 100%, 50%)';
-        else this.ctx.strokeStyle = Utils.lerpColor(this.colorA, this.colorB, Math.abs(Math.sin(zoff * 5)));
+        else this.ctx.strokeStyle = Utils.lerpColorHex(this.mainColor, this.secColor, Math.abs(Math.sin(zoff * 5)));
 
         this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
 

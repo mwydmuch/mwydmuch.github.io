@@ -6,7 +6,8 @@ const NAME = "particles waves",
 "Particles waves" animation.
 The effect was achieved by modifying Perlin noise animation.
 
-Coded by me (Marek Wydmuch) in 2020, with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2020.
 `;
 
 const Animation = require("../animation");
@@ -72,7 +73,7 @@ class ParticlesStorm extends Animation {
             this.particles.push({
                 x: particleX,
                 y: particleY,
-                color: Utils.lerpColor(this.colorA, this.colorB, particleX / this.width)
+                color: Utils.lerpColorHex(this.mainColor, this.secColor, particleX / this.width)
             });
         }
     }

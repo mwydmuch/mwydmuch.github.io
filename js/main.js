@@ -28,6 +28,7 @@ const ThreeNPlusOne = require("./animations/3n+1"),
       ParticlesWaves = require("./animations/particles-waves"),
       PerlinNoiseGrid = require("./animations/perlin-noise-grid"),
       PerlinNoiseParticles = require("./animations/perlin-noise-particles"),
+      Pong = require("./animations/pong"),
       RockPaperScissorsAutomata = require("./animations/rock-paper-scissors-automata"),
       SandAutomata = require("./animations/sand-automata"),
       Quadtree = require("./animations/quadtree"),
@@ -41,13 +42,16 @@ const ThreeNPlusOne = require("./animations/3n+1"),
       TreeVisualization = require("./animations/tree-visualization"),
 
       // Shader animations
-      TestShader = require("./shader-animations/test"),
-      FractionalBrownianMotion = require("./shader-animations/fbm"),
+      //TestShader = require("./shader-animations/test"),
+      //Fractals = require("./shader-animations/fractals"),
+      FractionalBrownianMotion = require("./shader-animations/fbm");
+
       
       // Three.js animations
-      Cubes = require("./threejs-animations/cubes"),
-      EvaporatingCubes = require("./threejs-animations/evaporating-cubes"),
-      TestThreejs = require("./threejs-animations/test");
+      //Cubes = require("./threejs-animations/cubes"),
+      //EvaporatingCubes = require("./threejs-animations/evaporating-cubes"),
+      //TestThreejs = require("./threejs-animations/test");
+      //GradientDescent3D = require("./threejs-animations/gradient-descent");
       
 
 
@@ -143,6 +147,7 @@ if(canvas){
     // ---------------------------------------------------------------------------------------------------------------------
 
     let allAnimations = [
+        // Class, name, hide, startAnimation
         {class: ThreeNPlusOne, name: "3n+1"},
         {class: BriansBrainAutomata, name: "brian's brain automata"},
         {class: Cardioids, name: "cardioids"},
@@ -152,11 +157,13 @@ if(canvas){
         {class: DayAndNightAutomata, name: "day and night automata"},
         //{class: EvaporatingCubes, name: "evaporating cubes"},  // Disabled till finished
         {class: FiguresSpiral, name: "figures spiral", hide: true},  // Hide cause it's not that interesting
-        {class: FractionalBrownianMotion, name: "fractional brownian motion", startAnimation: false},  // Disable as a start animation, as it may not be visually pleasing for everyone
+        //{class: Fractals, name: "fractals (shader)", hide: false},
+        {class: FractionalBrownianMotion, name: "fractional brownian motion (shader)"},
         {class: GameOfLife, name: "game of life"},
         {class: GameOfLifeIsometric, name: "isometric game of life"},
         {class: GlitchAutomata, name: "glitch automata", startAnimation: false},  // Disable as a start animation, as it may not be visually pleasing for everyone
         {class: GradientDescent, name: "gradient descent"},
+        {class: GradientDescent3D, name: "gradient descent (3D)"},
         {class: Matrix, name: "matrix rain"},
         {class: MLinPL, name: "ml in pl"},
         {class: Network, name: "network"},
@@ -167,6 +174,7 @@ if(canvas){
         {class: ParticlesWaves, name: "particles waves"},  // Disabled till updated
         //{class: PerlinNoiseGrid, name: "perlin noise grid"},
         {class: PerlinNoiseParticles, name: "perlin noise particles"},
+        {class: Pong, name: "pong"},
         {class: RockPaperScissorsAutomata, name: "rock-paper-scissors automata"},
         {class: SandAutomata, name: "sand automata"},
         {class: Quadtree, name: "quadtree", startAnimation: false}, // Disable as a start animation since it resources heavy
@@ -177,9 +185,9 @@ if(canvas){
         {class: SpinningShapes, name: "spinning shapes"},
         {class: Spirograph, name: "spirograph"},
         {class: Vectors, name: "vectors", hide: true},  // Hiden cause it's not that interesting
-        {class: TestShader, name: "test shader", hide: true},
-        {class: TestThreejs, name: "test Three.js", hide: true},
-        {class: TreeVisualization, name: "tree visualization", hide: true},  // Hiden cause it's not that interesting
+        //{class: TestShader, name: "test shader", hide: true},
+        //{class: TestThreejs, name: "test Three.js", hide: true},
+        //{class: TreeVisualization, name: "tree visualization", hide: true},  // Hiden cause it's not that interesting
     ];
 
     // Define functions related to the animation loop and control

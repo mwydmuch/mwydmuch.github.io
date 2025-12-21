@@ -13,7 +13,8 @@ You can read about the Delaunay triangulation on [Wikipedia](https://en.wikipedi
 Source of Delaunay triangulation implementation used in this animation
 can be found in this [repository](https://github.com/darkskyapp/delaunay-fast).
 
-Coded by me (Marek Wydmuch) in 2018, with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2018.
 `;
 
 const Animation = require("../animation");
@@ -48,7 +49,7 @@ class Network extends Animation {
 
         this.ctx.beginPath();
         Utils.pathClosedShape(this.ctx, [p1, p2, p3]);
-        const color = Utils.lerpColor(p1.color, this.bgColor, Utils.easeInSine(maxDist / this.distanceThreshold));
+        const color = Utils.lerpColorHex(p1.color, this.bgColor, Utils.easeInSine(maxDist / this.distanceThreshold));
         if(this.fillTriangles){
             this.ctx.fillStyle = color;
             this.ctx.fill();

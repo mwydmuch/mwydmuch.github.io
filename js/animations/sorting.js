@@ -9,7 +9,8 @@ Since then, I have found watching a nice visualization of sorting algorithms qui
 
 The animation first perform full sorting and records all the operations to the animation queue.
 
-Coded by me (Marek Wydmuch) in 2022, with no external dependencies, using only canvas API.
+Uses only Canvas API.
+Coded by me (Marek Wydmuch) in 2022.
 `;
 
 const Animation = require("../animation");
@@ -395,7 +396,7 @@ class Sorting extends Animation {
         this.elements = [];
         for(let i = 0; i < valMax; ++i){
             const val = values[i] / valMax,
-                  color = Utils.lerpColor(this.colors[0], this.colors[2], val);
+                  color = Utils.lerpColorHex(this.colors[0], this.colors[2], val);
             this.elements.push({val: val, pos: i, color: color, z: 0})
         }
 
@@ -448,8 +449,8 @@ class Sorting extends Animation {
 
                 this.animQueue.push(function (time) {
                     const prog = Math.min(time, duration) / duration;
-                    e1.color = Utils.lerpColor(color1, colorSel, colorEasing(prog));
-                    e2.color = Utils.lerpColor(color2, colorSel, colorEasing(prog));
+                    e1.color = Utils.lerpColorHex(color1, colorSel, colorEasing(prog));
+                    e2.color = Utils.lerpColorHex(color2, colorSel, colorEasing(prog));
                     return time - duration;
                 });
             }
@@ -477,7 +478,7 @@ class Sorting extends Animation {
                     const prog = Math.min(time, duration) / duration;
                     for(let i = 0; i < e1.length; ++i) {
                         e1[i].z = z;
-                        e1[i].color = Utils.lerpColor(color[i], colorSel, colorEasing(prog));
+                        e1[i].color = Utils.lerpColorHex(color[i], colorSel, colorEasing(prog));
                         e1[i].pos = Utils.lerp(pos1[i], pos2[i], posEasing(prog));
                     }
                     return time - duration;
