@@ -1,15 +1,19 @@
-# - date: '12.2025'
-#   text: >-
-#     With a new version 1.3.0, <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i>&nbsp;ViZDoom</a></span> library,
-#     reached the status of Mature Farama Enviroment.
+- date: '02.2026'
+  text: >-
+    I got promoted to Senior Research Scientist at <span class="reverse-snowflake-blue nowrap"><i class="fa-custom fa-snowflake" aria-hidden="true"></i>&nbsp;<a href="https://www.snowflake.com/en/">Snowflake</a></span>
+
+- date: '02.2026'
+  text: >-
+    I become part-time Assistant Profersor at <span class="reverse-put-blue nowrap"><i class="fa fa-university"></i>&nbsp;<a href="https://www.put.poznan.pl/en">Poznan University of Technology</a></span>
+
+- date: '02.2026'
+  text: >-
+    A new version 1.3.0 of <span class="reverse-vizdoom-red"><a href="https://github.com/mwydmuch/ViZDoom"><i class="fa-solid fa-eye"></i>&nbsp;ViZDoom</a></span> library,
+    was released, with tons of new features and improvements.
 
 - date: '12.2025'
   text: >-
-    I sucessfully defended my <span class="reverse-put-blue"><i class="fa-solid fa-graduation-cap"></i> Ph.D.</span>
-
-# - date: '12.2025'
-#   text: >-
-#      <span class="reverse-baby-pink">My doughter <i class="fa-solid fa-baby"></i> was born <i class="fa-solid fa-heart"></i></span>
+    I sucessfully defended my <span class="reverse-put-blue"><i class="fa-solid fa-graduation-cap"></i> Ph.D.</span> with distinction.
 
 - date: '11.2024'
   text: >-
@@ -19,7 +23,7 @@
 
 - date: '08.2024'
   text: >-
-    I joined <span class="reverse-snowflake-blue nowrap"><i class="fa-custom fa-snowflake" aria-hidden="true"></i>&nbsp;<a href="https://www.snowflake.com/en/">Snowflake AI Research, Poland</a></span> as Research Scientist
+    I joined <span class="reverse-snowflake-blue nowrap"><i class="fa-custom fa-snowflake" aria-hidden="true"></i>&nbsp;<a href="https://www.snowflake.com/en/">Snowflake AI Research</a></span> as Research Scientist
 
 - date: '05.2024'
   text: >-
@@ -30,10 +34,6 @@
   text: >-
     Our paper titled "Consistent algorithms for multi-label classification with macro-at-k metrics" was accepted to 
     <span class="reverse-second nowrap"><i class="fa-solid fa-star"></i> ICLR 2024</span> [<a href="#publication-iclr-2024"><i class="fa-solid fa-file-lines"></i> paper</a>]. 
-
-# - date: '11.2023'
-#   text: >-
-#      <span class="reverse-baby-pink">My doughter <i class="fa-solid fa-baby"></i> was born <i class="fa-solid fa-heart"></i></span>
 
 - date: '10.2023'
   text: >-
@@ -97,10 +97,6 @@
   text: >-
     <span class="reverse-mlinpl-red"><i class="fa-custom fa-mlinpl" aria-hidden="true"></i>&nbsp;<a href="https://conference2021.mlinpl.org/">ML in PL Conference 2021</a></span>, 
     which I co-organized, took place virtually.
-
-# - date: '09.2021'
-#   text: >-
-#      <span class="reverse-baby-pink">My doughter <i class="fa-solid fa-baby"></i> was born <i class="fa-solid fa-heart"></i></span>
 
 - date: '08.2021'
   text: >-
