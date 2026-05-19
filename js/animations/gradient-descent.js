@@ -23,19 +23,68 @@ Coded by me (Marek Wydmuch) in 2021.
 const Animation = require("../animation");
 const Utils = require("../utils");
 
-// Optimizers
-class Optim {
-    constructor(name) {
-        this.name = name;
+const ETA_SCHEDULER_NAMES = ["constant", "step decay", "exponential decay"];
+const OPTIMIZER_COLORS = ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#56B4E9", "#8C564B", "#6A3D9A"];
+
+class EtaScheduler {
+    constructor(etaScale = 1, decay = 0.95, stepSize = 100) {
+        if(typeof etaScale === "object"){
+            this.params = etaScale;
+        } else {
+            this.etaScale = etaScale;
+            this.decay = decay;
+            this.stepSize = stepSize;
+        }
     }
 
-    update(grad){
+    getParams(){
+        return this.params || this;
+    }
+
+    get(step){
+        return this.getParams().etaScale;
+    }
+}
+
+class ConstantEtaScheduler extends EtaScheduler {}
+
+class StepDecayEtaScheduler extends EtaScheduler {
+    get(step){
+        const params = this.getParams(),
+              safeStep = Math.max(0, step),
+              safeStepSize = Math.max(1, params.stepSize),
+              safeDecay = Math.max(0, params.decay);
+        return super.get(step) * Math.pow(safeDecay, Math.floor(safeStep / safeStepSize));
+    }
+}
+
+class ExponentialDecayEtaScheduler extends EtaScheduler {
+    get(step){
+        const params = this.getParams(),
+              safeStep = Math.max(0, step),
+              safeStepSize = Math.max(1, params.stepSize),
+              safeDecay = Math.max(0, params.decay);
+        return super.get(step) * Math.pow(safeDecay, safeStep / safeStepSize);
+    }
+}
+
+// Optimizers
+class Optim {
+    constructor(name, eta) {
+        this.name = name;
+        this.eta = eta;
+        this.enabled = true;
+    }
+
+    update(grad, etaModifier = 1){
         this.prevW = [...this.w];
+        this.step += 1;
     }
 
     init(w){
         this.prevW = [...w];
         this.w = [...w];
+        this.step = 0;
     }
 
     getName(){
@@ -43,24 +92,23 @@ class Optim {
     }
 }
 
-class SGD extends Optim {
+class GD extends Optim {
     constructor(eta=0.001) {
-        super("SGD");
-        this.eta = eta;
+        super("SGD", eta);
     }
 
-    update(grad){
-        super.update(grad);
+    update(grad, etaModifier = 1){
+        super.update(grad, etaModifier);
+        const eta = this.eta * etaModifier;
         for(let i = 0; i < this.w.length; ++i){
-            this.w[i] -= this.eta * grad[i];
+            this.w[i] -= eta * grad[i];
         }
     }
 }
 
 class Momentum extends Optim {
     constructor(eta=0.001, beta=0.9) {
-        super("Momentum");
-        this.eta = eta;
+        super("Momentum", eta);
         this.beta = beta;
     }
 
@@ -69,19 +117,19 @@ class Momentum extends Optim {
         this.m = new Array(w.length).fill(0);
     }
 
-    update(grad){
-        super.update(grad);
+    update(grad, etaModifier = 1){
+        super.update(grad, etaModifier);
+        const eta = this.eta * etaModifier;
         for(let i = 0; i < this.w.length; ++i){
             this.m[i] = this.beta * this.m[i] + (1 - this.beta) * grad[i];
-            this.w[i] -= this.eta * this.m[i];
+            this.w[i] -= eta * this.m[i];
         }
     }
 }
 
 class AdaGrad extends Optim {
     constructor(eta = 0.1) {
-        super("AdaGrad");
-        this.eta = eta;
+        super("AdaGrad", eta);
     }
 
     init(w){
@@ -89,19 +137,19 @@ class AdaGrad extends Optim {
         this.v = new Array(w.length).fill(0);
     }
 
-    update(grad){
-        super.update(grad);
+    update(grad, etaModifier = 1){
+        super.update(grad, etaModifier);
+        const eta = this.eta * etaModifier;
         for(let i = 0; i < this.w.length; ++i){
             this.v[i] += grad[i] * grad[i];
-            this.w[i] -= this.eta / Math.sqrt(this.v[i] + 0.000001) * grad[i];
+            this.w[i] -= eta / Math.sqrt(this.v[i] + 0.000001) * grad[i];
         }
     }
 }
 
 class RMSProp extends Optim {
     constructor(eta = 0.01, beta = 0.9) {
-        super("RMSProp");
-        this.eta = eta;
+        super("RMSProp", eta);
         this.beta = beta;
     }
 
@@ -110,19 +158,19 @@ class RMSProp extends Optim {
         this.v = new Array(w.length).fill(0);
     }
 
-    update(grad){
-        super.update(grad);
+    update(grad, etaModifier = 1){
+        super.update(grad, etaModifier);
+        const eta = this.eta * etaModifier;
         for(let i = 0; i < this.w.length; ++i){
             this.v[i] = this.beta * this.v[i] + (1 - this.beta) * grad[i] * grad[i];
-            this.w[i] -= this.eta / Math.sqrt(this.v[i] + 0.000001) * grad[i];
+            this.w[i] -= eta / Math.sqrt(this.v[i] + 0.000001) * grad[i];
         }
     }
 }
 
 class Adam extends Optim {
     constructor(eta = 0.01, beta1 = 0.9, beta2 = 0.999) {
-        super("Adam");
-        this.eta = eta;
+        super("Adam", eta);
         this.beta1 = beta1;
         this.beta2 = beta2;
     }
@@ -133,20 +181,20 @@ class Adam extends Optim {
         this.v = new Array(w.length).fill(0);
     }
 
-    update(grad){
-        super.update(grad);
+    update(grad, etaModifier = 1){
+        super.update(grad, etaModifier);
+        const eta = this.eta * etaModifier;
         for(let i = 0; i < this.w.length; ++i){
             this.m[i] = this.beta1 * this.m[i] + (1 - this.beta1) * grad[i];
             this.v[i] = this.beta2 * this.v[i] + (1 - this.beta2) * grad[i] * grad[i];
-            this.w[i] -= this.eta / (Math.sqrt(this.v[i] / (1 - this.beta2)) + 0.000001) * this.m[i] / (1 - this.beta1);
+            this.w[i] -= eta / (Math.sqrt(this.v[i] / (1 - this.beta2)) + 0.000001) * this.m[i] / (1 - this.beta1);
         }
     }
 }
 
 class AdaMax extends Optim {
-    constructor(alpha = 0.002, beta1 = 0.9, beta2 = 0.999) {
-        super("AdaMax");
-        this.alpha = alpha;
+    constructor(eta = 0.002, beta1 = 0.9, beta2 = 0.999) {
+        super("AdaMax", eta);
         this.beta1 = beta1;
         this.beta2 = beta2;
     }
@@ -157,20 +205,20 @@ class AdaMax extends Optim {
         this.v = new Array(w.length).fill(0);
     }
 
-    update(grad){
-        super.update(grad);
+    update(grad, etaModifier = 1){
+        super.update(grad, etaModifier);
+        const eta = this.eta * etaModifier;
         for(let i = 0; i < this.w.length; ++i){
             this.m[i] = this.beta1 * this.m[i] + (1 - this.beta1) * grad[i];
             this.v[i] = Math.max(this.beta2 * this.v[i], Math.abs(grad[i]));
-            this.w[i] -= this.alpha / (this.v[i] + 0.000001) * this.m[i] / (1 - this.beta1);
+            this.w[i] -= eta / (this.v[i] + 0.000001) * this.m[i] / (1 - this.beta1);
         }
     }
 }
 
 class AMSGrad extends Optim {
-    constructor(alpha = 0.002, beta1 = 0.9, beta2 = 0.999) {
-        super("AMSGrad");
-        this.alpha = alpha;
+    constructor(eta = 0.002, beta1 = 0.9, beta2 = 0.999) {
+        super("AMSGrad", eta);
         this.beta1 = beta1;
         this.beta2 = beta2;
     }
@@ -181,12 +229,13 @@ class AMSGrad extends Optim {
         this.v = new Array(w.length).fill(0);
     }
 
-    update(grad){
-        super.update(grad);
+    update(grad, etaModifier = 1){
+        super.update(grad, etaModifier);
+        const eta = this.eta * etaModifier;
         for(let i = 0; i < this.w.length; ++i){
             this.m[i] = this.beta1 * this.m[i] + (1 - this.beta1) * grad[i];
             this.v[i] = Math.max(this.beta2 * this.v[i] + (1 - this.beta2) * grad[i] * grad[i], this.v[i]);
-            this.w[i] -= this.alpha / (Math.sqrt(this.v[i]) + 0.000001) * this.m[i];
+            this.w[i] -= eta / (Math.sqrt(this.v[i]) + 0.000001) * this.m[i];
         }
     }
 }
@@ -225,6 +274,14 @@ class Func {
         return this.drawScale;
     }
 
+    getIsolineStart(){
+        return 0.125;
+    }
+
+    getIsolineExp(){
+        return 1.5;
+    }
+
     getName(){
         return this.name;
     }
@@ -245,6 +302,38 @@ class SaddlePointFunc extends Func {
     grad(w){
         const x = w[0] + this.shift[0], y = w[1] + this.shift[1];
         return [2 * x, -2 * y];
+    }
+}
+
+class SharpMinimumFunc extends Func {
+    constructor() {
+        super("Smooth sharp minimum where Adam performs worse than SGD f(x) = sqrt(x[0]^2) + sqrt(x[1]^2)",
+            [0, 0],
+            [[0.05, 0.05], [0.05, -0.05], [-0.05, 0.05], [-0.05, -0.05]],
+            0.12);
+        this.eps = 0.00000001;
+        this.sqrtEps = Math.sqrt(this.eps);
+    }
+
+    val(w) {
+        const x = w[0] + this.shift[0], y = w[1] + this.shift[1];
+        return Math.sqrt(x * x + this.eps) + Math.sqrt(y * y + this.eps) - 2 * this.sqrtEps;
+    }
+
+    grad(w){
+        const x = w[0] + this.shift[0], y = w[1] + this.shift[1];
+        return [
+            x / Math.sqrt(x * x + this.eps),
+            y / Math.sqrt(y * y + this.eps)
+        ];
+    }
+
+    getIsolineStart(){
+        return 0.0001;
+    }
+
+    getIsolineExp(){
+        return 1.3;
     }
 }
 
@@ -415,11 +504,12 @@ class GradientDescent extends Animation {
                 contextType = "2d"
             ) {
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC, "random", contextType);
+        this.colorsAlt = OPTIMIZER_COLORS;
         //this.funcNames = ["with saddle point", "BEALE", "Jennrich-Sampsonk", "Rosenbrock", "Styblinski-Tang"];
-        this.funcNames = ["with saddle point", "BEALE", "Rosenbrock", "Styblinski-Tang"];
+        this.funcNames = ["with saddle point", "smooth sharp minimum", "BEALE", "Rosenbrock", "Styblinski-Tang"];
         this.functionToOptimize = this.assignIfRandom(functionToOptimize, Utils.randomChoice(this.funcNames));
         //this.funcClasses = [SaddlePointFunc, BealeFunc, JennrichSampsonkFunc, RosenbrockFunc, StyblinskiTangFunc];
-        this.funcClasses = [SaddlePointFunc, BealeFunc, RosenbrockFunc, StyblinskiTangFunc];
+        this.funcClasses = [SaddlePointFunc, SharpMinimumFunc, BealeFunc, RosenbrockFunc, StyblinskiTangFunc];
         this.scale = scale;
         this.rounding = rounding;
         this.autoRestart = autoRestart;
@@ -433,7 +523,7 @@ class GradientDescent extends Animation {
         this.drawScale = 0;
         this.functionImageData = null;
 
-        this.sgd = new SGD();
+        this.gd = new GD();
         this.momentum = new Momentum();
         this.adagrad = new AdaGrad();
         this.rmsprop = new RMSProp();
@@ -441,15 +531,32 @@ class GradientDescent extends Animation {
         this.adamax = new AdaMax();
         this.amsgrad = new AMSGrad();
 
-        this.optims = [this.sgd, this.momentum, this.adagrad, this.rmsprop, this.adam, this.adamax, this.amsgrad];
+        this.optims = [this.gd, this.momentum, this.adagrad, this.rmsprop, this.adam, this.adamax, this.amsgrad];
+        this.etaSchedulerNames = ETA_SCHEDULER_NAMES;
+        this.etaSchedulerType = this.etaSchedulerNames[0];
+        this.etaScheduler = new EtaScheduler();
+        this.etaSchedulers = {
+            "constant": new ConstantEtaScheduler(this.etaScheduler),
+            "step decay": new StepDecayEtaScheduler(this.etaScheduler),
+            "exponential decay": new ExponentialDecayEtaScheduler(this.etaScheduler)
+        };
     }
 
     update(elapsed){
         super.update(elapsed);
+        const etaScheduler = this.etaSchedulers[this.etaSchedulerType] || this.etaSchedulers["constant"],
+              etaModifier = etaScheduler.get(this.frame);
         for (let i = 0; i < this.optims.length; ++i) {
             let o = this.optims[i];
-            o.update(this.func.grad(o.w));
+            if(!o.enabled) continue;
+            o.update(this.func.grad(o.w), etaModifier);
         }
+    }
+
+    formatNum(num){
+        const fixed = num.toFixed(this.rounding);
+        if (num > 0) return " " + fixed;
+        return fixed;
     }
 
     draw() {
@@ -459,6 +566,7 @@ class GradientDescent extends Animation {
         for (let i = 0; i < this.optims.length; ++i) {
             let x1, y1, x2, y2,
                 o = this.optims[i];
+            if(!o.enabled) continue;
             [x1, y1] = o.prevW;
             [x2, y2] = o.w;
 
@@ -471,17 +579,34 @@ class GradientDescent extends Animation {
 
         this.imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
 
+        this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
+        for (let i = 0; i < this.optims.length; ++i) {
+            const o = this.optims[i],
+                  x = o.w[0],
+                  y = o.w[1];
+            if(!o.enabled) continue;
+            if(!isFinite(x) || !isFinite(y)) continue;
+            if(isNaN(x) || isNaN(y)) continue;
+            if(Math.abs(x) > 1e4 || Math.abs(y) > 1e4) continue;
+
+            Utils.fillCircle(this.ctx, x * this.drawScale, -y * this.drawScale, 5, this.colorsAlt[i]);
+            this.ctx.lineWidth = 2;
+            Utils.strokeCircle(this.ctx, x * this.drawScale, -y * this.drawScale, 6, this.bgColor);
+        }
+        this.ctx.resetTransform();
+
         this.resetFont();
         let optimTextYOffset = this.textYOffset + 2 * this.lineHeight;
         Utils.fillAndStrokeText(this.ctx, `Steps: ${this.frame}`, this.textXOffset, optimTextYOffset);
         optimTextYOffset += this.lineHeight;
         Utils.fillAndStrokeText(this.ctx, "Optimizers:", this.textXOffset, optimTextYOffset);
         for(let i = 0; i < this.optims.length; ++i){
+            if(!this.optims[i].enabled) continue;
             optimTextYOffset += this.lineHeight;
             this.ctx.fillStyle = this.colorsAlt[i];
-            const x = this.optims[i].w[0].toFixed(this.rounding),
-                  y = this.optims[i].w[1].toFixed(this.rounding),
-                  text = `${this.optims[i].getName()}: f([${x}, ${y}]) = ${this.func.val([x, y]).toFixed(this.rounding)}`;
+            const x = this.formatNum(this.optims[i].w[0]),
+                  y = this.formatNum(this.optims[i].w[1]),
+                  text = `${this.optims[i].getName()}: f([${x}, ${y}]) = ${this.formatNum(this.func.val([x, y]))}`;
             Utils.fillAndStrokeText(this.ctx, text, this.textXOffset + 16, optimTextYOffset);
             Utils.fillCircle(this.ctx, this.textXOffset + 3, optimTextYOffset - 4, 3, this.colorsAlt[i]);
         }
@@ -519,8 +644,8 @@ class GradientDescent extends Animation {
         // Decide on a scale
         if(this.func.hasGlobalMin()) {
             shiftVal = this.func.val(this.func.getGlobalMin());
-            isolines = [0, 0.125];
-            exp = 1.5;
+            isolines = [0, this.func.getIsolineStart()];
+            exp = this.func.getIsolineExp();
             plusVal = 0;
         } else {
             shiftVal = 0;
@@ -583,14 +708,17 @@ class GradientDescent extends Animation {
         let labelsDist = 0.5;
         if(visibleRange > 6.0) labelsDist = 2.0;
         else if(visibleRange > 3.0) labelsDist = 1.0;
+        else if(visibleRange <= 0.2) labelsDist = 0.05;
+        else if(visibleRange <= 0.5) labelsDist = 0.1;
        
         for(let i = 0; i < centerX / this.drawScale; i += labelsDist){
-            Utils.fillAndStrokeText(this.ctx, i.toFixed(1), centerX + i * this.drawScale, height - 22);
-            if(i !== 0) Utils.fillAndStrokeText(this.ctx, (-i).toFixed(1), centerX - i * this.drawScale, height - 22);
+            const label = i.toFixed(labelsDist < 0.1 ? 2 : 1);
+            Utils.fillAndStrokeText(this.ctx, label, centerX + i * this.drawScale, height - 22);
+            if(i !== 0) Utils.fillAndStrokeText(this.ctx, (-i).toFixed(labelsDist < 0.1 ? 2 : 1), centerX - i * this.drawScale, height - 22);
         }
         for(let i = 0; i < centerY / this.drawScale; i += labelsDist){
-            Utils.fillAndStrokeText(this.ctx, (-i).toFixed(1), 10, centerY + i * this.drawScale);
-            if(i !== 0) Utils.fillAndStrokeText(this.ctx, (i).toFixed(1), 10, centerY - i * this.drawScale);
+            Utils.fillAndStrokeText(this.ctx, (-i).toFixed(labelsDist < 0.1 ? 2 : 1), 10, centerY + i * this.drawScale);
+            if(i !== 0) Utils.fillAndStrokeText(this.ctx, (i).toFixed(labelsDist < 0.1 ? 2 : 1), 10, centerY - i * this.drawScale);
         }
 
         this.functionImageData = this.ctx.getImageData(0, 0, width, height);
@@ -663,6 +791,7 @@ class GradientDescent extends Animation {
 
     updateColors(colors, colorsAlt, bgColor) {
         super.updateColors(colors, colorsAlt, bgColor);
+        this.colorsAlt = OPTIMIZER_COLORS;
         this.functionImageData = null;
         this.resize();
     }
@@ -674,20 +803,32 @@ class GradientDescent extends Animation {
                 {prop: "autoRestart", icon: '<i class="fa-solid fa-clock-rotate-left"></i>', type: "bool"},
                 {prop: "autoRestartSteps", type: "int", step: 1, min: 100, max: 10000},
                 {type: "separator"},
-                {prop: "sgd.eta", type: "float", step: 0.00001, min: 0, max: 0.1},
-                {prop: "momentum.eta", type: "float", step: 0.00001, min: 0, max: 0.1},
+                {prop: "etaSchedulerType", name: "eta scheduler", type: "select", values: this.etaSchedulerNames},
+                {prop: "etaScheduler.etaScale", name: "eta scale", type: "float", step: 0.01, min: 0, max: 10},
+                {prop: "etaScheduler.decay", name: "scheduler decay", type: "float", step: 0.001, min: 0, max: 1},
+                {prop: "etaScheduler.stepSize", name: "scheduler step size", type: "int", step: 1, min: 1, max: 1000},
+                {type: "separator"},
+                {prop: "gd.enabled", name: "vanilla gradient descent", type: "bool", toCall: "resize"},
+                {prop: "gd.eta", type: "float", step: 0.0001, min: 0, max: 0.1},
+                {prop: "momentum.enabled", name: "gd + momentum", type: "bool", toCall: "resize"},
+                {prop: "momentum.eta", type: "float", step: 0.0001, min: 0, max: 0.1},
                 {prop: "momentum.beta", type: "float", step: 0.0001, min: 0, max: 1},
-                {prop: "adagrad.eta", type: "float", step: 0.00001, min: 0, max: 1},
-                {prop: "rmsprop.eta", type: "float", step: 0.00001, min: 0, max: 1},
-                {prop: "adam.eta", type: "float", step: 0.00001, min: 0, max: 1},
-                {prop: "adam.beta1", type: "float", step: 0.00001, min: 0, max: 1},
-                {prop: "adam.beta2", type: "float", step: 0.00001, min: 0, max: 1},
-                {prop: "adamax.alpha", type: "float", step: 0.00001, min: 0, max: 1},
-                {prop: "adamax.beta1", type: "float", step: 0.00001, min: 0, max: 1},
-                {prop: "adamax.beta2", type: "float", step: 0.00001, min: 0, max: 1},
-                {prop: "amsgrad.alpha", type: "float", step: 0.00001, min: 0, max: 1},
-                {prop: "amsgrad.beta1", type: "float", step: 0.00001, min: 0, max: 1},
-                {prop: "amsgrad.beta2", type: "float", step: 0.00001, min: 0, max: 1},
+                {prop: "adagrad.enabled", name: "adagrad", type: "bool", toCall: "resize"},
+                {prop: "adagrad.eta", type: "float", step: 0.0001, min: 0, max: 1},
+                {prop: "rmsprop.enabled", name: "rmsprop", type: "bool", toCall: "resize"},
+                {prop: "rmsprop.eta", type: "float", step: 0.0001, min: 0, max: 1},
+                {prop: "adam.enabled", name: "adam", type: "bool", toCall: "resize"},
+                {prop: "adam.eta", type: "float", step: 0.0001, min: 0, max: 1},
+                {prop: "adam.beta1", type: "float", step: 0.0001, min: 0, max: 1},
+                {prop: "adam.beta2", type: "float", step: 0.0001, min: 0, max: 1},
+                {prop: "adamax.enabled", name: "adamax", type: "bool", toCall: "resize"},
+                {prop: "adamax.eta", type: "float", step: 0.0001, min: 0, max: 1},
+                {prop: "adamax.beta1", type: "float", step: 0.0001, min: 0, max: 1},
+                {prop: "adamax.beta2", type: "float", step: 0.0001, min: 0, max: 1},
+                {prop: "amsgrad.enabled", name: "amsgrad", type: "bool", toCall: "resize"},
+                {prop: "amsgrad.eta", type: "float", step: 0.0001, min: 0, max: 1},
+                {prop: "amsgrad.beta1", type: "float", step: 0.0001, min: 0, max: 1},
+                {prop: "amsgrad.beta2", type: "float", step: 0.0001, min: 0, max: 1},
                 ];
     }
 }

@@ -403,6 +403,7 @@ blockquote{
   width: 100%;
   display: table;
   border-bottom: 2px solid @main;
+  position: relative;
 }
 
 .header-content{
@@ -568,26 +569,36 @@ footer {
 }
 
 #publication-doctoral-dissertation {
-  &::before {
-    border-color: @background;
-    color: @background;
-  }
-
-  .columns {
-    background: #006991;
-    color: @background;
-    margin-left: -1rem;
-    padding-left: 1rem;
-  }
-
   a {
-    border-color: @background;
-    color: @background;
+    border-color: @put-blue;
+    color: @put-blue;
   }
 
   .fa-custom {
-    background-color: @background;
+    background-color: @put-blue;
   }
+
+  // Reversed style
+  // &::before {
+  //   border-color: @background;
+  //   color: @background;
+  // }
+
+  // .columns {
+  //   background: #006991;
+  //   color: @background;
+  //   margin-left: -1rem;
+  //   padding-left: 1rem;
+  // }
+
+  // a {
+  //   border-color: @background;
+  //   color: @background;
+  // }
+
+  // .fa-custom {
+  //   background-color: @background;
+  // }
 }
 
 .generate-filter-rules(@index: 1) when (@index <= 20) {
@@ -801,10 +812,10 @@ each(@fade-show-values, {
   //max-width: 19rem; // For Raleway font
   max-width: 20.5rem; // For Montserrat font
   //max-height: 100%;
-  //overflow-x: hidden;
-  //overflow-y: scroll;
-  overflow-x: visible;
-  overflow-y: clip;
+  overflow-x: clip;
+  overflow-y: scroll;
+  //overflow-x: visible;
+  //overflow-y: clip;
   font-size: 0.7rem;
   display: inline-block;
   height: fit-content;
@@ -1028,6 +1039,11 @@ input[type=range]::-moz-range-thumb {
     background: @main-gradient;
     text-decoration: none;
     padding: .2rem .4rem !important;
+  }
+
+  &::before {
+    content: none;
+    display: none;
   }
 
   a, a:link, a:hover {

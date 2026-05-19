@@ -1,13 +1,13 @@
 {
   "name": "mwydmuch.pl",
-  "version": "24",
+  "version": "25",
   "homepage": "mwydmuch.pl",
   "author": "Marek Wydmuch",
   "devDependencies": {
     "browser-sync": "latest",
     "browserify": "latest",
     "css-element-queries": "latest",
-    "gulp": "latest",
+    "gulp": "^5.0.1",
     "gulp-browserify": "latest",
     "gulp-clean-css": "latest",
     "gulp-header": "latest",
@@ -18,5 +18,8 @@
     "jit-grunt": "latest",
     "jshint-stylish": "latest",
     "vinyl-source-stream": "latest"
+  },
+  "dependencies": {
+    "gulp-cli": "^3.1.0"
   }
 }
