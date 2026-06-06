@@ -1,22 +1,43 @@
-# - title: "Addressing the long‑tail problem in extreme multi‑label classification"
-#   url: https://www.cs.put.poznan.pl/mwydmuch/pdf/
-#   id: doctoral-dissertation
-#   poster_thumbnail: assets/thumbnails/2025_addressing_the_long_tail_problem_in_xmlc.jpg
-#   authors: Marek Wydmuch
-#   year: 2025
-#   links:
-#     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2024_omma_icml_paper.pdf
-#       type: book-pdf
-#     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
-#       type: bibtex
-#   tags:
-#     - extreme classification
-#     - multi-label classification
-#     - metrics for long-tail labels
-#     - metrics@k
-#     - macro-averaged metrics
-#     - complex performance metrics
-#     - probabilistic label trees
+- title: "Tackling prediction tasks in relational databases with LLMs"
+  url: https://www.cs.put.poznan.pl/mwydmuch/pdf/
+  id: relational-data-with-llms
+  poster_thumbnail: assets/thumbnails/2025_addressing_the_long_tail_problem_in_xmlc.jpg
+  authors: "Marek Wydmuch, Łukasz Borchmann, Filip Graliński"
+  year: 2025
+  links:
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2024_omma_icml_paper.pdf
+      type: book-pdf
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
+      type: bibtex
+  tags:
+    - LLMs
+    - classification
+    - classification with LLMs
+    - regression
+    - regression with LLMs
+    - relational data
+
+- title: "Addressing the long‑tail problem in extreme multi‑label classification (doctoral dissertation)"
+  url: https://www.cs.put.poznan.pl/mwydmuch/pdf/
+  id: doctoral-dissertation
+  poster_thumbnail: assets/thumbnails/2025_addressing_the_long_tail_problem_in_xmlc.jpg
+  authors: "Marek Wydmuch, advisor: Krzysztof Dembczyński"
+  year: 2025
+  links:
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2025_addressing_the_long_tail_problem_in_xmlc.pdf
+      type: book-pdf
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
+      type: bibtex
+  tags:
+    - selected
+    - classification
+    - extreme classification
+    - multi-label classification
+    - metrics for long-tail labels
+    - metrics@k
+    - macro-averaged metrics
+    - complex performance metrics
+    - probabilistic label trees
 
 - title: "A General Online Algorithm for Optimizing Complex Performance Metrics"
   url: https://proceedings.mlr.press/v235/kotlowski24a.html
@@ -37,6 +58,7 @@
     - url: https://arxiv.org/abs/2406.14743
       type: arxiv
   tags:
+    - classification
     - multi-label classification
     - multi-class classification
     - complex performance metrics
@@ -64,6 +86,7 @@
     - url: https://arxiv.org/abs/2401.16594
       type: arxiv
   tags:
+    - classification
     - multi-label classification
     - macro-averaged metrics
     - complex performance metrics
@@ -93,6 +116,8 @@
     - url: https://arxiv.org/abs/2311.05081
       type: arxiv
   tags:
+    - selected
+    - classification
     - extreme classification
     - multi-label classification
     - metrics for long-tail labels
@@ -119,6 +144,8 @@
     - url: https://arxiv.org/abs/2207.13186
       type: arxiv
   tags:
+    - selected
+    - classification
     - extreme classification
     - multi-label classification
     - missing labels
@@ -146,6 +173,8 @@
     - url: https://arxiv.org/abs/2110.10803
       type: arxiv
   tags:
+    - selected
+    - classification
     - extreme classification
     - multi-label classification
     - probabilistic label trees
@@ -178,6 +207,7 @@
     - url: https://arxiv.org/abs/2007.04451
       type: arxiv
   tags:
+    - classification
     - extreme classification
     - multi-label classification
     - probabilistic label trees
@@ -195,6 +225,7 @@
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
       type: bibtex
   tags:
+    - classification
     - extreme classification
     - multi-class classification
     - set-valued prediction
@@ -213,6 +244,7 @@
     - url: https://arxiv.org/abs/2009.11218
       type: arxiv
   tags:
+    - classification
     - extreme classification
     - multi-label classification
     - probabilistic label trees
@@ -238,7 +270,10 @@
     - url: https://arxiv.org/abs/1810.11671
       type: arxiv
   tags:
-    - extreme multi-label classification
+    - selected
+    - classification
+    - multi-label classification
+    - extreme classification
     - probabilistic label trees
     - metrics@k
 
@@ -263,6 +298,7 @@
     - url: https://arxiv.org/abs/1809.03470
       type: arxiv
   tags:
+    - selected
     - reinforcement learning
     - game-based environments
 
@@ -287,5 +323,6 @@
     - url: https://arxiv.org/abs/1605.02097
       type: arxiv
   tags:
+    - selected
     - reinforcement learning
     - game-based environments
