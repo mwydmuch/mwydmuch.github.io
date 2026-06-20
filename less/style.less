@@ -543,9 +543,10 @@ footer {
 
 .video-thumbnail {
   color: @background;
-  display: inline-block;
+  display: block;
   line-height: 0;
   position: relative;
+  width: 100%;
 
   &:hover,
   &:focus {
@@ -682,6 +683,15 @@ footer {
     .chip {
       background-color: @background;
       color: @second;
+    }
+
+    .filter-nav-label,
+    .filter-nav-separator {
+      align-self: center;
+    }
+
+    .filter-nav-label {
+      font-weight: 700;
     }
   }
 

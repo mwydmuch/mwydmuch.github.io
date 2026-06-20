@@ -55,7 +55,7 @@
     - relational data
 
 - title: "Addressing the long‑tail problem in extreme multi‑label classification (doctoral dissertation)"
-  url: https://www.cs.put.poznan.pl/mwydmuch/pdf/
+  url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2025_addressing_the_long_tail_problem_in_xmlc.pdf
   id: doctoral-dissertation
   poster_thumbnail: assets/thumbnails/2025_addressing_the_long_tail_problem_in_xmlc.jpg
   authors: "Marek Wydmuch, advisor: Krzysztof Dembczyński"
@@ -65,6 +65,8 @@
       type: book-pdf
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
       type: bibtex
+    - url: https://sin.put.poznan.pl/dissertations/details/d3293
+      type: dissertation-reviews
   tags:
     - selected
     - classification

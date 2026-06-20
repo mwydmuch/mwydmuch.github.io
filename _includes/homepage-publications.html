@@ -35,19 +35,21 @@
 
                 <!-- Filter navigation with counters -->
                 <div class="filter-nav">
-                    Topics:
+                    <span class="filter-nav-label">Papers:</span>
                     {% for tag in sorted_tags %}
-                        <label class="chip" for="publication-tag-{{ forloop.index }}">
-                            {{ tag }}
-                            <span class="tag-count">(
-                            {%- assign count = 0 -%}
-                            {%- for publication in site.data.publications -%}
-                                {%- if publication.tags contains tag -%}
-                                    {%- assign count = count | plus: 1 -%}
-                                {%- endif -%}
-                            {%- endfor -%}
-                            {{ count }})</span>
-                        </label>
+                        {% if tag == default_tag %}
+                            <label class="chip" for="publication-tag-{{ forloop.index }}">
+                                {{ tag }}
+                                <span class="tag-count">(
+                                {%- assign count = 0 -%}
+                                {%- for publication in site.data.publications -%}
+                                    {%- if publication.tags contains tag -%}
+                                        {%- assign count = count | plus: 1 -%}
+                                    {%- endif -%}
+                                {%- endfor -%}
+                                {{ count }})</span>
+                            </label>
+                        {% endif %}
                     {% endfor %}
                     <label class="chip" for="publication-tag-0">
                         all
@@ -55,6 +57,23 @@
                         {%- assign total_count = site.data.publications | size -%}
                         {{ total_count }})</span>
                     </label>
+                    <span class="filter-nav-separator">|</span>
+                    <span class="filter-nav-label">Topic:</span>
+                    {% for tag in sorted_tags %}
+                        {% unless tag == default_tag %}
+                            <label class="chip" for="publication-tag-{{ forloop.index }}">
+                                {{ tag }}
+                                <span class="tag-count">(
+                                {%- assign count = 0 -%}
+                                {%- for publication in site.data.publications -%}
+                                    {%- if publication.tags contains tag -%}
+                                        {%- assign count = count | plus: 1 -%}
+                                    {%- endif -%}
+                                {%- endfor -%}
+                                {{ count }})</span>
+                            </label>
+                        {% endunless %}
+                    {% endfor %}
                 </div>
 
                 <!-- Filter items -->
@@ -110,6 +129,8 @@
                                     {% assign link_text = '<i class="fa-custom fa-arxiv" aria-hidden="true"></i> arxiv' %}
                                 {% elsif link.type == "book-pdf" %}
                                     {% assign link_text = '<i class="fa fa-book"></i> full book' %}
+                                {% elsif link.type == "dissertation-reviews" %}
+                                    {% assign link_text = '<i class="fa-solid fa-file-circle-check"></i> submitted version + reviews' %}
                                 {% endif %}
                                 <span class="nowrap">[<a href="{{ link.url }}">{{ link_text }}</a>]</span>
                             {% endfor %}
