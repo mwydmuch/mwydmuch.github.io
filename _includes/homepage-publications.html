@@ -15,23 +15,27 @@
                         {% endfor %}
                     {% endif %}
                 {% endfor %}
-                {% assign sorted_tags = all_tags | sort %}
+                {% assign default_tag = "selected" %}
+                {% assign sorted_all_tags = all_tags | sort %}
+                {% assign sorted_tags = "" | split: "" %}
+                {% if sorted_all_tags contains default_tag %}
+                    {% assign sorted_tags = sorted_tags | push: default_tag %}
+                {% endif %}
+                {% for tag in sorted_all_tags %}
+                    {% unless tag == default_tag %}
+                        {% assign sorted_tags = sorted_tags | push: tag %}
+                    {% endunless %}
+                {% endfor %}
 
                 <!-- Hidden radio inputs for filter control -->
-                <input type="radio" id="publication-tag-0" class="filter-tag" name="publication-filter" hidden checked>
+                <input type="radio" id="publication-tag-0" class="filter-tag" name="publication-filter" hidden {% unless sorted_tags contains default_tag %}checked{% endunless %}>
                 {% for tag in sorted_tags %}
-                    <input type="radio" id="publication-tag-{{ forloop.index }}" class="filter-tag" name="publication-filter" hidden>
+                    <input type="radio" id="publication-tag-{{ forloop.index }}" class="filter-tag" name="publication-filter" hidden {% if tag == default_tag %}checked{% endif %}>
                 {% endfor %}
 
                 <!-- Filter navigation with counters -->
                 <div class="filter-nav">
                     Topics:
-                    <label class="chip active" for="publication-tag-0">
-                        all
-                        <span class="tag-count">(
-                        {%- assign total_count = site.data.publications | size -%}
-                        {{ total_count }})</span>
-                    </label>
                     {% for tag in sorted_tags %}
                         <label class="chip" for="publication-tag-{{ forloop.index }}">
                             {{ tag }}
@@ -45,6 +49,12 @@
                             {{ count }})</span>
                         </label>
                     {% endfor %}
+                    <label class="chip" for="publication-tag-0">
+                        all
+                        <span class="tag-count">(
+                        {%- assign total_count = site.data.publications | size -%}
+                        {{ total_count }})</span>
+                    </label>
                 </div>
 
                 <!-- Filter items -->

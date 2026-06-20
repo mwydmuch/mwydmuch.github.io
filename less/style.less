@@ -297,20 +297,31 @@ ul{
   display: none;
 }
 
-.read-more-state ~ .read-more-wrap .read-more-target .timeline-item {
+.read-more-state ~ .read-more-wrap .read-more-target .timeline-item,
+.read-more-state ~ .read-more-wrap .read-more-target .software-item {
   opacity: 0;
   max-height: 0;
   margin-bottom: 0;
+  overflow: hidden;
   transition: 0.3s ease;
   pointer-events: none;
 }
 
-.read-more-state:checked ~ .read-more-wrap .read-more-target .timeline-item {
+.read-more-state:checked ~ .read-more-wrap .read-more-target .timeline-item,
+.read-more-state:checked ~ .read-more-wrap .read-more-target .software-item {
   opacity: 1;
   max-height: 50rem;
-  margin-bottom: .6rem;
+  overflow: visible;
   transition: 0.3s ease;
   pointer-events: auto;
+}
+
+.read-more-state:checked ~ .read-more-wrap .read-more-target .timeline-item {
+  margin-bottom: .6rem;
+}
+
+.read-more-state:checked ~ .read-more-wrap .read-more-target .software-item {
+  margin-bottom: 2rem;
 }
 
 .read-more-state ~ .read-more-trigger:before {
@@ -530,6 +541,46 @@ footer {
   }
 }
 
+.video-thumbnail {
+  color: @background;
+  display: inline-block;
+  line-height: 0;
+  position: relative;
+
+  &:hover,
+  &:focus {
+    color: @background;
+    text-decoration: none;
+
+    .video-play-button {
+      background-color: fade(@main, 95%);
+      transform: translate(-50%, -50%) scale(1.08);
+    }
+  }
+}
+
+.video-play-button {
+  align-items: center;
+  background-color: fade(@main, 85%);
+  border-radius: 50%;
+  box-shadow: 0 0 0 0.12rem fade(@background, 85%);
+  color: @background;
+  display: flex;
+  font-size: 1.25rem;
+  height: 3rem;
+  justify-content: center;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  width: 3rem;
+
+  .fa-play {
+    margin-left: 0.15rem;
+  }
+}
+
 .timeline {
   padding-left: 70px;
 
@@ -601,7 +652,7 @@ footer {
   // }
 }
 
-.generate-filter-rules(@index: 1) when (@index <= 20) {
+.generate-filter-rules(@index: 1) when (@index <= 100) {
   @nth: @index + 1;
 
   .filter-tag:nth-of-type(@{nth}):checked ~ .filter-body .filter-item[data-tag~="publication-tag-@{index}"] {
@@ -811,14 +862,28 @@ each(@fade-show-values, {
   //width: 19rem;
   //max-width: 19rem; // For Raleway font
   max-width: 20.5rem; // For Montserrat font
-  //max-height: 100%;
-  overflow-x: clip;
-  overflow-y: scroll;
-  //overflow-x: visible;
-  //overflow-y: clip;
+  overflow: visible;
   font-size: 0.7rem;
-  display: inline-block;
+  display: inline-flex;
+  flex-direction: column;
   height: fit-content;
+
+  #background-settings-controls-titlebar {
+    flex: 0 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  #background-settings-controls-global-list {
+    flex: 0 0 auto;
+  }
+
+  #background-settings-controls-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
 
   .accordion {
     text-align: left;

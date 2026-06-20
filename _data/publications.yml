@@ -1,20 +1,57 @@
-- title: "Tackling prediction tasks in relational databases with LLMs"
-  url: https://www.cs.put.poznan.pl/mwydmuch/pdf/
-  id: relational-data-with-llms
-  poster_thumbnail: assets/thumbnails/2025_addressing_the_long_tail_problem_in_xmlc.jpg
-  authors: "Marek Wydmuch, Łukasz Borchmann, Filip Graliński"
-  year: 2025
+- title: "Small molecule retrieval from tandem mass spectrometry: what are we optimizing for?"
+  url: https://arxiv.org/abs/2602.16507
+  id: molecule-retrieval
+  authors: Gaetan De Waele, Marek Wydmuch, Krzysztof Dembczyński, Wojciech Kotłowski, Willem Waegeman
+  year: 2026
   links:
-    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2024_omma_icml_paper.pdf
-      type: book-pdf
+    - url: https://arxiv.org/pdf/2602.16507
+      type: paper-pdf
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
       type: bibtex
+    - url: https://arxiv.org/abs/2602.16507
+      type: arxiv
+  tags:
+    - molecular retrieval
+    - mass spectrometry
+    - classification
+    - complex performance metrics
+
+- title: "Multilingual hierarchical classification of job advertisements for job vacancy statistics"
+  url: https://journals.sagepub.com/doi/10.1177/0282423X251395400
+  id: jobs-classification
+  authors: Maciej Beręsewicz, Marek Wydmuch, Herman Cherniaiev, Robert Pater
+  book: Journal of Official Statistics, 42(1):23-61
+  year: 2026
+  links:
+    - url: https://journals.sagepub.com/doi/pdf/10.1177/0282423X251395400
+      type: paper-pdf
+    - url: https://github.com/OJALAB/paper-job-ads-classifier
+      type: github
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
+      type: bibtex
+    - url: https://arxiv.org/abs/2411.03779
+      type: arxiv
+  tags:
+    - classification
+    - hierarchical classification
+    - multi-class classification
+    
+- title: "Query and Conquer: Execution-Guided SQL Generation"
+  url: https://arxiv.org/abs/2503.24364
+  id: query-and-conquer
+  authors: Łukasz Borchmann, Marek Wydmuch
+  year: 2025
+  links:
+    - url: https://arxiv.org/pdf/2503.24364
+      type: paper-pdf
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
+      type: bibtex
+    - url: https://arxiv.org/abs/2503.24364
+      type: arxiv
   tags:
     - LLMs
-    - classification
-    - classification with LLMs
-    - regression
-    - regression with LLMs
+    - SQL generation
+    - text-to-SQL
     - relational data
 
 - title: "Addressing the long‑tail problem in extreme multi‑label classification (doctoral dissertation)"
@@ -38,6 +75,26 @@
     - macro-averaged metrics
     - complex performance metrics
     - probabilistic label trees
+
+- title: "Tackling prediction tasks in relational databases with LLMs"
+  url: https://arxiv.org/abs/2411.11829
+  id: relational-data-with-llms
+  authors: "Marek Wydmuch, Łukasz Borchmann, Filip Graliński"
+  year: 2024
+  links:
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2024_tackling_predidiction_in_rel_dbs_with_llms.pdf
+      type: paper-pdf
+    - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/mwydmuch_ref.bib
+      type: bibtex
+    - url: https://arxiv.org/abs/2411.11829
+      type: arxiv
+  tags:
+    - LLMs
+    - classification
+    - classification with LLMs
+    - regression
+    - regression with LLMs
+    - relational data
 
 - title: "A General Online Algorithm for Optimizing Complex Performance Metrics"
   url: https://proceedings.mlr.press/v235/kotlowski24a.html
@@ -70,7 +127,7 @@
   id: iclr-2024
   poster_thumbnail: assets/thumbnails/2024_consistent_algorithms_for_macro-at-k_metrics_pu_iclr_poster.jpg
   authors: Erik Schultheis, Wojciech Kotłowski, Marek Wydmuch, Rohit Babbar, Strom Borman, Krzysztof Dembczyński
-  book: Proceedings of the 37nd International Conference on Neural Information Processing Systems (ICLR 2024)
+  book: The Twelfth International Conference on Learning Representations (ICLR 2024)
   year: 2024
   links:
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2024_consistent_algorithms_for_macro-at-k_metrics_pu_iclr_paper.pdf
@@ -100,7 +157,7 @@
   id: neurips-2023
   poster_thumbnail: assets/thumbnails/2023_generalized_test_utilities_etu_neurips_poster.jpg
   authors: Erik Schultheis, Marek Wydmuch, Wojciech Kotłowski, Rohit Babbar, Krzysztof Dembczyński
-  book: Proceedings of the 37nd International Conference on Neural Information Processing Systems (NeurIPS 2023)
+  book: Proceedings of the 37th International Conference on Neural Information Processing Systems (NeurIPS 2023)
   year: 2023
   links:
     - url: https://www.cs.put.poznan.pl/mwydmuch/pdf/2023_generalized_test_utilities_etu_neurips_paper.pdf
@@ -126,7 +183,7 @@
     - metrics@k
 
 - title: "On Missing Labels, Long-tails and Propensities in Extreme Multi-label Classification"
-  url: https://dl.acm.org/doi/10.1145/3404835.3463084
+  url: https://dl.acm.org/doi/10.1145/3534678.3539466
   id: kdd-2022
   poster_thumbnail: assets/thumbnails/2022_xmlc_missing_labels_&_long_tail_kdd_poster.jpg
   authors: Erik Schultheis, Marek Wydmuch, Rohit Babbar, Krzysztof Dembczyński
@@ -152,7 +209,7 @@
     - metrics for long-tail labels
     - complex performance metrics
 
-- title: "Propensity-scored Probabilistic Label Trees"
+- title: "Propensity-Scored Probabilistic Label Trees"
   url: https://dl.acm.org/doi/10.1145/3404835.3463084
   id: sigir-2021
   poster_thumbnail: assets/thumbnails/2021_psplt_sigir_poster.jpg
@@ -213,10 +270,10 @@
     - probabilistic label trees
     - online methods
 
-- title: "Efficient set-valued prediction in multi-class classification"
+- title: "Efficient Algorithms for Set-Valued Prediction in Multi-Class Classification"
   url: https://link.springer.com/article/10.1007/s10618-021-00751-x
   id: dami-2021
-  authors: Thomas Mortier, Marek Wydmuch, Krzysztof Dembczyński, Eyke Hüllermeier, Willem Waegeman
+  authors: Thomas Mortier, Marek Wydmuch, Eyke Hüllermeier, Krzysztof Dembczyński, Willem Waegeman
   book: Data Mining and Knowledge Discovery
   year: 2021
   links:
@@ -277,12 +334,12 @@
     - probabilistic label trees
     - metrics@k
 
-- title: "ViZDoom Competitions: Playing Doom From Pixels"
+- title: "ViZDoom Competitions: Playing Doom from Pixels"
   url: https://ieeexplore.ieee.org/document/8500330
   image: assets/thumbnails/vizdoom_2018.png
   authors: Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski
   book: IEEE Transactions on Games
-  year: 2018
+  year: 2019
   note: <span class="reverse-second"><a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9679692"><i class="fa fa-award"></i> 2022 IEEE ToG Outstanding Paper Award</a></span>
   links:
     - url: http://vizdoom.cs.put.edu.pl

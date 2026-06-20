@@ -134,6 +134,9 @@ const container = document.getElementById("background-container"),
       elemBgPlayPause = document.getElementById("background-play-pause"),
       elemBgSettings = document.getElementById("background-settings"),
       elemBgSettingsControls = document.getElementById("background-settings-controls"),
+      elemBgSettingsControlsTitlebar = document.getElementById("background-settings-controls-titlebar"),
+      elemBgSettingsControlsGlobalList = document.getElementById("background-settings-controls-global-list"),
+      elemBgSettingsControlsContent = document.getElementById("background-settings-controls-content"),
       elemBgSettingsClose = document.getElementById("background-settings-close"),
       elemBgStats = document.getElementById("background-stats"),
       elemBgAnimationSelect = document.getElementById("background-settings-animation-select"),
@@ -334,29 +337,41 @@ if(canvas){
 
 
     // Initialize the animation
-    let animations = allAnimations.filter((x) => !x.hide);  // Remove hidden animations
-    const animationCount = animations.length;
-    let animationId = Utils.randomInt(0, animationCount);
-    while(animations[animationId].startAnimation === false) animationId = Utils.randomInt(0, animationCount);
+    let animations = allAnimations,
+        visibleAnimationIds = animations
+            .map((animation, id) => animation.hide ? null : id)
+            .filter((id) => id !== null);
+    let animationId = Utils.randomChoice(visibleAnimationIds);
+    while(animations[animationId].startAnimation === false) animationId = Utils.randomChoice(visibleAnimationIds);
 
     // Get the animation from url search params
     const urlParams = new URLSearchParams(window.location.search);
     if(urlParams.has("animation")){
         const animationParam = urlParams.get("animation").replaceAll("-", " ").replaceAll("_", " ");
-        for(let i = 0; i < animationCount; ++i)
-            if(animationParam === animations[i].name) animationId = i;
+        for(let i = 0; i < animations.length; ++i) {
+            if(animationParam === animations[i].name) {
+                animationId = i;
+                break;
+            }
+        }
     }
     if(urlParams.has("resolution")) updateAnimationResolution(urlParams.get("resolution"));
     if(urlParams.has("fps")) updateAnimationFps(urlParams.get("fps"));
     if(urlParams.has("bgColor")) bgColor = urlParams.get("bgColor");
 
     let animation = null,
-        order = Array.from({length: animationCount}, (x, i) => i);
+        order = visibleAnimationIds.slice();
 
     Utils.randomShuffle(order);
-    for(let i = 0; i < animationCount; ++i){
-        animations[order[i]].prev = order[(i + animationCount - 1) % animationCount];
-        animations[order[i]].next = order[(i + 1) % animationCount];
+    for(let i = 0; i < order.length; ++i){
+        animations[order[i]].prev = order[(i + order.length - 1) % order.length];
+        animations[order[i]].next = order[(i + 1) % order.length];
+    }
+    for(let i = 0; i < animations.length; ++i){
+        if(animations[i].hide) {
+            animations[i].prev = order[order.length - 1];
+            animations[i].next = order[0];
+        }
     }
 
     updateAnimation(animationId, urlParams);
@@ -542,11 +557,19 @@ if(canvas){
         function showSettings(){
             elemBgSettingsControls.classList.remove("fade-out");
             elemBgSettingsControls.classList.add("fade-in");
-            elemBgSettingsControls.style.display = "block";
+            elemBgSettingsControls.style.display = "inline-flex";
+            setMaxHeight();
         }
 
         function setMaxHeight(){
-            elemBgSettingsControls.style.maxHeight = elemBgSettingsControls.parentNode.offsetHeight - parseInt(elemBgSettingsControls.style.top) + 'px';
+            const top = parseInt(elemBgSettingsControls.style.top) || 0,
+                  maxHeight = Math.max(0, elemBgSettingsControls.parentNode.offsetHeight - top),
+                  fixedControlsHeight = (elemBgSettingsControlsTitlebar ? elemBgSettingsControlsTitlebar.offsetHeight : 0) +
+                      (elemBgSettingsControlsGlobalList ? elemBgSettingsControlsGlobalList.offsetHeight : 0);
+
+            elemBgSettingsControls.style.maxHeight = maxHeight + 'px';
+            if(elemBgSettingsControlsContent)
+                elemBgSettingsControlsContent.style.maxHeight = Math.max(0, maxHeight - fixedControlsHeight) + 'px';
         }
 
         function checkIfFits(){
@@ -556,6 +579,10 @@ if(canvas){
 
         checkIfFits();
         setMaxHeight();
+        addEventListener("resize", function () {
+            checkIfFits();
+            setMaxHeight();
+        });
         
         // Show/hide the background settings panel
         elemBgSettings.addEventListener("click", function () {
@@ -571,11 +598,18 @@ if(canvas){
         // Events for dragging the background settings panel
         ["mousedown", "touchstart"].forEach(function(eventName){
             elemBgSettingsControls.addEventListener(eventName, function (e) {
-                if(e.target !== e.currentTarget) return;
-                if(e.touches) e = e.touches[0];
-                e.target.classList.add('moving');
-                e.target.clickAnchorX = e.clientX - parseInt(e.target.style.left);
-                e.target.clickAnchorY = e.clientY - parseInt(e.target.style.top);
+                if(elemBgSettingsClose.contains(e.target)) return;
+                if(e.target !== e.currentTarget &&
+                    (!elemBgSettingsControlsTitlebar || !elemBgSettingsControlsTitlebar.contains(e.target))) return;
+
+                if(e.cancelable) e.preventDefault();
+                const pointer = e.touches ? e.touches[0] : e,
+                      left = parseInt(elemBgSettingsControls.style.left) || 0,
+                      top = parseInt(elemBgSettingsControls.style.top) || 0;
+
+                elemBgSettingsControls.classList.add('moving');
+                elemBgSettingsControls.clickAnchorX = pointer.clientX - left;
+                elemBgSettingsControls.clickAnchorY = pointer.clientY - top;
             })
         });
 
@@ -668,11 +702,14 @@ if(canvas){
 
         // Update list of animations
         let animationSelectOptions = "";
-        for(let i = 0; i < animations.length; ++i){
-            const name = animations[i].name;
-            if(animations[animationId].name === name)
-                animationSelectOptions += `<option selected value="${i}">${name}</option>`
-            else animationSelectOptions += `<option value="${i}">${name}</option>`
+        for(let id of visibleAnimationIds){
+            const name = animations[id].name;
+            if(animationId === id)
+                animationSelectOptions += `<option selected value="${id}">${name}</option>`
+            else animationSelectOptions += `<option value="${id}">${name}</option>`
+        }
+        if(animations[animationId].hide) {
+            animationSelectOptions += `<option selected value="${animationId}">${animations[animationId].name}</option>`
         }
         elemBgAnimationSelect.innerHTML = animationSelectOptions;
 
