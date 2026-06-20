@@ -23,7 +23,6 @@ Coded by me (Marek Wydmuch) in 2021.
 const Animation = require("../animation");
 const Utils = require("../utils");
 
-const ETA_SCHEDULER_NAMES = ["constant", "step decay", "exponential decay"];
 const OPTIMIZER_COLORS = ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#56B4E9", "#8C564B", "#6A3D9A"];
 
 class EtaScheduler {
@@ -532,7 +531,7 @@ class GradientDescent extends Animation {
         this.amsgrad = new AMSGrad();
 
         this.optims = [this.gd, this.momentum, this.adagrad, this.rmsprop, this.adam, this.adamax, this.amsgrad];
-        this.etaSchedulerNames = ETA_SCHEDULER_NAMES;
+        this.etaSchedulerNames = ["constant", "step decay", "exponential decay"];
         this.etaSchedulerType = this.etaSchedulerNames[0];
         this.etaScheduler = new EtaScheduler();
         this.etaSchedulers = {

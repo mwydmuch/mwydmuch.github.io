@@ -42,16 +42,16 @@ const ThreeNPlusOne = require("./animations/3n+1"),
       //TreeVisualization = require("./animations/tree-visualization"),
 
       // Shader animations
-      //TestShader = require("./shader-animations/test"),
+      TestShader = require("./shader-animations/test"),
       //Fractals = require("./shader-animations/fractals"),
-      FractionalBrownianMotion = require("./shader-animations/fbm");
+      FractionalBrownianMotion = require("./shader-animations/fbm"),
 
       
       // Three.js animations
       //Cubes = require("./threejs-animations/cubes"),
       //EvaporatingCubes = require("./threejs-animations/evaporating-cubes"),
-      //TestThreejs = require("./threejs-animations/test");
-      //GradientDescent3D = require("./threejs-animations/gradient-descent");
+      TestThreejs = require("./threejs-animations/test"),
+      GradientDescent3D = require("./threejs-animations/gradient-descent");
       
 
 
@@ -69,7 +69,9 @@ let fps = 30,
     lastHeight = 0,
     resolution = "fit",
     fixedWidth = 0,
-    fixedHeight = 0;
+    fixedHeight = 0,
+    resizeEndDelayMs = 100,
+    resizeTimeout = null;
 
 // For stats
 let sampleSize = 30,
@@ -163,7 +165,7 @@ if(canvas){
         {class: GameOfLifeIsometric, name: "isometric game of life"},
         {class: GlitchAutomata, name: "glitch automata", startAnimation: false},  // Disable as a start animation, as it may not be visually pleasing for everyone
         {class: GradientDescent, name: "gradient descent"},
-        //{class: GradientDescent3D, name: "gradient descent (3D)"},
+        {class: GradientDescent3D, name: "gradient descent (3D)"},
         {class: Matrix, name: "matrix rain"},
         {class: MLinPL, name: "ml in pl"},
         {class: Network, name: "network"},
@@ -185,8 +187,8 @@ if(canvas){
         {class: SpinningShapes, name: "spinning shapes"},
         {class: Spirograph, name: "spirograph"},
         {class: Vectors, name: "vectors", hide: true},  // Hiden cause it's not that interesting
-        //{class: TestShader, name: "test shader", hide: true},
-        //{class: TestThreejs, name: "test Three.js", hide: true},
+        {class: TestShader, name: "test shader", hide: true},
+        {class: TestThreejs, name: "test Three.js", hide: true},
         //{class: TreeVisualization, name: "tree visualization", hide: true},  // Hiden cause it's not that interesting
     ];
 
@@ -199,6 +201,8 @@ if(canvas){
     }
 
     function updateAnimation(newAnimationId, newAnimationSettings = null) {
+        cancelScheduledResize();
+
         // Reset variables
         frames = 0;
         avgDrawTime = 0;
@@ -218,6 +222,21 @@ if(canvas){
         trueThen = then;
         animation.resize();
         if(updateUI) updateUI();
+    }
+
+    function cancelScheduledResize() {
+        if(resizeTimeout !== null) {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = null;
+        }
+    }
+
+    function scheduleAnimationResize() {
+        cancelScheduledResize();
+        resizeTimeout = setTimeout(function () {
+            resizeTimeout = null;
+            animation.resize();
+        }, resizeEndDelayMs);
     }
 
     function updateAnimationResolution(sizeStr) {
@@ -243,13 +262,13 @@ if(canvas){
             if(width !== lastWidth || height !== lastHeight){
                 canvas.width = width;
                 canvas.height = height;
-                animation.resize();
+                scheduleAnimationResize();
             } 
         } else {
             if(canvas.width !== fixedWidth || canvas.height !== fixedHeight){
                 canvas.width = fixedWidth;
                 canvas.height = fixedHeight;
-                animation.resize();
+                scheduleAnimationResize();
             }
         }
 
