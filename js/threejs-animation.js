@@ -12,7 +12,7 @@ class ThreejsAnimation extends Animation {
                 file = "",
                 description = "",
                 seed = "random") {
-        super(canvas, colors, colorsAlt, bgColor, name, file, description, seed, null);
+        super(canvas, colors, colorsAlt, bgColor, name, file, description, seed, 'webgl');
 
         // Create a WebGL renderer
         this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas: canvas });

@@ -71,7 +71,8 @@ let fps = 30,
     fixedWidth = 0,
     fixedHeight = 0,
     resizeEndDelayMs = 100,
-    resizeTimeout = null;
+    resizeTimeout = null,
+    resizePending = false;
 
 // For stats
 let sampleSize = 30,
@@ -168,7 +169,7 @@ if(canvas){
         {class: GameOfLifeIsometric, name: "isometric game of life"},
         {class: GlitchAutomata, name: "glitch automata", startAnimation: false},  // Disable as a start animation, as it may not be visually pleasing for everyone
         {class: GradientDescent, name: "gradient descent"},
-        {class: GradientDescent3D, name: "gradient descent (3D)"},
+        {class: GradientDescent3D, name: "gradient descent (3D)", hide: true}, // Disable till finished, as it's not that interesting in its current state
         {class: Matrix, name: "matrix rain"},
         {class: MLinPL, name: "ml in pl"},
         {class: Network, name: "network"},
@@ -232,14 +233,29 @@ if(canvas){
             clearTimeout(resizeTimeout);
             resizeTimeout = null;
         }
+        resizePending = false;
     }
 
     function scheduleAnimationResize() {
         cancelScheduledResize();
+        resizePending = true;
         resizeTimeout = setTimeout(function () {
             resizeTimeout = null;
             animation.resize();
+            resizePending = false;
+            then = getTime();
+            trueThen = then;
         }, resizeEndDelayMs);
+    }
+
+    function updateCanvasSize(newWidth, newHeight) {
+        if(canvas.width === newWidth && canvas.height === newHeight) return false;
+
+        canvas.width = newWidth;
+        canvas.height = newHeight;
+        if(animation) animation.clear();
+        scheduleAnimationResize();
+        return true;
     }
 
     function updateAnimationResolution(sizeStr) {
@@ -258,25 +274,20 @@ if(canvas){
     }
 
     function checkResize() {
+        let resized = false;
+
         // Detect the change of container's size for smooth resizing
         if(resolution === "fit"){
             width = Math.max(container.parentElement.offsetWidth - canvas.offsetLeft);
             height = Math.max(container.parentElement.offsetHeight - canvas.offsetTop);
-            if(width !== lastWidth || height !== lastHeight){
-                canvas.width = width;
-                canvas.height = height;
-                scheduleAnimationResize();
-            } 
+            resized = updateCanvasSize(width, height);
         } else {
-            if(canvas.width !== fixedWidth || canvas.height !== fixedHeight){
-                canvas.width = fixedWidth;
-                canvas.height = fixedHeight;
-                scheduleAnimationResize();
-            }
+            resized = updateCanvasSize(fixedWidth, fixedHeight);
         }
 
         lastWidth = canvas.width;
         lastHeight = canvas.height;
+        return resized;
     }
 
     function updateStats(timeElapsedMs, drawTimeMs) {
@@ -320,11 +331,13 @@ if(canvas){
             const drawStart = getTime();
 
             // Check if resize is needed
-            checkResize();
+            const resized = checkResize();
 
             // Update the current animation and redraw the frame
-            animation.update(timeElapsedMs);
-            animation.draw();
+            if(!resized && !resizePending) {
+                animation.update(timeElapsedMs);
+                animation.draw();
+            }
 
             // Update the stats
             const drawTimeMs = getTime() - drawStart;

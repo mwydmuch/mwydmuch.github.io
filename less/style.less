@@ -123,11 +123,16 @@ img {
   display: inline-block;
 }
 
+.img-side-col-container {
+  container-type: inline-size;
+}
+
 .img-side-col {
   object-fit: contain;
   padding: 0 1rem;
   height: 100%;
   width: 100%;
+  max-height: 151px;
 }
 
 .nowrap{
@@ -531,7 +536,7 @@ footer {
   border-radius: 0;
 
   &:hover {
-    background-color: lighten(@main, 50%);
+    background-color: fade(@main, 50%);
   }
 
   .tag-count {
@@ -554,15 +559,15 @@ footer {
     text-decoration: none;
 
     .video-play-button {
-      background-color: fade(@main, 95%);
-      transform: translate(-50%, -50%) scale(1.08);
+      background-color: fade(@main, 50%);
+      transform: translate(-50%, -50%);
     }
   }
 }
 
 .video-play-button {
   align-items: center;
-  background-color: fade(@main, 85%);
+  background-color: transparent;
   border-radius: 50%;
   box-shadow: 0 0 0 0.12rem fade(@background, 85%);
   color: @background;
@@ -574,7 +579,7 @@ footer {
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition: 0.2s ease;
   width: 3rem;
 
   .fa-play {
@@ -683,6 +688,10 @@ footer {
     .chip {
       background-color: @background;
       color: @second;
+
+      &:hover {
+        background-color: fade(@main, 50%);
+      }
     }
 
     .filter-nav-label,

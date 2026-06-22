@@ -367,7 +367,7 @@
   authors: Michał Kempka, Marek Wydmuch, Grzegorz Runc, Jakub Toczek, Wojciech Jaśkowski
   book: 2016 IEEE Conference on Computational Intelligence and Games (CIG 2016)
   year: 2016
-  note: <span class="reverse-second"><i class="fa fa-award"></i> 2016 IEEE CIG The Best Paper Award</span>
+  note: <span class="reverse-second"><a href="https://www.cs.put.poznan.pl/mwydmuch/pdf/2016_vizdoom_best_paper_award.pdf"><i class="fa fa-award"></i> 2016 IEEE CIG The Best Paper Award</a></span>
   links:
     - url: https://vizdoom.farama.org
       type: docs

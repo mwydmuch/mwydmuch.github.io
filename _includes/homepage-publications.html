@@ -35,7 +35,7 @@
 
                 <!-- Filter navigation with counters -->
                 <div class="filter-nav">
-                    <span class="filter-nav-label">Papers:</span>
+                    <span class="filter-nav-label"><i class="fa-regular fa-star"></i> Papers:</span>
                     {% for tag in sorted_tags %}
                         {% if tag == default_tag %}
                             <label class="chip" for="publication-tag-{{ forloop.index }}">
@@ -51,17 +51,17 @@
                             </label>
                         {% endif %}
                     {% endfor %}
-                    <label class="chip" for="publication-tag-0">
+                    <label class="chip link-style" for="publication-tag-0">
                         all
                         <span class="tag-count">(
                         {%- assign total_count = site.data.publications | size -%}
                         {{ total_count }})</span>
                     </label>
                     <span class="filter-nav-separator">|</span>
-                    <span class="filter-nav-label">Topic:</span>
+                    <span class="filter-nav-label"><i class="fa-solid fa-hashtag"></i> Topic:</span>
                     {% for tag in sorted_tags %}
                         {% unless tag == default_tag %}
-                            <label class="chip" for="publication-tag-{{ forloop.index }}">
+                            <label class="chip link-style" for="publication-tag-{{ forloop.index }}">
                                 {{ tag }}
                                 <span class="tag-count">(
                                 {%- assign count = 0 -%}
@@ -87,11 +87,11 @@
                     >
                     <div class="columns">
                         {% if publication.poster_thumbnail %}
-                        <div class="column col-8">
+                        <div class="column col-8 col-md-12">
                         {% else %}
                         <div class="column col-12">
                         {% endif %}
-                        <div>
+                        <div class="publication-item-content">
                             <a href="{{ publication.url }}">{{ publication.title }}</a><br>
                             {{ publication.authors }}<br>
                             {% if publication.book %}
@@ -99,15 +99,19 @@
                             {% endif %}
                             {{ publication.year }}<br>
                             {% if publication.tags %}
-                        </div>
-                        <div>
-                            Topics:
-                            {% for tag in publication.tags %}
-                                {{ tag }}{% unless forloop.last %}, {% endunless %}
-                            {% endfor %}<br>
-                            {% endif %}
                             {% if publication.note %}
-                                Note: {{ publication.note }}<br>
+                                <!-- <i class="fa-solid fa-note-sticky"></i> Note: --> 
+                                {{ publication.note }}<br>
+                            {% endif %}
+                        </div>
+                        <div class="publication-item-links">
+                            <i class="fa-solid fa-hashtag"></i>
+                            <!--<i class="fa-solid fa-tags"></i>  Topics: -->
+                            {% for tag in publication.tags %}
+                                {% unless tag == default_tag %}
+                                    {{ tag }}{% unless forloop.last %}, {% endunless %}
+                                {% endunless %}
+                            {% endfor %}<br>
                             {% endif %}
                             {% for link in publication.links %}
                                 {% assign link_text = link.text %}
@@ -137,7 +141,7 @@
                         </div>
                         </div>
                         {% if publication.poster_thumbnail %}
-                        <div class="column col-4 col-md-12 text-center">
+                        <div class="column col-4 col-md-12 text-center img-side-col-container">
                             <img class="img-side-col" src="{{ publication.poster_thumbnail }}" style="max-height: 8rem;">
                         </div>
                         {% endif %}

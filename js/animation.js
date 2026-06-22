@@ -101,7 +101,8 @@ class Animation {
         else return value;
     }
 
-    clear(){  // Clear background
+    clear(){  // Clear background, commonly used by some animations
+        if(!this.ctx) return;
         Utils.clear(this.ctx, this.bgColor);
     }
 
@@ -144,10 +145,12 @@ class Animation {
 
     resize(){
         // By default do nothing
-        console.log(`Resized animation to ${this.canvas.width}x${this.canvas.height}`);
+        console.log(`Resized the animation to ${this.canvas.width}x${this.canvas.height}`);
     }
 
     updateColors(colors, colorsAlt, bgColor){
+        console.log(`Updating colors for the animation`);
+
         this.colors = colors;
         this.colorsAlt = colorsAlt;
         this.bgColor = bgColor;
@@ -156,7 +159,7 @@ class Animation {
     }
 
     restart() {
-        console.log(`Restarting ${this.name} animation`);
+        console.log(`Restarting the animation`);
 
         this.realTimeMs = 0;
         this.realTime = 0;
@@ -164,6 +167,7 @@ class Animation {
         this.time = 0;
         this.frame = 0;
         this.setSeed(this.seed);
+        this.clear();
         this.resize();
     }
 
@@ -180,6 +184,8 @@ class Animation {
     }
 
     setSettings(newSettings){
+        console.log(`Applying settings for the animation`);
+
         for (const setting of this.getSettings()) {
             if (newSettings.has(setting.prop)){
                 let value = newSettings.get(setting.prop);

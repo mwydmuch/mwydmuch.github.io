@@ -102,6 +102,8 @@ class PerlinNoiseParticles extends Animation {
     }
 
     resize() {
+        super.resize();
+        
         this.clear();
         if(this.imageData !== null) this.ctx.putImageData(this.imageData, 0, 0);
 

@@ -1,50 +1,111 @@
 <section id="software" class="container grid-lg">
-    <div class="columns" style="margin-bottom: 2rem;">
+    <div class="columns">
         <div class="column col-12">
             <h2 class="d-inline-block h-reversed-second section-title"><i class="fa-solid fa-code thinner-second"></i> Software</h2>
         </div>
-        <div class="column col-4 col-md-12 text-center">
-            <img class="img-side-col" src="{{ './assets/logos/vizdoom.png' | relative_url }}" alt="ViZDoom logo">
+    </div>
+    <input type="checkbox" class="read-more-state" id="more-software" />
+    <div class="read-more-wrap">
+        <div class="columns software-item" style="margin-bottom: 2rem;">
+            <div class="column col-4 col-md-12 text-center img-side-col-container">
+                <a href="https://vizdoom.farama.org" target="_blank">
+                    <img class="img-side-col" src="{{ './assets/logos/vizdoom.png' | relative_url }}" alt="ViZDoom logo">
+                </a>
+            </div>
+            <div class="column col-8 col-md-12 text-center">
+                <p>
+                    <strong>ViZDoom</strong> is a library that allows creating reinforcement learning environments based on the Doom engine.
+                    It is primarily intended for research in machine visual learning and deep reinforcement learning, in particular.
+                    The library is written in C++ and provides Python API and wrappers for popular Gymnasium/OpenAI Gym interface.
+                    It is multi-platform, lightweight, fast, and provides many useful tools for creating custom environments.
+                </p>
+                <span class="nowrap">[<a href="https://vizdoom.farama.org"><i class="fa-solid fa-book"></i>&nbsp;docs</a>]</span>
+                <span class="nowrap">[<a href="https://github.com/mwydmuch/ViZDoom"><i class="fa fa-github"></i>&nbsp;code</a>]</span>
+                <span class="nowrap">[<a href="http://vizdoom.cs.put.edu.pl"><i class="fa fa-globe"></i>&nbsp;website</a>]</span>
+            </div>
         </div>
-        <div class="column col-8 col-md-12 text-center">
-            <p>
-                ViZDoom is a library that allows creating reinforcement learning environments based on the Doom engine.
-                It is primarily intended for research in machine visual learning and deep reinforcement learning, in particular. 
-                The library is written in C++ and provides Python API and wrappers for popular Gymnasium/OpenAI Gym interface. 
-                It is multi-platform, lightweight, fast, and provides many useful tools for creating custom environments.
-            </p>
-            <span class="nowrap">[<a href="https://vizdoom.farama.org"><i class="fa-solid fa-book"></i>&nbsp;docs</a>]</span>
-            <span class="nowrap">[<a href="https://github.com/mwydmuch/ViZDoom"><i class="fa fa-github"></i>&nbsp;code</a>]</span>
-            <span class="nowrap">[<a href="http://vizdoom.cs.put.edu.pl"><i class="fa fa-globe"></i>&nbsp;website</a>]</span>
+        <div class="columns software-item" style="margin-bottom: 2rem;">
+            <div class="column col-4 col-md-12 text-center img-side-col-container">
+                <a href="https://xcolumns.readthedocs.io" target="_blank">
+                    <img class="img-side-col" src="https://raw.githubusercontent.com/mwydmuch/xCOLUMNs/master/docs/_static/xCOLUMNs_logo.png" alt="xCOLUMNs logo">
+                </a>
+            </div>
+            <div class="column col-8 col-md-12 text-center">
+                <p>
+                    <strong>xCOLUMNs</strong> is a small Python library that aims to implement different methods for the optimization
+                    of a general family of metrics that can be defined on a confusion matrix.
+                    The library provides an efficient implementation of the different optimization methods
+                    that easily scale to problems at a large scale.
+                </p>
+                <span class="nowrap">[<a href="https://xcolumns.readthedocs.io"><i class="fa-solid fa-book"></i>&nbsp;docs</a>]</span>
+                <span class="nowrap">[<a href="https://github.com/mwydmuch/xCOLUMNs"><i class="fa fa-github"></i>&nbsp;code</a>]</span>
+            </div>
+        </div>
+        <div class="read-more-target">
+            <div class="columns software-item">
+                <div class="column col-4 col-md-12 text-center img-side-col-container">
+                    <a href="https://github.com/mwydmuch/napkinXC" target="_blank">
+                        <img class="img-side-col" src="{{ './assets/logos/napkinxc.png' | relative_url }}" alt="napkinXC logo">
+                    </a>
+                </div>
+                <div class="column col-8 col-md-12 text-center">
+                    <p>
+                        <strong>napkinXC</strong> is an extremely simple and fast library for extreme multi-class and multi-label classification.
+                    </p>
+                    <span class="nowrap">[<a href="https://github.com/mwydmuch/napkinXC"><i class="fa fa-github"></i>&nbsp;code</a>]</span>
+                </div>
+            </div>
+            <div class="columns software-item">
+                <div class="column col-4 col-md-12 text-center img-side-col-container">
+                    <a href="https://github.com/mwydmuch/extremeText" target="_blank">
+                        <img class="img-side-col" src="{{ './assets/logos/extremetext.png' | relative_url }}" alt="extremeText logo">
+                    </a>
+                </div>
+                <div class="column col-8 col-md-12 text-center">
+                    <p>
+                        <strong>extremeText</strong> is an extension of the fastText library for multi-label classification including extreme cases with hundreds of thousands and millions of labels.
+                    </p>
+                    <span class="nowrap">[<a href="https://github.com/mwydmuch/extremeText"><i class="fa fa-github"></i>&nbsp;code</a>]</span>
+                </div>
+            </div>
+            <div class="columns software-item">
+                <div class="column col-4 col-md-12 text-center img-side-col-container">
+                    <a class="video-thumbnail" href="https://www.reddit.com/r/midjourney/comments/14jcyqs/cats_living_in_the_abandoned_city_my_first_zoom/" aria-label="">
+                        <img class="img-side-col" src="assets/thumbnails/cats_zoom_video_thumbnail.jpg" alt="">
+                        <span class="video-play-button" aria-hidden="true"><i class="fa-solid fa-play"></i></span>
+                    </a>
+                </div>
+                <div class="column col-8 col-md-12 text-center">
+                    <p>
+                        <strong>Bonus: VideoZoomComposer - a Python tool for creating infinite zoom in/out videos.</strong>
+                        Inspired by MidJourney's zoom out feature, and many of videos on YouTube that was doing zoom in videos incorectly, 
+                        I decided to create a simple tool for doing it in a right way. 
+                        <!-- It uses smooth zoom interpolation and basic image blending, and supports configurable duration,
+                        resolution, frame rate, zoom direction, easing, and optional audio. -->
+                    </p>
+                    <span class="nowrap">[<a href="https://github.com/mwydmuch/ZoomVideoComposer"><i class="fa fa-github"></i>&nbsp;code</a>]</span>
+                </div>
+            </div>
+            <div class="columns software-item">
+                <div class="column col-4 col-md-12 text-center img-side-col-container">
+                    <a class="video-thumbnail" href="https://www.youtube.com/watch?v=OdwX4_inNVM" aria-label="Play Leap Motion support for Jedi Knight II: Jedi Outcast video">
+                        <img class="img-side-col" src="assets/thumbnails/leap_motion_jedi_knight_thumbnail.jpg" alt="Jedi Knight II: Jedi Outcast Leap Motion demo thumbnail">
+                        <span class="video-play-button" aria-hidden="true"><i class="fa-solid fa-play"></i></span>
+                    </a>
+                </div>
+                <div class="column col-8 col-md-12 text-center">
+                    <p>
+                        <strong>Bonus: Leap Motion controller support added to Jedi Knight II: Jedi Outcast for using force powers with hand gestures.</strong>
+                        As one of assignments for my bachelor's degree, I modified the
+                        <a href="https://code.idtech.space/raven/jedioutcast">source code of Jedi Knight II: Jedi Outcast</a> 
+                        (one of my favorite games of my childhood), which was back then recently released as open source.
+                        Unfortunately, I cannot share the code for this project (I somehow lost the final version of it), 
+                        but you can see it in action in the video linked below.
+                    </p>
+                    <span class="nowrap">[<a href="https://www.youtube.com/watch?v=OdwX4_inNVM"><i class="fa-brands fa-youtube"></i>&nbsp;video</a>]</span>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="columns" style="margin-bottom: 2rem;">
-        <div class="column col-4 col-md-12 text-center">
-            <img class="img-side-col" src="https://raw.githubusercontent.com/mwydmuch/xCOLUMNs/master/docs/_static/xCOLUMNs_logo.png" alt="xCOLUMNs logo">
-        </div>
-        <div class="column col-8 col-md-12 text-center">
-            <p>
-                xCOLUMNs is a small Python library that aims to implement different methods for the optimization 
-                of a general family of metrics that can be defined on a confusion matrix.
-                The library provides an efficient implementation of the different optimization methods 
-                that easily scale to problems at a large scale.
-            </p>
-            <span class="nowrap">[<a href="https://xcolumns.readthedocs.io"><i class="fa-solid fa-book"></i>&nbsp;docs</a>]</span>
-            <span class="nowrap">[<a href="https://github.com/mwydmuch/xCOLUMNs"><i class="fa fa-github"></i>&nbsp;code</a>]</span>
-        </div>
-    </div>
-    <div class="columns">
-        <div class="column col-6 col-md-12 text-center">
-            <h4><a href="https://github.com/mwydmuch/napkinXC">napkinXC</a></h4>
-            Extremely simple and fast library for extreme multi-class and multi-label classification.
-            <br>
-            <span class="nowrap">[<a href="https://github.com/mwydmuch/napkinXC"><i class="fa fa-github"></i>&nbsp;code</a>]</span>
-        </div>
-        <div class="column col-6 col-md-12 text-center">
-            <h4><a href="https://github.com/mwydmuch/extremeText">extremeText</a></h4>
-            Extension of fastText library for multi-label classification including extreme cases with hundreds of thousands and millions of labels.
-            <br>
-            <span class="nowrap">[<a href="https://github.com/mwydmuch/extremeText"><i class="fa fa-github"></i>&nbsp;code</a>]</span>
-        </div>
-    </div>
+    <label style="display: inline-block; margin-top: 0.6rem;" for="more-software" class="chip read-more-trigger link-style"></label>
 </section>
