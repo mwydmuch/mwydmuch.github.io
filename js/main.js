@@ -653,7 +653,7 @@ if(canvas){
     function processDescription(description){
         // Replace string format
         const urlReplaceStrFormat = (prevContent, hrefContent, linkContent, followingContent) => 
-            `${prevContent}<span class="nowrap">[<a href="${hrefContent}" target="_blank" rel="noopener noreferrer">${linkContent}</a>]</span>${followingContent}`;
+            `${prevContent}<span class="nowrap">[<a href="${hrefContent}" target="_blank">${linkContent}</a>]</span>${followingContent}`;
         
         // Wrap urls into <a> tags
         const regexpToReplace = [

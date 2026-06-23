@@ -1,7 +1,7 @@
 <section id="publications" class="container grid-lg">
     <div class="columns">
         <div class="column">
-            <h2 class="d-inline-block h-reversed-second section-title"><i class="fa-solid fa-file-lines thinner-second"></i> Scientific publications</h2>
+            <h2 class="d-inline-block h-reversed-second section-title"><i class="fa-solid fa-file-lines thinner-second" aria-hidden="true"></i> Scientific publications</h2>
 
             <!-- Tag filter using Spectre -->
             <div class="filter" id="tag-filter">
@@ -35,7 +35,7 @@
 
                 <!-- Filter navigation with counters -->
                 <div class="filter-nav">
-                    <span class="filter-nav-label"><i class="fa-regular fa-star"></i> Papers:</span>
+                    <span class="filter-nav-label"><i class="fa-regular fa-star" aria-hidden="true"></i> Papers:</span>
                     {% for tag in sorted_tags %}
                         {% if tag == default_tag %}
                             <label class="chip" for="publication-tag-{{ forloop.index }}">
@@ -58,7 +58,7 @@
                         {{ total_count }})</span>
                     </label>
                     <span class="filter-nav-separator">|</span>
-                    <span class="filter-nav-label"><i class="fa-solid fa-hashtag"></i> Topic:</span>
+                    <span class="filter-nav-label"><i class="fa-solid fa-hashtag" aria-hidden="true"></i> Topic:</span>
                     {% for tag in sorted_tags %}
                         {% unless tag == default_tag %}
                             <label class="chip link-style" for="publication-tag-{{ forloop.index }}">
@@ -86,13 +86,13 @@
                         data-tag="publication-tag-0"{% endif %}
                     >
                     <div class="columns">
-                        {% if publication.poster_thumbnail %}
+                        {% if publication.thumbnail %}
                         <div class="column col-8 col-md-12">
                         {% else %}
                         <div class="column col-12">
                         {% endif %}
                         <div class="publication-item-content">
-                            <a href="{{ publication.url }}">{{ publication.title }}</a><br>
+                            <a href="{{ publication.url }}" target="_blank">{{ publication.title }}</a><br>
                             {{ publication.authors }}<br>
                             {% if publication.book %}
                                 <i>{{ publication.book }}</i>, 
@@ -105,7 +105,7 @@
                             {% endif %}
                         </div>
                         <div class="publication-item-links">
-                            <i class="fa-solid fa-hashtag"></i>
+                            <i class="fa-solid fa-hashtag" aria-hidden="true"></i>
                             <!--<i class="fa-solid fa-tags"></i>  Topics: -->
                             {% for tag in publication.tags %}
                                 {% unless tag == default_tag %}
@@ -116,33 +116,33 @@
                             {% for link in publication.links %}
                                 {% assign link_text = link.text %}
                                 {% if link.type == "paper-pdf" %}
-                                    {% assign link_text = '<i class="fa fa-file-pdf"></i> paper' %}
+                                    {% assign link_text = '<i class="fa fa-file-pdf" aria-hidden="true"></i> paper' %}
                                 {% elsif link.type == "paper+supp-pdf" %}
-                                    {% assign link_text = '<i class="fa fa-file-pdf"></i> paper+supp.' %}
+                                    {% assign link_text = '<i class="fa fa-file-pdf" aria-hidden="true"></i> paper+supp.' %}
                                 {% elsif link.type == "poster-pdf" %}
                                     {% assign link_text = '<i class="fa-custom fa-poster-board" aria-hidden="true"></i> poster' %}            
                                 {% elsif link.type == "github" %}
-                                    {% assign link_text = '<i class="fa fa-github"></i> code' %}
+                                    {% assign link_text = '<i class="fa fa-github" aria-hidden="true"></i> code' %}
                                 {% elsif link.type == "website" %}
-                                    {% assign link_text = '<i class="fa fa-globe"></i> website' %}
+                                    {% assign link_text = '<i class="fa fa-globe" aria-hidden="true"></i> website' %}
                                 {% elsif link.type == "docs" %}
-                                    {% assign link_text = '<i class="fa fa-book"></i> docs' %}
+                                    {% assign link_text = '<i class="fa fa-book" aria-hidden="true"></i> docs' %}
                                 {% elsif link.type == "bibtex" %}
                                     {% assign link_text = '<i class="fa-custom fa-books" aria-hidden="true"></i> bibtex' %}
                                 {% elsif link.type == "arxiv" %}
                                     {% assign link_text = '<i class="fa-custom fa-arxiv" aria-hidden="true"></i> arxiv' %}
                                 {% elsif link.type == "book-pdf" %}
-                                    {% assign link_text = '<i class="fa fa-book"></i> full book' %}
+                                    {% assign link_text = '<i class="fa fa-book" aria-hidden="true"></i> full book' %}
                                 {% elsif link.type == "dissertation-reviews" %}
-                                    {% assign link_text = '<i class="fa-solid fa-file-circle-check"></i> submitted version + reviews' %}
+                                    {% assign link_text = '<i class="fa-solid fa-file-circle-check" aria-hidden="true"></i> submitted version + reviews' %}
                                 {% endif %}
-                                <span class="nowrap">[<a href="{{ link.url }}">{{ link_text }}</a>]</span>
+                                <span class="nowrap">[<a href="{{ link.url }}" target="_blank">{{ link_text }}</a>]</span>
                             {% endfor %}
                         </div>
                         </div>
-                        {% if publication.poster_thumbnail %}
+                        {% if publication.thumbnail %}
                         <div class="column col-4 col-md-12 text-center img-side-col-container">
-                            <img class="img-side-col" src="{{ publication.poster_thumbnail }}" style="max-height: 8rem;">
+                            <img class="img-side-col" src="{{ publication.thumbnail }}" alt="{{ publication.thumbnail_alt }}" style="max-height: 8rem;">
                         </div>
                         {% endif %}
                     </div>

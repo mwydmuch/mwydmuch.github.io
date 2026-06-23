@@ -6,44 +6,44 @@ Expects following parameters:
 <!-- Animation settings panel -->
 <div id="background-settings-controls" class="floating-controls" style="{{ include.controls-style }}">
     <div id="background-settings-controls-titlebar">
-        {{ include.controls-title }} <span id="background-settings-close">[<i class="fas fa-close"></i>]</span>
+        {{ include.controls-title }} <span id="background-settings-close">[<i class="fas fa-close" aria-hidden="true"></i>]</span>
     </div>
     <div id="background-settings-controls-global-list" class="settings-section">
         <div>
             <span class="setting-name">animation </span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="animation" id="background-settings-animation-select"></select></span>
         </div>
         <div>
-            <span class="nowrap tooltip" data-tooltip="Play/pause the animation">[<a id="background-play-pause"><i class="fas fa-pause"></i> pause</a>]</span>
-            <span class="nowrap tooltip" data-tooltip="Restart the animation keeping all the settings">[<a id="background-restart"><i class="fas fa-backward-step"></i> restart</a>]</span>
-            <span class="nowrap tooltip" data-tooltip="Change to the previous animation">[<a id="background-previous"><i class="fas fa-backward-fast"></i> prev.</a>]</span>
-            <span class="nowrap tooltip" data-tooltip="Rest animation to the initial state">[<a id="background-reset"><i class="fas fa-rotate-left"></i> reset</a>]</span>
-            <span class="nowrap tooltip" data-tooltip="Change to the next animation">[<a id="background-next"><i class="fas fa-forward-fast"></i> next</a>]</span>
-            <span class="nowrap tooltip" data-tooltip="Show code of the animation on GitHub">[<a id="background-code"><i class="fas fa-file-code"></i> code</a>]</span>
+            <span class="nowrap tooltip" data-tooltip="Play/pause the animation">[<a id="background-play-pause"><i class="fas fa-pause" aria-hidden="true"></i> pause</a>]</span>
+            <span class="nowrap tooltip" data-tooltip="Restart the animation keeping all the settings">[<a id="background-restart"><i class="fas fa-backward-step" aria-hidden="true"></i> restart</a>]</span>
+            <span class="nowrap tooltip" data-tooltip="Change to the previous animation">[<a id="background-previous"><i class="fas fa-backward-fast" aria-hidden="true"></i> prev.</a>]</span>
+            <span class="nowrap tooltip" data-tooltip="Rest animation to the initial state">[<a id="background-reset"><i class="fas fa-rotate-left" aria-hidden="true"></i> reset</a>]</span>
+            <span class="nowrap tooltip" data-tooltip="Change to the next animation">[<a id="background-next"><i class="fas fa-forward-fast" aria-hidden="true"></i> next</a>]</span>
+            <span class="nowrap tooltip" data-tooltip="Show code of the animation on GitHub">[<a id="background-code"><i class="fas fa-file-code" aria-hidden="true"></i> code</a>]</span>
         </div>
     </div>
     <div id="background-settings-controls-content">
         <div class="accordion">
             <input id="background-description-accordion" type="checkbox" name="accordion-checkbox" hidden>
-            <label class="accordion-header c-hand" for="background-description-accordion"><i class="icon icon-arrow-right mr-1"></i>Animation description</label>
+            <label class="accordion-header c-hand" for="background-description-accordion"><i class="icon icon-arrow-right mr-1" aria-hidden="true"></i>Animation description</label>
             <div class="accordion-body justify">
                 <div id="background-description" class="settings-section"></div>
             </div>
         </div>
         <div class="accordion"> 
             <input id="background-settings-controls-accordion" type="checkbox" name="accordion-checkbox" hidden>
-            <label class="accordion-header c-hand" for="background-settings-controls-accordion"><i class="icon icon-arrow-right mr-1"></i>Animation settings</label>
+            <label class="accordion-header c-hand" for="background-settings-controls-accordion"><i class="icon icon-arrow-right mr-1" aria-hidden="true"></i>Animation settings</label>
             <div class="accordion-body justify">
                 <div id="background-settings-default-list" class="settings-section">
                     <!-- <div class="tooltip tooltip-bottom" data-tooltip="Target resolution of the canvas"> -->
                     <div>
-                        <span class="setting-name"><i class="fa-solid fa-display"></i> canvas resolution</span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="animation-resolution" id="background-settings-animation-resolution"></select></span>
+                        <span class="setting-name"><i class="fa-solid fa-display" aria-hidden="true"></i> canvas resolution</span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="animation-resolution" id="background-settings-animation-resolution"></select></span>
                     </div>
                     <!-- <div class="tooltip" data-tooltip="Target frames per second, \n speed of some animations may change"> -->
                     <div>
-                        <span class="setting-name"><i class="fa-solid fa-film"></i> fps</span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="animation-size" id="background-settings-animation-fps"></select></span>
+                        <span class="setting-name"><i class="fa-solid fa-film" aria-hidden="true"></i> fps</span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="animation-size" id="background-settings-animation-fps"></select></span>
                     </div>
                     <div>
-                        <span class="setting-name"><i class="fa-solid fa-fill-drip"></i> background color</span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="bg-color" id="background-settings-bg-color"></select></span>
+                        <span class="setting-name"><i class="fa-solid fa-fill-drip" aria-hidden="true"></i> background color</span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="bg-color" id="background-settings-bg-color"></select></span>
                     </div>
                     <!-- <div>
                         <span class="setting-name"></span><i class="fa-solid fa-palette"></i> color palette</span><span class="nowrap setting-value-control"><select class="setting-select form-select" name="bg-color" id="background-settings-color-palette"></select></span>
@@ -51,13 +51,13 @@ Expects following parameters:
                     <div class="setting-separator"></div>
                     <div id="background-settings-controls-list"></div>
                     <div class="setting-separator"></div>
-                    <div>[<a id="background-copy-settings-url"><i class="fas fa-copy"></i> copy url with settings</a>]</span></div>
+                    <div>[<a id="background-copy-settings-url"><i class="fas fa-copy" aria-hidden="true"></i> copy url with settings</a>]</span></div>
                 </div>
             </div>
         </div>
         <div class="accordion">
             <input id="background-rendering-stats-accordion" type="checkbox" name="accordion-checkbox" hidden>
-            <label class="accordion-header c-hand" for="background-rendering-stats-accordion"><i class="icon icon-arrow-right mr-1"></i>Rendering statistics</label>
+            <label class="accordion-header c-hand" for="background-rendering-stats-accordion"><i class="icon icon-arrow-right mr-1" aria-hidden="true"></i>Rendering statistics</label>
             <div class="accordion-body justify">
                 <div id="background-stats" class="settings-section"></div>
             </div>
