@@ -81,9 +81,20 @@ class ShaderAnimation extends Animation {
         return shaderProgram;
     }
 
-    draw() {
-        this.ctx.clearColor(0.0, 0.0, 0.0, 1.0);
+    clear() {
+        if(!this.ctx) return;
+
+        const color = parseInt(this.bgColor.replace("#", "0x"), 16),
+              r = ((color >> 16) & 255) / 255,
+              g = ((color >> 8) & 255) / 255,
+              b = (color & 255) / 255;
+
+        this.ctx.clearColor(r, g, b, 1.0);
         this.ctx.clear(this.ctx.COLOR_BUFFER_BIT);
+    }
+
+    draw() {
+        this.clear();
     
         this.ctx.useProgram(this.programInfo.program);
     

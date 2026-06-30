@@ -14,7 +14,7 @@ class ThreejsAnimation extends Animation {
                 seed = "random") {
         super(canvas, colors, colorsAlt, bgColor, name, file, description, seed, 'webgl');
 
-        // Create a WebGL renderer
+        // Create a WebGL renderergit
         this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas: canvas });
 
         // Set the size of the renderer to the size of the window
@@ -37,6 +37,12 @@ class ThreejsAnimation extends Animation {
 
     draw() {
         this.renderer.render(this.scene, this.camera);
+    }
+
+    clear(){
+        if(!this.renderer) return;
+        this.renderer.setClearColor(this.bgColor, 1);
+        this.renderer.clear(true, true, true);
     }
 
     resize(){
