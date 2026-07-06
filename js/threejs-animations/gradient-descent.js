@@ -4,9 +4,14 @@ const NAME = "3D visualization of gradient descent algorithms",
       FILE = "gradient-descent.js",
       DESC = `
 Three-dimensional visualization of the gradient descent-based optimizers.
-This version reuses the logic from the 2D animation while rendering the
-optimized function surface using Three.js.
+This version reuses the logic from the 
+[2D animation](https://mwydmuch.pl/animations?animation=gradient-descent).
 
+You can select the starting point by clicking/touching the canvas.
+Scroll or pinch to zoom, hold two fingers or the right mouse button
+to rotate.
+
+Uses Three.js
 Coded by me (Marek Wydmuch) in 2025.
 `;
 
@@ -19,7 +24,12 @@ const SURFACE_RESOLUTION = 96,
       MIN_CAMERA_RADIUS = 4,
       MAX_CAMERA_RADIUS = 40,
       MIN_CAMERA_PHI = 0.2,
-      MAX_CAMERA_PHI = Math.PI / 2 - 0.08;
+      MAX_CAMERA_PHI = Math.PI / 2 - 0.08,
+      VIEW_SURFACE = "function surface",
+      VIEW_ISOLINES = "isolines",
+      VIEW_BOTH = "surface and isolines",
+      ISOLINE_COUNT = 24,
+      ISOLINE_OFFSET = 0.035;
 
 class GradientDescent3D extends GradientDescent2D {
     constructor (canvas, colors, colorsAlt, bgColor,
@@ -36,7 +46,8 @@ class GradientDescent3D extends GradientDescent2D {
 
         // Create a WebGL renderer
         this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas: canvas, alpha: true });
-        this.renderer.setSize(canvas.width, canvas.height);
+        this.renderer.autoClear = false;
+        this.renderer.setSize(canvas.width, canvas.height, false);
 
         // Create a new scene
         this.scene = new THREE.Scene();
@@ -61,12 +72,17 @@ class GradientDescent3D extends GradientDescent2D {
 
         // Store references to 3D objects
         this.surfaceMesh = null;
+        this.isolineMesh = null;
         this.traceMeshes = [];
         this.optimizerMarkers = [];
+        this.optimumMarker = null;
+        this.starGeometry = this.createStarGeometry();
 
         // Store trace history for each optimizer
         this.traceHistory = [];
         this.maxTraceLength = 1000;
+        this.functionViewNames = [VIEW_SURFACE, VIEW_ISOLINES, VIEW_BOTH];
+        this.functionView = VIEW_BOTH;
 
         // Scene-space mapping for the currently selected objective.
         this.domainRange = 1;
@@ -81,9 +97,12 @@ class GradientDescent3D extends GradientDescent2D {
         this.cameraPhi = Math.PI / 3;
         this.autoRotateCamera = true;
         this.pointerState = null;
+        this.activePointers = new Map();
+        this.gestureState = null;
         this.suppressClickUntil = 0;
         this.raycaster = new THREE.Raycaster();
         this.pointerNdc = new THREE.Vector2();
+        this.initTextOverlay();
         this.bindCanvasControls();
         this.updateCameraPosition();
     }
@@ -137,11 +156,101 @@ class GradientDescent3D extends GradientDescent2D {
     }
 
     draw() {
+        this.updateTextOverlay();
+        this.renderer.clear();
         this.renderer.render(this.scene, this.camera);
+        if (this.textMesh) {
+            this.renderer.clearDepth();
+            this.renderer.render(this.textScene, this.textCamera);
+        }
     }
 
-    createSurface() {
-        // Remove old surface if exists
+    initTextOverlay() {
+        if (typeof document === "undefined" ||
+            !THREE.CanvasTexture ||
+            !THREE.MeshBasicMaterial ||
+            !THREE.OrthographicCamera ||
+            !THREE.PlaneGeometry) return;
+
+        this.textCanvas = document.createElement("canvas");
+        this.textCtx = this.textCanvas.getContext("2d");
+        if (!this.textCtx) return;
+
+        this.textScene = new THREE.Scene();
+        this.textCamera = new THREE.OrthographicCamera(0, 1, 1, 0, 0, 10);
+        this.textCamera.position.z = 1;
+        this.textTexture = new THREE.CanvasTexture(this.textCanvas);
+        this.textMaterial = new THREE.MeshBasicMaterial({
+            map: this.textTexture,
+            transparent: true,
+            depthTest: false,
+            depthWrite: false
+        });
+        this.textMesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), this.textMaterial);
+        this.textScene.add(this.textMesh);
+        this.resizeTextOverlay(this.canvas.width, this.canvas.height);
+    }
+
+    resizeTextOverlay(width, height) {
+        if (!this.textCanvas || !this.textCamera || !this.textMesh) return;
+
+        width = Math.max(1, width);
+        height = Math.max(1, height);
+        if (this.textCanvas.width !== width) this.textCanvas.width = width;
+        if (this.textCanvas.height !== height) this.textCanvas.height = height;
+
+        this.textCamera.left = 0;
+        this.textCamera.right = width;
+        this.textCamera.top = height;
+        this.textCamera.bottom = 0;
+        this.textCamera.updateProjectionMatrix();
+
+        this.textMesh.scale.set(width, height, 1);
+        this.textMesh.position.set(width / 2, height / 2, 0);
+    }
+
+    drawOverlayText(text, x, y) {
+        this.textCtx.strokeText(text, x, y);
+        this.textCtx.fillText(text, x, y);
+    }
+
+    updateTextOverlay() {
+        if (!this.textCtx || !this.textTexture || !this.func) return;
+
+        const width = this.canvas.width,
+              height = this.canvas.height;
+        this.resizeTextOverlay(width, height);
+
+        const ctx = this.textCtx;
+        ctx.clearRect(0, 0, width, height);
+        let textYOffset = this.drawLegend(ctx);
+
+        this.drawOptimizerLegend(ctx);
+
+        this.textTexture.needsUpdate = true;
+    }
+
+    createStarGeometry() {
+        if (!THREE.Shape || !THREE.ExtrudeGeometry) return null;
+
+        const shape = new THREE.Shape(),
+              outerRadius = 0.26,
+              innerRadius = 0.115;
+        shape.moveTo(0, -outerRadius);
+        for(let i = 1; i < 10; ++i) {
+            const radius = i % 2 === 0 ? outerRadius : innerRadius,
+                  angle = -Math.PI / 2 + i * Math.PI / 5;
+            shape.lineTo(Math.cos(angle) * radius, Math.sin(angle) * radius);
+        }
+        shape.closePath();
+
+        return new THREE.ExtrudeGeometry(shape, {
+            depth: 0.06,
+            bevelEnabled: false
+        });
+    }
+
+    clearFunctionMeshes() {
         if (this.surfaceMesh) {
             this.scene.remove(this.surfaceMesh);
             this.surfaceMesh.geometry.dispose();
@@ -149,6 +258,89 @@ class GradientDescent3D extends GradientDescent2D {
             this.surfaceMesh = null;
         }
 
+        if (this.isolineMesh) {
+            this.scene.remove(this.isolineMesh);
+            this.isolineMesh.geometry.dispose();
+            this.isolineMesh.material.dispose();
+            this.isolineMesh = null;
+        }
+    }
+
+    shouldDrawSurface() {
+        return this.functionView !== VIEW_ISOLINES;
+    }
+
+    shouldDrawIsolines() {
+        return this.functionView !== VIEW_SURFACE;
+    }
+
+    interpolatedIsolinePoint(a, b, level) {
+        const denom = b.z - a.z,
+              t = Math.abs(denom) < 1e-12 ? 0.5 : (level - a.z) / denom,
+              x = a.x + (b.x - a.x) * t,
+              y = a.y + (b.y - a.y) * t;
+        return this.pointToVector3(x, y, level, ISOLINE_OFFSET);
+    }
+
+    addIsolineIntersection(points, a, b, level) {
+        if (!isFinite(a.z) || !isFinite(b.z)) return;
+        if ((a.z < level && b.z >= level) || (b.z < level && a.z >= level)) {
+            points.push(this.interpolatedIsolinePoint(a, b, level));
+        }
+    }
+
+    createIsolines(valueGrid) {
+        const positions = [],
+              resolution = valueGrid.length - 1,
+              levels = this.getIsolineLevels(this.minFuncVal, this.maxFuncVal, ISOLINE_COUNT);
+
+        for(const level of levels) {
+            for(let i = 0; i < resolution; ++i) {
+                for(let j = 0; j < resolution; ++j) {
+                    const p00 = valueGrid[i][j],
+                          p10 = valueGrid[i + 1][j],
+                          p11 = valueGrid[i + 1][j + 1],
+                          p01 = valueGrid[i][j + 1],
+                          intersections = [];
+
+                    this.addIsolineIntersection(intersections, p00, p10, level);
+                    this.addIsolineIntersection(intersections, p10, p11, level);
+                    this.addIsolineIntersection(intersections, p11, p01, level);
+                    this.addIsolineIntersection(intersections, p01, p00, level);
+
+                    if (intersections.length === 2 || intersections.length === 4) {
+                        positions.push(
+                            intersections[0].x, intersections[0].y, intersections[0].z,
+                            intersections[1].x, intersections[1].y, intersections[1].z
+                        );
+                        if (intersections.length === 4) {
+                            positions.push(
+                                intersections[2].x, intersections[2].y, intersections[2].z,
+                                intersections[3].x, intersections[3].y, intersections[3].z
+                            );
+                        }
+                    }
+                }
+            }
+        }
+
+        if (positions.length === 0) return;
+
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+
+        const material = new THREE.LineBasicMaterial({
+            color: this.colors[0],
+            transparent: true,
+            opacity: 0.9
+        });
+        const LineClass = THREE.LineSegments || THREE.Line;
+        this.isolineMesh = new LineClass(geometry, material);
+        this.scene.add(this.isolineMesh);
+    }
+
+    createSurface() {
+        this.clearFunctionMeshes();
         if (!this.func) return;
 
         const resolution = SURFACE_RESOLUTION;
@@ -225,17 +417,23 @@ class GradientDescent3D extends GradientDescent2D {
         geometry.setIndex(indices);
         geometry.computeVertexNormals();
 
-        // Create material with transparency
-        const material = new THREE.MeshPhongMaterial({
-            vertexColors: true,
-            side: THREE.DoubleSide,
-            transparent: true,
-            opacity: 0.7,
-            shininess: 30
-        });
+        if (this.shouldDrawSurface()) {
+            const material = new THREE.MeshPhongMaterial({
+                vertexColors: true,
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: this.shouldDrawIsolines() ? 0.58 : 0.72,
+                shininess: 30
+            });
 
-        this.surfaceMesh = new THREE.Mesh(geometry, material);
-        this.scene.add(this.surfaceMesh);
+            this.surfaceMesh = new THREE.Mesh(geometry, material);
+            this.scene.add(this.surfaceMesh);
+        } else {
+            const material = new THREE.MeshPhongMaterial({ visible: false });
+            this.surfaceMesh = new THREE.Mesh(geometry, material);
+        }
+
+        if (this.shouldDrawIsolines()) this.createIsolines(valueGrid);
     }
 
     normalizeValue(value) {
@@ -270,9 +468,73 @@ class GradientDescent3D extends GradientDescent2D {
     }
 
     bindCanvasControls() {
+        if (this.canvas.style) this.canvas.style.touchAction = "none";
         this.canvas.addEventListener("contextmenu", (event) => event.preventDefault());
 
+        const eventToPointer = (event, moved = false) => ({
+            id: event.pointerId,
+            x: event.clientX,
+            y: event.clientY,
+            moved
+        });
+
+        const getGesturePointers = () => Array.from(this.activePointers.values()).slice(0, 2);
+
+        const getGestureMetrics = () => {
+            const pointers = getGesturePointers();
+            if (pointers.length < 2) return null;
+
+            const p1 = pointers[0],
+                  p2 = pointers[1],
+                  dx = p2.x - p1.x,
+                  dy = p2.y - p1.y;
+            return {
+                distance: Math.max(1, Math.sqrt(dx * dx + dy * dy)),
+                centerX: (p1.x + p2.x) / 2,
+                centerY: (p1.y + p2.y) / 2
+            };
+        };
+
+        const startGesture = () => {
+            const metrics = getGestureMetrics();
+            if (!metrics) return;
+
+            this.autoRotateCamera = false;
+            this.pointerState = null;
+            this.gestureState = {
+                distance: metrics.distance,
+                centerX: metrics.centerX,
+                centerY: metrics.centerY,
+                theta: this.cameraTheta,
+                phi: this.cameraPhi,
+                radius: this.cameraRadius
+            };
+            this.suppressClickUntil = Date.now() + 250;
+        };
+
+        const updateGesture = () => {
+            if (!this.gestureState || this.activePointers.size < 2) return false;
+
+            const metrics = getGestureMetrics();
+            if (!metrics) return false;
+
+            this.cameraTheta = this.gestureState.theta - (metrics.centerX - this.gestureState.centerX) * 0.006;
+            this.cameraPhi = this.gestureState.phi - (metrics.centerY - this.gestureState.centerY) * 0.006;
+            this.cameraRadius = this.gestureState.radius * this.gestureState.distance / metrics.distance;
+            this.suppressClickUntil = Date.now() + 250;
+            this.updateCameraPosition();
+            return true;
+        };
+
         this.canvas.addEventListener("pointerdown", (event) => {
+            if (event.pointerType === "touch") {
+                event.preventDefault();
+                this.activePointers.set(event.pointerId, eventToPointer(event));
+                if (this.canvas.setPointerCapture) this.canvas.setPointerCapture(event.pointerId);
+                if (this.activePointers.size >= 2) startGesture();
+                return;
+            }
+
             const mode = event.shiftKey ? "pan" : (event.button === 2 ? "rotate" : null);
             if (!mode) return;
 
@@ -289,6 +551,15 @@ class GradientDescent3D extends GradientDescent2D {
         });
 
         this.canvas.addEventListener("pointermove", (event) => {
+            if (this.activePointers.has(event.pointerId)) {
+                event.preventDefault();
+                const prevPointer = this.activePointers.get(event.pointerId),
+                      moved = prevPointer.moved ||
+                          Math.abs(event.clientX - prevPointer.x) + Math.abs(event.clientY - prevPointer.y) > 3;
+                this.activePointers.set(event.pointerId, eventToPointer(event, moved));
+                if (updateGesture()) return;
+            }
+
             if (!this.pointerState || this.pointerState.id !== event.pointerId) return;
 
             event.preventDefault();
@@ -313,6 +584,20 @@ class GradientDescent3D extends GradientDescent2D {
         });
 
         const endPointerAction = (event) => {
+            if (this.activePointers.has(event.pointerId)) {
+                const pointer = this.activePointers.get(event.pointerId),
+                      shouldSuppressClick = this.gestureState || pointer.moved;
+                this.activePointers.delete(event.pointerId);
+                if (this.canvas.releasePointerCapture) this.canvas.releasePointerCapture(event.pointerId);
+                if (this.activePointers.size < 2) {
+                    this.gestureState = null;
+                    if (shouldSuppressClick) this.suppressClickUntil = Date.now() + 250;
+                } else {
+                    startGesture();
+                }
+                return;
+            }
+
             if (!this.pointerState || this.pointerState.id !== event.pointerId) return;
             if (this.pointerState.moved) this.suppressClickUntil = Date.now() + 250;
             if (this.canvas.releasePointerCapture) this.canvas.releasePointerCapture(event.pointerId);
@@ -439,6 +724,39 @@ class GradientDescent3D extends GradientDescent2D {
         }
     }
 
+    clearOptimumMarker() {
+        if (!this.optimumMarker) return;
+
+        this.scene.remove(this.optimumMarker);
+        if (this.optimumMarker.material) this.optimumMarker.material.dispose();
+        this.optimumMarker = null;
+    }
+
+    updateOptimumMarker() {
+        this.clearOptimumMarker();
+        if (!this.func ||
+            !this.func.hasGlobalMin() ||
+            !this.starGeometry) return;
+
+        const globalMin = this.func.getGlobalMin(),
+              x = globalMin[0],
+              y = globalMin[1],
+              z = this.func.val(globalMin);
+        if (!isFinite(x) || !isFinite(y) || !isFinite(z) ||
+            isNaN(x) || isNaN(y) || isNaN(z)) return;
+
+        const material = new THREE.MeshPhongMaterial({
+            color: this.optimumColor,
+            emissive: this.optimumColor,
+            emissiveIntensity: 0.25,
+            shininess: 60
+        });
+        this.optimumMarker = new THREE.Mesh(this.starGeometry, material);
+        this.optimumMarker.rotation.x = -Math.PI / 2;
+        this.optimumMarker.position.copy(this.pointToVector3(x, y, z, TRACE_OFFSET * 2));
+        this.scene.add(this.optimumMarker);
+    }
+
     mouseAction(cords, event) {
         if (event !== "click") return;
         if (Date.now() < this.suppressClickUntil) return;
@@ -468,12 +786,13 @@ class GradientDescent3D extends GradientDescent2D {
 
         const width = this.canvas.width,
               height = this.canvas.height;
-        this.renderer.setSize(width, height);
+        this.renderer.setSize(width, height, false);
         this.camera.aspect = width / height;
         this.camera.updateProjectionMatrix();
 
         // Recreate surface
         this.createSurface();
+        this.updateOptimumMarker();
 
         // Reset trace history
         this.traceHistory = [];
@@ -486,18 +805,31 @@ class GradientDescent3D extends GradientDescent2D {
     }
 
     updateColors(colors, colorsAlt, bgColor){
-        this.colors = colors;
-        this.bgColor = bgColor;
-        this.mainColor = colors[0];
-        this.secColor = colors[3];
-        this.scene.background = new THREE.Color(bgColor);
+        super.updateColors(colors, colorsAlt, bgColor);
 
         // Recreate surface with new colors
-        if (this.func) this.createSurface();
+        if (this.func) {
+            this.createSurface();
+            this.updateOptimumMarker();
+        }
+    }
+
+    getSettings() {
+        const settings = super.getSettings().filter(setting => setting.prop !== "scale"),
+              insertIdx = settings.findIndex(setting => setting.prop === "selectStartingPoint");
+        settings.splice(insertIdx + 1, 0, {
+            prop: "functionView",
+            name: "function drawing",
+            icon: '<i class="fa-solid fa-paintbrush"></i>',
+            type: "select",
+            values: this.functionViewNames,
+            toCall: "resize"
+        });
+        return settings;
     }
 
     getCodeUrl(){
-        return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/js/threejs-animations/" + this.file;
+        return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/js/threejs-animations" + this.file;
     }
 }
 

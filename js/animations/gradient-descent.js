@@ -507,6 +507,7 @@ class GradientDescent extends Animation {
             ) {
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC, "random", contextType);
         this.colorsAlt = OPTIMIZER_COLORS;
+        this.optimumColor = OPTIMUM_COLOR;
         //this.funcNames = ["with saddle point", "BEALE", "Jennrich-Sampsonk", "Rosenbrock", "Styblinski-Tang"];
         this.funcNames = ["with saddle point", "smooth sharp minimum", "BEALE", "Rosenbrock", "Styblinski-Tang"];
         this.functionToOptimize = this.assignIfRandom(functionToOptimize, Utils.randomChoice(this.funcNames));
@@ -597,26 +598,57 @@ class GradientDescent extends Animation {
         }
         this.ctx.resetTransform();
 
-        this.resetFont();
-        let optimTextYOffset = this.textYOffset + 2 * this.lineHeight;
-        Utils.fillAndStrokeText(this.ctx, `Steps: ${this.frame}`, this.textXOffset, optimTextYOffset);
-        optimTextYOffset += this.lineHeight;
-        Utils.fillAndStrokeText(this.ctx, "Optimizers:", this.textXOffset, optimTextYOffset);
-        for(let i = 0; i < this.optims.length; ++i){
-            if(!this.optims[i].enabled) continue;
-            optimTextYOffset += this.lineHeight;
-            this.ctx.fillStyle = this.colorsAlt[i];
-            const x = this.formatNum(this.optims[i].w[0]),
-                  y = this.formatNum(this.optims[i].w[1]),
-                  text = `${this.optims[i].getName()}: f([${x}, ${y}]) = ${this.formatNum(this.func.val([x, y]))}`;
-            Utils.fillAndStrokeText(this.ctx, text, this.textXOffset + 16, optimTextYOffset);
-            Utils.fillCircle(this.ctx, this.textXOffset + 3, optimTextYOffset - 4, 3, this.colorsAlt[i]);
-        }
+        this.drawOptimizerLegend();
 
         if (this.autoRestart && this.frame >= this.autoRestartSteps){
             this.start = null;
             this.resize();
         }
+    }
+
+    drawOptimizerLegend(ctx = this.ctx, optimTextYOffset = this.textYOffset + 2 * this.lineHeight) {
+        this.resetFont(ctx);
+        Utils.fillAndStrokeText(ctx, `Steps: ${this.frame}`, this.textXOffset, optimTextYOffset);
+        optimTextYOffset += this.lineHeight;
+        Utils.fillAndStrokeText(ctx, "Optimizers:", this.textXOffset, optimTextYOffset);
+        for(let i = 0; i < this.optims.length; ++i){
+            if(!this.optims[i].enabled) continue;
+            optimTextYOffset += this.lineHeight;
+            ctx.fillStyle = this.colorsAlt[i];
+            const x = this.formatNum(this.optims[i].w[0]),
+                  y = this.formatNum(this.optims[i].w[1]),
+                  text = `${this.optims[i].getName()}: f([${x}, ${y}]) = ${this.formatNum(this.func.val([x, y]))}`;
+            Utils.fillAndStrokeText(ctx, text, this.textXOffset + 16, optimTextYOffset);
+            Utils.fillCircle(ctx, this.textXOffset + 3, optimTextYOffset - 4, 3, this.colorsAlt[i]);
+        }
+
+        return optimTextYOffset;
+    }
+
+    getIsolineLevels(minVal, maxVal, count = 29) {
+        const levels = [];
+        if(!isFinite(minVal) || !isFinite(maxVal) || minVal === maxVal) return levels;
+        if(minVal > maxVal) [minVal, maxVal] = [maxVal, minVal];
+
+        if(this.func.hasGlobalMin()) {
+            const shiftVal = this.func.val(this.func.getGlobalMin()),
+                  exp = this.func.getIsolineExp();
+            let delta = this.func.getIsolineStart();
+
+            while(shiftVal + delta < maxVal && levels.length < count * 3) {
+                const level = shiftVal + delta;
+                if(level > minVal && level < maxVal) levels.push(level);
+                delta *= exp;
+                if(!isFinite(delta) || delta <= 0 || exp <= 1) break;
+            }
+
+            if(levels.length > 0) return levels;
+        }
+
+        for(let i = 1; i <= count; ++i) {
+            levels.push(minVal + (maxVal - minVal) * i / (count + 1));
+        }
+        return levels;
     }
 
     drawFunction() {
@@ -632,8 +664,7 @@ class GradientDescent extends Animation {
               centerX = width / 2,
               centerY = height / 2,
               funcScale = this.func.getScale(),
-              visibleRange = funcScale / this.scale,
-              maxVisibleRange = funcScale / 0.5;
+              visibleRange = funcScale / this.scale;
         this.drawScale = Math.min(width, height) / funcScale / 2 * this.scale;
         this.ctx.fillStyle = this.colors[0];
         this.ctx.strokeStyle = this.bgColor;
@@ -641,33 +672,9 @@ class GradientDescent extends Animation {
 
         // Create a visualization of the function
         let isobands = new Array(width * height);
-        let isolines, exp, plusVal, shiftVal = 0;
-
-        // Decide on a scale
-        if(this.func.hasGlobalMin()) {
-            shiftVal = this.func.val(this.func.getGlobalMin());
-            isolines = [0, this.func.getIsolineStart()];
-            exp = this.func.getIsolineExp();
-            plusVal = 0;
-        } else {
-            shiftVal = 0;
-            const vals = [
-                    this.func.val([0, 0]),
-                    this.func.val([maxVisibleRange, 0]),
-                    this.func.val([0, maxVisibleRange]),
-                    this.func.val([-maxVisibleRange, 0]),
-                    this.func.val([0, -maxVisibleRange]),
-                    this.func.val([maxVisibleRange, maxVisibleRange]),
-                    this.func.val([-maxVisibleRange, -maxVisibleRange]),
-                    this.func.val([maxVisibleRange, -maxVisibleRange]),
-                    this.func.val([-maxVisibleRange, maxVisibleRange]),
-                  ],
-                  min = Math.min(...vals),
-                  max = Math.max(...vals);
-            isolines = [min];
-            exp = 1;
-            plusVal = (max - min) / 29;
-        }
+        let values = new Array(width * height),
+            minVal = Infinity,
+            maxVal = -Infinity;
 
         // Very simple (but fast!) approach to draw isolines (my simplified version of the marching squares algorithm)
         for(let i = 0; i < width; ++i) {
@@ -675,21 +682,32 @@ class GradientDescent extends Animation {
                 const x = (i - centerX) / this.drawScale, y = -(j - centerY) / this.drawScale,
                       val = this.func.val([x, y]),
                       idx = i + j * width;
-
-                while(val > shiftVal + isolines[isolines.length - 1]) isolines.push(isolines[isolines.length - 1] * exp + plusVal);
-                for(let k = 1; k < isolines.length; ++k) {
-                    if(val < shiftVal + isolines[k]) {
-                        isobands[idx] = k - 1;
-                        break;
-                    }
+                values[idx] = val;
+                if(isFinite(val)) {
+                    minVal = Math.min(minVal, val);
+                    maxVal = Math.max(maxVal, val);
                 }
             }
         }
 
+        const isolines = this.getIsolineLevels(minVal, maxVal);
+        for(let idx = 0; idx < values.length; ++idx) {
+            const val = values[idx];
+            let band = isolines.length;
+            for(let k = 0; k < isolines.length; ++k) {
+                if(val < isolines[k]) {
+                    band = k;
+                    break;
+                }
+            }
+            isobands[idx] = band;
+        }
+
         // Calculate colors for the isolines
+        const bandsCount = isolines.length + 1;
         let isolinesColors = [];
-        for(let i = 0; i < isolines.length; ++i){
-            isolinesColors.push(Utils.lerpColorHex(this.mainColor, this.secColor, (i + 1) / (isolines.length + 1)));
+        for(let i = 0; i < bandsCount; ++i){
+            isolinesColors.push(Utils.lerpColorHex(this.mainColor, this.secColor, (i + 1) / (bandsCount + 1)));
         }
 
         // Draw the isolines
@@ -723,44 +741,36 @@ class GradientDescent extends Animation {
             if(i !== 0) Utils.fillAndStrokeText(this.ctx, (i).toFixed(labelsDist < 0.1 ? 2 : 1), 10, centerY - i * this.drawScale);
         }
 
-        this.functionImageData = this.ctx.getImageData(0, 0, width, height);
-        this.functionImageData.drawScale = this.drawScale;
-        this.functionImageData.scale = this.scale;
-    }
-
-    drawLegend() {
-        const width = this.canvas.width,
-              height = this.canvas.height,
-              centerX = width / 2,
-              centerY = height / 2;
-
-        this.textYOffset = 22;
-        this.textXOffset = 50;
-        this.resetFont();
-
-        Utils.fillAndStrokeText(this.ctx, this.func.getName(), this.textXOffset, this.textYOffset);
-        if(this.func.hasGlobalMin()) {
-            this.textYOffset += this.lineHeight;
-            const globalMin = this.func.getGlobalMin();
-            Utils.fillAndStrokeText(this.ctx, `Optimum: f(x*) = ${this.func.val(globalMin).toFixed(this.rounding)}, at x* = [${globalMin[0]}, ${globalMin[1]}]`, this.textXOffset, this.textYOffset, 2);            
-        }
-
-        this.textYOffset += this.lineHeight;
-        Utils.fillAndStrokeText(this.ctx, `Starting point: x0 = [${this.start[0].toFixed(this.rounding)}, ${this.start[1].toFixed(this.rounding)}], f(x0) = ${this.func.val(this.start).toFixed(this.rounding)}`, this.textXOffset, this.textYOffset);
-        
         if(this.func.hasGlobalMin()){
-            // Draw a star at the global minimum
             const globalMin = this.func.getGlobalMin(),
                   starX = centerX + globalMin[0] * this.drawScale,
                   starY = centerY - globalMin[1] * this.drawScale;
-            this.ctx.fillStyle = OPTIMUM_COLOR;
+            this.ctx.fillStyle = this.optimumColor;
             this.ctx.beginPath();
             Utils.pathStar(this.ctx, starX, starY, 7, 3, 5);
             this.ctx.fill();
             this.ctx.stroke();
         }
 
-        this.imageData = this.ctx.getImageData(0, 0, width, height);
+        this.functionImageData = this.ctx.getImageData(0, 0, width, height);
+        this.functionImageData.drawScale = this.drawScale;
+        this.functionImageData.scale = this.scale;
+    }
+
+    drawLegend(ctx = this.ctx) {
+        this.textYOffset = 22;
+        this.textXOffset = 50;
+        this.resetFont(ctx);
+
+        Utils.fillAndStrokeText(ctx, this.func.getName(), this.textXOffset, this.textYOffset);
+        if(this.func.hasGlobalMin()) {
+            this.textYOffset += this.lineHeight;
+            const globalMin = this.func.getGlobalMin();
+            Utils.fillAndStrokeText(ctx, `Optimum: f(x*) = ${this.func.val(globalMin).toFixed(this.rounding)}, at x* = [${globalMin[0]}, ${globalMin[1]}]`, this.textXOffset, this.textYOffset, 2);
+        }
+
+        this.textYOffset += this.lineHeight;
+        Utils.fillAndStrokeText(ctx, `Starting point: x0 = [${this.start[0].toFixed(this.rounding)}, ${this.start[1].toFixed(this.rounding)}], f(x0) = ${this.func.val(this.start).toFixed(this.rounding)}`, this.textXOffset, this.textYOffset);
     }
 
     mouseAction(cords, event) {
@@ -771,6 +781,8 @@ class GradientDescent extends Animation {
     }
     
     resize() {
+        super.resize();
+        
         this.frame = 0;
 
         // Create the function to optimize 
@@ -798,6 +810,8 @@ class GradientDescent extends Animation {
 
         // Draw a legend
         this.drawLegend();
+
+        this.imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
 
         // Set the optimizers
         for(let o of this.optims) o.init(this.start);

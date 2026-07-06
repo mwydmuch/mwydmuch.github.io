@@ -262,6 +262,17 @@ module.exports = {
         }
     },
 
+    pathStar(ctx, x, y, outerRadius, innerRadius, points = 5) {
+        const angleStep = Math.PI / points;
+        ctx.moveTo(x, y - outerRadius);
+        for(let i = 1; i < points * 2; ++i) {
+            const radius = i % 2 === 0 ? outerRadius : innerRadius,
+                  angle = -Math.PI / 2 + i * angleStep;
+            ctx.lineTo(x + Math.cos(angle) * radius, y + Math.sin(angle) * radius);
+        }
+        ctx.closePath();
+    },
+
     pathCircle(ctx, x, y, radius){
         ctx.moveTo(x + radius, y);
         ctx.arc(x, y, radius, 0, 2 * Math.PI, false);

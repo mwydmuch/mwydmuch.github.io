@@ -62,17 +62,17 @@ class Animation {
         this.debug = false;
     }
 
-    resetFont(){
-        if(!this.ctx) return;
+    resetFont(ctx = this.ctx){
+        if(!ctx) return;
 
         // Reset text settings
-        this.ctx.font = '14px sans-serif';
-        //this.ctx.font = '14px monospace';
-        this.ctx.lineWidth = 2;
-        this.ctx.textAlign = "left";
-        this.ctx.textBaseline = "alphabetic";        
-        this.ctx.fillStyle = this.colors[0];
-        this.ctx.strokeStyle = this.bgColor;
+        ctx.font = '14px sans-serif';
+        //ctx.font = '14px monospace';
+        ctx.lineWidth = 2;
+        ctx.textAlign = "left";
+        ctx.textBaseline = "alphabetic";
+        ctx.fillStyle = this.colors[0];
+        ctx.strokeStyle = this.bgColor;
         this.lineHeight = 20;
     }
 
