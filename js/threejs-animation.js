@@ -14,11 +14,11 @@ class ThreejsAnimation extends Animation {
                 seed = "random") {
         super(canvas, colors, colorsAlt, bgColor, name, file, description, seed, 'webgl');
 
-        // Create a WebGL renderergit
+        // Create a WebGL renderer
         this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas: canvas });
 
         // Set the size of the renderer to the size of the window
-        this.renderer.setSize(canvas.width, canvas.height);
+        this.renderer.setSize(canvas.width, canvas.height, false);
         
         // Create a new scene
         this.scene = new THREE.Scene();
@@ -49,7 +49,7 @@ class ThreejsAnimation extends Animation {
         super.resize();
         const width = this.canvas.width,
               height = this.canvas.height;
-        this.renderer.setSize(width, height);
+        this.renderer.setSize(width, height, false);
         this.camera.aspect = width / height;
         this.camera.updateProjectionMatrix();
     }

@@ -76,7 +76,7 @@ class ShaderAnimation extends ThreejsAnimation {
     }
 
     getCodeUrl(){
-        return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/js/shader-animations" + this.file;
+        return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/js/shader-animations/" + this.file;
     }
 
     getSettings() {
