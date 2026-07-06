@@ -16,6 +16,8 @@ The interesting challenge related to this animation was
 to efficiently visualize the optimized function. 
 This is done by using simplified version of the marching squares algorithm.
 
+This animation has also a [3D version](https://mwydmuch.pl/animations?animation=gradient-descent-(3D)).
+
 Uses only Canvas API.
 Coded by me (Marek Wydmuch) in 2021.
 `;
@@ -23,7 +25,8 @@ Coded by me (Marek Wydmuch) in 2021.
 const Animation = require("../animation");
 const Utils = require("../utils");
 
-const OPTIMIZER_COLORS = ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#56B4E9", "#8C564B", "#6A3D9A"];
+const OPTIMIZER_COLORS = ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#56B4E9", "#8C564B", "#6A3D9A"],
+      OPTIMUM_COLOR = "#FFD700";
 
 class EtaScheduler {
     constructor(etaScale = 1, decay = 0.95, stepSize = 100) {
@@ -636,7 +639,7 @@ class GradientDescent extends Animation {
         this.ctx.strokeStyle = this.bgColor;
         this.ctx.font = '12px sans-serif';
 
-        // Create visualization of the function
+        // Create a visualization of the function
         let isobands = new Array(width * height);
         let isolines, exp, plusVal, shiftVal = 0;
 
@@ -666,7 +669,7 @@ class GradientDescent extends Animation {
             plusVal = (max - min) / 29;
         }
 
-        // Very simple (but fast!) approach to draw the isolines (my simplified version of the marching squares algorithm)
+        // Very simple (but fast!) approach to draw isolines (my simplified version of the marching squares algorithm)
         for(let i = 0; i < width; ++i) {
             for (let j = 0; j < height; ++j) {
                 const x = (i - centerX) / this.drawScale, y = -(j - centerY) / this.drawScale,
@@ -739,12 +742,24 @@ class GradientDescent extends Animation {
         if(this.func.hasGlobalMin()) {
             this.textYOffset += this.lineHeight;
             const globalMin = this.func.getGlobalMin();
-            Utils.fillAndStrokeText(this.ctx, `Optimum: f(x*) = ${this.func.val(globalMin).toFixed(this.rounding)}, at x* = [${globalMin[0]}, ${globalMin[1]}]`, this.textXOffset, this.textYOffset, 2);
-            Utils.fillCircle(this.ctx, centerX + globalMin[0] * this.drawScale, centerY + -globalMin[1] * this.drawScale, 2, this.colors[0]);
+            Utils.fillAndStrokeText(this.ctx, `Optimum: f(x*) = ${this.func.val(globalMin).toFixed(this.rounding)}, at x* = [${globalMin[0]}, ${globalMin[1]}]`, this.textXOffset, this.textYOffset, 2);            
         }
 
         this.textYOffset += this.lineHeight;
         Utils.fillAndStrokeText(this.ctx, `Starting point: x0 = [${this.start[0].toFixed(this.rounding)}, ${this.start[1].toFixed(this.rounding)}], f(x0) = ${this.func.val(this.start).toFixed(this.rounding)}`, this.textXOffset, this.textYOffset);
+        
+        if(this.func.hasGlobalMin()){
+            // Draw a star at the global minimum
+            const globalMin = this.func.getGlobalMin(),
+                  starX = centerX + globalMin[0] * this.drawScale,
+                  starY = centerY - globalMin[1] * this.drawScale;
+            this.ctx.fillStyle = OPTIMUM_COLOR;
+            this.ctx.beginPath();
+            Utils.pathStar(this.ctx, starX, starY, 7, 3, 5);
+            this.ctx.fill();
+            this.ctx.stroke();
+        }
+
         this.imageData = this.ctx.getImageData(0, 0, width, height);
     }
 
@@ -775,16 +790,16 @@ class GradientDescent extends Animation {
             || this.functionImageData.scale !== this.scale))
             this.functionImageData = null;
 
-        // Select new starting point
+        // Select a new starting point
         if(this.start === null) this.start = this.func.getStartPoint();
 
-        // Draw function using isolines
+        // Draw the function using isolines
         this.drawFunction();
 
-        // Draw legend
+        // Draw a legend
         this.drawLegend();
 
-        // Set optimizers
+        // Set the optimizers
         for(let o of this.optims) o.init(this.start);
     }
 
