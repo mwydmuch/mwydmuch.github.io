@@ -1,11 +1,10 @@
 'use strict';
 
-const NAME = "perlin noise flow grid",
+const NAME = "perlin noise grid",
       FILE = "perlin-noise-grid.js",
       TAGS = ["framerate-independent", "2d", "perlin noise", "grid"],
       DESC = `
-Particles spawned on a grid drift along a Perlin noise flow field, 
-leaving streaks that reveal the underlying noise pattern.
+Grid of squares or circles with size driven by animated Perlin noise.
 
 Uses only Canvas API.
 Coded by me (Marek Wydmuch) in 2025.
@@ -17,96 +16,85 @@ const Utils = require("../utils");
 class PerlinNoiseGrid extends Animation {
     constructor(canvas, colors, colorsAlt, bgColor,
                 cellSize = 12,
-                cellStyle = "square",
+                cellPadding = 1,
+                cellStyle = "random",
                 noiseScale = 0.002,
                 noiseSpeed = {x: "random", y: "random", z: 1}
             ) {
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
-        this.pointsDensity = pointsDensity;
-        this.drawPoints = drawPoints;
-        this.maxPointsInNode = maxPointsInNode;
-        this.noiseThreshold = noiseThreshold;
-        this.drawLeafNodes = drawLeafNode;
 
+        this.cellSize = cellSize;
+        this.cellPadding = cellPadding;
+        this.cellStyles = ["square", "circle"];
+        this.cellStyle = this.assignIfRandom(cellStyle, Utils.randomChoice(this.cellStyles));
         this.noiseScale = noiseScale;
         this.noiseSpeed = noiseSpeed;
-        this.noisePos = {x: 0, y: 0, z: 0};
         this.noiseSpeed.x = this.assignIfRandom(this.noiseSpeed.x, Utils.round(Utils.randomRange(-1, 1), 1));
         this.noiseSpeed.y = this.assignIfRandom(this.noiseSpeed.y, Utils.round(Utils.randomRange(-1, 1), 1));
 
-        this.minNodeSize = 4;
-
-        this.width = 0;
-        this.height = 0;
+        this.gridCellsWidth = 0;
+        this.gridCellsHeight = 0;
+        this.gridWidth = 0;
+        this.gridHeight = 0;
         this.noisePos = {x: 0, y: 0, z: 0};
     }
 
-    update(elapsed) {
-        this.time += elapsed / 1000;
-        ++this.frame;
-        let updates = 1,
-            particlesSpeed = this.particlesSpeed;
+    update(elapsedMs) {
+        const elapsedSec = super.update(elapsedMs);
+        this.noisePos.x += this.noiseSpeed.x * elapsedSec * 10;
+        this.noisePos.y += this.noiseSpeed.y * elapsedSec * 10;
+        this.noisePos.z += this.noiseSpeed.z * elapsedSec * 0.05;
+    }
 
-        while(particlesSpeed > 1.0){
-            particlesSpeed /= 2;
-            updates *= 2;
-        }
+    drawSquareCell(x, y, size) {
+        this.ctx.fillRect(x - size / 2, y - size / 2, size, size);
+    }
 
-        for (let p of this.particles) {
-            p.prevX = p.x;
-            p.prevY = p.y;
-        }
+    drawCircleCell(x, y, size) {
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, size / 2, 0, 2 * Math.PI, false);
+        this.ctx.fill();
+    }
 
-        for(let i = 0; i < updates; ++i) {
-            for (let p of this.particles) {
-                const angle = this.noise.perlin2(p.x * this.noiseScale, p.y * this.noiseScale) * 2 * Math.PI / this.noiseScale;
-                p.x += Math.cos(angle) * p.speed * particlesSpeed;
-                p.y += Math.sin(angle) * p.speed * particlesSpeed;
+    draw() {
+        this.clear();
+
+        const offsetX = -(this.gridWidth - this.canvas.width) / 2,
+              offsetY = -(this.gridHeight - this.canvas.height) / 2,
+              maxCellSize = Math.max(0, this.cellSize - 2 * this.cellPadding),
+              drawCell = this.cellStyle === "square" ? this.drawSquareCell : this.drawCircleCell;
+
+        for(let y = 0; y < this.gridCellsHeight; ++y) {
+            const cellY = offsetY + y * this.cellSize + this.cellSize / 2;
+            for(let x = 0; x < this.gridCellsWidth; ++x) {
+                const cellX = offsetX + x * this.cellSize + this.cellSize / 2,
+                      noiseVal = this.noise.perlin3(
+                          (cellX + this.noisePos.x) * this.noiseScale,
+                          (cellY + this.noisePos.y) * this.noiseScale,
+                          this.noisePos.z),
+                      noiseNorm = Utils.clip(Utils.remap(noiseVal, -1, 1, 0, 1), 0, 1),
+                      size = maxCellSize * noiseNorm;
+
+                if(size > 0.1) {
+                    this.ctx.fillStyle = Utils.lerpColorHex(this.colorsAlt[0], this.colors[0], noiseNorm);
+                    drawCell.call(this, cellX, cellY, size);
+                }
             }
         }
     }
 
-    draw() {
-        this.fadeOut(this.fadingSpeed);
-
-        for(let p of this.particles){
-            // To make it look smooth even at high speeds, draw a line between the previous and new positions instead of a point
-            // Drawing a line also results with a better antialiasing
-            Utils.drawLine(this.ctx, p.prevX, p.prevY, p.x, p.y, 2 * p.radius * this.particlesSize, p.color); 
-        }
-        this.imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-    }
-
     restart(){
+        this.noisePos = {x: 0, y: 0, z: 0};
         super.restart();
-        this.clear();
-        this.particles = []
-        this.width = this.canvas.width;
-        this.height = this.canvas.height;
-        this.spawnParticles(0, 0, this.width, this.height);
     }
 
     resize() {
-        this.clear();
-        if(this.imageData !== null) this.ctx.putImageData(this.imageData, 0, 0);
+        super.resize();
 
-        // Add particles to the new parts of the canvas.
-        const divWidth = this.canvas.width - this.width,
-              divHeight = this.canvas.height - this.height;
-
-        if(divWidth > 0) this.spawnParticles(this.width, 0, divWidth, this.height);
-        if(divHeight > 0) this.spawnParticles(0, this.height, this.width, divHeight);
-        if(divWidth > 0 || divHeight > 0) this.spawnParticles(this.width, this.height, divWidth, divHeight);
-
-        this.width = this.canvas.width;
-        this.height = this.canvas.height;
-
-        // Remove particles that are out of bounds of the new canvas to improve performance.
-        const width = this.width,
-              height = this.height;
-        this.particles = this.particles.filter(function(p){
-            return !(p.x < 0 || p.x > width || p.y < 0 || p.y > height);
-        });
+        this.gridCellsWidth = Math.ceil(this.canvas.width / this.cellSize);
+        this.gridCellsHeight = Math.ceil(this.canvas.height / this.cellSize);
+        this.gridWidth = this.gridCellsWidth * this.cellSize;
+        this.gridHeight = this.gridCellsHeight * this.cellSize;
     }
 
     updateColors(colors, colorsAlt, bgColor) {
@@ -115,11 +103,13 @@ class PerlinNoiseGrid extends Animation {
     }
 
     getSettings() {
-        return [{prop: "noiseScale", type: "float", step: 0.001, min: 0.001, max: 0.01, toCall: "restart"},
-                {prop: "particlesDensity", type: "float", step: 0.0001, min: 0.0001, max: 0.005, toCall: "restart"},
-                {prop: "particlesSpeed", type: "float", min: 0.25, max: 32},
-                {prop: "cellSize", type: "float", step: 0.1, min: 1, max: 4},
-                {prop: "fadingSpeed", type: "float", step: 0.0001, min: 0, max: 0.01},
+        return [{prop: "cellSize", type: "int", min: 4, max: 64, toCall: "resize"},
+                {prop: "cellPadding", type: "float", step: 0.1, min: 0, max: 8},
+                {prop: "cellStyle", type: "select", values: this.cellStyles},
+                {prop: "noiseScale", type: "float", step: 0.0001, min: 0.0005, max: 0.0125},
+                {prop: "noiseSpeed.x", type: "float", step: 0.1, min: -10, max: 10},
+                {prop: "noiseSpeed.y", type: "float", step: 0.1, min: -10, max: 10},
+                {prop: "noiseSpeed.z", type: "float", step: 0.1, min: -10, max: 10},
                 this.getSeedSettings()];
     }
 }
