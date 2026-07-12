@@ -1,6 +1,6 @@
 'use strict';
 
-const NAME = "perlin noise grid",
+const NAME = "Perlin noise grid",
       FILE = "perlin-noise-grid.js",
       TAGS = ["framerate-independent", "2d", "perlin noise", "grid"],
       DESC = `

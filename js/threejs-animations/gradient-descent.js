@@ -807,6 +807,9 @@ class GradientDescent3D extends GradientDescent2D {
     updateColors(colors, colorsAlt, bgColor){
         super.updateColors(colors, colorsAlt, bgColor);
 
+        if(this.scene) this.scene.background = new THREE.Color(bgColor);
+        if(this.renderer) this.renderer.setClearColor(bgColor, 1);
+
         // Recreate surface with new colors
         if (this.func) {
             this.createSurface();

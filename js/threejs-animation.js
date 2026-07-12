@@ -56,7 +56,8 @@ class ThreejsAnimation extends Animation {
 
     updateColors(colors, colorsAlt, bgColor){
         super.updateColors(colors, colorsAlt, bgColor);
-        this.scene.background = new THREE.Color(bgColor);
+        if(this.scene) this.scene.background = new THREE.Color(bgColor);
+        if(this.renderer) this.renderer.setClearColor(bgColor, 1);
     }
 
     getCodeUrl(){

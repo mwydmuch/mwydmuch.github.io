@@ -26,7 +26,7 @@ const ThreeNPlusOne = require("./animations/3n+1"),
       ParticlesAndAttractors = require("./animations/particles-and-attractors"),
       ParticlesVortex = require("./animations/particles-vortex"),
       ParticlesWaves = require("./animations/particles-waves"),
-      //PerlinNoiseGrid = require("./animations/perlin-noise-grid"),
+      PerlinNoiseGrid = require("./animations/perlin-noise-grid"),
       PerlinNoiseParticles = require("./animations/perlin-noise-particles"),
       Pong = require("./animations/pong"),
       RockPaperScissorsAutomata = require("./animations/rock-paper-scissors-automata"),
@@ -45,11 +45,13 @@ const ThreeNPlusOne = require("./animations/3n+1"),
       TestShader = require("./shader-animations/test"),
       //Fractals = require("./shader-animations/fractals"),
       FractionalBrownianMotion = require("./shader-animations/fbm"),
+      PerlinNoise = require("./shader-animations/perlin-noise"),
+      PerlinNoiseGridShader = require("./shader-animations/perlin-noise-grid"),
 
-      
       // Three.js animations
       //Cubes = require("./threejs-animations/cubes"),
       //EvaporatingCubes = require("./threejs-animations/evaporating-cubes"),
+      ModelsShadersGallery = require("./threejs-animations/model-shaders-gallery"),
       TestThreejs = require("./threejs-animations/test"),
       GradientDescent3D = require("./threejs-animations/gradient-descent");
       
@@ -169,16 +171,18 @@ if(canvas){
         {class: GameOfLifeIsometric, name: "isometric game of life"},
         {class: GlitchAutomata, name: "glitch automata", startAnimation: false},  // Disable as a start animation, as it may not be visually pleasing for everyone
         {class: GradientDescent, name: "gradient descent"},
-        {class: GradientDescent3D, name: "gradient descent (3D)", hide: true}, // Disable till finished, as it's not that interesting in its current state
+        {class: GradientDescent3D, name: "gradient descent (3D)"},
         {class: Matrix, name: "matrix rain"},
         {class: MLinPL, name: "ml in pl"},
+        {class: ModelsShadersGallery, name: "models and shaders gallery (3D)", startAnimation: false, hide: true},
         {class: Network, name: "network"},
         //{class: NeuralNetwork, name: "neural network"},  // Disabled till updated
         {class: NoisyLines, name: "noisy lines"},
         {class: ParticlesAndAttractors, name: "particles and attractors"},
         {class: ParticlesVortex, name: "particles vortex"},
-        {class: ParticlesWaves, name: "particles waves"},  // Disabled till updated
-        //{class: PerlinNoiseGrid, name: "perlin noise grid"},
+        {class: ParticlesWaves, name: "particles waves"},
+        {class: PerlinNoiseGrid, name: "perlin noise grid"},
+        {class: PerlinNoiseGridShader, name: "perlin noise grid (shader)"},
         {class: PerlinNoiseParticles, name: "perlin noise particles"},
         {class: Pong, name: "pong"},
         {class: RockPaperScissorsAutomata, name: "rock-paper-scissors automata"},
@@ -248,6 +252,25 @@ if(canvas){
         }, resizeEndDelayMs);
     }
 
+    function getAvailableCanvasSize() {
+        return {
+            width: Math.max(1, container.parentElement.offsetWidth - canvas.offsetLeft),
+            height: Math.max(1, container.parentElement.offsetHeight - canvas.offsetTop)
+        };
+    }
+
+    function updateCanvasDisplaySize(newWidth, newHeight) {
+        canvas.style.width = newWidth + "px";
+        canvas.style.height = newHeight + "px";
+    }
+
+    function updateFixedCanvasDisplaySize(availableWidth, availableHeight) {
+        const scale = Math.min(1, availableWidth / fixedWidth, availableHeight / fixedHeight),
+              displayWidth = Math.max(1, Math.round(fixedWidth * scale)),
+              displayHeight = Math.max(1, Math.round(fixedHeight * scale));
+        updateCanvasDisplaySize(displayWidth, displayHeight);
+    }
+
     function updateCanvasSize(newWidth, newHeight) {
         if(canvas.width === newWidth && canvas.height === newHeight) return false;
 
@@ -275,13 +298,16 @@ if(canvas){
 
     function checkResize() {
         let resized = false;
+        const availableSize = getAvailableCanvasSize();
 
         // Detect the change of container's size for smooth resizing
         if(resolution === "fit"){
-            width = Math.max(container.parentElement.offsetWidth - canvas.offsetLeft);
-            height = Math.max(container.parentElement.offsetHeight - canvas.offsetTop);
+            width = availableSize.width;
+            height = availableSize.height;
+            updateCanvasDisplaySize(width, height);
             resized = updateCanvasSize(width, height);
         } else {
+            updateFixedCanvasDisplaySize(availableSize.width, availableSize.height);
             resized = updateCanvasSize(fixedWidth, fixedHeight);
         }
 
