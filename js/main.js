@@ -51,7 +51,7 @@ const ThreeNPlusOne = require("./animations/3n+1"),
       // Three.js animations
       //Cubes = require("./threejs-animations/cubes"),
       //EvaporatingCubes = require("./threejs-animations/evaporating-cubes"),
-      ModelsShadersGallery = require("./threejs-animations/model-shaders-gallery"),
+      //ModelsShadersGallery = require("./threejs-animations/model-shaders-gallery"),
       TestThreejs = require("./threejs-animations/test"),
       GradientDescent3D = require("./threejs-animations/gradient-descent");
       
@@ -174,7 +174,7 @@ if(canvas){
         {class: GradientDescent3D, name: "gradient descent (3D)"},
         {class: Matrix, name: "matrix rain"},
         {class: MLinPL, name: "ml in pl"},
-        {class: ModelsShadersGallery, name: "models and shaders gallery (3D)", startAnimation: false, hidden: true},
+        //{class: ModelsShadersGallery, name: "models and shaders gallery (3D)", startAnimation: false, hidden: true},
         {class: Network, name: "network"},
         //{class: NeuralNetwork, name: "neural network"},  // Disabled till updated
         {class: NoisyLines, name: "noisy lines"},
