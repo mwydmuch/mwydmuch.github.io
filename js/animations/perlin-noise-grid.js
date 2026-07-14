@@ -5,6 +5,8 @@ const NAME = "Perlin noise grid",
       TAGS = ["framerate-independent", "2d", "perlin noise", "grid"],
       DESC = `
 Grid of squares or circles with size driven by animated Perlin noise.
+Optional sigmoid function with controlable alpha 
+can be applied to the noise to make the size distribution more extreme.
 
 Uses only Canvas API.
 Coded by me (Marek Wydmuch) in 2025.
@@ -16,10 +18,12 @@ const Utils = require("../utils");
 class PerlinNoiseGrid extends Animation {
     constructor(canvas, colors, colorsAlt, bgColor,
                 cellSize = 12,
-                cellPadding = 1,
+                cellPadding = -4,
                 cellStyle = "random",
                 noiseScale = 0.002,
-                noiseSpeed = {x: "random", y: "random", z: 1}
+                noiseSpeed = {x: "random", y: "random", z: 10},
+                applySigmoid = true,
+                sigmoidAlpha = 4
             ) {
         super(canvas, colors, colorsAlt, bgColor, NAME, FILE, DESC);
 
@@ -29,8 +33,10 @@ class PerlinNoiseGrid extends Animation {
         this.cellStyle = this.assignIfRandom(cellStyle, Utils.randomChoice(this.cellStyles));
         this.noiseScale = noiseScale;
         this.noiseSpeed = noiseSpeed;
-        this.noiseSpeed.x = this.assignIfRandom(this.noiseSpeed.x, Utils.round(Utils.randomRange(-1, 1), 1));
-        this.noiseSpeed.y = this.assignIfRandom(this.noiseSpeed.y, Utils.round(Utils.randomRange(-1, 1), 1));
+        this.noiseSpeed.x = this.assignIfRandom(this.noiseSpeed.x, Utils.round(Utils.randomRange(-10, 10), 1));
+        this.noiseSpeed.y = this.assignIfRandom(this.noiseSpeed.y, Utils.round(Utils.randomRange(-10, 10), 1));
+        this.applySigmoid = applySigmoid;
+        this.sigmoidAlpha = sigmoidAlpha;
 
         this.gridCellsWidth = 0;
         this.gridCellsHeight = 0;
@@ -72,7 +78,9 @@ class PerlinNoiseGrid extends Animation {
                           (cellX + this.noisePos.x) * this.noiseScale,
                           (cellY + this.noisePos.y) * this.noiseScale,
                           this.noisePos.z),
-                      noiseNorm = Utils.clip(Utils.remap(noiseVal, -1, 1, 0, 1), 0, 1),
+                      noiseNorm = this.applySigmoid
+                          ? 1 / (1 + Math.exp(-this.sigmoidAlpha * noiseVal))
+                          : Utils.clip(Utils.remap(noiseVal, -1, 1, 0, 1), 0, 1),
                       size = maxCellSize * noiseNorm;
 
                 if(size > 0.1) {
@@ -104,8 +112,10 @@ class PerlinNoiseGrid extends Animation {
 
     getSettings() {
         return [{prop: "cellSize", type: "int", min: 4, max: 64, toCall: "resize"},
-                {prop: "cellPadding", type: "float", step: 0.1, min: 0, max: 8},
+                {prop: "cellPadding", type: "float", step: 1, min: -8, max: 8},
                 {prop: "cellStyle", type: "select", values: this.cellStyles},
+                {prop: "applySigmoid", type: "bool"},
+                {prop: "sigmoidAlpha", type: "float", step: 0.1, min: 0.1, max: 20},
                 {prop: "noiseScale", type: "float", step: 0.0001, min: 0.0005, max: 0.0125},
                 {prop: "noiseSpeed.x", type: "float", step: 0.1, min: -10, max: 10},
                 {prop: "noiseSpeed.y", type: "float", step: 0.1, min: -10, max: 10},

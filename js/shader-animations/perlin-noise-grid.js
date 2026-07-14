@@ -4,8 +4,13 @@ const NAME = "Perlin noise grid shader",
       FILE = "perlin-noise-grid.js",
       DESC = `
 Grid of squares, circles, or soft circles with size driven by animated Perlin noise.
+Optional sigmoid function with controlable alpha 
+can be applied to the noise to make the size distribution more extreme.
 
-Fragment shader version of the Canvas API Perlin noise grid animation.
+This is shader port of the 
+[Perlin noise groid](https://mwydmuch.pl/animations?animation=perlin-noise-grid) 
+animation I wrote in the past.
+
 Coded by me (Marek Wydmuch) in 2026.
 `;
 
@@ -18,8 +23,9 @@ const FRAGMENT_SHADER = `
     uniform float cellSize;
     uniform float cellPadding;
     uniform float noiseScale;
-    uniform float cellSoftness;
     uniform int cellStyle;
+    uniform bool applySigmoid;
+    uniform float sigmoidAlpha;
     uniform vec2 resolution;
     uniform vec3 mainColor;
     uniform vec3 altColor;
@@ -41,9 +47,7 @@ const FRAGMENT_SHADER = `
     }
 
     float softCircleMask(vec2 localPos, float radius) {
-        float dist = length(localPos),
-              softness = max(1.0, min(radius, cellSoftness));
-        return 1.0 - smoothstep(max(0.0, radius - softness), radius + 0.75, dist);
+        return clamp(1.0 - length(localPos) / radius, 0.0, 1.0);
     }
 
     void main() {
@@ -56,7 +60,9 @@ const FRAGMENT_SHADER = `
 
         vec3 noisePos = vec3(noiseSpeed.xy * time * 10.0, noiseSpeed.z * time * 0.05);
         float noiseValue = perlin3(vec3((center + noisePos.xy) * noiseScale, noisePos.z) + seedOffset),
-              noiseNorm = clamp(noiseValue * 0.5 + 0.5, 0.0, 1.0);
+              noiseNorm = applySigmoid
+                  ? 1.0 / (1.0 + exp(-sigmoidAlpha * noiseValue))
+                  : clamp(noiseValue * 0.5 + 0.5, 0.0, 1.0);
 
         float maxCellSize = max(0.0, cellSize - 2.0 * cellPadding),
               size = maxCellSize * noiseNorm,
@@ -82,11 +88,12 @@ const ShaderAnimation = require("../threejs-shader-animation");
 class PerlinNoiseGridShader extends ShaderAnimation {
     constructor(canvas, colors, colorsAlt, bgColor,
                 cellSize = 12,
-                cellPadding = 1,
+                cellPadding = -4,
                 cellStyle = "random",
                 noiseScale = 0.002,
-                noiseSpeed = {x: "random", y: "random", z: 1},
-                cellSoftness = 6
+                noiseSpeed = {x: "random", y: "random", z: 10},
+                applySigmoid = true,
+                sigmoidAlpha = 4
             ) {
         super(canvas, colors, colorsAlt, bgColor, FRAGMENT_SHADER, NAME, FILE, DESC);
 
@@ -96,9 +103,10 @@ class PerlinNoiseGridShader extends ShaderAnimation {
         this.cellStyle = this.assignIfRandom(cellStyle, Utils.randomChoice(this.cellStyles));
         this.noiseScale = noiseScale;
         this.noiseSpeed = Object.assign({}, noiseSpeed);
-        this.noiseSpeed.x = this.assignIfRandom(this.noiseSpeed.x, Utils.round(Utils.randomRange(-1, 1), 1));
-        this.noiseSpeed.y = this.assignIfRandom(this.noiseSpeed.y, Utils.round(Utils.randomRange(-1, 1), 1));
-        this.cellSoftness = cellSoftness;
+        this.noiseSpeed.x = this.assignIfRandom(this.noiseSpeed.x, Utils.round(Utils.randomRange(-10, 10), 1));
+        this.noiseSpeed.y = this.assignIfRandom(this.noiseSpeed.y, Utils.round(Utils.randomRange(-10, 10), 1));
+        this.applySigmoid = applySigmoid;
+        this.sigmoidAlpha = sigmoidAlpha;
 
         this.uAltColor = new THREE.Color(this.colorsAlt[0]);
         this.uNoiseSpeed = new THREE.Vector3(this.noiseSpeed.x, this.noiseSpeed.y, this.noiseSpeed.z);
@@ -108,8 +116,9 @@ class PerlinNoiseGridShader extends ShaderAnimation {
         this.shaderMaterial.uniforms.cellSize = { value: this.cellSize };
         this.shaderMaterial.uniforms.cellPadding = { value: this.cellPadding };
         this.shaderMaterial.uniforms.noiseScale = { value: this.noiseScale };
-        this.shaderMaterial.uniforms.cellSoftness = { value: this.cellSoftness };
         this.shaderMaterial.uniforms.cellStyle = { value: this.getCellStyleId() };
+        this.shaderMaterial.uniforms.applySigmoid = { value: this.applySigmoid };
+        this.shaderMaterial.uniforms.sigmoidAlpha = { value: this.sigmoidAlpha };
         this.shaderMaterial.uniforms.altColor = { value: this.uAltColor };
         this.shaderMaterial.uniforms.noiseSpeed = { value: this.uNoiseSpeed };
         this.shaderMaterial.uniforms.seedOffset = { value: this.uSeedOffset };
@@ -131,8 +140,9 @@ class PerlinNoiseGridShader extends ShaderAnimation {
         this.shaderMaterial.uniforms.cellSize.value = this.cellSize;
         this.shaderMaterial.uniforms.cellPadding.value = this.cellPadding;
         this.shaderMaterial.uniforms.noiseScale.value = this.noiseScale;
-        this.shaderMaterial.uniforms.cellSoftness.value = this.cellSoftness;
         this.shaderMaterial.uniforms.cellStyle.value = this.getCellStyleId();
+        this.shaderMaterial.uniforms.applySigmoid.value = this.applySigmoid;
+        this.shaderMaterial.uniforms.sigmoidAlpha.value = this.sigmoidAlpha;
         this.shaderMaterial.uniforms.altColor.value.set(this.uAltColor);
         this.shaderMaterial.uniforms.noiseSpeed.value.copy(this.uNoiseSpeed);
         this.shaderMaterial.uniforms.seedOffset.value.copy(this.uSeedOffset);
@@ -151,14 +161,15 @@ class PerlinNoiseGridShader extends ShaderAnimation {
 
     getSettings() {
         return [
-            {prop: "cellSize", icon: '<i class="fa-solid fa-table-cells"></i>', type: "int", min: 4, max: 64},
-            {prop: "cellPadding", icon: '<i class="fa-solid fa-grip-lines"></i>', type: "float", step: 0.1, min: 0, max: 8},
-            {prop: "cellStyle", icon: '<i class="fa-solid fa-shapes"></i>', type: "select", values: this.cellStyles},
-            {prop: "cellSoftness", icon: '<i class="fa-solid fa-circle-half-stroke"></i>', type: "float", step: 0.1, min: 1, max: 24},
-            {prop: "noiseScale", icon: '<i class="fa-solid fa-wave-square"></i>', type: "float", step: 0.0001, min: 0.0005, max: 0.0125},
-            {prop: "noiseSpeed.x", icon: '<i class="fa-solid fa-arrows-left-right"></i>', type: "float", step: 0.1, min: -10, max: 10},
-            {prop: "noiseSpeed.y", icon: '<i class="fa-solid fa-arrows-up-down"></i>', type: "float", step: 0.1, min: -10, max: 10},
-            {prop: "noiseSpeed.z", icon: '<i class="fa-solid fa-gauge-high"></i>', type: "float", step: 0.1, min: -10, max: 10},
+            {prop: "cellSize", type: "int", min: 4, max: 64},
+            {prop: "cellPadding", type: "float", step: 1, min: -8, max: 8},
+            {prop: "cellStyle", type: "select", values: this.cellStyles},
+            {prop: "applySigmoid", type: "bool"},
+            {prop: "sigmoidAlpha", type: "float", step: 0.1, min: 0.1, max: 20},
+            {prop: "noiseScale", type: "float", step: 0.0001, min: 0.0005, max: 0.0125},
+            {prop: "noiseSpeed.x", type: "float", step: 0.1, min: -10, max: 10},
+            {prop: "noiseSpeed.y", type: "float", step: 0.1, min: -10, max: 10},
+            {prop: "noiseSpeed.z", type: "float", step: 0.1, min: -10, max: 10},
             this.getSeedSettings()
         ];
     }

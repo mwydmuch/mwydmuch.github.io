@@ -155,7 +155,7 @@ if(canvas){
     // ---------------------------------------------------------------------------------------------------------------------
 
     let allAnimations = [
-        // Class, name, hide, startAnimation
+        // Class, name, hidden, startAnimation
         {class: ThreeNPlusOne, name: "3n+1"},
         {class: BriansBrainAutomata, name: "brian's brain automata"},
         {class: Cardioids, name: "cardioids"},
@@ -164,8 +164,8 @@ if(canvas){
         //{class: Cubes, name: "cubes"},  // Disabled till finished
         {class: DayAndNightAutomata, name: "day and night automata"},
         //{class: EvaporatingCubes, name: "evaporating cubes"},  // Disabled till finished
-        {class: FiguresSpiral, name: "figures spiral", hide: true},  // Hide cause it's not that interesting
-        //{class: Fractals, name: "fractals (shader)", hide: false},
+        {class: FiguresSpiral, name: "figures spiral", hidden: true},  // Hidden cause it's not that interesting
+        //{class: Fractals, name: "fractals (shader)", hidden: false},
         {class: FractionalBrownianMotion, name: "fractional brownian motion (shader)"},
         {class: GameOfLife, name: "game of life"},
         {class: GameOfLifeIsometric, name: "isometric game of life"},
@@ -174,7 +174,7 @@ if(canvas){
         {class: GradientDescent3D, name: "gradient descent (3D)"},
         {class: Matrix, name: "matrix rain"},
         {class: MLinPL, name: "ml in pl"},
-        {class: ModelsShadersGallery, name: "models and shaders gallery (3D)", startAnimation: false, hide: true},
+        {class: ModelsShadersGallery, name: "models and shaders gallery (3D)", startAnimation: false, hidden: true},
         {class: Network, name: "network"},
         //{class: NeuralNetwork, name: "neural network"},  // Disabled till updated
         {class: NoisyLines, name: "noisy lines"},
@@ -187,17 +187,17 @@ if(canvas){
         {class: Pong, name: "pong"},
         {class: RockPaperScissorsAutomata, name: "rock-paper-scissors automata"},
         {class: SandAutomata, name: "sand automata"},
-        {class: Quadtree, name: "quadtree", startAnimation: false}, // Disable as a start animation since it resources heavy
+        {class: Quadtree, name: "quadtree", startAnimation: false}, // Disabled as a start animation since it resources heavy
         {class: RecursiveSquares, name: "recursive squares"},
         {class: SineWaves, name: "sine waves"},
         {class: ShortestPath, name: "shortest path"},
         {class: Sorting, name: "sorting"},
         {class: SpinningShapes, name: "spinning shapes"},
         {class: Spirograph, name: "spirograph"},
-        {class: Vectors, name: "vectors", hide: true},  // Hiden cause it's not that interesting
-        {class: TestShader, name: "test shader", hide: true},
-        {class: TestThreejs, name: "test Three.js", hide: true},
-        //{class: TreeVisualization, name: "tree visualization", hide: true},  // Hiden cause it's not that interesting
+        {class: Vectors, name: "vectors", hidden: true},  // Hidden cause it's not that interesting
+        {class: TestShader, name: "test shader", hidden: true},
+        {class: TestThreejs, name: "test Three.js", hidden: true},
+        //{class: TreeVisualization, name: "tree visualization", hidden: true},  // Hidden cause it's not that interesting
     ];
 
     // Define functions related to the animation loop and control
@@ -378,7 +378,7 @@ if(canvas){
     // Initialize the animation
     let animations = allAnimations,
         visibleAnimationIds = animations
-            .map((animation, id) => animation.hide ? null : id)
+            .map((animation, id) => animation.hidden ? null : id)
             .filter((id) => id !== null);
     let animationId = Utils.randomChoice(visibleAnimationIds);
     while(animations[animationId].startAnimation === false) animationId = Utils.randomChoice(visibleAnimationIds);
@@ -407,7 +407,7 @@ if(canvas){
         animations[order[i]].next = order[(i + 1) % order.length];
     }
     for(let i = 0; i < animations.length; ++i){
-        if(animations[i].hide) {
+        if(animations[i].hidden) {
             animations[i].prev = order[order.length - 1];
             animations[i].next = order[0];
         }
@@ -476,7 +476,7 @@ if(canvas){
             canvas.classList.remove("faded-25");
             canvas.classList.remove("fade-to-25");
             canvas.classList.add("show-from-25");
-            elemBgShow.innerHTML = "<i class=\"fas fa-eye-slash\"></i> hide";
+            elemBgShow.innerHTML = "<i class=\"fas fa-eye-slash\"></i> hidden";
         }
 
         elemBgShow.addEventListener("click", function () {
@@ -623,7 +623,7 @@ if(canvas){
             setMaxHeight();
         });
         
-        // Show/hide the background settings panel
+        // Show/hidden the background settings panel
         elemBgSettings.addEventListener("click", function () {
             if (elemBgSettingsControls.classList.contains("fade-out") || 
                 elemBgSettingsControls.style.display === "none") showSettings();
@@ -747,7 +747,7 @@ if(canvas){
                 animationSelectOptions += `<option selected value="${id}">${name}</option>`
             else animationSelectOptions += `<option value="${id}">${name}</option>`
         }
-        if(animations[animationId].hide) {
+        if(animations[animationId].hidden) {
             animationSelectOptions += `<option selected value="${animationId}">${animations[animationId].name}</option>`
         }
         elemBgAnimationSelect.innerHTML = animationSelectOptions;
