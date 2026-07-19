@@ -32,7 +32,7 @@ class ThreejsAnimation extends Animation {
     }
 
     update(elapsed){
-        super.update(elapsed);
+        return super.update(elapsed);
     }
 
     draw() {
@@ -61,7 +61,7 @@ class ThreejsAnimation extends Animation {
     }
 
     getCodeUrl(){
-        return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/js/threejs-animations" + this.file;
+        return "https://github.com/mwydmuch/mwydmuch.github.io/blob/master/js/threejs-animations/" + this.file;
     }
 }
 
