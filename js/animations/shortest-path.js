@@ -325,7 +325,8 @@ class ShortestPath extends Animation {
             this.resetFont();
             let statsLines = [
                 `Search algorithm: ${this.searchAlgorithm}`,
-                `Number of visited nodes: ${this.visited}`,
+                `Visited nodes: ${this.visited}`,
+                `Frontier nodes: ${this.queue.size}`,
                 (this.queue.size === 0 ? 'Shortest path length: ' : 'Longest traveled path: ') + Utils.round(this.pathLenght)
             ];
             this.drawTextLines(statsLines, this.lineHeight, this.canvas.height - (statsLines.length + 1) * this.lineHeight);

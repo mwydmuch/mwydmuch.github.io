@@ -34,6 +34,7 @@ const ThreeNPlusOne = require("./animations/3n+1"),
       Quadtree = require("./animations/quadtree"),
       RecursiveSquares = require("./animations/recursive-squares"),
       ShortestPath = require("./animations/shortest-path"),
+      ShortestPathMap = require("./animations/shortest-path-map"),
       SineWaves = require("./animations/sine-waves"),
       Sorting = require("./animations/sorting"),
       SpinningShapes = require("./animations/spinning-shapes"),
@@ -51,7 +52,9 @@ const ThreeNPlusOne = require("./animations/3n+1"),
       // Three.js animations
       //Cubes = require("./threejs-animations/cubes"),
       //EvaporatingCubes = require("./threejs-animations/evaporating-cubes"),
+      LavaSlime = require("./shader-animations/lava-slime"),
       //ModelsShadersGallery = require("./threejs-animations/model-shaders-gallery"),
+      //SpringyCubes = require("./threejs-animations/springy-cubes"),
       TestThreejs = require("./threejs-animations/test"),
       GradientDescent3D = require("./threejs-animations/gradient-descent");
       
@@ -172,9 +175,10 @@ if(canvas){
         {class: GlitchAutomata, name: "glitch automata", startAnimation: false},  // Disable as a start animation, as it may not be visually pleasing for everyone
         {class: GradientDescent, name: "gradient descent"},
         {class: GradientDescent3D, name: "gradient descent (3D)"},
+        {class: LavaSlime, name: "lava slime (shader)"},
         {class: Matrix, name: "matrix rain"},
         {class: MLinPL, name: "ml in pl"},
-        //{class: ModelsShadersGallery, name: "models and shaders gallery (3D)", startAnimation: false, hidden: true},
+        //{class: ModelsShadersGallery, name: "models and shaders gallery (3D)", startAnimation: false},
         {class: Network, name: "network"},
         //{class: NeuralNetwork, name: "neural network"},  // Disabled till updated
         {class: NoisyLines, name: "noisy lines"},
@@ -191,9 +195,11 @@ if(canvas){
         {class: RecursiveSquares, name: "recursive squares"},
         {class: SineWaves, name: "sine waves"},
         {class: ShortestPath, name: "shortest path"},
+        {class: ShortestPathMap, name: "shortest path on real maps"},
         {class: Sorting, name: "sorting"},
         {class: SpinningShapes, name: "spinning shapes"},
         {class: Spirograph, name: "spirograph"},
+        //{class: SpringyCubes, name: "springy cubes"},
         {class: Vectors, name: "vectors", hidden: true},  // Hidden cause it's not that interesting
         {class: TestShader, name: "test shader", hidden: true},
         {class: TestThreejs, name: "test Three.js", hidden: true},
@@ -329,7 +335,7 @@ if(canvas){
                                          <i class="fa-solid fa-hourglass-half"></i> avg. frames interval: ${Math.round(avgElapsedTimeMs)} ms</br>
                                          <i class="fa-solid fa-film"></i> avg. fps: ${Math.round(1000 / avgElapsedTimeMs)}</br>
                                          <i class="fa-solid fa-stopwatch"></i> avg. draw time: ${Math.round(avgDrawTimeMs)} ms</br>
-                                         (over last ${sampleSize} frames)`;
+                                         (avg. over last ${sampleSize} frames)`;
                                         //`</br> possible fps: ${Math.round(1000 / avgDrawTime)}`;
             }
         }

@@ -8,8 +8,8 @@ This version reuses the logic from the
 [2D animation](https://mwydmuch.pl/animations?animation=gradient-descent).
 
 You can select the starting point by clicking/touching the canvas.
-Scroll or pinch to zoom, hold two fingers or the right mouse button
-to rotate.
+Drag with the right mouse button to rotate, add Ctrl to zoom, or add Shift
+to move the camera. Pinch to zoom on a touch screen.
 
 Uses Three.js
 Coded by me (Marek Wydmuch) in 2025.
@@ -535,8 +535,9 @@ class GradientDescent3D extends GradientDescent2D {
                 return;
             }
 
-            const mode = event.shiftKey ? "pan" : (event.button === 2 ? "rotate" : null);
-            if (!mode) return;
+            if (event.button !== 2) return;
+
+            const mode = event.ctrlKey ? "zoom" : (event.shiftKey ? "pan" : "rotate");
 
             event.preventDefault();
             this.autoRotateCamera = false;
@@ -574,6 +575,8 @@ class GradientDescent3D extends GradientDescent2D {
             if (this.pointerState.mode === "rotate") {
                 this.cameraTheta -= dx * 0.006;
                 this.cameraPhi -= dy * 0.006;
+            } else if (this.pointerState.mode === "zoom") {
+                this.cameraRadius *= Math.exp(dy * 0.01);
             } else if (this.pointerState.mode === "pan") {
                 this.panCamera(dx, dy);
             }
@@ -606,13 +609,6 @@ class GradientDescent3D extends GradientDescent2D {
 
         this.canvas.addEventListener("pointerup", endPointerAction);
         this.canvas.addEventListener("pointercancel", endPointerAction);
-
-        this.canvas.addEventListener("wheel", (event) => {
-            event.preventDefault();
-            this.autoRotateCamera = false;
-            this.cameraRadius *= Math.exp(event.deltaY * 0.001);
-            this.updateCameraPosition();
-        }, { passive: false });
     }
 
     panCamera(dx, dy) {
