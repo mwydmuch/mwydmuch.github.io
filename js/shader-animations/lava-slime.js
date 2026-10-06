@@ -11,6 +11,7 @@ Coded by me (Marek Wydmuch) + Codex with GPT 5.5 in 2026.
 `;
 
 const ThreejsShaderAnimation = require("../threejs-shader-animation");
+const Utils = require("../utils");
 
 const MAX_BLOBS = 32,
       DEFORMATION_BLOBS_PER_MAIN = 3,
